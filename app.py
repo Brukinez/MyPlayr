@@ -532,30 +532,42 @@ elif st.session_state.pagina == 'hall_of_fame':
     conn = sqlite3.connect(DB_PATH)
     # Cerchiamo i video e i nomi dei giocatori
     query_fame = """
-        SELECT c.*, u.nickname, u.ig_tag 
+        SELECT DISTINCT c.evento, c.campo, u.nickname, u.ig_tag 
         FROM calendario c
         LEFT JOIN utenti u ON c.campo = u.email
         WHERE c.stato='CLIP_UTENTE' AND c.consenso_social=1 
         ORDER BY c.id DESC
     """
+
     df_fame = pd.read_sql(query_fame, conn)
     conn.close()
 
     if not df_fame.empty:
+        # Creiamo una lista per ricordarci i video già mostrati
+        video_mostrati = []
+        
         for i, clip in df_fame.iterrows():
-            # Percorso del video su G:
-            path_fame = os.path.join(CLIP_GDRIVE, clip['evento'])
+            nome_file = clip['evento']
+            
+            # Se il video è già stato mostrato in questa pagina, lo saltiamo
+            if nome_file in video_mostrati:
+                continue
+            
+            path_fame = os.path.join(CLIP_GDRIVE, nome_file)
             
             if os.path.exists(path_fame):
                 st.video(path_fame)
                 
-                # Scegliamo il nome da mostrare (Nickname o Email)
+                # Aggiungiamo il video alla lista di quelli già visti
+                video_mostrati.append(nome_file)
+                
                 autore = clip['nickname'] if clip['nickname'] else clip['campo']
                 st.success(f"⚽ **Azione di: {autore}**")
                 
                 if clip['ig_tag']:
                     st.caption(f"📸 Segui su Instagram: {clip['ig_tag']}")
                 st.divider()
+
             else:
                 st.warning(f"Clip {clip['evento']} in caricamento...")
     else:
