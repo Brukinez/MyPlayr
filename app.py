@@ -29,8 +29,21 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     nome_output = f"MyPlayr_{datetime.now().strftime('%H%M%S')}.mp4"
     output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
     if check_password():
+
+        
+   # --- COPIA DA QUI ---
+    # Questa riga sopra deve avere gli spazi (fa parte della funzione)
+    output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
+
+# Questa riga SOTTO deve essere TUTTA A SINISTRA (toccare il bordo)
+if check_password():
     if os.path.exists("logo.png"):
         st.image("logo.png", width=200)
+    else:
+        st.write("Immagine logo.png non trovata")
+# --- FINE COPIA ---
+
+
 
     
     # Comando ultra-leggero (Stream Copy)
