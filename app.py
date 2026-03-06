@@ -438,30 +438,36 @@ elif st.session_state.pagina == 'admin':
 elif st.session_state.pagina == 'partite':
     st.title("🏟️ Gestione e Archivio Partite MyPlayr")
     
-    # 1. MODULO PER PROGRAMMARE UNA NUOVA REGISTRAZIONE
-    st.markdown("### 📅 Programma una nuova registrazione")
+    # --- MODULO TEST REGISTRAZIONE ---
+    st.markdown("### 🚀 Avvia un Test di Registrazione")
     with st.form("form_nuova_partita"):
         col1, col2 = st.columns(2)
         with col1:
-            data_p = st.date_input("Seleziona Data", key="data_new")
+            data_p = st.date_input("Data del Test", key="data_test")
         with col2:
-            ora_p = st.time_input("Seleziona Ora", key="ora_new")
+            # Usiamo un input di testo per l'ora così puoi scrivere l'orario esatto (es. 18:45)
+            ora_p = st.text_input("Inserisci Ora Inizio (es. 18:45)", value=datetime.now().strftime("%H:%M"), key="ora_test")
         
-        campo_p = st.text_input("Nome del Campo (es. Campo 1)", key="campo_new")
-        submit_p = st.form_submit_button("SALVA NEL CALENDARIO", use_container_width=True)
+        campo_p = st.text_input("Nome/ID Telecamera (es. Webcam PC)", value="Webcam PC", key="campo_test")
+        
+        # Il tasto ora dice quello che desideravi
+        submit_p = st.form_submit_button("🔴 AVVIA REGISTRAZIONE NEL CALENDARIO", use_container_width=True)
         
         if submit_p:
             try:
                 conn = sqlite3.connect(DB_PATH)
                 cursor = conn.cursor()
+                # Inseriamo il comando nel database
                 cursor.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
-                               (data_p.strftime("%d-%m-%Y"), ora_p.strftime("%H:%M"), campo_p, 'PROGRAMMATO'))
+                               (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
                 conn.commit()
                 conn.close()
-                st.success(f"✅ Partita salvata! Ricorda di avviare 'regista.py' sul PC.")
+                st.success(f"✅ Comando inviato! La registrazione partirà alle ore {ora_p}")
+                st.info("Assicurati che il file 'regista.py' sia acceso sul tuo PC.")
                 st.rerun()
             except Exception as e:
                 st.error(f"Errore: {e}")
+
 
     st.divider()
 
