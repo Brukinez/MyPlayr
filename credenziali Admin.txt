@@ -1,0 +1,4 @@
+credenziali Admin:
+
+Email: admin@mygame.com
+Password: admin123
