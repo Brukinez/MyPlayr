@@ -685,3 +685,9 @@ f_l, f_r = st.columns(2)
 with f_l: st.markdown("<p class='footer-sub'>Privacy Policy</p>", unsafe_allow_html=True)
 with f_r: st.markdown("<p class='footer-sub' style='text-align:right;'>Termini e Condizioni</p>", unsafe_allow_html=True)
 st.markdown("<p class='footer-sub' style='text-align:center;'>© 2026 tutti i diritti riservati</p>", unsafe_allow_html=True)
+
+st.image("logo.png")
+
+
+
+
