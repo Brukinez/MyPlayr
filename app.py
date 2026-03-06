@@ -7,44 +7,11 @@ from datetime import datetime
 from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
-def check_password():
-    if "password_correct" not in st.session_state:
-        st.session_state.password_correct = False
-    if not st.session_state.password_correct:
-        st.title("Accesso Riservato - MyPlayr")
-        pwd = st.text_input("Inserisci la password:", type="password")
-        if st.button("Entra"):
-            if pwd == "admin123":
-                st.session_state.password_correct = True
-                st.rerun()
-            else:
-                st.error("Password errata")
-        return False
-    return True
-
-
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
     input_p = os.path.join(VIDEO_DIR, video_nome) # Legge dal PC
     nome_output = f"MyPlayr_{datetime.now().strftime('%H%M%S')}.mp4"
     output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
-    if check_password():
-
-        
-   # --- COPIA DA QUI ---
-    # Questa riga sopra deve avere gli spazi (fa parte della funzione)
-    output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
-
-# Questa riga SOTTO deve essere TUTTA A SINISTRA (toccare il bordo)
-if check_password():
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=200)
-    else:
-        st.write("Immagine logo.png non trovata")
-# --- FINE COPIA ---
-
-
-
     
     # Comando ultra-leggero (Stream Copy)
     comando = ['ffmpeg', '-y', '-ss', str(inizio_sec), '-t', str(durata_sec), 
