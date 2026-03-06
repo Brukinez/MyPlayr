@@ -162,6 +162,26 @@ st.markdown("""
     .footer-sub { font-size: 12px; color: #888; }
     </style>
 """, unsafe_allow_html=True)
+# --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
+if "password_dev_corretta" not in st.session_state:
+    st.session_state["password_dev_corretta"] = False
+
+if not st.session_state["password_dev_corretta"]:
+    st.markdown("<h1 style='text-align: center;'>🚧 MyPlayr - Area Protetta</h1>", unsafe_allow_html=True)
+    st.write("Il sito è attualmente in fase di sviluppo. Inserisci la password per visualizzare l'anteprima.")
+    
+    col_p1, col_p2 = st.columns([2, 1])
+    with col_p1:
+        pwd_inserita = st.text_input("Password Sviluppatore", type="password", placeholder="Scrivi qui...")
+    with col_p2:
+        st.write("<br>", unsafe_allow_html=True) # Spazio per allineare il tasto
+        if st.button("SBLOCCA SITO"):
+            if pwd_inserita == "myplayr2026": # <--- CAMBIA QUI LA TUA PASSWORD
+                st.session_state["password_dev_corretta"] = True
+                st.rerun()
+            else:
+                st.error("Password errata!")
+    st.stop() # Questo comando blocca tutto il resto del sito se la password è sbagliata
 
 # --- LOGICA NAVIGAZIONE ---
 if 'pagina' not in st.session_state: st.session_state.pagina = 'home'
