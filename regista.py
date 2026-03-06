@@ -4,9 +4,10 @@ import time
 from datetime import datetime
 import os
 
-BASE_DIR = r"C:\MyGame_test"
-DB_PATH = os.path.join(BASE_DIR, "mygame.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
+if not os.path.exists(VIDEO_DIR): os.makedirs(VIDEO_DIR)
+
 
 if not os.path.exists(VIDEO_DIR): os.makedirs(VIDEO_DIR)
 
@@ -16,8 +17,9 @@ def registra_clip(id_partita, campo):
     full_path = os.path.join(VIDEO_DIR, filename)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-        '-t', '60', '-pix_fmt', 'yuv420p', full_path
+        '-t', '20', '-pix_fmt', 'yuv420p', full_path
     ]
+
     try:
         subprocess.run(command, check=True)
         return filename
@@ -29,7 +31,7 @@ def monitor():
     while True:
         try:
             now = datetime.now()
-            conn = sqlite3.connect(DB_PATH)
+            conn = sqlite3.connect("myplayr.db")
             cursor = conn.cursor()
             cursor.execute("SELECT id, campo FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
                            (now.strftime("%d-%m-%Y"), now.strftime("%H:%M")))

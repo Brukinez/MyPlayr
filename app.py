@@ -437,6 +437,10 @@ elif st.session_state.pagina == 'admin':
 # --- PAGINA PARTITE DISPONIBILI (VISIBILE A TUTTI GLI UTENTI) ---
 elif st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
+elif st.session_state.pagina == 'partite':
+    st.title("Gestione Partite")
+    # ... qui dovrebbe esserci il modulo di inserimento ...
+
     
     conn = sqlite3.connect(DB_PATH)
     # Prendiamo tutte le partite dal database
