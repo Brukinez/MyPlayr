@@ -7,7 +7,7 @@ from datetime import datetime
 from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
-DB_PATH = "myplayr.db"
+DB_PATH = "myplayr_v2.db"
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
