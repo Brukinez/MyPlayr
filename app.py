@@ -9,7 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
 # --- IMPOSTAZIONI GRAFICHE ---
-LARGHEZZA_LOGO = 200  # <--- CAMBIA QUESTO NUMERO PER INGRANDIRE O RIMPICCIOLIRE
+LARGHEZZA_LOGO = 300  # <--- CAMBIA QUESTO NUMERO PER INGRANDIRE O RIMPICCIOLIRE
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
@@ -248,12 +248,13 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 
 # --- PAGINA 1: HOME PAGE (INTEGRALE) ---
-# --- LOGO CENTRATO UNIVERSALE ---
-if os.path.exists("logo.png"):
-    col1, col2, col3 = st.columns([1, 2, 1]) # Crea 3 colonne
-    with col2: # Usa la colonna centrale per centrare il logo
-        st.image("logo.png", width=250) # Regola 250 per la grandezza
-# --------------------------------
+elif st.session_state.pagina == 'home':
+    # --- LOGO AL POSTO DEL TITOLO ---
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=300) # Regola il numero 300 per la grandezza
+    
+    st.write("### Seleziona i tuoi momenti migliori")
+    # Abbiamo tolto la linea verde (st.divider) da qui
 
     
     st.write("### Seleziona i tuoi momenti migliori")
