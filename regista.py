@@ -5,7 +5,7 @@ import subprocess
 from datetime import datetime
 
 # --- CONFIGURAZIONE ---
-DB_PATH = "myplayr.db"
+DB_PATH = "myplayr_v2.db"
 # Il percorso verso il tuo Google Drive
 VIDEO_DIR = r"G:\Il mio Drive\CLIP_MYPLAYR"
 
