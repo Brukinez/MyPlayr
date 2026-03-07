@@ -256,7 +256,7 @@ elif st.session_state.pagina == 'home':
         # Creiamo 3 colonne: le due laterali spingono quella centrale
         col_vuota_1, col_logo_centrale, col_vuota_2 = st.columns([1, 2, 1])
         with col_logo_centrale:
-             st.image("logo.png", width=GRANDEZZA_LOGO)
+            st.image("logo.png", use_container_width=True) # Si adatta alla colonna centrale
 
     
     
