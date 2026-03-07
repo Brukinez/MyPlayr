@@ -9,7 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
 ## --- PANNELLO DI CONTROLLO GRAFICO ---
-LARGHEZZA_LOGO = 350  # <--- Alza questo numero (es. 500 o 600) per farlo ancora più grande
+LARGHEZZA_LOGO = 300  # <--- Alza questo numero (es. 500 o 600) per farlo ancora più grande
 
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
