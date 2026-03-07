@@ -10,23 +10,7 @@ from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
 # --- REGOLAZIONE LOGO (Cambia questo numero per la grandezza) ---
 GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
-# --- STILE VERDE SCURO MYPLAYR ---
-st.markdown("""
-    <style>
-    div.stButton > button:first-child {
-        background-color: #1e7e34; /* Verde scuro uguale a Scarica Clip */
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-weight: bold;
-    }
-    div.stButton > button:first-child:hover {
-        background-color: #155724; /* Ancora più scuro quando ci passi sopra */
-        color: white;
-    }
-    </style>
-""", unsafe_allow_html=True)
+
 
 
 
@@ -325,24 +309,11 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.error("Inserisci un'email valida.")
 
    
-                 # --- TASTO ACCEDI VERDE SCURO E CENTRATO ---
-    st.markdown("""
-        <style>
-        .stButton > button {
-            background-color: #155724 !important; /* Verde Scuro */
-            color: white !important;
-            border-radius: 8px !important;
-            padding: 10px 20px !important;
-            border: none !important;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-    if st.button("ACCEDI AL PORTALE", key="btn_home_acc"):
-        st.session_state.mostra_login = True
+                     # --- TASTO ACCEDI VERDE (GRANDEZZA CONTENUTO) ---
+    col1, col2, col3 = st.columns([1, 1, 1]) # Usiamo le colonne per centrare anche il tasto
+    with col2:
+        if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=False):
+            st.session_state.mostra_login = True
 
 
 
