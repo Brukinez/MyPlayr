@@ -68,7 +68,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
 IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
-DB_PATH = os.path.join(BASE_DIR, "myplayr.db")
+DB_PATH = os.path.join(BASE_DIR, "myplayr_v2.db")
 
 os.makedirs(VIDEO_DIR, exist_ok=True)
 os.makedirs(IMG_DIR, exist_ok=True)
@@ -249,14 +249,23 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 # --- PAGINA 1: HOME PAGE (INTEGRALE) ---
 # --- LOGO PRESENTE IN OGNI PAGINA ---
-if os.path.exists("logo.png"):
-    # Usiamo la variabile definita sopra per la larghezza
-    st.image("logo.png", width=LARGHEZZA_LOGO)
+elif st.session_state.pagina == 'home':
+    # --- LOGO AL POSTO DEL TITOLO ---
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=300) # Regola il numero 300 per la grandezza
     
-st.divider() # Una linea elegante sotto il logo
+    st.write("### Seleziona i tuoi momenti migliori")
+    # Abbiamo tolto la linea verde (st.divider) da qui
 
-if st.session_state.pagina == 'home' and not st.session_state.autenticato:
-    st.markdown("<h1 style='text-align: center;'>⚽ MyPlayr</h1>", unsafe_allow_html=True)
+
+elif st.session_state.pagina == 'home':
+    # --- LOGO AL POSTO DEL TITOLO ---
+    if os.path.exists("logo.png"):
+        st.image("logo.png", width=300) # Regola il numero 300 per la grandezza
+    
+    st.write("### Seleziona i tuoi momenti migliori")
+    # Abbiamo tolto la linea verde (st.divider) da qui
+
     st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 16px;'>Ogni partita merita di essere ricordata!<br>Il calcio amatoriale come quello vero.<br>Condividi le tue giornate con amici, famiglia e sui social media.</p>", unsafe_allow_html=True)
     st.divider()
