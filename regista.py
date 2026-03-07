@@ -15,9 +15,12 @@ if not os.path.exists(VIDEO_DIR):
 def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
+    
+    # QUESTA È LA RIGA CRUCIALE: deve esserci VIDEO_DIR (quello di G:)
     percorso_completo = os.path.join(VIDEO_DIR, nome_file)
     
-    print(f"🔴 AVVIO REGISTRAZIONE: {nome_file}...")
+    print(f"🔴 AVVIO REGISTRAZIONE SU GOOGLE DRIVE: {nome_file}...")
+
     
     # COMANDO FFmpeg (Webcam del tuo PC)
     command = [
