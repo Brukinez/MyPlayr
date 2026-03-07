@@ -262,7 +262,7 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
     
     st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 16px;'>Ogni partita merita di essere ricordata!<br>Il calcio amatoriale come quello vero.<br>Condividi le tue giornate con amici, famiglia e sui social media.</p>", unsafe_allow_html=True)
-    st.divider()
+    
     
     st.markdown("<h2 style='text-align: center;'>Come Funziona</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 16px;'>Tre semplici passaggi per rivivere le tue migliori giocate:</p>", unsafe_allow_html=True)
