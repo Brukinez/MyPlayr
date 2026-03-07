@@ -308,11 +308,12 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.error("Inserisci un'email valida.")
 
    
-         # --- TASTO ACCEDI VERDE (GRANDEZZA CONTENUTO) ---
-    col1, col2, col3 = st.columns([1, 1, 1]) # Usiamo le colonne per centrare anche il tasto
+             # --- TASTO ACCEDI VERDE SCURO (COMPATTO) ---
+    col1, col2, col3 = st.columns([1, 2, 1]) # La colonna centrale è più larga per centrare bene
     with col2:
         if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=False):
             st.session_state.mostra_login = True
+
 
 
 
