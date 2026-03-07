@@ -276,7 +276,7 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
     with c3:
         st.success("📥 **Scarichi la tua Clip**")
         st.markdown("<p class='small-font' style='font-size: 14px !important;'>Seleziona i tuoi momenti migliori e scarica le clip personalizzate da condividere.</p>", unsafe_allow_html=True)
-        st.divider()
+        
     
     st.markdown("<h3 style='text-align: center;'>Resta in contatto</h3>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center;'>Iscriviti per ricevere aggiornamenti e novità</p>", unsafe_allow_html=True)
@@ -297,7 +297,7 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                 else:
                     st.error("Inserisci un'email valida.")
 
-    st.divider()
+   
     _, col_btn, _ = st.columns(3)
     with col_btn:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
