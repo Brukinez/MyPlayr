@@ -437,38 +437,18 @@ elif st.session_state.pagina == 'admin':
 # --- FINE SEZIONE ADMIN E INIZIO SEZIONE PARTITE ---
 
 # --- PAGINA PARTITE (PROGRAMMAZIONE + ARCHIVIO) ---
-elif st.session_state.pagina == 'partite':
-    st.title("🏟️ Gestione e Archivio Partite MyPlayr")
-    
-    # --- MODULO TEST REGISTRAZIONE ---
-    st.markdown("### 🚀 Avvia un Test di Registrazione")
-    with st.form("form_nuova_partita"):
-        col1, col2 = st.columns(2)
-        with col1:
-            data_p = st.date_input("Data del Test", key="data_test")
-        with col2:
-            # Usiamo un input di testo per l'ora così puoi scrivere l'orario esatto (es. 18:45)
-            ora_p = st.text_input("Inserisci Ora Inizio (es. 18:45)", value=datetime.now().strftime("%H:%M"), key="ora_test")
-        
-        campo_p = st.text_input("Nome/ID Telecamera (es. Webcam PC)", value="Webcam PC", key="campo_test")
-        
-        # Il tasto ora dice quello che desideravi
-        submit_p = st.form_submit_button("🔴 AVVIA REGISTRAZIONE NEL CALENDARIO", use_container_width=True)
-        
-        if submit_p:
-            try:
-                conn = sqlite3.connect(DB_PATH)
-                cursor = conn.cursor()
-                # Inseriamo il comando nel database
-                cursor.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
-                               (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
-                conn.commit()
-                conn.close()
-                st.success(f"✅ Comando inviato! La registrazione partirà alle ore {ora_p}")
-                st.info("Assicurati che il file 'regista.py' sia acceso sul tuo PC.")
-                st.rerun()
-            except Exception as e:
-                st.error(f"Errore: {e}")
+elif st.session_state.pagina == "Pannello Admin":
+    st.title("⚙️ Controllo MyPlayr (Riservato)")
+    with st.form("programma_match"):
+        data_p = st.date_input("Data", key="admin_data")
+        ora_p = st.text_input("Ora (es. 15:30)", key="admin_ora")
+        campo_p = st.text_input("Campo", key="admin_campo")
+        if st.form_submit_button("🔴 AVVIA REGISTRAZIONE"):
+            with sqlite3.connect("myplayr.db") as conn:
+                conn.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
+                             (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
+            st.success(f"Registrazione programmata alle {ora_p}!")
+
 
 
     st.divider()
