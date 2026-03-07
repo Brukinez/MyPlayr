@@ -251,16 +251,12 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 # --- PAGINA 1: HOME PAGE (INTEGRALE) ---
 elif st.session_state.pagina == 'home':
-    # --- LOGO CENTRATO E REGOLABILE ---
-    col_sx, col_centro, col_dx = st.columns([1, 2, 1]) # La colonna centrale è più larga
-    with col_centro:
-        if os.path.exists("logo.png"):
-            # Usiamo la variabile globale definita in alto
-            st.image("logo.png", width=GRANDEZZA_LOGO) 
-    
-    # Rimosse tutte le scritte sotto il logo come richiesto
-    st.write(" ")
-
+    # 1. LOGO XL PERFETTAMENTE CENTRATO
+    if os.path.exists("logo.png"):
+        # Creiamo 3 colonne: le due laterali spingono quella centrale
+        col_vuota_1, col_logo_centrale, col_vuota_2 = st.columns([1, 2, 1])
+        with col_logo_centrale:
+             st.image("logo.png", width=GRANDEZZA_LOGO)
 
     
     
