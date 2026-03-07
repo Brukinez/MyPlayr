@@ -13,7 +13,6 @@ GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
 
 
 
-
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
     input_p = os.path.join(VIDEO_DIR, video_nome) # Legge dal PC
@@ -309,31 +308,11 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.error("Inserisci un'email valida.")
 
    
-                     # --- TASTO ACCEDI VERDE (GRANDEZZA CONTENUTO) ---
-    col1, col2, col3 = st.columns([1, 1, 1]) # Usiamo le colonne per centrare anche il tasto
+             # --- TASTO ACCEDI VERDE SCURO (COMPATTO) ---
+    col1, col2, col3 = st.columns([1, 2, 1]) # La colonna centrale è più larga per centrare bene
     with col2:
         if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=False):
             st.session_state.mostra_login = True
-    # --- STILE VERDE SCURO E CENTRATURA ---
-    st.markdown("""
-        <style>
-        div.stButton > button {
-            background-color: #155724 !important; /* Verde Scuro */
-            color: white !important;
-            border-radius: 8px !important;
-            display: block !important;
-            margin: 0 auto !important; /* Centra il tasto */
-            width: auto !important; /* Dimensione del testo */
-            padding: 10px 25px !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
-    # --- IL TASTO REALE ---
-    if st.button("ACCEDI AL PORTALE", key="btn_home_acc"):
-        st.session_state.mostra_login = True
-        st.rerun() # Forza il sito a mostrare il modulo di login
-
 
 
 
