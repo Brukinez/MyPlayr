@@ -259,7 +259,7 @@ elif st.session_state.pagina == 'home':
 
 
 if st.session_state.pagina == 'home' and not st.session_state.autenticato:
-    st.markdown("<h1 style='text-align: center;'>⚽ MyPlayr</h1>", unsafe_allow_html=True)
+    
     st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 16px;'>Ogni partita merita di essere ricordata!<br>Il calcio amatoriale come quello vero.<br>Condividi le tue giornate con amici, famiglia e sui social media.</p>", unsafe_allow_html=True)
     st.divider()
@@ -269,7 +269,7 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
     c1, c2, c3 = st.columns(3)
     with c1:
         st.success("📹 **Giochi la Partita**")
-        st.markdown("<p class='small-font' style='font-size: 14px !important;'>Scendi in campo e gioca la partita, ogni goal viene registrato in alta qualità.</p>", unsafe_allow_html=True)
+        st.markdown("<p class='small-font' style='font-size: 14px !important;'>Scendi in campo e gioca la partita. Ogni goal viene registrato in alta qualità.</p>", unsafe_allow_html=True)
     with c2:
         st.success("🔍 **Trovi il Video**")
         st.markdown("<p class='small-font' style='font-size: 14px !important;'>Accedi alla piattaforma e trova facilmente i video delle tue partite organizzate per data.</p>", unsafe_allow_html=True)
