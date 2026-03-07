@@ -1,10 +1,3 @@
-# --- SIDEBAR DI NAVIGAZIONE ---
-with st.sidebar:
-    st.title("MyPlayr")
-    scelta_nav = st.radio("Menu:", ["Home", "Partite Disponibili", "Hall of Fame", "Le Mie Clip", "Pannello Admin"])
-    st.session_state.pagina = scelta_nav
-
-
 import streamlit as st
 import os
 import sqlite3
