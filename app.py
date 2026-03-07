@@ -263,10 +263,6 @@ elif st.session_state.pagina == 'home':
     # 3. SPAZIATURA
     st.write(" ") 
 
-# CANCELLA QUESTE RIGHE:
-if st.button("Torna alla Home"):
-    st.session_state.pagina = 'home'
-    st.rerun()
 
     
    
