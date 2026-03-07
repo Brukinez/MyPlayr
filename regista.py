@@ -7,6 +7,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
 if not os.path.exists(VIDEO_DIR): os.makedirs(VIDEO_DIR)
+# Cerca questa riga e modificala se è diversa
+DB_PATH = "myplayr.db"
+# ... poi nel codice deve esserci:
+conn = sqlite3.connect(DB_PATH)
 
 
 if not os.path.exists(VIDEO_DIR): os.makedirs(VIDEO_DIR)
