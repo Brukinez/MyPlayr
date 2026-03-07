@@ -468,10 +468,10 @@ elif st.session_state.pagina == "Pannello Admin":
             st.subheader(f"Partita: {row['data']} - {row['ora']} ({row['campo']})")
             
             video_nome = str(row['evento']) if row['evento'] else ""
-            video_path = os.path.join(VIDEO_DIR, video_nome)
+            percorso_g = os.path.join(r"G:\Il mio Drive\CLIP_MYPLAYR", video_nome)
 
-            if os.path.exists(video_path) and video_nome != "":
-                st.video(video_path)
+            if os.path.exists(percorso_g) and video_nome != "":
+                st.video(percorso_g)
                 
                 # Box per il taglio della clip
                 with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
