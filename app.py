@@ -248,11 +248,13 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 
 # --- PAGINA 1: HOME PAGE (INTEGRALE) ---
-# --- LOGO PRESENTE IN OGNI PAGINA ---
-elif st.session_state.pagina == 'home':
-    # --- LOGO AL POSTO DEL TITOLO ---
-    if os.path.exists("logo.png"):
-        st.image("logo.png", width=300) # Regola il numero 300 per la grandezza
+# --- LOGO CENTRATO UNIVERSALE ---
+if os.path.exists("logo.png"):
+    col1, col2, col3 = st.columns([1, 2, 1]) # Crea 3 colonne
+    with col2: # Usa la colonna centrale per centrare il logo
+        st.image("logo.png", width=250) # Regola 250 per la grandezza
+# --------------------------------
+
     
     st.write("### Seleziona i tuoi momenti migliori")
     # Abbiamo tolto la linea verde (st.divider) da qui
