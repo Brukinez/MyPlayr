@@ -9,7 +9,7 @@ import smtplib
 from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
 ## --- PANNELLO DI CONTROLLO GRAFICO ---
-LARGHEZZA_LOGO = 450  # <--- Alza questo numero (es. 500 o 600) per farlo ancora più grande
+LARGHEZZA_LOGO = 350  # <--- Alza questo numero (es. 500 o 600) per farlo ancora più grande
 
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
@@ -257,9 +257,7 @@ elif st.session_state.pagina == 'home':
         with col_logo_centrale:
             st.image("logo.png", use_container_width=True) # Si adatta alla colonna centrale
 
-    # 2. SOTTOTITOLO UNICO (Pulito e senza doppioni)
-    st.markdown("<h2 style='text-align: center;'>Gioca, rivediti e condividi</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>Scegli le tue azioni migliori dal campo.</p>", unsafe_allow_html=True)
+    
     
     # 3. SPAZIATURA
     st.write(" ") 
