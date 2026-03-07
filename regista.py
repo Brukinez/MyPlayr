@@ -1,58 +1,69 @@
 import sqlite3
-import subprocess
-import time
-from datetime import datetime
 import os
+import time
+import subprocess
+from datetime import datetime
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-if not os.path.exists(VIDEO_DIR): os.makedirs(VIDEO_DIR)
-# Cerca questa riga e modificala se è diversa
+# --- CONFIGURAZIONE ---
 DB_PATH = "myplayr.db"
-<<<<<<< HEAD
-# Il prefisso 'r' serve a Windows per leggere correttamente il percorso
+# Il percorso verso il tuo Google Drive
 VIDEO_DIR = r"G:\Il mio Drive\CLIP_MYPLAYR"
 
-=======
-# ... poi nel codice deve esserci:
-conn = sqlite3.connect(DB_PATH)
->>>>>>> parent of e897cef (modifica integrale codice regista)
+if not os.path.exists(VIDEO_DIR):
+    os.makedirs(VIDEO_DIR)
 
-
-if not os.path.exists(VIDEO_DIR): os.makedirs(VIDEO_DIR)
-
-def registra_clip(id_partita, campo):
+def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"match_{id_partita}_{timestamp}.mp4"
-    full_path = os.path.join(VIDEO_DIR, filename)
+    nome_file = f"match_{id_partita}_{timestamp}.mp4"
+    percorso_completo = os.path.join(VIDEO_DIR, nome_file)
+    
+    print(f"🔴 AVVIO REGISTRAZIONE: {nome_file}...")
+    
+    # COMANDO FFmpeg (Webcam del tuo PC)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-        '-t', '20', '-pix_fmt', 'yuv420p', full_path
+        '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
     ]
-
+    
     try:
         subprocess.run(command, check=True)
-        return filename
+        print(f"✅ Registrazione salvata in G: {nome_file}")
+        return nome_file
     except Exception as e:
-        print(f"Errore FFmpeg: {e}")
+        print(f"❌ Errore FFmpeg: {e}")
         return None
 
 def monitor():
+    print("🚀 Motore MyPlayr ATTIVO. In attesa di partite...")
     while True:
         try:
             now = datetime.now()
-            conn = sqlite3.connect("myplayr.db")
+            data_oggi = now.strftime("%d-%m-%Y")
+            ora_attuale = now.strftime("%H:%M")
+            
+            conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
-            cursor.execute("SELECT id, campo FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
-                           (now.strftime("%d-%m-%Y"), now.strftime("%H:%M")))
+            
+            # Cerca partite PROGRAMMATE per l'ora esatta
+            cursor.execute("SELECT id FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
+                           (data_oggi, ora_attuale))
             match = cursor.fetchone()
+            
             if match:
-                res = registra_clip(match[0], match[1])
-                if res:
-                    cursor.execute("UPDATE calendario SET stato='FATTO', evento=? WHERE id=?", (res, match[0]))
+                id_p = match[0]
+                video_creato = registra_clip(id_p)
+                
+                if video_creato:
+                    cursor.execute("UPDATE calendario SET stato='FATTO', evento=? WHERE id=?", 
+                                   (video_creato, id_p))
                     conn.commit()
+                    print(f"💾 Database aggiornato per ID {id_p}")
+            
             conn.close()
-        except: pass
-        time.sleep(20)
+        except Exception as e:
+            print(f"⚠️ Errore ciclo: {e}")
+            
+        time.sleep(30) # Controlla ogni 30 secondi
 
-if __name__ == "__main__": monitor()
+if __name__ == "__main__":
+    monitor()
