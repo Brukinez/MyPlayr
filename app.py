@@ -8,6 +8,8 @@ from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
+# --- IMPOSTAZIONI GRAFICHE ---
+LARGHEZZA_LOGO = 200  # <--- CAMBIA QUESTO NUMERO PER INGRANDIRE O RIMPICCIOLIRE
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
@@ -246,6 +248,13 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 
 # --- PAGINA 1: HOME PAGE (INTEGRALE) ---
+# --- LOGO PRESENTE IN OGNI PAGINA ---
+if os.path.exists("logo.png"):
+    # Usiamo la variabile definita sopra per la larghezza
+    st.image("logo.png", width=LARGHEZZA_LOGO)
+    
+st.divider() # Una linea elegante sotto il logo
+
 if st.session_state.pagina == 'home' and not st.session_state.autenticato:
     st.markdown("<h1 style='text-align: center;'>⚽ MyPlayr</h1>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
