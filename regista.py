@@ -7,7 +7,9 @@ from datetime import datetime
 
 # --- CONFIGURAZIONE ---
 DB_PATH = "myplayr.db"
-VIDEO_DIR = "ARCHIVIO_PARTITE"
+# Il prefisso 'r' serve a Windows per leggere correttamente il percorso
+VIDEO_DIR = r"G:\Il mio Drive\CLIP_MYPLAYR"
+
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)

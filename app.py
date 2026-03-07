@@ -1,3 +1,10 @@
+# --- SIDEBAR DI NAVIGAZIONE ---
+with st.sidebar:
+    st.title("MyPlayr")
+    scelta_nav = st.radio("Menu:", ["Home", "Partite Disponibili", "Hall of Fame", "Le Mie Clip", "Pannello Admin"])
+    st.session_state.pagina = scelta_nav
+
+
 import streamlit as st
 import os
 import sqlite3
@@ -18,6 +25,7 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     # Comando ultra-leggero (Stream Copy)
     comando = ['ffmpeg', '-y', '-ss', str(inizio_sec), '-t', str(durata_sec), 
                '-i', input_p, '-c', 'copy', output_p]
+    
     
     try:
         subprocess.run(comando, check=True)
