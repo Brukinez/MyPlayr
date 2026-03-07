@@ -308,9 +308,10 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.error("Inserisci un'email valida.")
 
    
-    _, col_btn, _ = st.columns(3)
-    with col_btn:
-        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
+        # --- TASTO ACCEDI VERDE E SENZA ICONE ---
+    if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=True):
+        st.session_state.mostra_login = True
+
 
 # --- LOGIN ---
 elif st.session_state.pagina == 'login':
