@@ -10,6 +10,23 @@ from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
 # --- REGOLAZIONE LOGO (Cambia questo numero per la grandezza) ---
 GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
+# --- STILE VERDE SCURO MYPLAYR ---
+st.markdown("""
+    <style>
+    div.stButton > button:first-child {
+        background-color: #1e7e34; /* Verde scuro uguale a Scarica Clip */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #155724; /* Ancora più scuro quando ci passi sopra */
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 
 
