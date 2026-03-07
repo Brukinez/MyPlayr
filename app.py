@@ -8,8 +8,9 @@ from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
 DB_PATH = "myplayr_v2.db"
-# --- IMPOSTAZIONI GRAFICHE ---
-LARGHEZZA_LOGO = 300  # <--- CAMBIA QUESTO NUMERO PER INGRANDIRE O RIMPICCIOLIRE
+## --- PANNELLO DI CONTROLLO GRAFICO ---
+LARGHEZZA_LOGO = 450  # <--- Alza questo numero (es. 500 o 600) per farlo ancora più grande
+
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
@@ -249,16 +250,23 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 # --- PAGINA 1: HOME PAGE (INTEGRALE) ---
 elif st.session_state.pagina == 'home':
-    # --- LOGO AL POSTO DEL TITOLO ---
+    # 1. LOGO XL PERFETTAMENTE CENTRATO
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=300) # Regola il numero 300 per la grandezza
+        # Creiamo 3 colonne: le due laterali spingono quella centrale
+        col_vuota_1, col_logo_centrale, col_vuota_2 = st.columns([1, 2, 1])
+        with col_logo_centrale:
+            st.image("logo.png", use_container_width=True) # Si adatta alla colonna centrale
+
+    # 2. SOTTOTITOLO UNICO (Pulito e senza doppioni)
+    st.markdown("<h2 style='text-align: center;'>Gioca, rivediti e condividi</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>Scegli le tue azioni migliori dal campo.</p>", unsafe_allow_html=True)
     
-    st.write("### Seleziona i tuoi momenti migliori")
-    # Abbiamo tolto la linea verde (st.divider) da qui
+    # 3. SPAZIATURA
+    st.write(" ") 
+
 
     
-    st.write("### Seleziona i tuoi momenti migliori")
-    # Abbiamo tolto la linea verde (st.divider) da qui
+   
 
 
 if st.session_state.pagina == 'home' and not st.session_state.autenticato:
@@ -700,8 +708,7 @@ with f_l: st.markdown("<p class='footer-sub'>Privacy Policy</p>", unsafe_allow_h
 with f_r: st.markdown("<p class='footer-sub' style='text-align:right;'>Termini e Condizioni</p>", unsafe_allow_html=True)
 st.markdown("<p class='footer-sub' style='text-align:center;'>© 2026 tutti i diritti riservati</p>", unsafe_allow_html=True)
 
-if os.path.exists("logo.png"):
-    st.image("logo.png", width=150) # Dimensione piccola e professionale
+
 
 
 
