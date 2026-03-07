@@ -314,6 +314,25 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
     with col2:
         if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=False):
             st.session_state.mostra_login = True
+    # --- STILE VERDE SCURO E CENTRATURA ---
+    st.markdown("""
+        <style>
+        div.stButton > button {
+            background-color: #155724 !important; /* Verde Scuro */
+            color: white !important;
+            border-radius: 8px !important;
+            display: block !important;
+            margin: 0 auto !important; /* Centra il tasto */
+            width: auto !important; /* Dimensione del testo */
+            padding: 10px 25px !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # --- IL TASTO REALE ---
+    if st.button("ACCEDI AL PORTALE", key="btn_home_acc"):
+        st.session_state.mostra_login = True
+        st.rerun() # Forza il sito a mostrare il modulo di login
 
 
 
