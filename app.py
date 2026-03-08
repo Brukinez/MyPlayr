@@ -459,30 +459,43 @@ elif st.session_state.pagina == 'admin':
 
 # --- FINE SEZIONE ADMIN E INIZIO SEZIONE PARTITE ---
 
-# --- PAGINA PARTITE DISPONIBILI (VISIBILE A TUTTI GLI UTENTI) ---
-elif st.session_state.pagina == 'partite':
-    st.title("🏟️ Archivio Partite MyPlayr")
-    
+# --- PAGINA PARTITE (PROGRAMMAZIONE + ARCHIVIO) ---
+elif st.session_state.pagina == "Pannello Admin":
+    st.title("⚙️ Controllo MyPlayr (Riservato)")
+    with st.form("programma_match"):
+        data_p = st.date_input("Data", key="admin_data")
+        ora_p = st.text_input("Ora (es. 15:30)", key="admin_ora")
+        campo_p = st.text_input("Campo", key="admin_campo")
+        if st.form_submit_button("🔴 AVVIA REGISTRAZIONE"):
+            with sqlite3.connect("myplayr.db") as conn:
+                conn.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
+                             (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
+            st.success(f"Registrazione programmata alle {ora_p}!")
+
+
+
+    st.divider()
+
+    # 2. VISUALIZZAZIONE PARTITE REGISTRATE E TAGLIO CLIP
+    st.markdown("### 🎞️ Partite Disponibili")
     conn = sqlite3.connect(DB_PATH)
-    # Prendiamo tutte le partite dal database
+    # Filtriamo per stato 'FATTO' per mostrare solo i video pronti
     df_partite = pd.read_sql("SELECT * FROM calendario WHERE stato='FATTO' ORDER BY id DESC", conn)
     conn.close()
 
     if df_partite.empty:
-        st.info("Nessuna partita trovata nel database.")
+        st.info("Nessuna partita registrata trovata nel database.")
     else:
         for index, row in df_partite.iterrows():
-            st.subheader(f"Partita: {row['data']} - {row['ora']}")
+            st.subheader(f"Partita: {row['data']} - {row['ora']} ({row['campo']})")
             
-            # Definiamo il video da cercare
             video_nome = str(row['evento']) if row['evento'] else ""
-            video_path = os.path.join(VIDEO_DIR, video_nome)
+            percorso_g = os.path.join(r"G:\Il mio Drive\CLIP_MYPLAYR", video_nome)
 
-            if os.path.exists(video_path) and video_nome != "":
-                # 1. Mostriamo il video
-                st.video(video_path)
+            if os.path.exists(percorso_g) and video_nome != "":
+                st.video(percorso_g)
                 
-                # 2. Box per il taglio della clip (Tutto allineato correttamente)
+                # Box per il taglio della clip
                 with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
                     st.write("Scegli il momento dell'azione:")
                     c1, col_s, c3 = st.columns(3)
@@ -495,11 +508,13 @@ elif st.session_state.pagina == 'partite':
 
                     if st.button("🎬 GENERA E SCARICA CLIP", key=f"btn_pay_{row['id']}", use_container_width=True):
                         inizio_tot = (m_in * 60) + s_in
-                        # Chiamiamo la funzione tecnica che salva su G:
-                        percorso_g = taglia_e_registra_clip(video_nome, inizio_tot, durata_clip, st.session_state.user_email)
+                        
+                        # Chiamata alla funzione tecnica
+                        with st.spinner("Generazione clip in corso..."):
+                            percorso_g = taglia_e_registra_clip(video_nome, inizio_tot, durata_clip, st.session_state.user_email)
                         
                         if percorso_g and os.path.exists(percorso_g):
-                            st.success("✅ Clip generata su Google Drive!")
+                            st.success("✅ Clip generata correttamente!")
                             with open(percorso_g, "rb") as f:
                                 st.download_button(
                                     label="📥 SCARICA ORA LA TUA CLIP",
@@ -511,93 +526,11 @@ elif st.session_state.pagina == 'partite':
                         else:
                             st.error("Errore: Verifica la connessione al disco G: o FFmpeg.")
             else:
-                st.warning(f"File video '{video_nome}' non trovato in {VIDEO_DIR}")
+                st.warning(f"File video '{video_nome}' non ancora disponibile.")
             
             st.divider()
-# --- PAGINA: LE MIE CLIP (VISIBILE ALL'UTENTE) ---
-elif st.session_state.pagina == 'mie_clip':
-    st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight</h2>", unsafe_allow_html=True)
-    
-    conn = sqlite3.connect(DB_PATH)
-    query = "SELECT * FROM calendario WHERE stato='CLIP_UTENTE' AND campo=? ORDER BY id DESC"
-    mie_clip = pd.read_sql(query, conn, params=(st.session_state.user_email,))
-    conn.close()
 
-    if not mie_clip.empty:
-        for index, row_c in mie_clip.iterrows():
-            percorso_clip = os.path.join(CLIP_GDRIVE, row_c['evento'])
-            with st.container():
-                if os.path.exists(percorso_clip):
-                    st.video(percorso_clip)
-                    c1, c2 = st.columns(2)
-                    with c1:
-                        with open(percorso_clip, "rb") as f:
-                            st.download_button("📥 SCARICA CLIP", f, file_name=row_c['evento'], key=f"dl_{row_c['id']}")
-                    with c2:
-                        stato_db = True if row_c.get('consenso_social', 0) == 1 else False
-                        consenso = st.toggle("Sì, pubblicami su @MyPlayr", value=stato_db, key=f"tog_{row_c['id']}")
-                        if consenso != stato_db:
-                            nuovo_valore = 1 if consenso else 0
-                            with sqlite3.connect(DB_PATH) as conn_up:
-                                conn_up.execute("UPDATE calendario SET consenso_social=? WHERE id=?", (nuovo_valore, row_c['id']))
-                            st.toast("Impostazioni social aggiornate!")
-                    if stato_db:
-                        st.success("✨ Visibile nella Hall of Fame!")
-                else:
-                    st.warning(f"Clip '{row_c['evento']}' in caricamento...")
-                st.divider()
-    else:
-        st.info("Non hai ancora creato nessuna clip.")
-
-# --- PAGINA: HALL OF FAME (PUBBLICA) ---
-elif st.session_state.pagina == 'hall_of_fame':
-    st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
-    st.divider()
-
-    conn = sqlite3.connect(DB_PATH)
-    # Cerchiamo i video e i nomi dei giocatori
-    query_fame = """
-        SELECT c.*, u.nickname, u.ig_tag 
-        FROM calendario c
-        LEFT JOIN utenti u ON c.campo = u.email
-        WHERE c.stato='CLIP_UTENTE' AND c.consenso_social=1 
-        ORDER BY c.id DESC
-    """
-    df_fame = pd.read_sql(query_fame, conn)
-    conn.close()
-
-    if not df_fame.empty:
-        for i, clip in df_fame.iterrows():
-            # Percorso del video su G:
-            path_fame = os.path.join(CLIP_GDRIVE, clip['evento'])
-            
-            if os.path.exists(path_fame):
-                st.video(path_fame)
-                
-                # Scegliamo il nome da mostrare (Nickname o Email)
-                autore = clip['nickname'] if clip['nickname'] else clip['campo']
-                st.success(f"⚽ **Azione di: {autore}**")
-                
-                if clip['ig_tag']:
-                    st.caption(f"📸 Segui su Instagram: {clip['ig_tag']}")
-                st.divider()
-            else:
-                st.warning(f"Clip {clip['evento']} in caricamento...")
-    else:
-        st.info("La Hall of Fame è ancora vuota. Dai il consenso in 'Le Mie Clip'!")
-
-            # --- FINE BLOCCO VISUALIZZAZIONE ---
-
-
-
-# --- BOTTONE TORNA ALLA HOME (FINE FILE) ---
-if st.button("🔙 Torna alla Home", key="btn_final_back"):
-    st.session_state.pagina = 'home_auth' if st.session_state.autenticato else 'home'
-    st.rerun()
-
-
-
-
+# --- PAGINA: LE MIE CLIP (SEGUE DOPO...) ---
 
 
 # --- PAGINA: HALL OF FAME (PUBBLICA) ---
