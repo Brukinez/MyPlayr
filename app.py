@@ -530,7 +530,41 @@ elif st.session_state.pagina == "Pannello Admin":
             
             st.divider()
 
-# --- PAGINA: LE MIE CLIP (SEGUE DOPO...) ---
+# --- PAGINA: LE MIE CLIP (VISIBILE ALL'UTENTE) ---
+elif st.session_state.pagina == 'mie_clip':
+    st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight</h2>", unsafe_allow_html=True)
+    
+    conn = sqlite3.connect(DB_PATH)
+    query = "SELECT * FROM calendario WHERE stato='CLIP_UTENTE' AND campo=? ORDER BY id DESC"
+    mie_clip = pd.read_sql(query, conn, params=(st.session_state.user_email,))
+    conn.close()
+
+    if not mie_clip.empty:
+        for index, row_c in mie_clip.iterrows():
+            percorso_clip = os.path.join(CLIP_GDRIVE, row_c['evento'])
+            with st.container():
+                if os.path.exists(percorso_clip):
+                    st.video(percorso_clip)
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        with open(percorso_clip, "rb") as f:
+                            st.download_button("📥 SCARICA CLIP", f, file_name=row_c['evento'], key=f"dl_{row_c['id']}")
+                    with c2:
+                        stato_db = True if row_c.get('consenso_social', 0) == 1 else False
+                        consenso = st.toggle("Sì, pubblicami su @MyPlayr", value=stato_db, key=f"tog_{row_c['id']}")
+                        if consenso != stato_db:
+                            nuovo_valore = 1 if consenso else 0
+                            with sqlite3.connect(DB_PATH) as conn_up:
+                                conn_up.execute("UPDATE calendario SET consenso_social=? WHERE id=?", (nuovo_valore, row_c['id']))
+                            st.toast("Impostazioni social aggiornate!")
+                    if stato_db:
+                        st.success("✨ Visibile nella Hall of Fame!")
+                else:
+                    st.warning(f"Clip '{row_c['evento']}' in caricamento...")
+                st.divider()
+    else:
+        st.info("Non hai ancora creato nessuna clip.")
+
 
 
 # --- PAGINA: HALL OF FAME (PUBBLICA) ---
