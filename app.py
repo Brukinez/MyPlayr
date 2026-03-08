@@ -530,6 +530,62 @@ elif st.session_state.pagina == "Pannello Admin":
             
             st.divider()
 
+# --- PAGINA PARTITE DISPONIBILI (VISIBILE A TUTTI GLI UTENTI) ---
+elif st.session_state.pagina == 'partite':
+    st.title("🏟️ Archivio Partite MyPlayr")
+    
+    conn = sqlite3.connect(DB_PATH)
+    # Prendiamo tutte le partite dal database
+    df_partite = pd.read_sql("SELECT * FROM calendario WHERE stato='FATTO' ORDER BY id DESC", conn)
+    conn.close()
+
+    if df_partite.empty:
+        st.info("Nessuna partita trovata nel database.")
+    else:
+        for index, row in df_partite.iterrows():
+            st.subheader(f"Partita: {row['data']} - {row['ora']}")
+            
+            # Definiamo il video da cercare
+            video_nome = str(row['evento']) if row['evento'] else ""
+            video_path = os.path.join(VIDEO_DIR, video_nome)
+
+            if os.path.exists(video_path) and video_nome != "":
+                # 1. Mostriamo il video
+                st.video(video_path)
+                
+                # 2. Box per il taglio della clip (Tutto allineato correttamente)
+                with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
+                    st.write("Scegli il momento dell'azione:")
+                    c1, col_s, c3 = st.columns(3)
+                    with c1:
+                        m_in = st.number_input("Minuto inizio", min_value=0, step=1, key=f"min_{row['id']}")
+                    with col_s:
+                        s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"sec_{row['id']}")
+                    with c3:
+                        durata_clip = st.number_input("Durata (sec)", min_value=1, max_value=60, value=10, key=f"dur_{row['id']}")
+
+                    if st.button("🎬 GENERA E SCARICA CLIP", key=f"btn_pay_{row['id']}", use_container_width=True):
+                        inizio_tot = (m_in * 60) + s_in
+                        # Chiamiamo la funzione tecnica che salva su G:
+                        percorso_g = taglia_e_registra_clip(video_nome, inizio_tot, durata_clip, st.session_state.user_email)
+                        
+                        if percorso_g and os.path.exists(percorso_g):
+                            st.success("✅ Clip generata su Google Drive!")
+                            with open(percorso_g, "rb") as f:
+                                st.download_button(
+                                    label="📥 SCARICA ORA LA TUA CLIP",
+                                    data=f,
+                                    file_name=os.path.basename(percorso_g),
+                                    mime="video/mp4",
+                                    key=f"dl_btn_{row['id']}"
+                                )
+                        else:
+                            st.error("Errore: Verifica la connessione al disco G: o FFmpeg.")
+            else:
+                st.warning(f"File video '{video_nome}' non trovato in {VIDEO_DIR}")
+            
+            st.divider()
+
 # --- PAGINA: LE MIE CLIP (VISIBILE ALL'UTENTE) ---
 elif st.session_state.pagina == 'mie_clip':
     st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight</h2>", unsafe_allow_html=True)
