@@ -1,1 +1,6 @@
+# Ignora solo le cartelle temporanee di sistema
 __pycache__/
+.streamlit/
+.venv/
+
+# NON aggiungere mai *.db qui, altrimenti il database non si sincronizza!
