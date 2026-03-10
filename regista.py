@@ -46,7 +46,13 @@ def monitor():
             
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
-            
+               # --- CREA TABELLA SE MANCA ---
+            cursor.execute('''CREATE TABLE IF NOT EXISTS calendario 
+                              (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                               data TEXT, ora TEXT, campo TEXT, 
+                               stato TEXT, evento TEXT)''')
+            conn.commit()
+         
             # Cerca partite PROGRAMMATE per l'ora esatta
             cursor.execute("SELECT id FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
                            (data_oggi, ora_attuale))
