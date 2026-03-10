@@ -43,7 +43,8 @@ def monitor():
             now = datetime.now()
             data_oggi = now.strftime("%d-%m-%Y")
             ora_attuale = now.strftime("%H:%M")
-            
+            print(f"Orario PC attuale: {now.strftime('%H:%M')} | Cerco partita alle: {ora_attuale}")
+
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
                # --- CREA TABELLA SE MANCA ---
