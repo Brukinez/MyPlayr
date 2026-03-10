@@ -47,6 +47,11 @@ def monitor():
 
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
+                        # --- RIGA DI TEST PER VEDERE COSA C'È NEL DB ---
+            cursor.execute("SELECT COUNT(*) FROM calendario WHERE stato='PROGRAMMATO'")
+            quante_partite = cursor.fetchone()[0]
+            print(f"📡 Partite in attesa nel database locale: {quante_partite}")
+
                # --- CREA TABELLA SE MANCA ---
             cursor.execute('''CREATE TABLE IF NOT EXISTS calendario 
                               (id INTEGER PRIMARY KEY AUTOINCREMENT, 
