@@ -7,7 +7,7 @@ from datetime import datetime
 from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
-DB_PATH = "myplayr_v2.db"
+DB_PATH = "myplayr_v3.db"
 # --- REGOLAZIONE LOGO (Cambia questo numero per la grandezza) ---
 GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
 
@@ -70,7 +70,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
 IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
-DB_PATH = os.path.join(BASE_DIR, "myplayr_v2.db")
+DB_PATH = os.path.join(BASE_DIR, "myplayr_v3.db")
 
 os.makedirs(VIDEO_DIR, exist_ok=True)
 os.makedirs(IMG_DIR, exist_ok=True)
