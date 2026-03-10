@@ -11,7 +11,7 @@ DB_PATH = "myplayr_v3.db"
 # --- REGOLAZIONE LOGO (Cambia questo numero per la grandezza) ---
 GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
 
-
+# test
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
