@@ -330,31 +330,6 @@ elif st.session_state.pagina == 'login':
             else: st.error("Credenziali errate!")
         st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
         st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
-# --- PAGINA DI REGISTRAZIONE REALE (Sostituisce la pagina vuota) ---
-if st.session_state.pagina == 'registrazione_utente':
-    st.markdown("<h2 style='text-align: center;'>📝 Crea il tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
-    
-    with st.form("form_dati_nuovo_utente"):
-        nuova_email = st.text_input("Inserisci la tua Email")
-        nuova_pass = st.text_input("Scegli una Password", type="password")
-        conferma_p = st.text_input("Conferma Password", type="password")
-        
-        col_reg_1, col_reg_2 = st.columns(2)
-        with col_reg_1:
-            if st.form_submit_button("REGISTRATI ORA", use_container_width=True):
-                if nuova_pass == conferma_p and nuova_email:
-                    # SALVA NEL DATABASE ESISTENTE
-                    with sqlite3.connect(DB_PATH) as conn:
-                        conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)", 
-                                     (nuova_email, nuova_pass, 'utente'))
-                    st.success("✅ Account creato! Torna al Login per entrare.")
-                else:
-                    st.error("Le password non coincidono o campi vuoti.")
-        
-        with col_reg_2:
-            if st.form_submit_button("ANNULLA", use_container_width=True):
-                st.session_state.pagina = 'login'
-                st.rerun()
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
