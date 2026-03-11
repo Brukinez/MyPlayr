@@ -351,6 +351,25 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.session_state.mostra_reg = False
                 else:
                     st.error("Le password non coincidono.")
+    # --- QUESTO È IL PEZZO CHE MANCAVA ---
+    if st.session_state.get('mostra_reg_page', False):
+        st.divider()
+        with st.form("modulo_dati_registrazione"):
+            st.subheader("📝 Inserisci i tuoi dati per la registrazione")
+            nuova_email = st.text_input("Email")
+            nuova_pass = st.text_input("Scegli Password", type="password")
+            conferma_p = st.text_input("Conferma Password", type="password")
+            
+            if st.form_submit_button("REGISTRATI ORA", type="primary"):
+                if nuova_pass == conferma_p and nuova_email:
+                    # SALVA NEL TUO DATABASE
+                    with sqlite3.connect(DB_PATH) as conn:
+                        conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)", 
+                                     (nuova_email, nuova_pass, 'utente'))
+                    st.success("✅ Account creato! Torna sopra per accedere.")
+                    st.session_state.mostra_reg_page = False
+                else:
+                    st.error("Le password non coincidono o campi vuoti.")
 
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
