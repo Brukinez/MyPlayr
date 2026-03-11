@@ -258,7 +258,25 @@ elif st.session_state.pagina == 'home':
         with col_logo_centrale:
             st.image("logo.png", use_container_width=True) # Si adatta alla colonna centrale
 
-    
+    # --- MODULO CREAZIONE NUOVO UTENTE ---
+if st.session_state.get('mostra_reg', False):
+    with st.form("form_nuova_registrazione"):
+        st.markdown("### 📝 Registra il tuo profilo MyPlayr")
+        nuova_email = st.text_input("Inserisci la tua Email")
+        nuova_pass = st.text_input("Scegli una Password", type="password")
+        conferma_pass = st.text_input("Conferma Password", type="password")
+        
+        if st.form_submit_button("CREA ACCOUNT", width='stretch'):
+            if nuova_pass == conferma_pass and nuova_email:
+                # SALVATAGGIO NEL DATABASE
+                with sqlite3.connect(DB_PATH) as conn:
+                    conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
+                                 (nuova_email, nuova_pass, 'utente'))
+                st.success("✅ Account creato! Ora puoi accedere cliccando su 'Accedi'.")
+                st.session_state.mostra_reg = False # Chiude il modulo dopo il successo
+            else:
+                st.error("Le password non coincidono o email mancante.")
+
     
     # 3. SPAZIATURA
     st.write(" ") 
