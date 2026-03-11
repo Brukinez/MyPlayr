@@ -320,7 +320,9 @@ elif st.session_state.pagina == 'login':
         st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
         u = st.text_input("Email")
         p = st.text_input("Password", type="password")
-        if st.button("password dimenticata?", type="secondary"): vai_a('recupero_password')
+        if st.button("password dimenticata?", type="secondary"): 
+            st.session_state.sottopagina = 'recupero'
+            st.rerun()
         if st.button("ENTRA"):
             conn = sqlite3.connect(DB_PATH)
             user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
@@ -329,8 +331,9 @@ elif st.session_state.pagina == 'login':
                 st.session_state.autenticato = True; st.session_state.user_email = u
                 vai_a('profilo')
             else: st.error("Credenziali errate!")
-        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
-        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
+        if st.button("Non hai ancora un account? Registrati", type="secondary"):
+            st.session_state.sottopagina = 'registrazione'
+            st.rerun()
     # --- LOGICA MOSTRA MODULI ---
     if st.session_state.get('sottopagina') == 'registrazione':
         st.markdown("---") # Divisore estetico
