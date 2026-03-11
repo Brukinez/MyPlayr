@@ -506,7 +506,7 @@ elif st.session_state.pagina == "Pannello Admin":
                     with c3:
                         durata_clip = st.number_input("Durata (sec)", min_value=1, max_value=60, value=10, key=f"dur_{row['id']}")
 
-                    if st.button("🎬 GENERA E SCARICA CLIP", key=f"btn_pay_{row['id']}", use_container_width=True):
+                    if st.button("🎬 GENERA E SCARICA CLIP", width='stretch', type='primary'):
                         inizio_tot = (m_in * 60) + s_in
                         
                         # Chiamata alla funzione tecnica
