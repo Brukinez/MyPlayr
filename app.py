@@ -313,64 +313,23 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
 # --- LOGIN ---
-    # --- TASTI DI ACCESSO E REGISTRAZIONE ---
-    st.write(" ")
-    col_btn_1, col_btn_2 = st.columns(2)
-    
-    with col_btn_1:
-        if st.button("🚀 ACCEDI AL PORTALE", key="btn_acc_final", use_container_width=True):
-            st.session_state.mostra_login = True
-            st.session_state.mostra_reg = False
-
-    with col_btn_2:
-        if st.button("📝 REGISTRATI ORA", key="btn_reg_final", use_container_width=True):
-            st.session_state.mostra_reg = True
-            st.session_state.mostra_login = False
-
-    # --- MODULI CHE APPAIONO SOTTO I TASTI ---
-    if st.session_state.get('mostra_login', False):
-        with st.form("login_veloce"):
-            st.subheader("🔐 Accesso")
-            user_l = st.text_input("Email")
-            pass_l = st.text_input("Password", type="password")
-            if st.form_submit_button("ENTRA"):
-                st.success("Verifica in corso...")
-
-    if st.session_state.get('mostra_reg', False):
-        with st.form("reg_veloce"):
-            st.subheader("📝 Registrazione Nuovo Utente")
-            n_email = st.text_input("Email")
-            n_pass = st.text_input("Password", type="password")
-            c_pass = st.text_input("Conferma Password", type="password")
-            if st.form_submit_button("CREA ACCOUNT"):
-                if n_pass == c_pass and n_email:
-                    with sqlite3.connect(DB_PATH) as conn:
-                        conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
-                                     (n_email, n_pass, 'utente'))
-                    st.success("✅ Account creato! Ora clicca su ACCEDI.")
-                    st.session_state.mostra_reg = False
-                else:
-                    st.error("Le password non coincidono.")
-    # --- QUESTO È IL PEZZO CHE MANCAVA ---
-    if st.session_state.get('mostra_reg_page', False):
-        st.divider()
-        with st.form("modulo_dati_registrazione"):
-            st.subheader("📝 Inserisci i tuoi dati per la registrazione")
-            nuova_email = st.text_input("Email")
-            nuova_pass = st.text_input("Scegli Password", type="password")
-            conferma_p = st.text_input("Conferma Password", type="password")
-            
-            if st.form_submit_button("REGISTRATI ORA", type="primary"):
-                if nuova_pass == conferma_p and nuova_email:
-                    # SALVA NEL TUO DATABASE
-                    with sqlite3.connect(DB_PATH) as conn:
-                        conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)", 
-                                     (nuova_email, nuova_pass, 'utente'))
-                    st.success("✅ Account creato! Torna sopra per accedere.")
-                    st.session_state.mostra_reg_page = False
-                else:
-                    st.error("Le password non coincidono o campi vuoti.")
-
+elif st.session_state.pagina == 'login':
+    _, col_log, _ = st.columns(3)
+    with col_log:
+        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
+        u = st.text_input("Email")
+        p = st.text_input("Password", type="password")
+        if st.button("password dimenticata?", type="secondary"): vai_a('recupero_password')
+        if st.button("ENTRA"):
+            conn = sqlite3.connect(DB_PATH)
+            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
+            conn.close()
+            if (u == "admin@myplayr.com" and p == "admin123") or user:
+                st.session_state.autenticato = True; st.session_state.user_email = u
+                vai_a('profilo')
+            else: st.error("Credenziali errate!")
+        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
+        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
