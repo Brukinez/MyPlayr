@@ -308,9 +308,44 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.error("Inserisci un'email valida.")
 
    
-    _, col_btn, _ = st.columns(3)
-    with col_btn:
-        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
+    _    # --- TASTI DI ACCESSO E REGISTRAZIONE ---
+    st.write(" ")
+    col_btn_1, col_btn_2 = st.columns(2)
+    
+    with col_btn_1:
+        if st.button("🚀 ACCEDI AL PORTALE", key="btn_acc_final", use_container_width=True):
+            st.session_state.mostra_login = True
+            st.session_state.mostra_reg = False
+
+    with col_btn_2:
+        if st.button("📝 REGISTRATI ORA", key="btn_reg_final", use_container_width=True):
+            st.session_state.mostra_reg = True
+            st.session_state.mostra_login = False
+
+    # --- MODULI CHE APPAIONO SOTTO I TASTI ---
+    if st.session_state.get('mostra_login', False):
+        with st.form("login_veloce"):
+            st.subheader("🔐 Accesso")
+            user_l = st.text_input("Email")
+            pass_l = st.text_input("Password", type="password")
+            if st.form_submit_button("ENTRA"):
+                st.success("Verifica in corso...")
+
+    if st.session_state.get('mostra_reg', False):
+        with st.form("reg_veloce"):
+            st.subheader("📝 Registrazione Nuovo Utente")
+            n_email = st.text_input("Email")
+            n_pass = st.text_input("Password", type="password")
+            c_pass = st.text_input("Conferma Password", type="password")
+            if st.form_submit_button("CREA ACCOUNT"):
+                if n_pass == c_pass and n_email:
+                    with sqlite3.connect(DB_PATH) as conn:
+                        conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
+                                     (n_email, n_pass, 'utente'))
+                    st.success("✅ Account creato! Ora clicca su ACCEDI.")
+                    st.session_state.mostra_reg = False
+                else:
+                    st.error("Le password non coincidono.")
 
 # --- LOGIN ---
 elif st.session_state.pagina == 'login':
