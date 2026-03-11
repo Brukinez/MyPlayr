@@ -313,54 +313,44 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
 # --- LOGIN ---
-elif st.session_state.pagina == 'login':
-    st.markdown("<h2 style='text-align: center;'>🔐 Accesso al Portale</h2>", unsafe_allow_html=True)
+    # --- TASTI DI ACCESSO E REGISTRAZIONE ---
+    st.write(" ")
+    col_btn_1, col_btn_2 = st.columns(2)
     
-    # --- CASO A: MOSTRA IL MODULO DI REGISTRAZIONE ---
-    if st.session_state.get('mostra_reg_page', False):
-        with st.form("modulo_registrazione_reale"):
-            st.subheader("📝 Crea il tuo nuovo profilo MyPlayr")
-            nuova_email = st.text_input("Inserisci la tua Email")
-            nuova_pass = st.text_input("Scegli una Password", type="password")
-            conferma_p = st.text_input("Conferma Password", type="password")
-            
-            c1, c2 = st.columns(2)
-            with c1:
-                if st.form_submit_button("REGISTRATI ORA", use_container_width=True):
-                    if nuova_pass == conferma_p and nuova_email:
-                        with sqlite3.connect(DB_PATH) as conn:
-                            conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
-                                         (nuova_email, nuova_pass, 'utente'))
-                        st.success("✅ Account creato! Torna al login per entrare.")
-                        st.session_state.mostra_reg_page = False
-                    else:
-                        st.error("Le password non coincidono o campi vuoti.")
-            with c2:
-                if st.form_submit_button("ANNULLA"):
-                    st.session_state.mostra_reg_page = False
-                    st.rerun()
+    with col_btn_1:
+        if st.button("🚀 ACCEDI AL PORTALE", key="btn_acc_final", use_container_width=True):
+            st.session_state.mostra_login = True
+            st.session_state.mostra_reg = False
 
-    # --- CASO B: MOSTRA IL LOGIN + PASSWORD DIMENTICATA ---
-    else:
-        with st.form("login_form_completo"):
-            email_log = st.text_input("Email")
-            pass_log = st.text_input("Password", type="password")
-            
-            if st.form_submit_button("ACCEDI", type="primary", use_container_width=True):
-                # Qui aggiungeremo il controllo admin/utente tra poco
-                st.info("Verifica credenziali...")
-        
-        # Link per Password Dimenticata e Registrazione
-        col_links_1, col_links_2 = st.columns(2)
-        with col_links_1:
-            if st.button("Password dimenticata?", key="btn_pass_dim"):
-                st.info("Funzione di recupero in fase di attivazione.")
-        
-        with col_links_2:
-            if st.button("Non hai un account? Registrati", key="btn_vai_reg"):
-                st.session_state.mostra_reg_page = True
-                st.rerun()
+    with col_btn_2:
+        if st.button("📝 REGISTRATI ORA", key="btn_reg_final", use_container_width=True):
+            st.session_state.mostra_reg = True
+            st.session_state.mostra_login = False
 
+    # --- MODULI CHE APPAIONO SOTTO I TASTI ---
+    if st.session_state.get('mostra_login', False):
+        with st.form("login_veloce"):
+            st.subheader("🔐 Accesso")
+            user_l = st.text_input("Email")
+            pass_l = st.text_input("Password", type="password")
+            if st.form_submit_button("ENTRA"):
+                st.success("Verifica in corso...")
+
+    if st.session_state.get('mostra_reg', False):
+        with st.form("reg_veloce"):
+            st.subheader("📝 Registrazione Nuovo Utente")
+            n_email = st.text_input("Email")
+            n_pass = st.text_input("Password", type="password")
+            c_pass = st.text_input("Conferma Password", type="password")
+            if st.form_submit_button("CREA ACCOUNT"):
+                if n_pass == c_pass and n_email:
+                    with sqlite3.connect(DB_PATH) as conn:
+                        conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
+                                     (n_email, n_pass, 'utente'))
+                    st.success("✅ Account creato! Ora clicca su ACCEDI.")
+                    st.session_state.mostra_reg = False
+                else:
+                    st.error("Le password non coincidono.")
 
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
