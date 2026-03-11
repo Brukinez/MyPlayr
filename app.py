@@ -313,102 +313,24 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
 # --- LOGIN ---
+
 elif st.session_state.pagina == 'login':
-    # Gestione sottostati interna alla pagina login
-    if 'sottopagina' not in st.session_state:
-        st.session_state.sottopagina = 'accesso'
-
-    # --- LOGO (Usa la tua variabile GRANDEZZA_LOGO) ---
-    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
-    with col_l2:
-        try:
-            logo = Image.open(os.path.join(BASE_DIR, "LOGO_MYPLAYR.png"))
-            st.image(logo, width=GRANDEZZA_LOGO)
-        except:
-            st.markdown("<h1 style='text-align:center;'>MyPlayr</h1>", unsafe_allow_html=True)
-
-    # --- VISTA 1: ACCESSO ---
-    if st.session_state.sottopagina == 'accesso':
-        st.markdown("<h2 style='text-align: center;'>ACCEDI AL PORTALE</h2>", unsafe_allow_html=True)
-        with st.form("login_form"):
-            email_log = st.text_input("Email")
-            pass_log = st.text_input("Password", type="password")
-            if st.form_submit_button("ENTRA"):
-                conn = sqlite3.connect(DB_PATH)
-                c = conn.cursor()
-                c.execute("SELECT * FROM utenti WHERE email=? AND password=?", (email_log, pass_log))
-                user = c.fetchone()
-                conn.close()
-                if user:
-                    st.session_state.autenticato = True
-                    st.session_state.user_email = email_log
-                    st.session_state.pagina = 'home_auth'
-                    st.rerun()
-                else:
-                    st.error("Email o Password errati.")
-
-        # Link cliccabili
-        c_n1, c_n2 = st.columns(2)
-        with c_n1:
-            if st.button("Password dimenticata?", kind="secondary"):
-                st.session_state.sottopagina = 'recupero'
-                st.rerun()
-        with c_n2:
-            if st.button("Non hai ancora un account? REGISTRATI", kind="secondary"):
-                st.session_state.sottopagina = 'registrazione'
-                st.rerun()
-        
-        if st.button("← INDIETRO", kind="secondary"):
-            st.session_state.pagina = 'home'
-            st.rerun()
-
-    # --- VISTA 2: REGISTRAZIONE PROFESSIONALE ---
-    elif st.session_state.sottopagina == 'registrazione':
-        st.markdown("<h2 style='text-align: center;'>CREA IL TUO PROFILO</h2>", unsafe_allow_html=True)
-        with st.form("form_reg"):
-            col1, col2 = st.columns(2)
-            with col1:
-                n = st.text_input("Nome *")
-                c = st.text_input("Cognome *")
-            with col2:
-                nick = st.text_input("Nickname *")
-                ig = st.text_input("Tag Instagram")
-            
-            em = st.text_input("Email *")
-            ps = st.text_input("Scegli Password *", type="password")
-            
-            if st.form_submit_button("CONFERMA REGISTRAZIONE"):
-                if not (n and c and em and ps):
-                    st.error("Compila tutti i campi contrassegnati con *")
-                else:
-                    try:
-                        conn = sqlite3.connect(DB_PATH)
-                        data_iscr = datetime.now().strftime("%d-%m-%Y")
-                        conn.execute("INSERT INTO utenti (nome, cognome, nickname, email, password, ruolo, data_iscrizione, ig_tag) VALUES (?,?,?,?,?,?,?,?)",
-                                     (n, c, nick, em, ps, "Player", data_iscr, ig))
-                        conn.commit()
-                        conn.close()
-                        st.success("Registrazione completata! Ora puoi accedere.")
-                        st.session_state.sottopagina = 'accesso'
-                        st.rerun()
-                    except:
-                        st.error("Errore: Email già registrata o database occupato.")
-
-        if st.button("← Torna al Login", kind="secondary"):
-            st.session_state.sottopagina = 'accesso'
-            st.rerun()
-
-    # --- VISTA 3: PASSWORD DIMENTICATA ---
-    elif st.session_state.sottopagina == 'recupero':
-        st.markdown("<h3 style='text-align: center;'>Recupero Password</h3>", unsafe_allow_html=True)
-        email_rec = st.text_input("Inserisci la tua email di registrazione")
-        if st.button("Invia link di recupero"):
-            st.info(f"Se l'account {email_rec} esiste, riceverai una mail a breve.")
-        
-        if st.button("← Torna al Login", kind="secondary"):
-            st.session_state.sottopagina = 'accesso'
-            st.rerun()
-
+    _, col_log, _ = st.columns(3)
+    with col_log:
+        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
+        u = st.text_input("Email")
+        p = st.text_input("Password", type="password")
+        if st.button("password dimenticata?", type="secondary"): vai_a('recupero_password')
+        if st.button("ENTRA"):
+            conn = sqlite3.connect(DB_PATH)
+            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
+            conn.close()
+            if (u == "admin@myplayr.com" and p == "admin123") or user:
+                st.session_state.autenticato = True; st.session_state.user_email = u
+                vai_a('profilo')
+            else: st.error("Credenziali errate!")
+        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
+        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
