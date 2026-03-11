@@ -258,7 +258,49 @@ elif st.session_state.pagina == 'home':
         with col_logo_centrale:
             st.image("logo.png", use_container_width=True) # Si adatta alla colonna centrale
 
+        # --- NUOVA LOGICA TASTI ANTI-DOPPIONE ---
+    st.write(" ") # Uno spazio vuoto per respirare
+
+    # Creiamo due colonne per i tasti principali
+    c_acc, c_reg = st.columns(2)
     
+    with c_acc:
+        # Se clicco ACCEDI, spengo il modulo REGISTRATI
+        if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=True):
+            st.session_state.mostra_login = True
+            st.session_state.mostra_reg = False  
+
+    with c_reg:
+        # Se clicco REGISTRATI, spengo il modulo ACCEDI
+        if st.button("Non hai ancora un account? Registrati", key="btn_home_reg_toggle", use_container_width=True):
+            st.session_state.mostra_reg = True
+            st.session_state.mostra_login = False 
+
+    # --- VISUALIZZAZIONE CONDIZIONALE (Uno alla volta) ---
+    
+    if st.session_state.get('mostra_login', False):
+        with st.form("form_login_unico"):
+            st.subheader("🔐 Accesso Utente")
+            email_login = st.text_input("Email")
+            pass_login = st.text_input("Password", type="password")
+            if st.form_submit_button("ENTRA"):
+                # Qui aggiungeremo il controllo password dopo
+                st.success("Verifica credenziali...")
+
+    if st.session_state.get('mostra_reg', False):
+        with st.form("form_reg_unico"):
+            st.subheader("📝 Crea il tuo account MyPlayr")
+            n_email = st.text_input("Inserisci la tua Email")
+            n_pass = st.text_input("Scegli una Password", type="password")
+            c_pass = st.text_input("Conferma Password", type="password")
+            if st.form_submit_button("REGISTRATI ORA"):
+                # Salvataggio nel database
+                with sqlite3.connect(DB_PATH) as conn:
+                    conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
+                                 (n_email, n_pass, 'utente'))
+                st.success("✅ Account creato! Ora puoi accedere.")
+                st.session_state.mostra_reg = False # Chiude il modulo dopo il successo
+
     
     # 3. SPAZIATURA
     st.write(" ") 
