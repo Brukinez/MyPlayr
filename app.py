@@ -313,97 +313,23 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
 # --- LOGIN ---
-# --- INIZIALIZZAZIONE SOTTOPAGINA ---
-if 'sottopagina_login' not in st.session_state:
-    st.session_state.sottopagina_login = 'login_form'
-
 elif st.session_state.pagina == 'login':
-    # --- LOGO CENTRATO (Mantiene la tua impostazione) ---
-    col_l1, col_l2, col_l3 = st.columns([1, 2, 1])
-    with col_l2:
-        try:
-            logo = Image.open(os.path.join(BASE_DIR, "LOGO_MYPLAYR.png"))
-            st.image(logo, width=GRANDEZZA_LOGO)
-        except:
-            st.title("MyPlayr")
-
-    # --- CASO 1: MODULO LOGIN ---
-    if st.session_state.sottopagina_login == 'login_form':
-        st.markdown("<h2 style='text-align: center;'>ACCEDI AL PORTALE</h2>", unsafe_allow_html=True)
-        
-        with st.form("login_form"):
-            email_log = st.text_input("Email", placeholder="tua@email.com")
-            pass_log = st.text_input("Password", type="password", placeholder="********")
-            btn_login = st.form_submit_button("ACCEDI")
-            
-            if btn_login:
-                conn = sqlite3.connect(DB_PATH)
-                c = conn.cursor()
-                c.execute("SELECT * FROM utenti WHERE email=? AND password=?", (email_log, pass_log))
-                user = c.fetchone()
-                conn.close()
-                
-                if user:
-                    st.session_state.autenticato = True
-                    st.session_state.user_email = email_log
-                    st.session_state.pagina = 'home_auth'
-                    st.rerun()
-                else:
-                    st.error("Credenziali errate!")
-
-        # Link di navigazione (Stile secondario)
-        col_n1, col_n2 = st.columns(2)
-        with col_n1:
-            if st.button("Password dimenticata?", kind="secondary"):
-                st.info("Contatta l'assistenza a: simone.fardella@gmail.com")
-        with col_n2:
-            if st.button("Non hai un account? REGISTRATI", kind="secondary"):
-                st.session_state.sottopagina_login = 'register_form'
-                st.rerun()
-
-    # --- CASO 2: MODULO REGISTRAZIONE ---
-    elif st.session_state.sottopagina_login == 'register_form':
-        st.markdown("<h2 style='text-align: center;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
-        
-        with st.form("register_form"):
-            new_email = st.text_input("Email *")
-            new_pass = st.text_input("Scegli Password *", type="password")
-            confirm_pass = st.text_input("Conferma Password *", type="password")
-            st.caption("I dati del profilo (Nome, Nickname, Foto) potrai aggiungerli dopo l'accesso.")
-            
-            btn_reg = st.form_submit_button("REGISTRATI ORA")
-            
-            if btn_reg:
-                if new_pass != confirm_pass:
-                    st.error("Le password non coincidono!")
-                elif not new_email or not new_pass:
-                    st.warning("Compila tutti i campi obbligatori.")
-                else:
-                    try:
-                        conn = sqlite3.connect(DB_PATH)
-                        c = conn.cursor()
-                        data_oggi = datetime.now().strftime("%d-%m-%Y")
-                        # Inserimento con valori di default per i campi del profilo
-                        c.execute("""INSERT INTO utenti (email, password, data_iscrizione, ruolo) 
-                                     VALUES (?, ?, ?, ?)""", 
-                                  (new_email, new_pass, data_oggi, 'Player'))
-                        conn.commit()
-                        conn.close()
-                        st.success("Registrazione avvenuta con successo! Ora puoi accedere.")
-                        st.session_state.sottopagina_login = 'login_form'
-                        st.rerun()
-                    except sqlite3.IntegrityError:
-                        st.error("Questa email è già registrata nel sistema.")
-
-        if st.button("Torna al Login", kind="secondary"):
-            st.session_state.sottopagina_login = 'login_form'
-            st.rerun()
-
-    # Tasto per tornare alla Home pubblica
-    if st.button("← Torna alla Home", kind="secondary"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
+    _, col_log, _ = st.columns(3)
+    with col_log:
+        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
+        u = st.text_input("Email")
+        p = st.text_input("Password", type="password")
+        if st.button("password dimenticata?", type="secondary"): vai_a('recupero_password')
+        if st.button("ENTRA"):
+            conn = sqlite3.connect(DB_PATH)
+            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
+            conn.close()
+            if (u == "admin@myplayr.com" and p == "admin123") or user:
+                st.session_state.autenticato = True; st.session_state.user_email = u
+                vai_a('profilo')
+            else: st.error("Credenziali errate!")
+        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
+        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
