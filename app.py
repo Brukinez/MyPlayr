@@ -314,22 +314,50 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
 
 # --- LOGIN ---
 elif st.session_state.pagina == 'login':
-    _, col_log, _ = st.columns(3)
-    with col_log:
-        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-        u = st.text_input("Email")
-        p = st.text_input("Password", type="password")
-        if st.button("password dimenticata?", type="secondary"): vai_a('recupero_password')
-        if st.button("ENTRA"):
-            conn = sqlite3.connect(DB_PATH)
-            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
-            conn.close()
-            if (u == "admin@myplayr.com" and p == "admin123") or user:
-                st.session_state.autenticato = True; st.session_state.user_email = u
-                vai_a('profilo')
-            else: st.error("Credenziali errate!")
-        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
-        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
+    st.markdown("<h2 style='text-align: center;'>🔐 Accesso al Portale</h2>", unsafe_allow_html=True)
+    
+    # Se NON ha cliccato su registrati, mostra il LOGIN
+    if not st.session_state.get('mostra_reg_page', False):
+        with st.form("login_form_principale"):
+            email_log = st.text_input("Email")
+            pass_log = st.text_input("Password", type="password")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.form_submit_button("ACCEDI", use_container_width=True):
+                    # Qui controlleremo se l'utente esiste
+                    st.info("Verifica in corso...")
+            with col2:
+                st.write(" ") # Spazio estetico
+        
+        # Il link che avevi già, ora lo facciamo funzionare
+        if st.button("Non hai ancora un account? Registrati", key="vai_a_reg"):
+            st.session_state.mostra_reg_page = True
+            st.rerun()
+
+    # Se HA CLICCATO su registrati, mostra il MODULO DATI
+    else:
+        with st.form("modulo_registrazione_reale"):
+            st.subheader("📝 Crea il tuo nuovo profilo")
+            nuova_email = st.text_input("Inserisci la tua Email")
+            nuova_pass = st.text_input("Scegli una Password", type="password")
+            conferma_p = st.text_input("Conferma Password", type="password")
+            
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.form_submit_button("REGISTRATI ORA", use_container_width=True):
+                    if nuova_pass == conferma_p and nuova_email:
+                        with sqlite3.connect(DB_PATH) as conn:
+                            conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
+                                         (nuova_email, nuova_pass, 'utente'))
+                        st.success("✅ Account creato! Torna al login per entrare.")
+                        st.session_state.mostra_reg_page = False
+                    else:
+                        st.error("Le password non coincidono o email mancante.")
+            with c2:
+                if st.form_submit_button("ANNULLA", use_container_width=True):
+                    st.session_state.mostra_reg_page = False
+                    st.rerun()
+
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
