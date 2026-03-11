@@ -316,28 +316,10 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
 elif st.session_state.pagina == 'login':
     st.markdown("<h2 style='text-align: center;'>🔐 Accesso al Portale</h2>", unsafe_allow_html=True)
     
-    # Se NON ha cliccato su registrati, mostra il LOGIN
-    if not st.session_state.get('mostra_reg_page', False):
-        with st.form("login_form_principale"):
-            email_log = st.text_input("Email")
-            pass_log = st.text_input("Password", type="password")
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.form_submit_button("ACCEDI", use_container_width=True):
-                    # Qui controlleremo se l'utente esiste
-                    st.info("Verifica in corso...")
-            with col2:
-                st.write(" ") # Spazio estetico
-        
-        # Il link che avevi già, ora lo facciamo funzionare
-        if st.button("Non hai ancora un account? Registrati", key="vai_a_reg"):
-            st.session_state.mostra_reg_page = True
-            st.rerun()
-
-    # Se HA CLICCATO su registrati, mostra il MODULO DATI
-    else:
+    # --- CASO A: MOSTRA IL MODULO DI REGISTRAZIONE ---
+    if st.session_state.get('mostra_reg_page', False):
         with st.form("modulo_registrazione_reale"):
-            st.subheader("📝 Crea il tuo nuovo profilo")
+            st.subheader("📝 Crea il tuo nuovo profilo MyPlayr")
             nuova_email = st.text_input("Inserisci la tua Email")
             nuova_pass = st.text_input("Scegli una Password", type="password")
             conferma_p = st.text_input("Conferma Password", type="password")
@@ -352,11 +334,33 @@ elif st.session_state.pagina == 'login':
                         st.success("✅ Account creato! Torna al login per entrare.")
                         st.session_state.mostra_reg_page = False
                     else:
-                        st.error("Le password non coincidono o email mancante.")
+                        st.error("Le password non coincidono o campi vuoti.")
             with c2:
-                if st.form_submit_button("ANNULLA", use_container_width=True):
+                if st.form_submit_button("ANNULLA"):
                     st.session_state.mostra_reg_page = False
                     st.rerun()
+
+    # --- CASO B: MOSTRA IL LOGIN + PASSWORD DIMENTICATA ---
+    else:
+        with st.form("login_form_completo"):
+            email_log = st.text_input("Email")
+            pass_log = st.text_input("Password", type="password")
+            
+            if st.form_submit_button("ACCEDI", type="primary", use_container_width=True):
+                # Qui aggiungeremo il controllo admin/utente tra poco
+                st.info("Verifica credenziali...")
+        
+        # Link per Password Dimenticata e Registrazione
+        col_links_1, col_links_2 = st.columns(2)
+        with col_links_1:
+            if st.button("Password dimenticata?", key="btn_pass_dim"):
+                st.info("Funzione di recupero in fase di attivazione.")
+        
+        with col_links_2:
+            if st.button("Non hai un account? Registrati", key="btn_vai_reg"):
+                st.session_state.mostra_reg_page = True
+                st.rerun()
+
 
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
