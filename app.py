@@ -347,8 +347,9 @@ elif st.session_state.pagina == 'login':
                 vai_a('profilo')
             else: st.error("Credenziali errate!")
         st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
-        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
-
+        st.session_state.mostra_reg = True
+    st.session_state.mostra_login = False
+    st.rerun()
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
     # 1. Recupero dati reali per i contatori
