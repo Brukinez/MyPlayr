@@ -331,6 +331,30 @@ elif st.session_state.pagina == 'login':
             else: st.error("Credenziali errate!")
         st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
         st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
+    # --- LOGICA MOSTRA MODULI ---
+    if st.session_state.get('sottopagina') == 'registrazione':
+        st.markdown("---") # Divisore estetico
+        with st.form("nuova_registrazione"):
+            n = st.text_input("Nome *")
+            c = st.text_input("Cognome *")
+            em = st.text_input("Email *")
+            ps = st.text_input("Password *", type="password")
+            if st.form_submit_button("CONFERMA REGISTRAZIONE"):
+                if n and c and em and ps:
+                    conn = sqlite3.connect(DB_PATH)
+                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (n, c, em, ps, "Player"))
+                    conn.commit()
+                    conn.close()
+                    st.success("Registrato con successo!")
+                    st.session_state.sottopagina = 'login' # Torna alla vista login
+                else:
+                    st.error("Riempi i campi obbligatori")
+
+    elif st.session_state.get('sottopagina') == 'recupero':
+        st.markdown("---")
+        rec_em = st.text_input("Inserisci Email per il recupero")
+        if st.button("Invia Password"):
+            st.info("Email inviata (funzione in test)")
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
