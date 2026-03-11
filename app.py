@@ -263,38 +263,6 @@ elif st.session_state.pagina == 'home':
     # 3. SPAZIATURA
     st.write(" ") 
 
-    # --- NUOVI TASTI SCAMBIABILI (SOTTO IL LOGO) ---
-    col_acc, col_reg = st.columns(2)
-    with col_acc:
-        if st.button("ACCEDI AL PORTALE", key="btn_home_acc", type="primary", use_container_width=True):
-            st.session_state.mostra_login = True
-            st.session_state.mostra_reg = False
-    with col_reg:
-        if st.button("REGISTRATI ORA", key="btn_home_reg_toggle", use_container_width=True):
-            st.session_state.mostra_reg = True
-            st.session_state.mostra_login = False
-
-    # --- MODULI CHE APPAIONO SOLO SE CLICCATI ---
-    if st.session_state.get('mostra_login', False):
-        with st.form("login_veloce"):
-            st.subheader("🔐 Accesso")
-            user_l = st.text_input("Email")
-            pass_l = st.text_input("Password", type="password")
-            if st.form_submit_button("ENTRA"):
-                # Qui aggiungeremo il controllo admin dopo
-                st.success("Verifica in corso...")
-
-    if st.session_state.get('mostra_reg', False):
-        with st.form("reg_veloce"):
-            st.subheader("📝 Registrazione")
-            n_email = st.text_input("Nuova Email")
-            n_pass = st.text_input("Nuova Password", type="password")
-            if st.form_submit_button("CREA ACCOUNT"):
-                with sqlite3.connect(DB_PATH) as conn:
-                    conn.execute("INSERT INTO utenti (email, password, ruolo) VALUES (?, ?, ?)",
-                                 (n_email, n_pass, 'utente'))
-                st.success("✅ Creato! Clicca su ACCEDI.")
-                st.session_state.mostra_reg = False
 
     
    
@@ -340,10 +308,9 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
                     st.error("Inserisci un'email valida.")
 
    
-        _, col_btn, _ = st.columns(3)
+    _, col_btn, _ = st.columns(3)
     with col_btn:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
-
 
 # --- LOGIN ---
 elif st.session_state.pagina == 'login':
