@@ -319,7 +319,7 @@ elif st.session_state.pagina == 'login':
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
             # Invece di: u = st.text_input("Email")
-            u = st.text_input("Email").strip().lower()
+            u = st.text_input("Email").strip().lower() # <--- Aggiungi .strip().lower()
 
             p = st.text_input("Password", type="password")
             
@@ -350,7 +350,7 @@ elif st.session_state.pagina == 'login':
             if st.button("CONFERMA REGISTRAZIONE"):
                 if r_n and r_c and r_e and r_p:
                     conn = sqlite3.connect(DB_PATH)
-                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (r_n, r_c, r_e, r_p, "Player"))
+                    conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
                     conn.commit(); conn.close()
                     st.success("Account creato!")
                     st.session_state.sub = 'login'; st.rerun()
