@@ -118,52 +118,57 @@ st.markdown("""
     .stApp { background-color: #2F353B; color: white; }
     h1, h2, h3, p, span, label { color: white !important; }
     
-    /* --- 1. IL TASTO "INVIA" DELLA HOME (Bianco con scritta grigia) --- */
-    /* Colpiamo solo i bottoni standard che si trovano nella Home */
-    div.stButton > button:not([kind="secondary"]) {
-        background-color: white !important;
-        border: 1px solid #cccccc !important;
-        border-radius: 5px !important;
+    /* Pulsanti VERDI Principali */
+    .stButton>button { 
+        background-color: #28a745 !important; 
+        color: white !important; 
+        border: none !important; 
+        font-weight: bold !important; 
+        width: 100%; 
+        padding: 12px; 
+        border-radius: 5px; 
+        text-transform: uppercase;
+        font-size: 16px;
     }
     
-    /* Forza il colore grigio solo per il testo dentro questi bottoni bianchi */
-    div.stButton > button:not([kind="secondary"]) p,
-    div.stButton > button:not([kind="secondary"]) span {
-        color: #555555 !important;
+    hr { border: 1px solid #28a745 !important; opacity: 1; }
+    
+    /* Avatar Profilo */
+    .avatar-container { text-align: center; margin-bottom: 20px; }
+    .avatar-img { 
+        width: 120px; height: 120px; 
+        border-radius: 50%; 
+        border: 4px solid #28a745; 
+        object-fit: cover; 
+        margin: 0 auto; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        background: #3E444A;
+        font-size: 60px; /* Icona più grande */
     }
+    
+    .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; font-size: 14px; }
+    .stat-box { text-align: center; background: #3E444A; padding: 10px; border-radius: 8px; border: 1px solid #28a745; }
 
-    /* --- 2. I LINK DEL LOGIN (Password dimenticata, Registrati) --- */
-    /* Devono rimanere trasparenti, senza bordo e con testo chiaro */
+    /* Link Piccoli Navigazione */
     div[data-testid="stButton"] > button[kind="secondary"] { 
         background-color: transparent !important; 
         color: #d1d1d1 !important; 
         border: none !important; 
         font-size: 12px !important; 
-        text-transform: none !important;
-        width: auto !important;
+        width: 100% !important; 
+        text-transform: none !important; 
     }
+    div[data-testid="stButton"] > button[kind="secondary"]:hover { color: #28a745 !important; text-decoration: underline !important; }
     
-    /* Forza il testo chiaro per i link secondari */
-    div[data-testid="stButton"] > button[kind="secondary"] p,
-    div[data-testid="stButton"] > button[kind="secondary"] span {
-        color: #d1d1d1 !important;
-    }
+    /* File Uploader Custom Label */
+    .stFileUploader label { font-weight: bold !important; color: #28a745 !important; font-size: 16px !important; }
 
-    /* --- 3. IL TASTO "ACCEDI AL PORTALE" (Verde Scuro Professionale) --- */
-    /* Per differenziarlo, nel tuo codice della Home usa: st.button("ACCEDI AL PORTALE", type="primary") */
-    div.stButton > button[kind="primary"] {
-        background-color: #1a5c2e !important; /* Verde scuro */
-        color: white !important;
-        border: none !important;
-    }
-    div.stButton > button[kind="primary"] p { color: white !important; }
-
-    /* --- ALTRI STILI --- */
-    hr { border: 1px solid #28a745 !important; opacity: 1; }
-    .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; }
+    .footer-main { text-align: center; font-size: 16px; margin-top: 50px; }
+    .footer-sub { font-size: 12px; color: #888; }
     </style>
 """, unsafe_allow_html=True)
-
 # --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 if "password_dev_corretta" not in st.session_state:
     st.session_state["password_dev_corretta"] = False
@@ -319,7 +324,7 @@ elif st.session_state.pagina == 'login':
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
             # Invece di: u = st.text_input("Email")
-            u = st.text_input("Email").strip().lower() # <--- Aggiungi .strip().lower()
+            u = st.text_input("Email").strip().lower() # .lower() mette tutto in minuscolo
 
             p = st.text_input("Password", type="password")
             
@@ -350,7 +355,7 @@ elif st.session_state.pagina == 'login':
             if st.button("CONFERMA REGISTRAZIONE"):
                 if r_n and r_c and r_e and r_p:
                     conn = sqlite3.connect(DB_PATH)
-                    conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
+                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (r_n, r_c, r_e, r_p, "Player"))
                     conn.commit(); conn.close()
                     st.success("Account creato!")
                     st.session_state.sub = 'login'; st.rerun()
