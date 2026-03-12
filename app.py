@@ -111,58 +111,38 @@ def aggiungi_colonna_social():
 
 aggiungi_colonna_social()
 
-# --- STILE E CSS ---
-st.set_page_config(page_title="MyPlayr", layout="wide")
 st.markdown("""
     <style>
     .stApp { background-color: #2F353B; color: white; }
     h1, h2, h3, p, span, label { color: white !important; }
-    
-    /* --- 1. IL TASTO "INVIA" DELLA HOME (Bianco con scritta grigia) --- */
-    /* Colpiamo solo i bottoni standard che si trovano nella Home */
-    div.stButton > button:not([kind="secondary"]) {
+
+    /* --- STILE SPECIFICO PER IL TASTO INVIA --- */
+    .tasto-newsletter button {
         background-color: white !important;
         border: 1px solid #cccccc !important;
         border-radius: 5px !important;
     }
-    
-    /* Forza il colore grigio solo per il testo dentro questi bottoni bianchi */
-    div.stButton > button:not([kind="secondary"]) p,
-    div.stButton > button:not([kind="secondary"]) span {
+    /* Forza il testo grigio SOLO dentro il contenitore della newsletter */
+    .tasto-newsletter button p, 
+    .tasto-newsletter button span {
         color: #555555 !important;
     }
 
-    /* --- 2. I LINK DEL LOGIN (Password dimenticata, Registrati) --- */
-    /* Devono rimanere trasparenti, senza bordo e con testo chiaro */
-    div[data-testid="stButton"] > button[kind="secondary"] { 
-        background-color: transparent !important; 
-        color: #d1d1d1 !important; 
-        border: none !important; 
-        font-size: 12px !important; 
-        text-transform: none !important;
-        width: auto !important;
-    }
-    
-    /* Forza il testo chiaro per i link secondari */
-    div[data-testid="stButton"] > button[kind="secondary"] p,
-    div[data-testid="stButton"] > button[kind="secondary"] span {
+    /* --- STILE PER I TASTI LOGIN (Lasciateli come sono) --- */
+    div[data-testid="stButton"] > button[kind="secondary"] {
+        background-color: transparent !important;
         color: #d1d1d1 !important;
-    }
-
-    /* --- 3. IL TASTO "ACCEDI AL PORTALE" (Verde Scuro Professionale) --- */
-    /* Per differenziarlo, nel tuo codice della Home usa: st.button("ACCEDI AL PORTALE", type="primary") */
-    div.stButton > button[kind="primary"] {
-        background-color: #1a5c2e !important; /* Verde scuro */
-        color: white !important;
         border: none !important;
     }
-    div.stButton > button[kind="primary"] p { color: white !important; }
-
-    /* --- ALTRI STILI --- */
-    hr { border: 1px solid #28a745 !important; opacity: 1; }
-    .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; }
+    
+    /* Pulsante VERDE (Accedi al Portale) */
+    .stButton>button { 
+        background-color: #28a745 !important; 
+        color: white !important;
+    }
     </style>
 """, unsafe_allow_html=True)
+
 
 # --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 if "password_dev_corretta" not in st.session_state:
