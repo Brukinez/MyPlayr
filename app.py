@@ -352,12 +352,29 @@ elif st.session_state.pagina == 'login':
             
             if st.button("CONFERMA REGISTRAZIONE"):
                 if r_n and r_c and r_e and r_p:
-                    conn = sqlite3.connect(DB_PATH)
-                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (r_n, r_c, r_e, r_p, "Player"))
-                    conn.commit(); conn.close()
-                    st.success("Account creato!")
-                    st.session_state.sub = 'login'; st.rerun()
-                else: st.error("Riempi tutti i campi")
+                    try:
+                        conn = sqlite3.connect(DB_PATH)
+                        data_iscr = datetime.now().strftime("%d-%m-%Y")
+                        conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo, data_iscrizione) VALUES (?,?,?,?,?,?)",
+                                     (r_n, r_c, r_e, r_p, "Player", data_iscr))
+                        conn.commit()
+                        conn.close()
+                        
+                        # --- AGGIUNGI QUESTE RIGHE QUI SOTTO ---
+                        invio = invia_conferma_e_salva(r_e) # Chiama la funzione email
+                        
+                        if invio:
+                            st.success("Registrazione completata! Controlla la tua email.")
+                        else:
+                            st.warning("Registrato con successo, ma non è stato possibile inviare l'email di conferma.")
+                        
+                        st.session_state.sub = 'login' # Torna al login
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Errore nel database: {e}")
+                else: 
+                    st.error("Riempi tutti i campi obbligatori")
+
             
             if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
                 st.session_state.sub = 'login'; st.rerun()
