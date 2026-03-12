@@ -329,15 +329,6 @@ elif st.session_state.pagina == 'login':
             st.session_state.sottopagina = 'registrazione'
             st.rerun()
 
-        if st.button("ENTRA"):
-            conn = sqlite3.connect(DB_PATH)
-            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
-            conn.close()
-            if (u == "admin@myplayr.com" and p == "admin123") or user:
-                st.session_state.autenticato = True; st.session_state.user_email = u
-                vai_a('profilo')
-            else: st.error("Credenziali errate!")
-        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
         st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
     # --- LOGICA MOSTRA MODULI ---
     if st.session_state.get('sottopagina') == 'registrazione':
