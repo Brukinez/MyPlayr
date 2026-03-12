@@ -316,44 +316,61 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
 elif st.session_state.pagina == 'login':
     _, col_log, _ = st.columns(3)
     with col_log:
-        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-        u = st.text_input("Email")
-        p = st.text_input("Password", type="password")
-        if st.button("password dimenticata?", type="secondary"): 
-            st.session_state.sottopagina = 'recupero'
-            st.rerun()
+        # Inizializzazione stato (se non esiste)
+        if 'sub' not in st.session_state: 
+            st.session_state.sub = 'login'
+
+        # --- 1. MOSTRA SOLO ACCEDI ---
+        if st.session_state.sub == 'login':
+            st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
+            u = st.text_input("Email")
+            p = st.text_input("Password", type="password")
             
-        # ... (qui tieni il tuo codice del tasto ENTRA) ...
+            if st.button("ENTRA"):
+                conn = sqlite3.connect(DB_PATH)
+                user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
+                conn.close()
+                if (u == "admin@myplayr.com" and p == "admin123") or user:
+                    st.session_state.autenticato = True; st.session_state.user_email = u
+                    vai_a('profilo')
+                else: st.error("Credenziali errate!")
+            
+            # Pulsanti di scambio (Rimuovono il modulo sopra e mostrano quello nuovo)
+            if st.button("password dimenticata?", type="secondary"): 
+                st.session_state.sub = 'recupero'; st.rerun()
+            if st.button("Non hai ancora un account? Registrati", type="secondary"):
+                st.session_state.sub = 'reg'; st.rerun()
+            st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
 
-        if st.button("Non hai ancora un account? Registrati", type="secondary"):
-            st.session_state.sottopagina = 'registrazione'
-            st.rerun()
-
-        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
-    # --- LOGICA MOSTRA MODULI ---
-    if st.session_state.get('sottopagina') == 'registrazione':
-        st.markdown("---") # Divisore estetico
-        with st.form("nuova_registrazione"):
-            n = st.text_input("Nome *")
-            c = st.text_input("Cognome *")
-            em = st.text_input("Email *")
-            ps = st.text_input("Password *", type="password")
-            if st.form_submit_button("CONFERMA REGISTRAZIONE"):
-                if n and c and em and ps:
+        # --- 2. MOSTRA SOLO REGISTRAZIONE (Sostituisce il Login) ---
+        elif st.session_state.sub == 'reg':
+            st.markdown("<h2 style='text-align: center;'>Registrati</h2>", unsafe_allow_html=True)
+            r_n = st.text_input("Nome")
+            r_c = st.text_input("Cognome")
+            r_e = st.text_input("Email")
+            r_p = st.text_input("Password", type="password")
+            
+            if st.button("CONFERMA REGISTRAZIONE"):
+                if r_n and r_c and r_e and r_p:
                     conn = sqlite3.connect(DB_PATH)
-                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (n, c, em, ps, "Player"))
-                    conn.commit()
-                    conn.close()
-                    st.success("Registrato con successo!")
-                    st.session_state.sottopagina = 'login' # Torna alla vista login
-                else:
-                    st.error("Riempi i campi obbligatori")
+                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (r_n, r_c, r_e, r_p, "Player"))
+                    conn.commit(); conn.close()
+                    st.success("Account creato!")
+                    st.session_state.sub = 'login'; st.rerun()
+                else: st.error("Riempi tutti i campi")
+            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
+                st.session_state.sub = 'login'; st.rerun()
 
-    elif st.session_state.get('sottopagina') == 'recupero':
-        st.markdown("---")
-        rec_em = st.text_input("Inserisci Email per il recupero")
-        if st.button("Invia Password"):
-            st.info("Email inviata (funzione in test)")
+        # --- 3. MOSTRA SOLO RECUPERO (Sostituisce il Login) ---
+        elif st.session_state.sub == 'recupero':
+            st.markdown("<h2 style='text-align: center;'>Recupero</h2>", unsafe_allow_html=True)
+            m_rec = st.text_input("Inserisci la tua Email")
+            if st.button("INVIA PASSWORD"):
+                st.info("Email inviata (funzione in test)")
+            if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
+                st.session_state.sub = 'login'; st.rerun()
+
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
