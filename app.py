@@ -114,30 +114,17 @@ aggiungi_colonna_social()
 # --- STILE E CSS ---
 st.set_page_config(page_title="MyPlayr", layout="wide")
 st.markdown("""
-                /* Rende il testo degli input (email) grigio scuro su sfondo bianco */
+    <style>
+    .stApp { background-color: #2F353B; color: white; }
+    h1, h2, h3, p, span, label { color: white !important; }
+    
+    /* Input Email: Testo grigio scuro su sfondo bianco */
     div[data-baseweb="input"] input {
         color: #555555 !important;
         -webkit-text-fill-color: #555555 !important;
     }
 
-    /* Rende il testo del pulsante INVIA visibile (Grigio scuro su sfondo bianco) */
-    div.stButton > button {
-        color: #555555 !important;
-        background-color: white !important;
-        border: 1px solid #cccccc !important;
-    }
-
-    /* Effetto al passaggio del mouse: diventa verde MyPlayr */
-    div.stButton > button:hover {
-        border-color: #28a745 !important;
-        color: #28a745 !important;
-    }
-
-    <style>
-    .stApp { background-color: #2F353B; color: white; }
-    h1, h2, h3, p, span, label { color: white !important; }
-    
-    /* Pulsanti VERDI Principali */
+    /* Regola generale Pulsanti (Verdi) */
     .stButton>button { 
         background-color: #28a745 !important; 
         color: white !important; 
@@ -149,10 +136,23 @@ st.markdown("""
         text-transform: uppercase;
         font-size: 16px;
     }
-    
+
+    /* Correzione specifica per il tasto INVIA (se è un bottone semplice o in un form) */
+    /* Lo rendiamo bianco con testo grigio per visibilità */
+    div.stButton > button:not([kind="secondary"]) {
+        background-color: white !important;
+        color: #555555 !important;
+        border: 1px solid #cccccc !important;
+    }
+
+    /* Effetto Hover per il tasto INVIA */
+    div.stButton > button:not([kind="secondary"]):hover {
+        border-color: #28a745 !important;
+        color: #28a745 !important;
+    }
+
     hr { border: 1px solid #28a745 !important; opacity: 1; }
     
-    /* Avatar Profilo */
     .avatar-container { text-align: center; margin-bottom: 20px; }
     .avatar-img { 
         width: 120px; height: 120px; 
@@ -164,13 +164,13 @@ st.markdown("""
         align-items: center; 
         justify-content: center; 
         background: #3E444A;
-        font-size: 60px; /* Icona più grande */
+        font-size: 60px;
     }
     
     .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; font-size: 14px; }
     .stat-box { text-align: center; background: #3E444A; padding: 10px; border-radius: 8px; border: 1px solid #28a745; }
 
-    /* Link Piccoli Navigazione */
+    /* Link Piccoli Navigazione (Secondari) */
     div[data-testid="stButton"] > button[kind="secondary"] { 
         background-color: transparent !important; 
         color: #d1d1d1 !important; 
@@ -179,15 +179,13 @@ st.markdown("""
         width: 100% !important; 
         text-transform: none !important; 
     }
-    div[data-testid="stButton"] > button[kind="secondary"]:hover { color: #28a745 !important; text-decoration: underline !important; }
     
-    /* File Uploader Custom Label */
     .stFileUploader label { font-weight: bold !important; color: #28a745 !important; font-size: 16px !important; }
-
     .footer-main { text-align: center; font-size: 16px; margin-top: 50px; }
     .footer-sub { font-size: 12px; color: #888; }
     </style>
 """, unsafe_allow_html=True)
+
 # --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 if "password_dev_corretta" not in st.session_state:
     st.session_state["password_dev_corretta"] = False
