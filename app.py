@@ -429,6 +429,32 @@ elif st.session_state.pagina == 'admin':
         st.info("Richiesta: Bomber99 (04/03)")
 
     st.divider()
+    # --- 5. VISUALIZZAZIONE VIDEO REGISTRATI (Admin) ---
+    st.subheader("🎞️ Archivio Registrazioni Completate")
+    
+    conn = sqlite3.connect(DB_PATH)
+    # Recuperiamo solo le clip che il Regista ha segnato come 'FATTO'
+    query = "SELECT id, data, campo, ora, evento FROM calendario WHERE stato = 'FATTO' ORDER BY id DESC"
+    df_partite = pd.read_sql_query(query, conn)
+    conn.close()
+
+    if not df_partite.empty:
+        for idx, row in df_partite.iterrows():
+            with st.container():
+                col_info, col_del = st.columns([4, 1])
+                with col_info:
+                    st.write(f"📅 **{row['data']}** | 🏟️ {row['campo']} | 🕒 {row['ora']}")
+                    st.write(f"📄 File: `{row['evento']}`")
+                with col_del:
+                    if st.button("🗑️", key=f"del_adm_{row['id']}"):
+                        # Elimina file fisico e riga database
+                        p_vid = os.path.join(VIDEO_DIR, row['evento'])
+                        if os.path.exists(p_vid): os.remove(p_vid)
+                        conn = sqlite3.connect(DB_PATH); conn.execute("DELETE FROM calendario WHERE id=?", (row['id'],)); conn.commit(); conn.close()
+                        st.rerun()
+                st.divider()
+    else:
+        st.info("Nessun video ancora registrato dal Regista.")
 
     # --- PROGRAMMAZIONE REGISTRAZIONE (Solo per Admin) ---
     st.divider()
