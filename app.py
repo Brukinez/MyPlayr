@@ -313,51 +313,29 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
 # --- LOGIN ---
+        # --- TEST MINIMO ---
+        if "sotto_pag" not in st.session_state: 
+            st.session_state.sotto_pag = "login"
 
-elif st.session_state.pagina == 'login':
-    _, col_log, _ = st.columns(3)
-    with col_log:
-        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-        u = st.text_input("Email")
-        p = st.text_input("Password", type="password")
-        if st.button("password dimenticata?", type="secondary"): 
-            st.session_state.sottopagina = 'recupero'
-            st.rerun()
-        if st.button("ENTRA"):
-            conn = sqlite3.connect(DB_PATH)
-            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
-            conn.close()
-            if (u == "admin@myplayr.com" and p == "admin123") or user:
-                st.session_state.autenticato = True; st.session_state.user_email = u
-                vai_a('profilo')
-            else: st.error("Credenziali errate!")
-        if st.button("Non hai ancora un account? Registrati", type="secondary"):
-            st.session_state.sottopagina = 'registrazione'
-            st.rerun()
-    # --- LOGICA MOSTRA MODULI ---
-    if st.session_state.get('sottopagina') == 'registrazione':
-        st.markdown("---") # Divisore estetico
-        with st.form("nuova_registrazione"):
-            n = st.text_input("Nome *")
-            c = st.text_input("Cognome *")
-            em = st.text_input("Email *")
-            ps = st.text_input("Password *", type="password")
-            if st.form_submit_button("CONFERMA REGISTRAZIONE"):
-                if n and c and em and ps:
-                    conn = sqlite3.connect(DB_PATH)
-                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (n, c, em, ps, "Player"))
-                    conn.commit()
-                    conn.close()
-                    st.success("Registrato con successo!")
-                    st.session_state.sottopagina = 'login' # Torna alla vista login
-                else:
-                    st.error("Riempi i campi obbligatori")
-
-    elif st.session_state.get('sottopagina') == 'recupero':
-        st.markdown("---")
-        rec_em = st.text_input("Inserisci Email per il recupero")
-        if st.button("Invia Password"):
-            st.info("Email inviata (funzione in test)")
+        if st.session_state.sotto_pag == "login":
+            st.markdown("### ACCEDI")
+            u = st.text_input("Email", key="l_1")
+            p = st.text_input("Password", type="password", key="l_2")
+            if st.button("ENTRA", key="l_3"):
+                st.write("Controllo login...")
+            if st.button("Registrati", key="l_4"):
+                st.session_state.sotto_pag = "reg"
+                st.rerun()
+        
+        elif st.session_state.sotto_pag == "reg":
+            st.markdown("### REGISTRAZIONE")
+            r_n = st.text_input("Nome", key="r_1")
+            r_e = st.text_input("Email", key="r_2")
+            if st.button("CREA ACCOUNT", key="r_3"):
+                st.success("Account creato!")
+            if st.button("Torna al Login", key="r_4"):
+                st.session_state.sotto_pag = "login"
+                st.rerun()
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
