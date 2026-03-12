@@ -731,7 +731,13 @@ elif st.session_state.pagina == 'hall_of_fame':
                 
                 autore = clip['nickname'] if clip['nickname'] else clip['campo']
                 st.success(f"⚽ **Azione di: {autore}**")
-                
+                                # --- TASTO LIKE RAPIDO ---
+                n_l = clip['likes'] if 'likes' in clip and clip['likes'] else 0
+                if st.button(f"❤️ {n_l}", key=f"lk_{clip['id']}"):
+                    with sqlite3.connect(DB_PATH) as conn_l:
+                        conn_l.execute("UPDATE calendario SET likes = likes + 1 WHERE id = ?", (clip['id'],))
+                    st.rerun()
+
                 if clip['ig_tag']:
                     st.caption(f"📸 Segui su Instagram: {clip['ig_tag']}")
                 st.divider()
