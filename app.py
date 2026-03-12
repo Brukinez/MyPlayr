@@ -542,6 +542,26 @@ elif st.session_state.pagina == "Pannello Admin":
             st.success(f"Registrazione programmata alle {ora_p}!")
 
 
+        # --- INIZIO TABELLA UTENTI ---
+        st.markdown("---") # Una linea di separazione estetica
+        st.subheader("👥 Anagrafica Utenti MyPlayr")
+        
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            # Carichiamo i dati principali (senza password per sicurezza)
+            query_utenti = "SELECT id, nome, cognome, nickname, email, ruolo, data_iscrizione FROM utenti ORDER BY id DESC"
+            df_utenti = pd.read_sql_query(query_utenti, conn)
+            conn.close()
+
+            if not df_utenti.empty:
+                # Mostra la tabella interattiva (puoi ordinare le colonne cliccando)
+                st.dataframe(df_utenti, use_container_width=True, hide_index=True)
+                st.caption(f"Totale iscritti al portale: {len(df_utenti)}")
+            else:
+                st.info("Nessun utente registrato nel database.")
+        except Exception as e:
+            st.error(f"Errore nel caricamento della tabella utenti: {e}")
+        # --- FINE TABELLA UTENTI ---
 
     st.divider()
 
