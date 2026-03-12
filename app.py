@@ -118,57 +118,52 @@ st.markdown("""
     .stApp { background-color: #2F353B; color: white; }
     h1, h2, h3, p, span, label { color: white !important; }
     
-    /* Pulsanti VERDI Principali */
-    .stButton>button { 
-        background-color: #28a745 !important; 
-        color: white !important; 
-        border: none !important; 
-        font-weight: bold !important; 
-        width: 100%; 
-        padding: 12px; 
-        border-radius: 5px; 
-        text-transform: uppercase;
-        font-size: 16px;
+    /* --- 1. IL TASTO "INVIA" DELLA HOME (Bianco con scritta grigia) --- */
+    /* Colpiamo solo i bottoni standard che si trovano nella Home */
+    div.stButton > button:not([kind="secondary"]) {
+        background-color: white !important;
+        border: 1px solid #cccccc !important;
+        border-radius: 5px !important;
     }
     
-    hr { border: 1px solid #28a745 !important; opacity: 1; }
-    
-    /* Avatar Profilo */
-    .avatar-container { text-align: center; margin-bottom: 20px; }
-    .avatar-img { 
-        width: 120px; height: 120px; 
-        border-radius: 50%; 
-        border: 4px solid #28a745; 
-        object-fit: cover; 
-        margin: 0 auto; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        background: #3E444A;
-        font-size: 60px; /* Icona più grande */
+    /* Forza il colore grigio solo per il testo dentro questi bottoni bianchi */
+    div.stButton > button:not([kind="secondary"]) p,
+    div.stButton > button:not([kind="secondary"]) span {
+        color: #555555 !important;
     }
-    
-    .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; font-size: 14px; }
-    .stat-box { text-align: center; background: #3E444A; padding: 10px; border-radius: 8px; border: 1px solid #28a745; }
 
-    /* Link Piccoli Navigazione */
+    /* --- 2. I LINK DEL LOGIN (Password dimenticata, Registrati) --- */
+    /* Devono rimanere trasparenti, senza bordo e con testo chiaro */
     div[data-testid="stButton"] > button[kind="secondary"] { 
         background-color: transparent !important; 
         color: #d1d1d1 !important; 
         border: none !important; 
         font-size: 12px !important; 
-        width: 100% !important; 
-        text-transform: none !important; 
+        text-transform: none !important;
+        width: auto !important;
     }
-    div[data-testid="stButton"] > button[kind="secondary"]:hover { color: #28a745 !important; text-decoration: underline !important; }
     
-    /* File Uploader Custom Label */
-    .stFileUploader label { font-weight: bold !important; color: #28a745 !important; font-size: 16px !important; }
+    /* Forza il testo chiaro per i link secondari */
+    div[data-testid="stButton"] > button[kind="secondary"] p,
+    div[data-testid="stButton"] > button[kind="secondary"] span {
+        color: #d1d1d1 !important;
+    }
 
-    .footer-main { text-align: center; font-size: 16px; margin-top: 50px; }
-    .footer-sub { font-size: 12px; color: #888; }
+    /* --- 3. IL TASTO "ACCEDI AL PORTALE" (Verde Scuro Professionale) --- */
+    /* Per differenziarlo, nel tuo codice della Home usa: st.button("ACCEDI AL PORTALE", type="primary") */
+    div.stButton > button[kind="primary"] {
+        background-color: #1a5c2e !important; /* Verde scuro */
+        color: white !important;
+        border: none !important;
+    }
+    div.stButton > button[kind="primary"] p { color: white !important; }
+
+    /* --- ALTRI STILI --- */
+    hr { border: 1px solid #28a745 !important; opacity: 1; }
+    .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; }
     </style>
 """, unsafe_allow_html=True)
+
 # --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 if "password_dev_corretta" not in st.session_state:
     st.session_state["password_dev_corretta"] = False
