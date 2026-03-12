@@ -114,6 +114,25 @@ aggiungi_colonna_social()
 # --- STILE E CSS ---
 st.set_page_config(page_title="MyPlayr", layout="wide")
 st.markdown("""
+    /* Rende il testo degli input (email) grigio scuro su sfondo bianco */
+    div[data-baseweb="input"] input {
+        color: #555555 !important;
+        -webkit-text-fill-color: #555555 !important;
+    }
+
+    /* Rende il testo del pulsante INVIA visibile (Grigio scuro su sfondo bianco) */
+    div.stButton > button {
+        color: #555555 !important;
+        background-color: white !important;
+        border: 1px solid #cccccc !important;
+    }
+
+    /* Effetto al passaggio del mouse: diventa verde MyPlayr */
+    div.stButton > button:hover {
+        border-color: #28a745 !important;
+        color: #28a745 !important;
+    }
+           
     <style>
     .stApp { background-color: #2F353B; color: white; }
     h1, h2, h3, p, span, label { color: white !important; }
