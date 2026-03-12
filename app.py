@@ -397,6 +397,9 @@ elif st.session_state.pagina == 'admin':
     with c6: st.metric("📈 Conv. Rate", "0.0%")
 
     st.divider()
+# Solo per test admin
+    df_utenti = pd.read_sql_query("SELECT email FROM utenti", conn)
+    st.write(df_utenti)
 
     # 3. Grafico (50%) e Azioni Rapide
     col_graf, col_act = st.columns(2)

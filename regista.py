@@ -23,7 +23,19 @@ if not os.path.exists(VIDEO_DIR):
 
 def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    nome_file = f"match_{id_partita}_{timestamp}.mp4" # <--- Questo è il nome "pulito"
+    nome_file = f"match_{id_partita}_{timestamp}.mp4" # <--- SOLO NOME
+    
+    # 1. Percorso dove FFmpeg deve scrivere fisicamente sul PC (usa il tuo G: o C:)
+    percorso_fisico = os.path.join(VIDEO_DIR, nome_file) 
+    
+    # ... (Esegui FFmpeg usando percorso_fisico) ...
+
+    # 2. SALVATAGGIO NEL DB: Salva solo 'nome_file'
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("UPDATE calendario SET evento=?, stato='CONCLUSO' WHERE id=?", (nome_file, id_partita))
+    conn.commit()
+    conn.close()
+
     
     # Percorso completo per FFmpeg (dove salvare fisicamente il file sul Mini PC)
     percorso_fisico = os.path.join(VIDEO_DIR, nome_file)
