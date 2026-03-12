@@ -116,36 +116,24 @@ st.set_page_config(page_title="MyPlayr", layout="wide")
 st.markdown("""
     <style>
     .stApp { background-color: #2F353B; color: white; }
-    
-    /* Regola generale testi bianchi */
     h1, h2, h3, p, span, label { color: white !important; }
-
-    /* --- CORREZIONE NEWSLETTER / INPUT --- */
-    /* Forza il testo degli input a essere grigio scuro */
-    div[data-baseweb="input"] input {
-        color: #555555 !important;
-        -webkit-text-fill-color: #555555 !important;
-    }
-
-    /* Forza il testo del pulsante INVIA e TUTTI i suoi figli (p, span) a essere grigi */
-    div.stButton > button {
-        background-color: white !important;
-        border: 1px solid #cccccc !important;
+    
+    /* Pulsanti VERDI Principali */
+    .stButton>button { 
+        background-color: #28a745 !important; 
+        color: white !important; 
+        border: none !important; 
+        font-weight: bold !important; 
+        width: 100%; 
+        padding: 12px; 
+        border-radius: 5px; 
+        text-transform: uppercase;
+        font-size: 16px;
     }
     
-    /* Questa è la riga chiave: colora il testo interno al pulsante */
-    div.stButton > button p, 
-    div.stButton > button span {
-        color: #555555 !important;
-    }
-
-    /* --- PULSANTI VERDI (Solo quelli del Portale/Admin) --- */
-    /* Se vuoi che i pulsanti del portale restino verdi, dobbiamo identificarli. 
-       Per ora, questa regola sopra renderà TUTTI i bottoni bianchi. 
-       Se vuoi i bottoni del portale VERDI, usa kind="primary" nel codice Python */
-
     hr { border: 1px solid #28a745 !important; opacity: 1; }
     
+    /* Avatar Profilo */
     .avatar-container { text-align: center; margin-bottom: 20px; }
     .avatar-img { 
         width: 120px; height: 120px; 
@@ -157,19 +145,30 @@ st.markdown("""
         align-items: center; 
         justify-content: center; 
         background: #3E444A;
+        font-size: 60px; /* Icona più grande */
     }
     
     .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; font-size: 14px; }
-    
-    /* Link Piccoli Navigazione (Ignorano la regola del bianco sopra) */
-    div[data-testid="stButton"] > button[kind="secondary"] p,
-    div[data-testid="stButton"] > button[kind="secondary"] span { 
+    .stat-box { text-align: center; background: #3E444A; padding: 10px; border-radius: 8px; border: 1px solid #28a745; }
+
+    /* Link Piccoli Navigazione */
+    div[data-testid="stButton"] > button[kind="secondary"] { 
+        background-color: transparent !important; 
         color: #d1d1d1 !important; 
+        border: none !important; 
+        font-size: 12px !important; 
+        width: 100% !important; 
+        text-transform: none !important; 
     }
+    div[data-testid="stButton"] > button[kind="secondary"]:hover { color: #28a745 !important; text-decoration: underline !important; }
+    
+    /* File Uploader Custom Label */
+    .stFileUploader label { font-weight: bold !important; color: #28a745 !important; font-size: 16px !important; }
+
+    .footer-main { text-align: center; font-size: 16px; margin-top: 50px; }
+    .footer-sub { font-size: 12px; color: #888; }
     </style>
 """, unsafe_allow_html=True)
-
-
 # --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 if "password_dev_corretta" not in st.session_state:
     st.session_state["password_dev_corretta"] = False
