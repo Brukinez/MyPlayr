@@ -115,7 +115,19 @@ aggiungi_colonna_social()
 st.set_page_config(page_title="MyPlayr", layout="wide")
 st.markdown("""
     <style>
-    .stApp { background-color: #2F353B; color: grey; }
+                /* Rende il testo del pulsante grigio scuro su sfondo bianco/chiaro */
+    div.stButton > button:first-child {
+        color: #555555 !important; /* Grigio scuro professionale */
+        background-color: white !important;
+        border: 1px solid #cccccc !important;
+    }
+
+    /* Colore del testo dentro i campi di input (Email) */
+    .stTextInput input {
+        color: #555555 !important;
+    }
+
+    .stApp { background-color: #2F353B; color: white; }
     h1, h2, h3, p, span, label { color: white !important; }
     
     /* Pulsanti VERDI Principali */
