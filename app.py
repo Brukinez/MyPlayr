@@ -313,29 +313,23 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
 # --- LOGIN ---
-        # --- TEST MINIMO ---
-        if "sotto_pag" not in st.session_state: 
-            st.session_state.sotto_pag = "login"
-
-        if st.session_state.sotto_pag == "login":
-            st.markdown("### ACCEDI")
-            u = st.text_input("Email", key="l_1")
-            p = st.text_input("Password", type="password", key="l_2")
-            if st.button("ENTRA", key="l_3"):
-                st.write("Controllo login...")
-            if st.button("Registrati", key="l_4"):
-                st.session_state.sotto_pag = "reg"
-                st.rerun()
-        
-        elif st.session_state.sotto_pag == "reg":
-            st.markdown("### REGISTRAZIONE")
-            r_n = st.text_input("Nome", key="r_1")
-            r_e = st.text_input("Email", key="r_2")
-            if st.button("CREA ACCOUNT", key="r_3"):
-                st.success("Account creato!")
-            if st.button("Torna al Login", key="r_4"):
-                st.session_state.sotto_pag = "login"
-                st.rerun()
+elif st.session_state.pagina == 'login':
+    _, col_log, _ = st.columns(3)
+    with col_log:
+        st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
+        u = st.text_input("Email")
+        p = st.text_input("Password", type="password")
+        if st.button("password dimenticata?", type="secondary"): vai_a('recupero_password')
+        if st.button("ENTRA"):
+            conn = sqlite3.connect(DB_PATH)
+            user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
+            conn.close()
+            if (u == "admin@myplayr.com" and p == "admin123") or user:
+                st.session_state.autenticato = True; st.session_state.user_email = u
+                vai_a('profilo')
+            else: st.error("Credenziali errate!")
+        st.button("Non hai ancora un account? Registrati", type="secondary", on_click=lambda: vai_a('registrazione'))
+        st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
