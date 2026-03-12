@@ -323,7 +323,9 @@ elif st.session_state.pagina == 'login':
         # --- 1. MOSTRA SOLO ACCEDI ---
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-            u = st.text_input("Email")
+            # Invece di: u = st.text_input("Email")
+            u = st.text_input("Email").strip().lower() # .lower() mette tutto in minuscolo
+
             p = st.text_input("Password", type="password")
             
             if st.button("ENTRA"):
