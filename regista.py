@@ -7,14 +7,36 @@ from datetime import datetime
 # --- CONFIGURAZIONE ---
 DB_PATH = "myplayr_finale.db"
 # Il percorso verso il tuo Google Drive
-VIDEO_DIR = r"G:\Il mio Drive\CLIP_MYPLAYR"
+import os
+
+# Rileva automaticamente la cartella del progetto, ovunque essa sia
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
+
+# Crea la cartella se non esiste (evita l'errore "not found")
+if not os.path.exists(VIDEO_DIR):
+    os.makedirs(VIDEO_DIR)
+
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)
 
 def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    nome_file = f"match_{id_partita}_{timestamp}.mp4"
+    nome_file = f"match_{id_partita}_{timestamp}.mp4" # <--- Questo è il nome "pulito"
+    
+    # Percorso completo per FFmpeg (dove salvare fisicamente il file sul Mini PC)
+    percorso_fisico = os.path.join(VIDEO_DIR, nome_file)
+    
+    # --- (Qui metti il tuo comando FFmpeg che usa percorso_fisico) ---
+    
+    # SALVATAGGIO NEL DATABASE
+    conn = sqlite3.connect(DB_PATH)
+    # Salviamo SOLO 'nome_file' (es: match_1_2026.mp4), NON il percorso C:\...
+    conn.execute("UPDATE calendario SET evento=?, stato='CONCLUSO' WHERE id=?", (nome_file, id_partita))
+    conn.commit()
+    conn.close()
+
     
     # QUESTA È LA RIGA CRUCIALE: deve esserci VIDEO_DIR (quello di G:)
     percorso_completo = os.path.join(VIDEO_DIR, nome_file)
