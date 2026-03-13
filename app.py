@@ -610,22 +610,37 @@ if st.form_submit_button("🔴 AVVIA REGISTRAZIONE"):
 
 # --- PAGINA PARTITE DISPONIBILI (VISIBILE A TUTTI GLI UTENTI) ---
 elif st.session_state.pagina == 'partite':
-    st.title("🏟️ Archivio Partite MyPlayr")
+    st.markdown("<h1 style='text-align: center;'>🏟️ Archivio Partite MyPlayr</h1>", unsafe_allow_html=True)
+    
     conn = sqlite3.connect(DB_PATH)
+    # Prendiamo: data(0), ora(1), campo(2), evento(3), link_video(4)
     query = "SELECT data, ora, campo, evento, link_video FROM calendario WHERE stato='FATTO' ORDER BY id DESC"
     partite = conn.execute(query).fetchall()
     conn.close()
 
     if not partite:
-     st.info("Nessuna partita trovata.")
+        st.info("Nessuna partita trovata nell'archivio.")
     else:
         for p in partite:
-            st.subheader(f"Match: {p[0]} - {p[1]} ({p[2]})")
-            if p[4]:
+            st.subheader(f"Partita del {p[0]} - Ore {p[1]} ({p[2]})")
+            
+            # --- LOGICA DI VISUALIZZAZIONE RIPRISTINATA ---
+            # 1. Prova prima il Link Cloud (per il sito online)
+            if len(p) > 4 and p[4]:
                 st.video(p[4])
+            
+            # 2. SE IL LINK NON C'È, CERCA IL FILE SUL PC (Localhost)
             else:
-                st.warning("Video in caricamento sul Cloud...")
+                nome_file = p[3] if p[3] else ""
+                percorso_locale = os.path.join(VIDEO_DIR, str(nome_file))
+                
+                if nome_file and os.path.exists(percorso_locale):
+                    with open(percorso_locale, 'rb') as f:
+                        st.video(f.read())
+                else:
+                    st.warning(f"Video '{nome_file}' non ancora disponibile (Sincronizzazione Cloud in corso...)")
             st.divider()
+
 
             
             # Definiamo il video da cercare
