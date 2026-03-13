@@ -90,6 +90,12 @@ def init_db():
         c.execute("ALTER TABLE calendario ADD COLUMN consenso_social INTEGER DEFAULT 0")
     
     conn.commit()
+    try:
+        c.execute("ALTER TABLE calendario ADD COLUMN link_video TEXT")
+        conn.commit()
+    except:
+        pass # La colonna esiste già, non fare nulla
+   
     conn.close()
 
 # Eseguiamo subito la funzione per aggiornare il file .db
@@ -602,17 +608,22 @@ elif st.session_state.pagina == "Pannello Admin":
 # --- PAGINA PARTITE DISPONIBILI (VISIBILE A TUTTI GLI UTENTI) ---
 elif st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
-    
     conn = sqlite3.connect(DB_PATH)
-    # Prendiamo tutte le partite dal database
-    df_partite = pd.read_sql("SELECT * FROM calendario WHERE stato='FATTO' ORDER BY id DESC", conn)
+    query = "SELECT data, ora, campo, evento, link_video FROM calendario WHERE stato='FATTO' ORDER BY id DESC"
+    partite = conn.execute(query).fetchall()
     conn.close()
 
-    if df_partite.empty:
-        st.info("Nessuna partita trovata nel database.")
+    if not partite:
+     st.info("Nessuna partita trovata.")
     else:
-        for index, row in df_partite.iterrows():
-            st.subheader(f"Partita: {row['data']} - {row['ora']}")
+        for p in partite:
+            st.subheader(f"Match: {p[0]} - {p[1]} ({p[2]})")
+            if p[4]:
+                st.video(p[4])
+            else:
+                st.warning("Video in caricamento sul Cloud...")
+            st.divider()
+
             
             # Definiamo il video da cercare
             video_nome = str(row['evento']) if row['evento'] else ""
