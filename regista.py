@@ -6,68 +6,54 @@ from datetime import datetime
 
 # --- CONFIGURAZIONE ---
 DB_PATH = "myplayr_finale.db"
-# Il percorso verso il tuo Google Drive
-import os
-
-# Rileva automaticamente la cartella del progetto, ovunque essa sia
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Cartella locale dove FFmpeg salva inizialmente (assicurati che esista)
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-
-# Crea la cartella se non esiste (evita l'errore "not found")
-if not os.path.exists(VIDEO_DIR):
-    os.makedirs(VIDEO_DIR)
-
+# Percorso del motore Rclone che abbiamo configurato
+RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe"
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)
 
 def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    nome_file = f"match_{id_partita}_{timestamp}.mp4" # <--- SOLO NOME
-    
-    # 1. Percorso dove FFmpeg deve scrivere fisicamente sul PC (usa il tuo G: o C:)
-    percorso_fisico = os.path.join(VIDEO_DIR, nome_file) 
-    
-    # ... (Esegui FFmpeg usando percorso_fisico) ...
-
-    # 2. SALVATAGGIO NEL DB: Salva solo 'nome_file'
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("UPDATE calendario SET evento=?, stato='CONCLUSO' WHERE id=?", (nome_file, id_partita))
-    conn.commit()
-    conn.close()
-
-    
-    # Percorso completo per FFmpeg (dove salvare fisicamente il file sul Mini PC)
+    nome_file = f"match_{id_partita}_{timestamp}.mp4"
     percorso_fisico = os.path.join(VIDEO_DIR, nome_file)
     
-    # --- (Qui metti il tuo comando FFmpeg che usa percorso_fisico) ---
-    
-    # SALVATAGGIO NEL DATABASE
-    conn = sqlite3.connect(DB_PATH)
-    # Salviamo SOLO 'nome_file' (es: match_1_2026.mp4), NON il percorso C:\...
-    conn.execute("UPDATE calendario SET evento=?, stato='CONCLUSO' WHERE id=?", (nome_file, id_partita))
-    conn.commit()
-    conn.close()
+    print(f"🔴 AVVIO REGISTRAZIONE LOCALE: {nome_file}...")
 
-    
-    # QUESTA È LA RIGA CRUCIALE: deve esserci VIDEO_DIR (quello di G:)
-    percorso_completo = os.path.join(VIDEO_DIR, nome_file)
-    
-    print(f"🔴 AVVIO REGISTRAZIONE SU GOOGLE DRIVE: {nome_file}...")
-
-    
-    # COMANDO FFmpeg (Webcam del tuo PC)
+    # COMANDO FFmpeg (30 secondi di test)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-        '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
+        '-t', '30', '-pix_fmt', 'yuv420p', percorso_fisico
     ]
     
     try:
+        # 1. Registrazione Fisica
         subprocess.run(command, check=True)
-        print(f"✅ Registrazione salvata in G: {nome_file}")
+        print(f"✅ Registrazione salvata in locale: {nome_file}")
+
+        # 2. Caricamento su Google Drive (Rclone)
+        print(f"🚀 Caricamento su Cloud in corso...")
+        subprocess.run([RCLONE_EXE, "copy", percorso_fisico, "remote:CLIP_MYPLAYR"], check=True)
+        
+        # 3. Generazione Link Pubblico
+        res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"], 
+                             capture_output=True, text=True, check=True)
+        link_web = res.stdout.strip()
+        print(f"🌐 Link Cloud generato: {link_web}")
+
+        # 4. Aggiornamento Database Locale
+        conn = sqlite3.connect(DB_PATH)
+        # Salviamo nome file, link cloud e stato FATTO
+        conn.execute("UPDATE calendario SET evento=?, link_video=?, stato='FATTO' WHERE id=?", 
+                     (nome_file, link_web, id_partita))
+        conn.commit()
+        conn.close()
+        
         return nome_file
     except Exception as e:
-        print(f"❌ Errore FFmpeg: {e}")
+        print(f"❌ Errore durante il processo: {e}")
         return None
 
 def monitor():
@@ -77,22 +63,10 @@ def monitor():
             now = datetime.now()
             data_oggi = now.strftime("%d-%m-%Y")
             ora_attuale = now.strftime("%H:%M")
-            print(f"Orario PC attuale: {now.strftime('%H:%M')} | Cerco partita alle: {ora_attuale}")
-
+            
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
-                        # --- RIGA DI TEST PER VEDERE COSA C'È NEL DB ---
-            cursor.execute("SELECT COUNT(*) FROM calendario WHERE stato='PROGRAMMATO'")
-            quante_partite = cursor.fetchone()[0]
-            print(f"📡 Partite in attesa nel database locale: {quante_partite}")
-
-               # --- CREA TABELLA SE MANCA ---
-            cursor.execute('''CREATE TABLE IF NOT EXISTS calendario 
-                              (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                               data TEXT, ora TEXT, campo TEXT, 
-                               stato TEXT, evento TEXT)''')
-            conn.commit()
-         
+            
             # Cerca partite PROGRAMMATE per l'ora esatta
             cursor.execute("SELECT id FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
                            (data_oggi, ora_attuale))
@@ -100,13 +74,10 @@ def monitor():
             
             if match:
                 id_p = match[0]
-                video_creato = registra_clip(id_p)
-                
-                if video_creato:
-                    cursor.execute("UPDATE calendario SET stato='FATTO', evento=? WHERE id=?", 
-                                   (video_creato, id_p))
-                    conn.commit()
-                    print(f"💾 Database aggiornato per ID {id_p}")
+                registra_clip(id_p)
+                print(f"💾 Ciclo completato per ID {id_p}")
+            else:
+                print(f"🕒 {ora_attuale} - Nessun match programmato.")
             
             conn.close()
         except Exception as e:
