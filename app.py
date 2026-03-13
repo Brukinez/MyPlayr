@@ -614,7 +614,7 @@ elif st.session_state.pagina == 'partite':
     conn.close()
 
     if not partite:
-     st.info("Nessuna partita trovata.")
+      st.info("Nessuna partita trovata.")
     else:
         for p in partite:
             st.subheader(f"Match: {p[0]} - {p[1]} ({p[2]})")
