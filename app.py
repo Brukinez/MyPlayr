@@ -542,7 +542,7 @@ elif st.session_state.pagina == "Pannello Admin":
         ora_p = st.text_input("Ora (es. 15:30)", key="admin_ora")
         campo_p = st.text_input("Campo", key="admin_campo")
         if st.form_submit_button("🔴 AVVIA REGISTRAZIONE"):
-            with sqlite3.connect("myplayr.db") as conn:
+            with sqlite3.connect("myplayr_finale.db") as conn:
                 conn.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
                              (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
             st.success(f"Registrazione programmata alle {ora_p}!")
