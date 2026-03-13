@@ -15,7 +15,7 @@ GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
 
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     import subprocess
-    input_p = os.path.join(r"G:\Il mio Drive\CLIP_MYPLAYR", video_nome)
+    input_p = os.path.join(VIDEO_DIR, video_nome) # Legge dal PC
     nome_output = f"MyPlayr_{datetime.now().strftime('%H%M%S')}.mp4"
     output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
     
@@ -68,7 +68,7 @@ def invia_conferma_e_salva(email_utente):
 # --- CONFIGURAZIONE PERCORSI ---import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-VIDEO_DIR = r"G:\Il mio Drive\CLIP_MYPLAYR"
+VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
 IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
 DB_PATH = os.path.join(BASE_DIR, "myplayr_finale.db")
 
@@ -616,7 +616,7 @@ elif st.session_state.pagina == 'partite':
             
             # Definiamo il video da cercare
             video_nome = str(row['evento']) if row['evento'] else ""
-            video_path = os.path.join(r"G:\Il mio Drive\CLIP_MYPLAYR", video_nome)
+            video_path = os.path.join(VIDEO_DIR, video_nome)
 
             if os.path.exists(video_path) and video_nome != "":
                 # 1. Mostriamo il video
