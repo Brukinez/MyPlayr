@@ -541,17 +541,11 @@ elif st.session_state.pagina == "Pannello Admin":
         data_p = st.date_input("Data", key="admin_data")
         ora_p = st.text_input("Ora (es. 15:30)", key="admin_ora")
         campo_p = st.text_input("Campo", key="admin_campo")
-        # --- NUOVO CODICE ADMIN (Supabase) ---
-if st.form_submit_button("🔴 PROGRAMMA MATCH"):
-    nuovo_match = {
-        "data": data_p.strftime("%d-%m-%Y"),
-        "ora": ora_p.replace(" ", ""), # Pulizia spazi come abbiamo imparato!
-        "campo": campo_p,
-        "stato": "PROGRAMMATO"
-    }
-    supabase.table("calendario").insert(nuovo_match).execute()
-    st.success(f"✅ Match inviato al Cloud per le {ora_p}!")
-
+        if st.form_submit_button("🔴 AVVIA REGISTRAZIONE"):
+            with sqlite3.connect("myplayr_finale.db") as conn:
+                conn.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
+                             (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
+            st.success(f"Registrazione programmata alle {ora_p}!")
 
 
 
