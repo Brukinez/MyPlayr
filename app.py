@@ -123,12 +123,7 @@ def init_supabase():
    
     conn.close()
 
-# Eseguiamo subito la funzione per aggiornare il file .db
-init_db()
 
-
-
-init_db()
 def check_colonne_cloud():
     try:
         # Supabase gestisce le colonne automaticamente, 
