@@ -140,7 +140,7 @@ def check_colonne_cloud():
     conn.commit()
     conn.close()
 
-aggiungi_colonna_social()
+
 
 # --- STILE E CSS ---
 st.set_page_config(page_title="MyPlayr", layout="wide")
