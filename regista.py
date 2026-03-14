@@ -1,126 +1,97 @@
-import sqlite3
 import os
 import time
 import subprocess
+import sqlite3 # Lo teniamo per sicurezza ma usiamo Supabase
 from datetime import datetime
+from database import supabase # Carica il collegamento Cloud
 
-# --- CONFIGURAZIONE ---
-DB_PATH = "myplayr_finale.db"
-# Il percorso verso il tuo Google Drive
-import os
-
-# Rileva automaticamente la cartella del progetto, ovunque essa sia
+# --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-
-# Crea la cartella se non esiste (evita l'errore "not found")
-if not os.path.exists(VIDEO_DIR):
-    os.makedirs(VIDEO_DIR)
-
+RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe" # Il tuo percorso Rclone
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)
 
 def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    nome_file = f"match_{id_partita}_{timestamp}.mp4" # <--- SOLO NOME
-    
-    # 1. Percorso dove FFmpeg deve scrivere fisicamente sul PC (usa il tuo G: o C:)
-    percorso_fisico = os.path.join(VIDEO_DIR, nome_file) 
-    
-    # ... (Esegui FFmpeg usando percorso_fisico) ...
-
-    # 2. SALVATAGGIO NEL DB: Salva solo 'nome_file'
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("UPDATE calendario SET evento=?, stato='CONCLUSO' WHERE id=?", (nome_file, id_partita))
-    conn.commit()
-    conn.close()
-
-    
-    # Percorso completo per FFmpeg (dove salvare fisicamente il file sul Mini PC)
-    percorso_fisico = os.path.join(VIDEO_DIR, nome_file)
-    
-    # --- (Qui metti il tuo comando FFmpeg che usa percorso_fisico) ---
-    
-    # SALVATAGGIO NEL DATABASE
-    conn = sqlite3.connect(DB_PATH)
-    # Salviamo SOLO 'nome_file' (es: match_1_2026.mp4), NON il percorso C:\...
-    conn.execute("UPDATE calendario SET evento=?, stato='CONCLUSO' WHERE id=?", (nome_file, id_partita))
-    conn.commit()
-    conn.close()
-
-    
-    # QUESTA È LA RIGA CRUCIALE: deve esserci VIDEO_DIR (quello di G:)
+    nome_file = f"match_{id_partita}_{timestamp}.mp4"
     percorso_completo = os.path.join(VIDEO_DIR, nome_file)
     
-    print(f"🔴 AVVIO REGISTRAZIONE SU GOOGLE DRIVE: {nome_file}...")
+    print(f"🔴 AVVIO REGISTRAZIONE LOCALE: {nome_file}...")
 
-    
-    # COMANDO FFmpeg (Webcam del tuo PC)
+    # COMANDO FFmpeg (30 secondi di test)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
         '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
     ]
     
     try:
+        # 1. Registrazione Fisica
         subprocess.run(command, check=True)
-        print(f"✅ Registrazione salvata in G: {nome_file}")
+        print(f"✅ Registrazione completata: {nome_file}")
+
+        # 2. Caricamento su Google Drive (Rclone)
+        print(f"🚀 Caricamento su Cloud in corso...")
+        subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
+        
+        # 3. Generazione Link Pubblico
+        res_link = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"], 
+                                  capture_output=True, text=True, check=True)
+        link_web = res_link.stdout.strip()
+        print(f"🌐 Link Cloud generato: {link_web}")
+
+        # 4. Aggiornamento SUPABASE (Database Cloud)
+        supabase.table("calendario").update({
+            "evento": nome_file, 
+            "link_video": link_web, 
+            "stato": "FATTO"
+        }).eq("id", id_partita).execute()
+        
+        print(f"✅ Database Cloud aggiornato per ID {id_partita}")
         return nome_file
+
     except Exception as e:
-        print(f"❌ Errore FFmpeg: {e}")
+        print(f"❌ Errore durante il processo: {e}")
         return None
 
 def monitor():
-    print("🚀 Motore MyPlayr ATTIVO. In attesa di partite...")
+    print("🚀 Motore MyPlayr LIVE (Supabase) ATTIVO. In attesa...")
     while True:
         try:
             now = datetime.now()
             data_oggi = now.strftime("%d-%m-%Y")
             ora_attuale = now.strftime("%H:%M")
-            print(f"Orario PC attuale: {now.strftime('%H:%M')} | Cerco partita alle: {ora_attuale}")
-
-            conn = sqlite3.connect(DB_PATH)
-            cursor = conn.cursor()
-                        # --- RIGA DI TEST PER VEDERE COSA C'È NEL DB ---
-            cursor.execute("SELECT COUNT(*) FROM calendario WHERE stato='PROGRAMMATO'")
-            quante_partite = cursor.fetchone()[0]
-            print(f"📡 Partite in attesa nel database locale: {quante_partite}")
-
-               # --- CREA TABELLA SE MANCA ---
-            cursor.execute('''CREATE TABLE IF NOT EXISTS calendario 
-                              (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                               data TEXT, ora TEXT, campo TEXT, 
-                               stato TEXT, evento TEXT)''')
-            conn.commit()
-                     # --- RIGA DI SPIONAGGIO (Incolla qui) ---
-            cursor.execute("SELECT id, data, ora, stato FROM calendario")
-            contenuto_db = cursor.fetchall()
-            print(f"📊 DEBUG: Nel database locale vedo queste righe: {contenuto_db}")
-            print(f"🔎 Sto cercando: Data '{data_oggi}' | Ora '{ora_attuale}' | Stato 'PROGRAMMATO'")
-            # ----------------------------------------
-
-            # Cerca partite PROGRAMMATE per l'ora esatta
-            cursor.execute("SELECT id FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
-                           (data_oggi, ora_attuale))
-
-            # Cerca partite PROGRAMMATE per l'ora esatta
-            cursor.execute("SELECT id FROM calendario WHERE data=? AND ora=? AND stato='PROGRAMMATO'", 
-                           (data_oggi, ora_attuale))
-            match = cursor.fetchone()
             
-            if match:
-                id_p = match[0]
-                video_creato = registra_clip(id_p)
+            print(f"🕒 Orario PC: {ora_attuale} | Cerco match su Supabase...")
+
+            # Chiediamo a Supabase se c'è un match ORA
+            response = supabase.table("calendario")\
+                .select("*")\
+                .eq("data", data_oggi)\
+                .eq("ora", ora_attuale)\
+                .eq("stato", "PROGRAMMATO")\
+                .execute()
+            
+            match_list = response.data
+
+            if match_list:
+                # Se troviamo almeno un match (prendiamo il primo)
+                match = match_list[0]
+                id_p = match['id']
+                print(f"🎬 MATCH TROVATO! ID: {id_p} - Avvio registrazione...")
                 
-                if video_creato:
-                    cursor.execute("UPDATE calendario SET stato='FATTO', evento=? WHERE id=?", 
-                                   (video_creato, id_p))
-                    conn.commit()
-                    print(f"💾 Database aggiornato per ID {id_p}")
+                registra_clip(id_p)
+                print(f"💾 Ciclo completato per ID {id_p}")
+            else:
+                # Se non c'è nulla, facciamo lo "spionaggio" per vedere cosa c'è nel Cloud
+                print(f"🕒 {ora_attuale} - Nessun match programmato.")
+                # Opzionale: stampa tutto quello che c'è nel Cloud per debug
+                res_all = supabase.table("calendario").select("id, data, ora, stato").limit(5).execute()
+                print(f"📊 Ultime righe nel Cloud: {res_all.data}")
             
-            conn.close()
         except Exception as e:
-            print(f"⚠️ Errore ciclo: {e}")
+            print(f"⚠️ Errore connessione Cloud: {e}")
             
         time.sleep(30) # Controlla ogni 30 secondi
 

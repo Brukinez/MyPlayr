@@ -7,7 +7,16 @@ from datetime import datetime
 from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
-DB_PATH = "myplayr_finale.db"
+import os
+from supabase import create_client
+from dotenv import load_dotenv
+
+# Carichiamo le chiavi dal file .env (che hai già creato)
+load_dotenv()
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_KEY")
+supabase = create_client(url, key)
+
 # --- REGOLAZIONE LOGO (Cambia questo numero per la grandezza) ---
 GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
 
@@ -27,11 +36,22 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     try:
         subprocess.run(comando, check=True)
         # Registriamo comunque nel database per il tuo archivio Admin
-        conn = sqlite3.connect(DB_PATH)
-        conn.execute("INSERT INTO calendario (data, ora, campo, evento, stato) VALUES (?, ?, ?, ?, ?)",
-                     (datetime.now().strftime("%d-%m-%Y"), "CLIP", utente_email, nome_output, "CLIP_UTENTE"))
-        conn.commit()
-        conn.close()
+                # --- NUOVO SALVATAGGIO CLIP SU SUPABASE ---
+        nuova_clip = {
+            "data": datetime.now().strftime("%d-%m-%Y"),
+            "ora": "CLIP",
+            "campo": utente_email,    # Usiamo il campo per identificare l'utente
+            "evento": nome_output,   # Nome del file video tagliato
+            "stato": "CLIP_UTENTE"
+        }
+        
+        try:
+            from database import supabase
+            supabase.table("calendario").insert(nuova_clip).execute()
+            print(f"✅ Clip '{nome_output}' registrata nel Cloud per {utente_email}")
+        except Exception as e:
+            print(f"❌ Errore salvataggio clip Cloud: {e}")
+
         return output_p # Restituiamo il percorso completo del file su G:
     except:
         return None
@@ -358,17 +378,30 @@ elif st.session_state.pagina == 'login':
             r_e = st.text_input("Email")
             r_p = st.text_input("Password", type="password")
             
-            if st.button("CONFERMA REGISTRAZIONE"):
-                if r_n and r_c and r_e and r_p:
-                    conn = sqlite3.connect(DB_PATH)
-                    conn.execute("INSERT INTO utenti (nome, cognome, email, password, ruolo) VALUES (?,?,?,?,?)", (r_n, r_c, r_e, r_p, "Player"))
-                    conn.commit(); conn.close()
-                    st.success("Account creato!")
-                    st.session_state.sub = 'login'; st.rerun()
-                else: st.error("Riempi tutti i campi")
-            
-            if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
-                st.session_state.sub = 'login'; st.rerun()
+        if st.button("CONFERMA REGISTRAZIONE"):
+            if r_n and r_c and r_e and r_p:
+                # --- NUOVA REGISTRAZIONE SU SUPABASE ---
+                nuovo_utente = {
+                    "nome": r_n,
+                    "cognome": r_c,
+                    "email": r_e.strip().lower(), # Pulizia email (fondamentale!)
+                    "password": r_p,               # In futuro useremo l'hash
+                    "ruolo": "Player"
+                }
+                
+                try:
+                    # Inserimento nel database online
+                    supabase.table("utenti").insert(nuovo_utente).execute()
+                    st.success("✅ Account creato con successo nel Cloud!")
+                    st.balloons()
+                    st.session_state.sub = 'login'
+                    st.rerun()
+                except Exception as e:
+                    # Se l'email esiste già, Supabase darà errore (giustamente)
+                    st.error(f"❌ Errore: L'email potrebbe essere già registrata. ({e})")
+            else: 
+                st.error("Riempi tutti i campi")
+
 
         # --- 3. MOSTRA SOLO RECUPERO (Sostituisce il Login) ---
         elif st.session_state.sub == 'recupero':
@@ -470,11 +503,16 @@ elif st.session_state.pagina == 'admin':
             f_ora = st.text_input("Ora Inizio (es: 19:30)")
             f_titolo = st.text_input("Titolo Partita (Squadre)")
             if st.form_submit_button("CONFERMA PROGRAMMAZIONE"):
-                conn = sqlite3.connect(DB_PATH)
-                conn.execute("INSERT INTO calendario (data, ora, campo, evento, stato) VALUES (?,?,'USB2.0 VGA UVC WebCam',?,'PROGRAMMATO')", 
-                          (d_reg.strftime('%d-%m-%Y'), f_ora, f_titolo))
-                conn.commit(); conn.close()
-                st.success("Gara programmata!"); st.rerun()
+                nuovo_match = {
+        "data": d_reg.strftime('%d-%m-%Y'),
+        "ora": f_ora.strip().replace(" ", ""),
+        "campo": "USB2.0 VGA UVC WebCam",
+        "evento": f_titolo,
+        "stato": "PROGRAMMATO"
+    }
+    supabase.table("calendario").insert(nuovo_match).execute()
+    st.success("✅ Gara programmata nel Cloud!"); st.rerun()
+
 
 
     st.divider()
@@ -541,11 +579,17 @@ elif st.session_state.pagina == "Pannello Admin":
         data_p = st.date_input("Data", key="admin_data")
         ora_p = st.text_input("Ora (es. 15:30)", key="admin_ora")
         campo_p = st.text_input("Campo", key="admin_campo")
-        if st.form_submit_button("🔴 AVVIA REGISTRAZIONE"):
-            with sqlite3.connect("myplayr_finale.db") as conn:
-                conn.execute("INSERT INTO calendario (data, ora, campo, stato) VALUES (?, ?, ?, ?)",
-                             (data_p.strftime("%d-%m-%Y"), ora_p, campo_p, 'PROGRAMMATO'))
-            st.success(f"Registrazione programmata alle {ora_p}!")
+        # --- NUOVO CODICE ADMIN (Supabase) ---
+if st.form_submit_button("🔴 PROGRAMMA MATCH"):
+    nuovo_match = {
+        "data": data_p.strftime("%d-%m-%Y"),
+        "ora": ora_p.replace(" ", ""), # Pulizia spazi come abbiamo imparato!
+        "campo": campo_p,
+        "stato": "PROGRAMMATO"
+    }
+    supabase.table("calendario").insert(nuovo_match).execute()
+    st.success(f"✅ Match inviato al Cloud per le {ora_p}!")
+
 
 
 
