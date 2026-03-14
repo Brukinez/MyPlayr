@@ -95,10 +95,15 @@ DB_PATH = os.path.join(BASE_DIR, "myplayr_finale.db")
 os.makedirs(VIDEO_DIR, exist_ok=True)
 os.makedirs(IMG_DIR, exist_ok=True)
 
-# --- FUNZIONI DATABASE ---
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+# --- FUNZIONI DATABASE CLOUD ---
+def init_supabase():
+    try:
+        # Proviamo a leggere una riga per vedere se il ponte funziona
+        supabase.table("utenti").select("id").limit(1).execute()
+        print("✅ Connessione al Cloud Supabase stabilita con successo!")
+    except Exception as e:
+        st.error(f"❌ Errore critico di connessione al Cloud: {e}")
+
     # Tabelle base
     c.execute('''CREATE TABLE IF NOT EXISTS calendario (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT, ora TEXT, campo TEXT, evento TEXT, stato TEXT)''')
     c.execute('''CREATE TABLE IF NOT EXISTS utenti (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, cognome TEXT, nickname TEXT, email TEXT UNIQUE, password TEXT, ruolo TEXT, bio TEXT, data_iscrizione TEXT, foto_path TEXT, ig_tag TEXT)''')
@@ -124,10 +129,15 @@ init_db()
 
 
 init_db()
-# Funzione rapida per aggiungere la colonna Instagram se manca
-def aggiungi_colonna_social():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
+def check_colonne_cloud():
+    try:
+        # Supabase gestisce le colonne automaticamente, 
+        # facciamo solo una prova di lettura per vedere se tutto è ok
+        supabase.table("calendario").select("consenso_social").limit(1).execute()
+        print("✅ Colonna Social presente nel Cloud.")
+    except Exception:
+        print("⚠️ Nota: Assicurati di aver aggiunto 'consenso_social' su Supabase!")
+
     c.execute("PRAGMA table_info(utenti)")
     colonne = [info[1] for info in c.fetchall()]
     if 'ig_tag' not in colonne:
@@ -243,15 +253,43 @@ if st.session_state.autenticato:
             st.session_state.autenticato = False
             vai_a('home')
     st.divider()
-# --- PAGINA: HALL OF FAME (PUBBLICA) ---
+# --- PAGINA: HALL OF FAME (PUBBLICA - Cloud Supabase) ---
 elif st.session_state.pagina == 'hall_of_fame':
     st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
     st.write("---")
 
-    conn = sqlite3.connect(DB_PATH)
-    # Prendiamo TUTTE le clip utente senza filtri per testare la connessione
-    df_fame = pd.read_sql("SELECT * FROM calendario WHERE stato='CLIP_UTENTE'", conn)
-    conn.close()
+    try:
+        # Recuperiamo dal Cloud le clip con stato 'CLIP_UTENTE'
+        # Nota: In futuro potrai filtrare solo quelle con 'consenso_social' = 1
+        res = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "CLIP_UTENTE")\
+            .order("id", desc=True)\
+            .execute()
+        
+        df_fame = pd.DataFrame(res.data)
+
+        if df_fame.empty:
+            st.info("La Hall of Fame è ancora in allestimento. Crea i tuoi highlight per apparire qui!")
+        else:
+            for index, row in df_fame.iterrows():
+                with st.container():
+                    st.subheader(f"🌟 Giocata di: {row['campo']}") # 'campo' contiene l'email dell'autore
+                    st.write(f"📅 Data: {row['data']}")
+                    
+                    video_nome = str(row['evento'])
+                    p_clip = os.path.join(VIDEO_DIR, video_nome)
+                    
+                    if os.path.exists(p_clip):
+                        with open(p_clip, 'rb') as f:
+                            st.video(f.read())
+                    else:
+                        st.warning(f"Clip '{video_nome}' in fase di sincronizzazione...")
+                    st.divider()
+
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento Hall of Fame: {e}")
+
 
     # --- SPIE DI CONTROLLO (DEBUG) ---
     st.info(f"📊 Clip totali nel sistema: {len(df_fame)}")
@@ -349,15 +387,34 @@ elif st.session_state.pagina == 'login':
         # --- 1. MOSTRA SOLO ACCEDI ---
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-            # Invece di: u = st.text_input("Email")
-            u = st.text_input("Email").strip().lower() # .lower() mette tutto in minuscolo
-
-            p = st.text_input("Password", type="password")
-            
             if st.button("ENTRA"):
-                conn = sqlite3.connect(DB_PATH)
-                user = conn.execute("SELECT * FROM utenti WHERE email=? AND password=?", (u, p)).fetchone()
-                conn.close()
+                try:
+                    # 1. Chiediamo a Supabase se esiste un utente con questa Email e Password
+                    res = supabase.table("utenti")\
+                        .select("*")\
+                        .eq("email", u)\
+                        .eq("password", p)\
+                        .maybe_single()\
+                        .execute()
+                    
+                    user = res.data
+
+                    if user:
+                        # 2. Se l'utente esiste, salviamo i dati nella sessione
+                        st.session_state.logged_in = True
+                        st.session_state.user_email = user['email']
+                        st.session_state.user_nome = user['nome']
+                        st.session_state.ruolo = user['ruolo']
+                        
+                        st.success(f"Bentornato {user['nome']}!")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.error("❌ Email o Password errate.")
+                
+                except Exception as e:
+                    st.error(f"⚠️ Errore di connessione al Cloud: {e}")
+
                 if (u == "admin@myplayr.com" and p == "admin123") or user:
                     st.session_state.autenticato = True; st.session_state.user_email = u
                     vai_a('profilo')
@@ -415,11 +472,19 @@ elif st.session_state.pagina == 'login':
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
 elif st.session_state.pagina == 'admin':
-    # 1. Recupero dati reali per i contatori
-    conn = sqlite3.connect(DB_PATH)
-    num_utenti = conn.execute("SELECT count(*) FROM utenti").fetchone()[0]
-    num_partite = conn.execute("SELECT count(*) FROM calendario").fetchone()[0]
-    conn.close()
+    # 1. Recupero dati reali dal Cloud Supabase per i contatori
+    try:
+        # Conteggio Utenti
+        res_u = supabase.table("utenti").select("id", count="exact").execute()
+        num_utenti = res_u.count if res_u.count is not None else 0
+        
+        # Conteggio Partite
+        res_p = supabase.table("calendario").select("id", count="exact").execute()
+        num_partite = res_p.count if res_p.count is not None else 0
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento Dashboard Cloud: {e}")
+        num_utenti, num_partite = 0, 0
+
     
     num_newsletter = 0
     if os.path.exists(os.path.join(BASE_DIR, "iscritti.txt")):
@@ -468,14 +533,31 @@ elif st.session_state.pagina == 'admin':
         st.info("Richiesta: Bomber99 (04/03)")
 
     st.divider()
-    # --- 5. VISUALIZZAZIONE VIDEO REGISTRATI (Admin) ---
+   # --- 5. VISUALIZZAZIONE VIDEO REGISTRATI (Admin) ---
     st.subheader("🎞️ Archivio Registrazioni Completate")
     
-    conn = sqlite3.connect(DB_PATH)
-    # Recuperiamo solo le clip che il Regista ha segnato come 'FATTO'
-    query = "SELECT id, data, campo, ora, evento FROM calendario WHERE stato = 'FATTO' ORDER BY id DESC"
-    df_partite = pd.read_sql_query(query, conn)
-    conn.close()
+    # Recuperiamo le clip dal Cloud Supabase (quelle segnate come 'FATTO')
+    try:
+        res = supabase.table("calendario")\
+            .select("id, data, campo, ora, evento")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+        
+        # Trasformiamo i dati in un DataFrame per visualizzarli come prima
+        import pandas as pd
+        df_partite = pd.DataFrame(res.data)
+        
+        if df_partite.empty:
+            st.info("Nessuna registrazione completata trovata nel Cloud.")
+        else:
+            # Mostriamo la tabella (come facevi prima)
+            st.dataframe(df_partite, use_container_width=True)
+            
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento archivio Cloud: {e}")
+        df_partite = pd.DataFrame() # DataFrame vuoto per non far crashare il resto
+
 
     if not df_partite.empty:
         for idx, row in df_partite.iterrows():
@@ -485,84 +567,91 @@ elif st.session_state.pagina == 'admin':
                     st.write(f"📅 **{row['data']}** | 🏟️ {row['campo']} | 🕒 {row['ora']}")
                     st.write(f"📄 File: `{row['evento']}`")
                 with col_del:
+                    # Tasto per eliminare la riga dal Cloud
                     if st.button("🗑️", key=f"del_adm_{row['id']}"):
-                        # Elimina file fisico e riga database
-                        p_vid = os.path.join(VIDEO_DIR, row['evento'])
-                        if os.path.exists(p_vid): os.remove(p_vid)
-                        conn = sqlite3.connect(DB_PATH); conn.execute("DELETE FROM calendario WHERE id=?", (row['id'],)); conn.commit(); conn.close()
-                        st.rerun()
+                        try:
+                            # 1. Elimina la riga da Supabase (CLOUD)
+                            supabase.table("calendario").delete().eq("id", row['id']).execute()
+                            
+                            # 2. Nota: Il file fisico sul Mini PC rimane lì per sicurezza (archivio locale)
+                            # Se vuoi cancellare anche quello, dovresti farlo dal Mini PC.
+                            
+                            st.success(f"🗑️ Partita {row['id']} eliminata dal Cloud!")
+                            time.sleep(1)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"❌ Errore eliminazione: {e}")
                 st.divider()
-    else:
-        st.info("Nessun video ancora registrato dal Regista.")
 
-    # --- PROGRAMMAZIONE REGISTRAZIONE (Solo per Admin) ---
+
+       # --- PROGRAMMAZIONE REGISTRAZIONE (Solo per Admin) ---
     st.divider()
     with st.expander("📅 PROGRAMMA NUOVA REGISTRAZIONE", expanded=False):
         with st.form("form_admin_reg"):
             d_reg = st.date_input("Giorno Gara", datetime.now())
             f_ora = st.text_input("Ora Inizio (es: 19:30)")
             f_titolo = st.text_input("Titolo Partita (Squadre)")
-            if st.form_submit_button("CONFERMA PROGRAMMAZIONE"):
-                nuovo_match = {
-        "data": d_reg.strftime('%d-%m-%Y'),
-        "ora": f_ora.strip().replace(" ", ""),
-        "campo": "USB2.0 VGA UVC WebCam",
-        "evento": f_titolo,
-        "stato": "PROGRAMMATO"
-    }
-    supabase.table("calendario").insert(nuovo_match).execute()
-    st.success("✅ Gara programmata nel Cloud!"); st.rerun()
-
-
-
-    st.divider()
-
-        # 6. Archivio Video Totale (Corretto)
-    st.subheader("🎞️ Archivio Video Totale")
-    conn = sqlite3.connect(DB_PATH)
-        # 1. Tabella delle PARTITE INTERE (stato 'FATTO')
-    st.markdown("### 🏟️ Archivio Partite Registrate")
-    df_vids = pd.read_sql_query("SELECT id, data, ora, campo, evento FROM calendario WHERE stato='FATTO' ORDER BY id DESC", conn)
-    
-    if not df_vids.empty:
-        st.dataframe(df_vids, use_container_width=True)
-    else:
-        st.info("Nessuna partita intera registrata al momento.")
-
-    # 2. Tabella delle CLIP TAGLIATE (stato 'CLIP_UTENTE')
-    st.markdown("### ✂️ Archivio Clip Tagliate dagli Utenti")
-    df_clips_admin = pd.read_sql_query("SELECT id, data, campo as utente, evento as nome_clip FROM calendario WHERE stato='CLIP_UTENTE' ORDER BY id DESC", conn)
-    
-    if not df_clips_admin.empty:
-        st.dataframe(df_clips_admin, use_container_width=True)
-    else:
-        st.info("Nessun utente ha ancora tagliato delle clip.")
-
-    conn.close()
-
-
-    if not df_vids.empty:
-        for idx, row in df_vids.iterrows():
-            c1, c2, c3, c4, c5 = st.columns([1.5, 2, 1.5, 3.5, 1])
-            c1.write(row['data'])
-            c2.write("Campo A")
-            c3.write(row['ora'])
-            c4.write(row['evento'] if row['evento'] else "In elaborazione...")
             
-            if c5.button("🗑️", key=f"del_g_{row['id']}"):
-                nome_video = row['evento']
-                if nome_video:
-                    v_path = os.path.join(VIDEO_DIR, nome_video)
-                    if os.path.exists(v_path):
-                        os.remove(v_path)
-                
-                with sqlite3.connect(DB_PATH) as c:
-                    c.execute("DELETE FROM calendario WHERE id=?", (row['id'],))
-                st.rerun()
-    else:
-        st.info("Nessun video registrato in archivio.")
+            if st.form_submit_button("CONFERMA PROGRAMMAZIONE"):
+                try:
+                    nuovo_match = {
+                        "data": d_reg.strftime('%d-%m-%Y'),
+                        "ora": f_ora.strip().replace(" ", ""),
+                        "campo": "USB2.0 VGA UVC WebCam",
+                        "evento": f_titolo,
+                        "stato": "PROGRAMMATO"
+                    }
+                    supabase.table("calendario").insert(nuovo_match).execute()
+                    st.success("✅ Gara programmata nel Cloud!"); st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Errore programmazione Cloud: {e}")
 
     st.divider()
+
+    # --- 6. ARCHIVIO VIDEO TOTALE (Cloud Supabase) ---
+    st.subheader("🎞️ Archivio Video Totale")
+
+    try:
+        # 1. Tabella delle PARTITE INTERE (stato 'FATTO')
+        st.markdown("### 🏟️ Archivio Partite Registrate")
+        res_vids = supabase.table("calendario").select("id, data, ora, campo, evento")\
+            .eq("stato", "FATTO").order("id", desc=True).execute()
+        df_vids = pd.DataFrame(res_vids.data)
+        
+        if not df_vids.empty:
+            st.dataframe(df_vids, use_container_width=True)
+            
+            # Ciclo per la gestione delle righe e cancellazione
+            for idx, row in df_vids.iterrows():
+                c1, c2, c3, c4, c5 = st.columns([1.5, 2, 1.5, 3.5, 1])
+                c1.write(row['data'])
+                c2.write("Campo A")
+                c3.write(row['ora'])
+                c4.write(row['evento'] if row['evento'] else "In elaborazione...")
+                
+                if c5.button("🗑️", key=f"del_g_{row['id']}"):
+                    supabase.table("calendario").delete().eq("id", row['id']).execute()
+                    st.success(f"Cancellato ID {row['id']}")
+                    st.rerun()
+        else:
+            st.info("Nessuna partita intera registrata al momento.")
+
+        # 2. Tabella delle CLIP TAGLIATE (stato 'CLIP_UTENTE')
+        st.markdown("### ✂️ Archivio Clip Tagliate dagli Utenti")
+        res_clips = supabase.table("calendario").select("id, data, campo, evento")\
+            .eq("stato", "CLIP_UTENTE").order("id", desc=True).execute()
+        df_clips_admin = pd.DataFrame(res_clips.data)
+        
+        if not df_clips_admin.empty:
+            # Rinominiamo le colonne per l'estetica admin come avevi prima
+            df_clips_admin = df_clips_admin.rename(columns={"campo": "utente", "evento": "nome_clip"})
+            st.dataframe(df_clips_admin, use_container_width=True)
+        else:
+            st.info("Nessun utente ha ancora tagliato delle clip.")
+
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento archivi Cloud: {e}")
+
 
 
 
@@ -595,12 +684,32 @@ if st.form_submit_button("🔴 PROGRAMMA MATCH"):
 
     st.divider()
 
-    # 2. VISUALIZZAZIONE PARTITE REGISTRATE E TAGLIO CLIP
+    # --- 2. VISUALIZZAZIONE PARTITE REGISTRATE E TAGLIO CLIP (Cloud) ---
     st.markdown("### 🎞️ Partite Disponibili")
-    conn = sqlite3.connect(DB_PATH)
-    # Filtriamo per stato 'FATTO' per mostrare solo i video pronti
-    df_partite = pd.read_sql("SELECT * FROM calendario WHERE stato='FATTO' ORDER BY id DESC", conn)
-    conn.close()
+    
+    try:
+        # Recuperiamo i video pronti direttamente dal Cloud
+        res = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+        
+        # Trasformiamo in DataFrame (p[0]=id, p[1]=data, p[2]=ora, p[3]=campo, p[4]=stato, p[5]=evento, p[6]=link_video)
+        import pandas as pd
+        df_partite = pd.DataFrame(res.data)
+        
+        if df_partite.empty:
+            st.info("Nessuna partita registrata disponibile al momento.")
+        else:
+            # Qui il codice continuerà con il ciclo for per mostrare i video
+            # Usando row['link_video'] se presente, altrimenti il file locale
+            pass 
+
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento video dal Cloud: {e}")
+        df_partite = pd.DataFrame()
+
 
     if df_partite.empty:
         st.info("Nessuna partita registrata trovata nel database.")
@@ -653,26 +762,35 @@ if st.form_submit_button("🔴 PROGRAMMA MATCH"):
 elif st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
-    conn = sqlite3.connect(DB_PATH)
-    # Prendiamo tutte le partite dal database
-    df_partite = pd.read_sql("SELECT * FROM calendario WHERE stato='FATTO' ORDER BY id DESC", conn)
-    conn.close()
-
-    if df_partite.empty:
-        st.info("Nessuna partita trovata nel database.")
-    else:
-        for index, row in df_partite.iterrows():
-            st.subheader(f"Partita: {row['data']} - {row['ora']}")
-            
-            # Definiamo il video da cercare
-            video_nome = str(row['evento']) if row['evento'] else ""
-            video_path = os.path.join(VIDEO_DIR, video_nome)
-
-            if os.path.exists(video_path) and video_nome != "":
-                # 1. Mostriamo il video
-                st.video(video_path)
+    try:
+        # 1. Recupero dati da Supabase
+        res = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        df_partite = pd.DataFrame(res.data)
+        
+        if df_partite.empty:
+            st.info("Nessuna partita trovata nel Cloud.")
+        else:
+            for index, row in df_partite.iterrows():
+                st.subheader(f"Partita: {row['data']} - {row['ora']}")
                 
-                # 2. Box per il taglio della clip (Tutto allineato correttamente)
+                # --- LOGICA VIDEO IBRIDA ---
+                video_nome = str(row['evento']) if row['evento'] else ""
+                link_cloud = row.get('link_video') # Prende il link se esiste
+                
+                # A. Prova prima il Link Cloud (per lo streaming online)
+                if link_cloud:
+                    st.video(link_cloud)
+                
+                # B. Se non c'è il link, prova il file locale (solo se sei sul Mini PC)
+                else:
+                    video_path = os.path.join(VIDEO_DIR, video_nome)
+                    if os.path.exists(video_path) and video_nome != "":
+                        with open(video_path, 'rb') as f:
+                            st.video(f.read())
+                    else:
+                        st.warning("Video in fase di caricamento sul Cloud...")
+
+                # --- 2. BOX PER IL TAGLIO CLIP (Il Mini PC userà il file locale) ---
                 with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
                     st.write("Scegli il momento dell'azione:")
                     c1, col_s, c3 = st.columns(3)
@@ -685,11 +803,11 @@ elif st.session_state.pagina == 'partite':
 
                     if st.button("🎬 GENERA E SCARICA CLIP", key=f"btn_pay_{row['id']}", use_container_width=True):
                         inizio_tot = (m_in * 60) + s_in
-                        # Chiamiamo la funzione tecnica che salva su G:
+                        # Esegue il taglio (necessita del file fisico sul Mini PC)
                         percorso_g = taglia_e_registra_clip(video_nome, inizio_tot, durata_clip, st.session_state.user_email)
                         
                         if percorso_g and os.path.exists(percorso_g):
-                            st.success("✅ Clip generata su Google Drive!")
+                            st.success("✅ Clip generata!")
                             with open(percorso_g, "rb") as f:
                                 st.download_button(
                                     label="📥 SCARICA ORA LA TUA CLIP",
@@ -698,56 +816,131 @@ elif st.session_state.pagina == 'partite':
                                     mime="video/mp4",
                                     key=f"dl_btn_{row['id']}"
                                 )
+                            # Registra la clip su Supabase per l'archivio Cloud
+                            supabase.table("calendario").insert({
+                                "data": datetime.now().strftime("%d-%m-%Y"),
+                                "ora": "CLIP",
+                                "campo": st.session_state.user_email,
+                                "evento": os.path.basename(percorso_g),
+                                "stato": "CLIP_UTENTE"
+                            }).execute()
                         else:
-                            st.error("Errore: Verifica la connessione al disco G: o FFmpeg.")
-            else:
-                st.warning(f"File video '{video_nome}' non trovato in {VIDEO_DIR}")
-            
-            st.divider()
+                            st.error("Errore: Il taglio clip richiede il file locale sul Mini PC.")
+                st.divider()
 
-# --- PAGINA: LE MIE CLIP (VISIBILE ALL'UTENTE) ---
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento partite Cloud: {e}")
+
+
+# --- PAGINA: LE MIE CLIP (VISIBILE ALL'UTENTE - Cloud Supabase) ---
 elif st.session_state.pagina == 'mie_clip':
     st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight</h2>", unsafe_allow_html=True)
     
-    conn = sqlite3.connect(DB_PATH)
-    query = "SELECT * FROM calendario WHERE stato='CLIP_UTENTE' AND campo=? ORDER BY id DESC"
-    mie_clip = pd.read_sql(query, conn, params=(st.session_state.user_email,))
-    conn.close()
+    try:
+        # Recuperiamo le clip personali dell'utente dal Cloud
+        res = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "CLIP_UTENTE")\
+            .eq("campo", st.session_state.user_email)\
+            .order("id", desc=True)\
+            .execute()
+        
+        mie_clip = pd.DataFrame(res.data)
 
-    if not mie_clip.empty:
-        for index, row_c in mie_clip.iterrows():
-            percorso_clip = os.path.join(CLIP_GDRIVE, row_c['evento'])
-            with st.container():
-                if os.path.exists(percorso_clip):
-                    st.video(percorso_clip)
-                    c1, c2 = st.columns(2)
-                    with c1:
-                        with open(percorso_clip, "rb") as f:
-                            st.download_button("📥 SCARICA CLIP", f, file_name=row_c['evento'], key=f"dl_{row_c['id']}")
-                    with c2:
-                        stato_db = True if row_c.get('consenso_social', 0) == 1 else False
-                        consenso = st.toggle("Sì, pubblicami su @MyPlayr", value=stato_db, key=f"tog_{row_c['id']}")
-                        if consenso != stato_db:
-                            nuovo_valore = 1 if consenso else 0
-                            with sqlite3.connect(DB_PATH) as conn_up:
-                                conn_up.execute("UPDATE calendario SET consenso_social=? WHERE id=?", (nuovo_valore, row_c['id']))
-                            st.toast("Impostazioni social aggiornate!")
-                    if stato_db:
-                        st.success("✨ Visibile nella Hall of Fame!")
-                else:
-                    st.warning(f"Clip '{row_c['evento']}' in caricamento...")
-                st.divider()
-    else:
-        st.info("Non hai ancora creato nessuna clip.")
+        if mie_clip.empty:
+            st.info("Non hai ancora creato nessuna clip. Vai nella sezione 'Partite' per tagliare i tuoi highlight!")
+        else:
+            for index, row in mie_clip.iterrows():
+                with st.container():
+                    st.write(f"📅 **{row['data']}** | 🕒 {row['ora']}")
+                    st.write(f"📄 Nome file: `{row['evento']}`")
+                    
+                                        # --- VISUALIZZAZIONE E DOWNLOAD CLIP (Cloud Ibrido) ---
+                    video_nome = str(row['evento'])
+                    # Cerchiamo il file nella cartella dove FFmpeg salva le clip
+                    p_clip = os.path.join(VIDEO_DIR, video_nome) # Assicurati che VIDEO_DIR sia corretta
+                    
+                    if os.path.exists(p_clip):
+                        # 1. Mostriamo il video
+                        with open(p_clip, 'rb') as f:
+                            video_bytes = f.read()
+                            st.video(video_bytes)
+                        
+                        c1, c2 = st.columns(2)
+                        with c1:
+                            # 2. Pulsante di Download
+                            st.download_button(
+                                label="📥 SCARICA CLIP", 
+                                data=video_bytes, 
+                                file_name=video_nome, 
+                                mime="video/mp4",
+                                key=f"dl_{row['id']}"
+                            )
+                        with c2:
+                            # 3. Logica Social (Toggle) con Supabase
+                            stato_social = True if row.get('consenso_social') == 1 else False
+                            consenso = st.toggle("Sì, pubblicami su @MyPlayr", value=stato_social, key=f"tog_{row['id']}")
+                            
+                            if consenso != stato_social:
+                                nuovo_valore = 1 if consenso else 0
+                                try:
+                                    supabase.table("calendario").update({"consenso_social": nuovo_valore}).eq("id", row['id']).execute()
+                                    st.toast("✨ Impostazioni social aggiornate nel Cloud!")
+                                    time.sleep(1)
+                                    st.rerun()
+                                except Exception as e:
+                                    st.error(f"Errore aggiornamento social: {e}")
+                                    
+                        if stato_social:
+                            st.success("🌟 Questa clip è nella Hall of Fame!")
+                    else:
+                        st.warning(f"Clip '{video_nome}' in fase di elaborazione sul Mini PC...")
+                    st.divider()
+
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento clip personali: {e}")
 
 
 
-# --- PAGINA: HALL OF FAME (PUBBLICA) ---
+
+# --- PAGINA: HALL OF FAME (PUBBLICA - Cloud Supabase) ---
 elif st.session_state.pagina == 'hall_of_fame':
     st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
     st.divider()
 
-    conn = sqlite3.connect(DB_PATH)
+    try:
+        # Recuperiamo solo le clip con consenso_social = 1 dal Cloud
+        res = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "CLIP_UTENTE")\
+            .eq("consenso_social", 1)\
+            .order("id", desc=True)\
+            .execute()
+        
+        hof_clip = pd.DataFrame(res.data)
+
+        if hof_clip.empty:
+            st.info("La Hall of Fame è ancora vuota. Carica i tuoi highlight e attiva il consenso social!")
+        else:
+            # Layout a griglia per i video pubblici
+            for index, row in hof_clip.iterrows():
+                with st.container():
+                    st.subheader(f"🌟 Giocata di: {row['campo']}") # Mostra l'email o il nome dell'utente
+                    st.write(f"📅 Data: {row['data']}")
+                    
+                    video_nome = str(row['evento'])
+                    p_clip = os.path.join(VIDEO_DIR, video_nome)
+                    
+                    if os.path.exists(p_clip):
+                        with open(p_clip, 'rb') as f:
+                            st.video(f.read())
+                    else:
+                        st.warning("Video in fase di sincronizzazione con la Hall of Fame...")
+                    st.divider()
+
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento Hall of Fame: {e}")
+
     # Cerchiamo i video e i nomi dei giocatori
     query_fame = """
         SELECT DISTINCT c.evento, c.campo, u.nickname, u.ig_tag 
@@ -805,13 +998,31 @@ if st.button("🔙 Torna alla Home", key="btn_final_back"):
 
 
 
-    # --- ARCHIVIO REGISTRAZIONI EFFETTUATE ---
+    # --- ARCHIVIO REGISTRAZIONI EFFETTUATE (Cloud Supabase) ---
     st.subheader("🎞️ Archivio Video Registrati")
-    conn = sqlite3.connect(DB_PATH)
-    # Mostriamo solo quelle con stato 'FATTO' (registrate dal Regista)
-    query = "SELECT id, data, campo, ora, evento FROM calendario WHERE stato = 'FATTO' ORDER BY id DESC"
-    df_partite = pd.read_sql_query(query, conn)
-    conn.close()
+    
+    try:
+        # Recuperiamo dal Cloud solo i video con stato 'FATTO'
+        res = supabase.table("calendario")\
+            .select("id, data, campo, ora, evento")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+        
+        # Trasformiamo i dati in un DataFrame per la tabella
+        import pandas as pd
+        df_partite = pd.DataFrame(res.data)
+        
+        if df_partite.empty:
+            st.info("Nessun video registrato trovato nel Cloud.")
+        else:
+            # Mostriamo la tabella dei video pronti
+            st.dataframe(df_partite, use_container_width=True)
+            
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento archivio video: {e}")
+        df_partite = pd.DataFrame() # Evita crash se il Cloud è offline
+
 
     if not df_partite.empty:
         for idx, row in df_partite.iterrows():
@@ -821,20 +1032,55 @@ if st.button("🔙 Torna alla Home", key="btn_final_back"):
             c3.write(f"🕒 {row['ora']}")
             c4.write(f"📹 {row['evento']}") # Qui apparirà il nome file match_...
             if c5.button("🗑️", key=f"del_{row['id']}"):
-                # Elimina record e file fisico
-                if os.path.exists(os.path.join(VIDEO_DIR, row['evento'])):
-                    os.remove(os.path.join(VIDEO_DIR, row['evento']))
-                conn = sqlite3.connect(DB_PATH); conn.execute("DELETE FROM calendario WHERE id=?", (row['id'],)); conn.commit(); conn.close()
-                st.rerun()
-    else:
-        st.info("Nessuna registrazione completata dal Regista.")
+                                # --- NUOVA CANCELLAZIONE CLOUD ---
+                try:
+                    # 1. Elimina la riga da Supabase (Cloud)
+                    supabase.table("calendario").delete().eq("id", row['id']).execute()
+                    
+                    # 2. Nota: os.remove viene rimosso qui perché il SITO ONLINE 
+                    # non può cancellare file fisici sul tuo Mini PC. 
+                    # Il file rimarrà nel tuo ARCHIVIO_PARTITE locale come backup.
+                    
+                    st.success(f"🗑️ Match {row['id']} rimosso dal Cloud!")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Errore eliminazione Cloud: {e}")
 
 
-# --- PROFILO ATLETA ---
+
+# --- PROFILO ATLETA (Cloud Supabase) ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
     
-    conn = sqlite3.connect(DB_PATH)
+    try:
+        # Recuperiamo i dati dell'utente loggato dal Cloud
+        res = supabase.table("utenti")\
+            .select("*")\
+            .eq("email", st.session_state.user_email)\
+            .maybe_single()\
+            .execute()
+        
+        utente = res.data
+
+        if utente:
+            with st.container():
+                st.write(f"🏷️ **Nome:** {utente['nome']}")
+                st.write(f"👤 **Cognome:** {utente['cognome']}")
+                st.write(f"📧 **Email:** {utente['email']}")
+                st.write(f"🛡️ **Ruolo:** {utente['ruolo']}")
+                st.divider()
+                
+                if st.button("🚪 LOGOUT", use_container_width=True):
+                    st.session_state.logged_in = False
+                    st.session_state.pagina = 'login'
+                    st.rerun()
+        else:
+            st.error("Dati profilo non trovati nel Cloud.")
+
+    except Exception as e:
+        st.error(f"⚠️ Errore caricamento profilo: {e}")
+
     # 1. Recuperiamo i dati dell'utente
     user_query = pd.read_sql("SELECT * FROM utenti WHERE email=?", conn, params=(st.session_state.user_email,))
     
