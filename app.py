@@ -371,58 +371,55 @@ if st.session_state.pagina == 'home' and not st.session_state.autenticato:
     with col_btn:
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
-# --- LOGIN ---
+# --- LOGIN E REGISTRAZIONE (Cloud Supabase) ---
 elif st.session_state.pagina == 'login':
-    _, col_log, _ = st.columns(3)
+    _, col_log, _ = st.columns([1, 2, 1])
     with col_log:
-        # Inizializzazione stato (se non esiste)
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
-        # --- 1. MOSTRA SOLO ACCEDI ---
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-            if st.button("ENTRA"):
+            
+            # --- DEFINIZIONE VARIABILI (Fondamentale caricarle prima del button) ---
+            u = st.text_input("Email", key="log_email").strip().lower()
+            p = st.text_input("Password", type="password", key="log_pass")
+
+            if st.button("ENTRA", use_container_width=True):
                 try:
-                    # 1. Chiediamo a Supabase se esiste un utente con questa Email e Password
-                    res = supabase.table("utenti")\
-                        .select("*")\
-                        .eq("email", u)\
-                        .eq("password", p)\
-                        .maybe_single()\
-                        .execute()
+                    # Controllo Admin manuale (per sicurezza)
+                    if u == "admin@myplayr.com" and p == "admin123":
+                        st.session_state.logged_in = True
+                        st.session_state.user_email = u
+                        st.session_state.ruolo = "admin"
+                        st.success("Benvenuto Capo! Accesso Admin eseguito.")
+                        st.rerun()
                     
+                    # Controllo Utenti su Supabase
+                    res = supabase.table("utenti").select("*").eq("email", u).eq("password", p).maybe_single().execute()
                     user = res.data
 
                     if user:
-                        # 2. Se l'utente esiste, salviamo i dati nella sessione
                         st.session_state.logged_in = True
                         st.session_state.user_email = user['email']
                         st.session_state.user_nome = user['nome']
-                        st.session_state.ruolo = user['ruolo']
-                        
+                        st.session_state.ruolo = user.get('ruolo', 'Player')
                         st.success(f"Bentornato {user['nome']}!")
-                        time.sleep(1)
                         st.rerun()
                     else:
                         st.error("❌ Email o Password errate.")
-                
                 except Exception as e:
-                    st.error(f"⚠️ Errore di connessione al Cloud: {e}")
+                    st.error(f"⚠️ Errore Cloud: {e}")
 
-                if (u == "admin@myplayr.com" and p == "admin123") or user:
-                    st.session_state.autenticato = True; st.session_state.user_email = u
-                    vai_a('profilo')
-                else: st.error("Credenziali errate!")
-            
-            # Pulsanti di scambio (Rimuovono il modulo sopra e mostrano quello nuovo)
-            if st.button("password dimenticata?", type="secondary"): 
-                st.session_state.sub = 'recupero'; st.rerun()
+            # Pulsanti di scambio
             if st.button("Non hai ancora un account? Registrati", type="secondary"):
                 st.session_state.sub = 'reg'; st.rerun()
-            st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
+            if st.button("password dimenticata?", type="secondary"): 
+                st.session_state.sub = 'recupero'; st.rerun()
+            st.button("🔙 INDIETRO", on_click=lambda: st.session_state.update({"pagina": "home"}))
 
-        # --- 2. MOSTRA SOLO REGISTRAZIONE (Sostituisce il Login) ---
+        # --- 2. SOTTO-PAGINA: REGISTRATI ---
         elif st.session_state.sub == 'reg':
             st.markdown("<h2 style='text-align: center;'>Registrati</h2>", unsafe_allow_html=True)
             r_n = st.text_input("Nome")
@@ -430,32 +427,26 @@ elif st.session_state.pagina == 'login':
             r_e = st.text_input("Email")
             r_p = st.text_input("Password", type="password")
             
-        if st.button("CONFERMA REGISTRAZIONE"):
-            if r_n and r_c and r_e and r_p:
-                # --- NUOVA REGISTRAZIONE SU SUPABASE ---
-                nuovo_utente = {
-                    "nome": r_n,
-                    "cognome": r_c,
-                    "email": r_e.strip().lower(), # Pulizia email (fondamentale!)
-                    "password": r_p,               # In futuro useremo l'hash
-                    "ruolo": "Player"
-                }
-                
-                try:
-                    # Inserimento nel database online
-                    supabase.table("utenti").insert(nuovo_utente).execute()
-                    st.success("✅ Account creato con successo nel Cloud!")
-                    st.balloons()
-                    st.session_state.sub = 'login'
-                    st.rerun()
-                except Exception as e:
-                    # Se l'email esiste già, Supabase darà errore (giustamente)
-                    st.error(f"❌ Errore: L'email potrebbe essere già registrata. ({e})")
-            else: 
-                st.error("Riempi tutti i campi")
+            if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                if r_n and r_c and r_e and r_p:
+                    try:
+                        nuovo_utente = {
+                            "nome": r_n, "cognome": r_c, 
+                            "email": r_e.strip().lower(), "password": r_p, 
+                            "ruolo": "Player"
+                        }
+                        supabase.table("utenti").insert(nuovo_utente).execute()
+                        st.success("✅ Account creato! Ora puoi accedere.")
+                        st.session_state.sub = 'login'; st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Email già presente o errore: {e}")
+                else:
+                    st.error("Riempi tutti i campi!")
+            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
+                st.session_state.sub = 'login'; st.rerun()
 
-
-        # --- 3. MOSTRA SOLO RECUPERO (Sostituisce il Login) ---
+        # --- 3. SOTTO-PAGINA: RECUPERO ---
         elif st.session_state.sub == 'recupero':
             st.markdown("<h2 style='text-align: center;'>Recupero</h2>", unsafe_allow_html=True)
             m_rec = st.text_input("Inserisci la tua Email")
@@ -463,6 +454,7 @@ elif st.session_state.pagina == 'login':
                 st.info("Email inviata (funzione in test)")
             if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
                 st.session_state.sub = 'login'; st.rerun()
+
 
 
 # --- PAGINA ADMIN (DASHBOARD COMPLETA) ---
