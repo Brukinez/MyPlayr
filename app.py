@@ -106,37 +106,40 @@ from database import supabase
 # --- NUOVA CONNESSIONE CLOUD ---
 from database import supabase  # Importa il collegamento che abbiamo creato prima
 
-# --- REGOLAZIONE LOGO (Cambia questo numero per la grandezza) ---
-GRANDEZZA_LOGO = 250  # <--- Prova 350, se è troppo grande metti 300 o 250
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
+
     import subprocess
-    input_p = os.path.join(VIDEO_DIR, video_nome) # Legge dal PC
+
+    input_p = os.path.join(VIDEO_DIR, video_nome)
+
     nome_output = f"MyPlayr_{datetime.now().strftime('%H%M%S')}.mp4"
-    output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
-    
-    # Comando ultra-leggero (Stream Copy)
-    comando = ['ffmpeg', '-y', '-ss', str(inizio_sec), '-t', str(durata_sec), 
-               '-i', input_p, '-c', 'copy', output_p]
-    
-    
+
+    output_p = os.path.join(CLIP_GDRIVE, nome_output)
+
+    comando = [
+        'ffmpeg',
+        '-y',
+        '-ss', str(inizio_sec),
+        '-t', str(durata_sec),
+        '-i', input_p,
+        '-c', 'copy',
+        output_p
+    ]
+
     try:
         subprocess.run(comando, check=True)
-        # Registriamo comunque nel database per il tuo archivio Admin
-        conn = sqlite3.connect(DB_PATH)
-        conn.execute("INSERT INTO calendario (data, ora, campo, evento, stato) VALUES (?, ?, ?, ?, ?)",
-                     (datetime.now().strftime("%d-%m-%Y"), "CLIP", utente_email, nome_output, "CLIP_UTENTE"))
-        conn.commit()
-        conn.close()
-        return output_p # Restituiamo il percorso completo del file su G:
-    except:
+
+        return output_p
+
+    except Exception as e:
+        print("Errore FFmpeg:", e)
         return None
 
-# Percorso per salvare le clip su Google Drive (Disco G:)
 CLIP_GDRIVE = r"G:\Il mio Drive\CLIP_MYPLAYR"
-if not os.path.exists(CLIP_GDRIVE): os.makedirs(CLIP_GDRIVE)
 
-
-
+if not os.path.exists(CLIP_GDRIVE):
+    os.makedirs(CLIP_GDRIVE)
+    
 # --- FUNZIONE NEWSLETTER (SUPABASE + EMAIL) ---
 def invia_conferma_e_salva(email_utente):
     email_clean = email_utente.strip().lower()
