@@ -2,11 +2,16 @@ Avvio dei Motori (I due CMD)
 
 Finestra 1: Il Regista (Automazione)
 
+cd C:\MyGame_test
+python regista.py
+
 cd C:\MyPlayr_test
 python regista.py
 
-
 Finestra 2: Il Portale Clip (Sito Web)
 
-cd C:\MyPlayr_test
+cd C:\MyGame_test
+streamlit run app.py
+
+cd C:\MyPlayr
 streamlit run app.py
