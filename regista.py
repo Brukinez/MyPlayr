@@ -1,9 +1,8 @@
 import os
 import time
 import subprocess
-import sqlite3 # Lo teniamo per sicurezza ma usiamo Supabase
 from datetime import datetime
-from database import supabase # Carica il collegamento Cloud
+from database import supabase  # Assicurati che database.py sia nella stessa cartella
 
 # --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,54 +17,56 @@ def registra_clip(id_partita):
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
     percorso_completo = os.path.join(VIDEO_DIR, nome_file)
     
-    print(f"🔴 AVVIO REGISTRAZIONE LOCALE: {nome_file}...")
+    print(f"🔴 1. AVVIO REGISTRAZIONE FISICA: {nome_file}...")
 
-    # COMANDO FFmpeg (30 secondi di test)
+    # COMANDO FFmpeg (30 secondi di test - verifica il nome della tua webcam!)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
         '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
     ]
     
     try:
-        # 1. Registrazione Fisica
+        # Step 1: Registrazione
         subprocess.run(command, check=True)
-        print(f"✅ Registrazione completata: {nome_file}")
+        print(f"✅ Registrazione completata localmente.")
 
-        # 2. Caricamento su Google Drive (Rclone)
-        print(f"🚀 Caricamento su Cloud in corso...")
+        # Step 2: Caricamento su Google Drive
+        print(f"🚀 2. CARICAMENTO SU CLOUD...")
+        # NOTA: Assicurati che "remote:CLIP_MYPLAYR" esista in Rclone
         subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
         
-        # 3. Generazione Link Pubblico
+        # Step 3: Generazione Link Pubblico
+        print(f"🔗 3. GENERAZIONE LINK PUBBLICO...")
         res_link = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"], 
                                   capture_output=True, text=True, check=True)
         link_web = res_link.stdout.strip()
-        print(f"🌐 Link Cloud generato: {link_web}")
 
-        # 4. Aggiornamento SUPABASE (Database Cloud)
+        # Step 4: Aggiornamento SUPABASE
+        # Usiamo i nomi colonne: 'evento' per il nome file, 'link_video' per l'URL, 'stato' per chiudere
         supabase.table("calendario").update({
             "evento": nome_file, 
             "link_video": link_web, 
             "stato": "FATTO"
         }).eq("id", id_partita).execute()
         
-        print(f"✅ Database Cloud aggiornato per ID {id_partita}")
-        return nome_file
+        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online!")
+        return True
 
     except Exception as e:
-        print(f"❌ Errore durante il processo: {e}")
-        return None
+        print(f"❌ ERRORE CRITICO: {e}")
+        # Se fallisce, rimettiamo lo stato a PROGRAMMATO così il sistema può riprovare o segnalare l'errore
+        supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
+        return False
 
 def monitor():
-    print("🚀 Motore MyPlayr LIVE (Supabase) ATTIVO. In attesa...")
+    print("🚀 MOTORE MyPlayr LIVE ATTIVO. In ascolto su Supabase...")
     while True:
         try:
             now = datetime.now()
             data_oggi = now.strftime("%d-%m-%Y")
             ora_attuale = now.strftime("%H:%M")
             
-            print(f"🕒 Orario PC: {ora_attuale} | Cerco match su Supabase...")
-
-            # Chiediamo a Supabase se c'è un match ORA
+            # 🔎 CERCA MATCH DA INIZIARE ORA
             response = supabase.table("calendario")\
                 .select("*")\
                 .eq("data", data_oggi)\
@@ -76,24 +77,24 @@ def monitor():
             match_list = response.data
 
             if match_list:
-                # Se troviamo almeno un match (prendiamo il primo)
                 match = match_list[0]
                 id_p = match['id']
-                print(f"🎬 MATCH TROVATO! ID: {id_p} - Avvio registrazione...")
+                print(f"🎬 MATCH TROVATO! ID: {id_p} - Ore: {ora_attuale}")
                 
+                # CAMBIAMO SUBITO LO STATO per evitare che il loop lo trovi di nuovo mentre registra
+                supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", id_p).execute()
+                
+                # Avviamo il processo (Registra -> Carica -> Link -> Fatto)
                 registra_clip(id_p)
-                print(f"💾 Ciclo completato per ID {id_p}")
             else:
-                # Se non c'è nulla, facciamo lo "spionaggio" per vedere cosa c'è nel Cloud
-                print(f"🕒 {ora_attuale} - Nessun match programmato.")
-                # Opzionale: stampa tutto quello che c'è nel Cloud per debug
-                res_all = supabase.table("calendario").select("id, data, ora, stato").limit(5).execute()
-                print(f"📊 Ultime righe nel Cloud: {res_all.data}")
+                # Debug silenzioso ogni 30 secondi
+                print(f"😴 {ora_attuale} - Nessun match. Tutto tranquillo.")
             
         except Exception as e:
-            print(f"⚠️ Errore connessione Cloud: {e}")
+            print(f"⚠️ Errore di connessione o Database: {e}")
             
-        time.sleep(30) # Controlla ogni 30 secondi
+        time.sleep(30) # Controllo ogni 30 secondi
 
 if __name__ == "__main__":
     monitor()
+
