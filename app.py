@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 import pandas as pd
-import numpy as np
 from datetime import datetime
 from PIL import Image
 import smtplib
