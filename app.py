@@ -7,62 +7,102 @@ import smtplib
 from email.mime.text import MIMEText
 # --- STILE E CSS ---
 st.set_page_config(page_title="MyPlayr", layout="wide")
+
 st.markdown("""
-    <style>
-    .stApp { background-color: #2F353B; color: white; }
-    h1, h2, h3, p, span, label { color: white !important; }
-    
-    /* Pulsanti VERDI Principali */
-    .stButton>button { 
-        background-color: #28a745 !important; 
-        color: white !important; 
-        border: none !important; 
-        font-weight: bold !important; 
-        width: 100%; 
-        padding: 12px; 
-        border-radius: 5px; 
-        text-transform: uppercase;
-        font-size: 16px;
-    }
-    
-    hr { border: 1px solid #28a745 !important; opacity: 1; }
-    
-    /* Avatar Profilo */
-    .avatar-container { text-align: center; margin-bottom: 20px; }
-    .avatar-img { 
-        width: 120px; height: 120px; 
-        border-radius: 50%; 
-        border: 4px solid #28a745; 
-        object-fit: cover; 
-        margin: 0 auto; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        background: #3E444A;
-        font-size: 60px; /* Icona più grande */
-    }
-    
-    .data-card { background-color: #3E444A; padding: 12px; border-radius: 8px; border-left: 5px solid #28a745; margin-bottom: 8px; font-size: 14px; }
-    .stat-box { text-align: center; background: #3E444A; padding: 10px; border-radius: 8px; border: 1px solid #28a745; }
+<style>
 
-    /* Link Piccoli Navigazione */
-    div[data-testid="stButton"] > button[kind="secondary"] { 
-        background-color: transparent !important; 
-        color: #d1d1d1 !important; 
-        border: none !important; 
-        font-size: 12px !important; 
-        width: 100% !important; 
-        text-transform: none !important; 
-    }
-    div[data-testid="stButton"] > button[kind="secondary"]:hover { color: #28a745 !important; text-decoration: underline !important; }
-    
-    /* File Uploader Custom Label */
-    .stFileUploader label { font-weight: bold !important; color: #28a745 !important; font-size: 16px !important; }
+.stApp { background-color: #2F353B; color: white; }
 
-    .footer-main { text-align: center; font-size: 16px; margin-top: 50px; }
-    .footer-sub { font-size: 12px; color: #888; }
-    </style>
+h1, h2, h3, p, span, label { color: white !important; }
+
+/* Pulsanti VERDI Principali */
+div.stButton > button {
+    background-color: #28a745 !important;
+    color: white !important;
+    border: none !important;
+    font-weight: bold !important;
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+hr { border: 1px solid #28a745 !important; opacity: 1; }
+
+/* Avatar Profilo */
+.avatar-container { text-align: center; margin-bottom: 20px; }
+
+.avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #28a745;
+    object-fit: cover;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #3E444A;
+    font-size: 60px;
+}
+
+.data-card {
+    background-color: #3E444A;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 5px solid #28a745;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.stat-box {
+    text-align: center;
+    background: #3E444A;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #28a745;
+}
+
+/* Link piccoli navigazione */
+div[data-testid="stButton"] > button[kind="secondary"] {
+    background-color: transparent !important;
+    color: #d1d1d1 !important;
+    border: none !important;
+    font-size: 12px !important;
+    width: 100% !important;
+    text-transform: none !important;
+}
+
+div[data-testid="stButton"] > button[kind="secondary"]:hover {
+    color: #28a745 !important;
+    text-decoration: underline !important;
+}
+
+/* File uploader */
+.stFileUploader label {
+    font-weight: bold !important;
+    color: #28a745 !important;
+    font-size: 16px !important;
+}
+
+/* Footer */
+.footer-main {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 50px;
+}
+
+.footer-sub {
+    font-size: 12px;
+    color: #888;
+}
+
+</style>
 """, unsafe_allow_html=True)
+
+# --- CONNESSIONE CLOUD ---
+from database import supabase
 # --- NUOVA CONNESSIONE CLOUD ---
 from database import supabase  # Importa il collegamento che abbiamo creato prima
 
