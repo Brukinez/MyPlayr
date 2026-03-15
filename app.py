@@ -149,18 +149,29 @@ def pagina_profilo():
 
     st.title("👤 Profilo")
 
-    email = st.session_state.user_email
+    email = st.session_state.get("user_email")
 
-    res = supabase.table("utenti").select("*").eq("email", email).execute()
+    if not email:
+        st.error("Utente non autenticato")
+        return
+
+    res = supabase.table("utenti") \
+        .select("email, nickname, ig_tag, ruolo") \
+        .eq("email", email) \
+        .execute()
 
     if not res.data:
-        st.error("Profilo non trovato")
+        st.error("Profilo non trovato nel database")
         return
 
     user = res.data[0]
 
-    st.write("Nickname:", user.get("nickname", ""))
-    st.write("Instagram:", user.get("ig_tag", ""))
+    st.subheader("Informazioni utente")
+
+    st.write("📧 Email:", user.get("email"))
+    st.write("👤 Nickname:", user.get("nickname"))
+    st.write("📷 Instagram:", user.get("ig_tag"))
+    st.write("🎭 Ruolo:", user.get("ruolo"))
 
 
 # =====================================================
