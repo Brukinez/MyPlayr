@@ -871,92 +871,91 @@ if st.button("🔙 Torna alla Home", key="btn_final_back"):
 
 
 
-    # --- ARCHIVIO REGISTRAZIONI EFFETTUATE (VERSIONE ADMIN) ---
-elif st.session_state.pagina == 'admin':
-    # ... (qui va la parte dei contatori che abbiamo visto prima) ...
-
+    # --- ARCHIVIO REGISTRAZIONI EFFETTUATE ---
     st.subheader("🎞️ Archivio Video Registrati")
-    
-    # Recupero dati dal Cloud (Sostituisce sqlite3)
-    res_arc = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
-    
-    if res_arc.data:
-        df_partite = pd.DataFrame(res_arc.data)
+    conn = sqlite3.connect(DB_PATH)
+    # Mostriamo solo quelle con stato 'FATTO' (registrate dal Regista)
+    query = "SELECT id, data, campo, ora, evento FROM calendario WHERE stato = 'FATTO' ORDER BY id DESC"
+    df_partite = pd.read_sql_query(query, conn)
+    conn.close()
+
+    if not df_partite.empty:
         for idx, row in df_partite.iterrows():
-            # Manteniamo esattamente il tuo layout originale [2,2,1,3,1]
             c1, c2, c3, c4, c5 = st.columns([2,2,1,3,1])
-            
             c1.write(f"📅 {row['data']}")
             c2.write(f"🏟️ {row['campo']}")
             c3.write(f"🕒 {row['ora']}")
-            
-            # Se esiste il link, lo rendiamo cliccabile, altrimenti solo testo
-            nome_file = row['evento'] if row['evento'] else "In elaborazione..."
-            if row.get('link_video'):
-                c4.markdown(f"🔗 [{nome_file}]({row['link_video']})")
-            else:
-                c4.write(f"📹 {nome_file}")
-            
-            if c5.button("🗑️", key=f"del_arc_{row['id']}"):
-                # Elimina solo dal Cloud (il Mini PC gestirà i suoi file locali)
-                supabase.table("calendario").delete().eq("id", row['id']).execute()
-                st.success("Rimosso dal Cloud!")
+            c4.write(f"📹 {row['evento']}") # Qui apparirà il nome file match_...
+            if c5.button("🗑️", key=f"del_{row['id']}"):
+                # Elimina record e file fisico
+                if os.path.exists(os.path.join(VIDEO_DIR, row['evento'])):
+                    os.remove(os.path.join(VIDEO_DIR, row['evento']))
+                conn = sqlite3.connect(DB_PATH); conn.execute("DELETE FROM calendario WHERE id=?", (row['id'],)); conn.commit(); conn.close()
                 st.rerun()
-            st.divider()
     else:
-        st.info("📌 Nessuna registrazione completata disponibile nel Cloud.")
+        st.info("Nessuna registrazione completata dal Regista.")
 
-# --- PROFILO ATLETA (GRAFICA ORIGINALE INTEGRALE) ---
+
+# --- PROFILO ATLETA ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
     
-    # Recupero dati utente dal Cloud
-    email_sessione = st.session_state.user_email.strip().lower()
-    res_u = supabase.table("utenti").select("*").eq("email", email_sessione).execute()
+    conn = sqlite3.connect(DB_PATH)
+    # 1. Recuperiamo i dati dell'utente
+    user_query = pd.read_sql("SELECT * FROM utenti WHERE email=?", conn, params=(st.session_state.user_email,))
     
-    if res_u.data:
-        user = res_u.data[0] # Prendiamo il primo risultato
+    if not user_query.empty:
+        user = user_query.iloc[0]
         
-        # --- SEZIONE MODIFICA (FORM EXPANDER) ---
+        # --- SEZIONE MODIFICA (FORM) ---
         with st.expander("⚙️ Modifica Dati Profilo e Foto"):
             col_f, col_i = st.columns(2)
             with col_f:
                 nuova_foto = st.file_uploader("Aggiorna Foto Profilo", type=['jpg', 'png', 'jpeg'])
             with col_i:
-                nuovo_nick = st.text_input("Nickname", value=user.get('nickname') or "")
-                nuovo_ig = st.text_input("Il tuo Tag Instagram", value=user.get('ig_tag') or "")
-                ruoli_lista = ["Attaccante", "Centrocampista", "Difensore", "Portiere"]
-                idx_r = ruoli_lista.index(user['ruolo']) if user.get('ruolo') in ruoli_lista else 0
-                nuovo_ruolo = st.selectbox("Il tuo Ruolo", ruoli_lista, index=idx_r)
-                nuova_bio = st.text_area("La tua Bio", value=user.get('bio') or "")
+                nuovo_nick = st.text_input("Nickname", value=user['nickname'] if user['nickname'] else "")
+                tag_ig_attuale = user['ig_tag'] if 'ig_tag' in user and user['ig_tag'] else ""
+                nuovo_ig = st.text_input("Il tuo Tag Instagram (es. @nomeutente)", value=tag_ig_attuale)
+                nuovo_ruolo = st.selectbox("Il tuo Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere"])
+                nuova_bio = st.text_area("La tua Bio", value=user['bio'] if user['bio'] else "")
 
             if st.button("💾 SALVA MODIFICHE", use_container_width=True):
-                upd = {"nickname": nuovo_nick, "ruolo": nuovo_ruolo, "bio": nuova_bio, "ig_tag": nuovo_ig}
-                supabase.table("utenti").update(upd).eq("email", email_sessione).execute()
+                percorso_f = user['foto_path']
+                if nuova_foto:
+                    percorso_f = os.path.join(IMG_DIR, f"foto_{user['id']}.jpg")
+                    with open(percorso_f, "wb") as f:
+                        f.write(nuova_foto.getbuffer())
+                
+                c = conn.cursor()
+                c.execute("UPDATE utenti SET nickname=?, ruolo=?, bio=?, foto_path=?, ig_tag=? WHERE email=?", 
+                          (nuovo_nick, nuovo_ruolo, nuova_bio, percorso_f, nuovo_ig, st.session_state.user_email))
+                conn.commit()
                 st.success("✅ Profilo aggiornato!")
                 st.rerun()
 
         st.divider()
 
-        # --- SEZIONE VISUALIZZAZIONE (LA TUA GRAFICA ORIGINALE [1, 2]) ---
+        # --- SEZIONE VISUALIZZAZIONE (GRAFICA) ---
         c_left, c_right = st.columns([1, 2])
         with c_left:
             st.markdown('<div class="avatar-container">', unsafe_allow_html=True)
-            # Avatar 👤 (Il cloud non vede i file locali del Mini PC)
-            st.markdown('<div class="avatar-img">👤</div>', unsafe_allow_html=True)
-            st.markdown(f"<p style='margin-top:10px;'><b>{user['nome']} {user['cognome']}</b><br><span style='color:#28a745; font-size:14px; font-weight:bold;'>{user.get('ruolo', 'Player')}</span></p>", unsafe_allow_html=True)
+            if user['foto_path'] and os.path.exists(user['foto_path']):
+                st.image(user['foto_path'], width=120)
+            else:
+                st.markdown('<div class="avatar-img">👤</div>', unsafe_allow_html=True)
+            st.markdown(f"<p style='margin-top:10px;'><b>{user['nome']} {user['cognome']}</b><br><span style='color:#28a745; font-size:14px; font-weight:bold;'>{user['ruolo']}</span></p>", unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
         
         with c_right:
             d1, d2 = st.columns(2)
             with d1:
-                st.markdown(f'<div class="data-card"><b>Nickname:</b> {user.get("nickname") or "-"}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag") or "-"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Nickname:</b> {user["nickname"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user["ig_tag"] if user["ig_tag"] else "-"}</div>', unsafe_allow_html=True)
             with d2:
-                st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo") or "-"}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user.get("data_iscrizione") or "-"}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="data-card"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio") or "-"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user["ruolo"]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user["data_iscrizione"]}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="data-card"><b>Email:</b> {st.session_state.user_email}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="data-card"><b>Bio:</b> {user["bio"]}</div>', unsafe_allow_html=True)
 
         st.divider()
         st.subheader("📊 Le tue statistiche")
@@ -968,10 +967,12 @@ elif st.session_state.pagina == 'profilo':
         st.divider()
         st.subheader("🏆 I tuoi trofei")
         st.info("Non hai ancora guadagnato nessun badge.")
+        
         st.divider()
         st.subheader("🎥 Clip recenti")
-        st.markdown('<p style="text-align:center; padding: 20px; background: #3E444A; border-radius: 10px;">📹<br>Non hai ancora creato nessuna clip</p>', unsafe_allow_html=True)
-
+        st.markdown('<p style="text-align:center; padding: 20px; background: #3E444A; border-radius: 10px;">📹<br>Non hai acquistato nessuna clip</p>', unsafe_allow_html=True)
+    
+    conn.close()
 
 # --- ALTRE PAGINE & FOOTER ---
 elif st.session_state.pagina == 'recupero_password': st.button("Torna a login", on_click=lambda: vai_a('login'))
