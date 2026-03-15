@@ -246,46 +246,47 @@ def vai_a(nome):
     # Non serve rerun() qui se vai_a viene chiamata dentro un evento pulsante
 
 
-# --- NAVBAR DINAMICA COMPATTA (SUPABASE READY) ---
+# --- NAVBAR DINAMICA IN ALTO A DESTRA (SUPABASE READY) ---
 if st.session_state.autenticato:
-    # 1. CSS specifico per rimpicciolire i tasti della Navbar
+    # 1. CSS per rimpicciolire i tasti e allinearli
     st.markdown("""
         <style>
-        /* Rimpicciolisce i bottoni della navbar per renderla meno alta */
         div[data-testid="stHorizontalBlock"] button {
-            padding: 4px 8px !important;
-            font-size: 13px !important;
-            height: auto !important;
+            padding: 2px 5px !important;
+            font-size: 11px !important;
+            height: 28px !important;
+            min-height: 28px !important;
+            width: 100% !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # 2. Creiamo una struttura a 2 grandi colonne: 
-    # La prima (60%) contiene il menu, la seconda (40%) resta vuota per spingere tutto a sinistra
-    col_menu, col_vuota = st.columns([0.6, 0.4])
+    # 2. Creiamo una struttura: 60% vuoto a sinistra, 40% menu a destra
+    col_vuota, col_menu = st.columns([0.6, 0.4])
     
     with col_menu:
         # Sottocolonne per i tasti (7 se admin, 6 se user)
         n_tasti = 7 if is_admin else 6
         nav_cols = st.columns(n_tasti)
         
-        with nav_cols[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'))
-        with nav_cols[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'))
-        with nav_cols[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'))
-        with nav_cols[3]: st.button("🏆 Fame", on_click=lambda: vai_a('hall_of_fame'))
-        with nav_cols[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'))
+        # Logica dei tasti con IF (più stabile di on_click)
+        if nav_cols[0].button("🏠"): vai_a('home_auth')
+        if nav_cols[1].button("👤"): vai_a('profilo')
+        if nav_cols[2].button("🏟️"): vai_a('partite')
+        if nav_cols[3].button("🏆"): vai_a('hall_of_fame')
+        if nav_cols[4].button("🎞️"): vai_a('mie_clip')
         
         if is_admin:
-            with nav_cols[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'))
+            if nav_cols[5].button("🛡️"): vai_a('admin')
         
-        with nav_cols[-1]: 
-            if st.button("🚪 Esci"):
-                st.session_state.autenticato = False
-                st.session_state.user_email = ""
-                st.session_state.user_role = "user"
-                vai_a('home')
+        # Tasto Logout (sempre l'ultimo)
+        if nav_cols[-1].button("🚪"):
+            st.session_state.autenticato = False
+            st.session_state.user_email = ""
+            st.session_state.user_role = "user"
+            vai_a('home')
             
     st.divider() 
 
