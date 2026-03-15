@@ -246,49 +246,49 @@ def vai_a(nome):
     # Non serve rerun() qui se vai_a viene chiamata dentro un evento pulsante
 
 
-# --- NAVBAR DINAMICA IN ALTO A DESTRA (SUPABASE READY) ---
+# --- NAVBAR DINAMICA A DESTRA (VERSIONE TESTUALE) ---
 if st.session_state.autenticato:
-    # 1. CSS per rimpicciolire i tasti e allinearli
+    # 1. CSS per rimpicciolire i testi e allinearli a destra
     st.markdown("""
         <style>
         div[data-testid="stHorizontalBlock"] button {
-            padding: 2px 5px !important;
-            font-size: 11px !important;
-            height: 28px !important;
-            min-height: 28px !important;
+            padding: 3px 6px !important;
+            font-size: 12px !important;
+            height: 32px !important;
             width: 100% !important;
+            border-radius: 4px !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # 2. Creiamo una struttura: 60% vuoto a sinistra, 40% menu a destra
-    col_vuota, col_menu = st.columns([0.6, 0.4])
+    # 2. Struttura: 40% vuoto a sinistra, 60% menu a destra (per far stare i testi)
+    col_vuota, col_menu = st.columns([0.4, 0.6])
     
     with col_menu:
-        # Sottocolonne per i tasti (7 se admin, 6 se user)
+        # Sottocolonne per i tasti
         n_tasti = 7 if is_admin else 6
-        nav_cols = st.columns(n_tasti)
+        nav = st.columns(n_tasti)
         
-        # Logica dei tasti con IF (più stabile di on_click)
-        if nav_cols[0].button("🏠"): vai_a('home_auth')
-        if nav_cols[1].button("👤"): vai_a('profilo')
-        if nav_cols[2].button("🏟️"): vai_a('partite')
-        if nav_cols[3].button("🏆"): vai_a('hall_of_fame')
-        if nav_cols[4].button("🎞️"): vai_a('mie_clip')
+        # Logica con IF (Cambia pagina istantaneamente al click)
+        if nav[0].button("🏠 Home"): vai_a('home_auth')
+        if nav[1].button("👤 Profilo"): vai_a('profilo')
+        if nav[2].button("🏟️ Partite"): vai_a('partite')
+        if nav[3].button("🏆 Fame"): vai_a('hall_of_fame')
+        if nav[4].button("🎞️ Clip"): vai_a('mie_clip')
         
         if is_admin:
-            if nav_cols[5].button("🛡️"): vai_a('admin')
+            if nav[5].button("🛡️ Admin"): vai_a('admin')
         
-        # Tasto Logout (sempre l'ultimo)
-        if nav_cols[-1].button("🚪"):
+        if nav[-1].button("🚪 Esci"):
             st.session_state.autenticato = False
             st.session_state.user_email = ""
             st.session_state.user_role = "user"
             vai_a('home')
             
     st.divider() 
+
 
 
 # --- PAGINA: HALL OF FAME (PUBBLICA - SUPABASE READY) ---
