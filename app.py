@@ -246,50 +246,34 @@ def vai_a(nome):
     # Non serve rerun() qui se vai_a viene chiamata dentro un evento pulsante
 
 
-# --- NAVBAR DINAMICA A DESTRA (VERSIONE TESTUALE) ---
+# --- NAVBAR DINAMICA (SUPABASE READY) ---
 if st.session_state.autenticato:
-    # 1. CSS per rimpicciolire i testi e allinearli a destra
-    st.markdown("""
-        <style>
-        div[data-testid="stHorizontalBlock"] button {
-            padding: 3px 6px !important;
-            font-size: 12px !important;
-            height: 32px !important;
-            width: 100% !important;
-            border-radius: 4px !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-
+    # Usiamo il 'ruolo' salvato nel session_state invece della sola email
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # 2. Struttura: 40% vuoto a sinistra, 60% menu a destra (per far stare i testi)
-    col_vuota, col_menu = st.columns([0.4, 0.6])
+    # Creiamo le colonne: 7 per l'Admin (ha il tasto in più), 6 per l'Utente
+    nav_cols = st.columns(7 if is_admin else 6)
     
-    with col_menu:
-        # Sottocolonne per i tasti
-        n_tasti = 7 if is_admin else 6
-        nav = st.columns(n_tasti)
-        
-        # Logica con IF (Cambia pagina istantaneamente al click)
-        if nav[0].button("🏠 Home"): vai_a('home_auth')
-        if nav[1].button("👤 Profilo"): vai_a('profilo')
-        if nav[2].button("🏟️ Partite"): vai_a('partite')
-        if nav[3].button("🏆 Fame"): vai_a('hall_of_fame')
-        if nav[4].button("🎞️ Clip"): vai_a('mie_clip')
-        
-        if is_admin:
-            if nav[5].button("🛡️ Admin"): vai_a('admin')
-        
-        if nav[-1].button("🚪 Esci"):
+    with nav_cols[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'))
+    with nav_cols[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'))
+    with nav_cols[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'))
+    with nav_cols[3]: st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'))
+    with nav_cols[4]: st.button("🎞️ Le Mie Clip", on_click=lambda: vai_a('mie_clip'))
+    
+    # Tasto Admin visibile solo se il ruolo su Supabase è 'admin'
+    if is_admin:
+        with nav_cols[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'))
+    
+    # Il tasto Logout è sempre l'ultimo
+    with nav_cols[-1]: 
+        if st.button("🚪 Esci", type="secondary"): # 'secondary' per non farlo troppo invasivo
+            # Puliamo la sessione al logout
             st.session_state.autenticato = False
             st.session_state.user_email = ""
             st.session_state.user_role = "user"
             vai_a('home')
             
-    st.divider() 
-
-
+    st.divider() # Linea verde di separazione (dal tuo CSS)
 
 # --- PAGINA: HALL OF FAME (PUBBLICA - SUPABASE READY) ---
 elif st.session_state.pagina == 'hall_of_fame':
@@ -984,7 +968,7 @@ elif st.session_state.pagina == 'profilo':
         st.divider()
         st.subheader("🏆 I tuoi trofei")
         st.info("Non hai ancora guadagnato nessun badge.")
-
+        
         st.divider()
         st.subheader("🎥 Clip recenti")
         st.markdown('<p style="text-align:center; padding: 20px; background: #3E444A; border-radius: 10px;">📹<br>Non hai ancora creato nessuna clip</p>', unsafe_allow_html=True)
