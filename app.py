@@ -206,6 +206,13 @@ def ottieni_dati_profilo(email):
 # --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 if "password_dev_corretta" not in st.session_state:
     st.session_state["password_dev_corretta"] = False
+# --- NUOVA INIZIALIZZAZIONE NAVIGAZIONE ---
+if 'pagina' not in st.session_state:
+    st.session_state.pagina = 'home'
+
+def nav_to(nome_pagina):
+    st.session_state.pagina = nome_pagina
+
 
 if not st.session_state["password_dev_corretta"]:
     st.markdown("<h1 style='text-align: center;'>🚧 MyPlayr - Area Protetta</h1>", unsafe_allow_html=True)
@@ -225,6 +232,13 @@ if not st.session_state["password_dev_corretta"]:
             else:
                 st.error("❌ Password errata!")
     st.stop() 
+# --- SIDEBAR DI NAVIGAZIONE ---
+with st.sidebar:
+    st.title("Menu MyPlayr")
+    if st.button("🏠 Home"): nav_to("🏠 Home")
+    if st.button("📽️ Partite"): nav_to("📽️ Partite")
+    if st.button("🛠️ Area Admin"): nav_to("Area Admin")
+    st.markdown("---")
 
 
 # --- LOGICA NAVIGAZIONE E SESSIONE ---
@@ -982,6 +996,17 @@ with f_l: st.markdown("<p class='footer-sub'>Privacy Policy</p>", unsafe_allow_h
 with f_r: st.markdown("<p class='footer-sub' style='text-align:right;'>Termini e Condizioni</p>", unsafe_allow_html=True)
 st.markdown("<p class='footer-sub' style='text-align:center;'>© 2026 tutti i diritti riservati</p>", unsafe_allow_html=True)
 
+if st.session_state["page"] == "🏠 Home":
+    st.title("Benvenuto su MyPlayr")
+    # Qui sposta il codice della tua Home attuale
+
+elif st.session_state["page"] == "📽️ Partite":
+    st.title("Archivio Partite")
+    # Qui sposta il codice che mostra i video
+
+elif st.session_state["page"] == "Area Admin":
+    st.title("Pannello di Controllo")
+    # Qui sposta il codice della programmazione match
 
 
 
