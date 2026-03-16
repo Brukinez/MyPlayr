@@ -15,3 +15,8 @@ streamlit run app.py
 
 cd C:\MyPlayr
 streamlit run app.py
+
+
+IA
+cd C:\MyPlayr
+python test_ia.py

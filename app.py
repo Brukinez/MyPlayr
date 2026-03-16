@@ -1,164 +1,223 @@
 import streamlit as st
 import os
 import pandas as pd
+import numpy as np
+import smtplib
+import subprocess # Fondamentale per far lavorare FFmpeg e tagliare i video
 from datetime import datetime
 from PIL import Image
-import smtplib
 from email.mime.text import MIMEText
-# --- STILE E CSS ---
-st.set_page_config(page_title="MyPlayr", layout="wide")
+
+# --- 1. CONFIGURAZIONE PAGINA ---
+# Questo deve essere SEMPRE il primo comando Streamlit del file
+st.set_page_config(
+    page_title="MyPlayr - Video Analysis Pro", 
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# --- 2. GESTIONE PERCORSI (FOLDERS) ---
+# Usiamo questo metodo per far funzionare il codice su ogni PC (casa o centro sportivo)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Cartelle principali
+VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
+IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
+CLIP_DIR = os.path.join(BASE_DIR, "CLIP_TAGLIATE")
+
+# Creazione automatica cartelle mancanti
+for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
+    if not os.path.exists(cartella):
+        os.makedirs(cartella)
+
+# --- 3. COSTANTI ---
+GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyPlayr
+
+
+# --- BLOCCO 2: STILE E CSS ---
+# Nota: st.set_page_config è stato rimosso da qui perché deve stare all'inizio del file (Blocco 1)
 
 st.markdown("""
 <style>
+    /* Sfondo generale e colore testo */
+    .stApp { 
+        background-color: #2F353B; 
+        color: white; 
+    }
 
-.stApp { background-color: #2F353B; color: white; }
+    /* Forziamo il bianco per tutti i testi principali */
+    h1, h2, h3, p, span, label, .stMarkdown { 
+        color: white !important; 
+    }
 
-h1, h2, h3, p, span, label { color: white !important; }
+    /* Pulsanti VERDI Principali (Pieni) */
+    div.stButton > button:first-child {
+        background-color: #28a745 !important;
+        color: white !important;
+        border: none !important;
+        font-weight: bold !important;
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        text-transform: uppercase;
+        font-size: 16px;
+        transition: 0.3s; /* Effetto morbido al passaggio del mouse */
+    }
+    
+    div.stButton > button:first-child:hover {
+        background-color: #218838 !important; /* Verde un po' più scuro quando passi sopra */
+        border: none !important;
+    }
 
-/* Pulsanti VERDI Principali */
-div.stButton > button {
-    background-color: #28a745 !important;
-    color: white !important;
-    border: none !important;
-    font-weight: bold !important;
-    width: 100%;
-    padding: 12px;
-    border-radius: 5px;
-    text-transform: uppercase;
-    font-size: 16px;
-}
+    /* Linea di divisione verde */
+    hr { border: 1px solid #28a745 !important; opacity: 1; }
 
-hr { border: 1px solid #28a745 !important; opacity: 1; }
+    /* Avatar Profilo circolare */
+    .avatar-container { text-align: center; margin-bottom: 20px; }
+    .avatar-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid #28a745;
+        object-fit: cover;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #3E444A;
+        font-size: 60px;
+    }
 
-/* Avatar Profilo */
-.avatar-container { text-align: center; margin-bottom: 20px; }
+    /* Schede Dati (Card) con bordo sinistro verde */
+    .data-card {
+        background-color: #3E444A;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 6px solid #28a745;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
 
-.avatar-img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 4px solid #28a745;
-    object-fit: cover;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #3E444A;
-    font-size: 60px;
-}
+    /* Box Statistiche */
+    .stat-box {
+        text-align: center;
+        background: #3E444A;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #28a745;
+    }
 
-.data-card {
-    background-color: #3E444A;
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 5px solid #28a745;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
+    /* Pulsanti SECONDARI (tipo Link/Trasparenza) */
+    div[data-testid="stButton"] > button[kind="secondary"] {
+        background-color: transparent !important;
+        color: #d1d1d1 !important;
+        border: none !important;
+        font-size: 13px !important;
+        text-transform: none !important;
+        text-decoration: none !important;
+    }
 
-.stat-box {
-    text-align: center;
-    background: #3E444A;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #28a745;
-}
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {
+        color: #28a745 !important;
+        background-color: transparent !important;
+        text-decoration: underline !important;
+    }
 
-/* Link piccoli navigazione */
-div[data-testid="stButton"] > button[kind="secondary"] {
-    background-color: transparent !important;
-    color: #d1d1d1 !important;
-    border: none !important;
-    font-size: 12px !important;
-    width: 100% !important;
-    text-transform: none !important;
-}
+    /* Label del caricamento file */
+    .stFileUploader label {
+        font-weight: bold !important;
+        color: #28a745 !important;
+        font-size: 16px !important;
+    }
 
-div[data-testid="stButton"] > button[kind="secondary"]:hover {
-    color: #28a745 !important;
-    text-decoration: underline !important;
-}
-
-/* File uploader */
-.stFileUploader label {
-    font-weight: bold !important;
-    color: #28a745 !important;
-    font-size: 16px !important;
-}
-
-/* Footer */
-.footer-main {
-    text-align: center;
-    font-size: 16px;
-    margin-top: 50px;
-}
-
-.footer-sub {
-    font-size: 12px;
-    color: #888;
-}
-
+    /* Footer personalizzato */
+    .footer-main {
+        text-align: center;
+        font-size: 16px;
+        margin-top: 50px;
+    }
+    .footer-sub {
+        font-size: 12px;
+        color: #888;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# --- CONNESSIONE CLOUD ---
-from database import supabase
-# --- NUOVA CONNESSIONE CLOUD ---
-from database import supabase  # Importa il collegamento che abbiamo creato prima
 
+# --- BLOCCO 3: CONNESSIONE CLOUD E LOGICA CLIP ---
+
+# Importiamo la connessione dal tuo file database.py
+from database import supabase 
+
+# Configurazione Percorsi per le Clip (Google Drive o Locale)
+# NOTA: Se il disco G: non è collegato, il programma userà una cartella locale di emergenza
+CLIP_GDRIVE = r"G:\Il mio Drive\CLIP_MYPLAYR"
+
+if not os.path.exists(CLIP_GDRIVE):
+    try:
+        os.makedirs(CLIP_GDRIVE)
+    except:
+        # Se il disco G non esiste, salva nella cartella del progetto
+        CLIP_GDRIVE = os.path.join(BASE_DIR, "CLIP_EMERGENZA")
+        if not os.path.exists(CLIP_GDRIVE): os.makedirs(CLIP_GDRIVE)
+
+# --- FUNZIONE TAGLIO VIDEO (FFMPEG) ---
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
-
-    import subprocess
-
-    input_p = os.path.join(VIDEO_DIR, video_nome)
-
-    nome_output = f"MyPlayr_{datetime.now().strftime('%H%M%S')}.mp4"
-
+    """Taglia una clip dal video 4K senza perdere qualità"""
+    
+    input_p = os.path.join(VIDEO_DIR, video_nome) # Video originale (70 min)
+    
+    # Nome unico per la clip: MyPlayr_ORA_EMAIL.mp4
+    timestamp_clip = datetime.now().strftime('%H%M%S')
+    nome_output = f"MyPlayr_{timestamp_clip}.mp4"
     output_p = os.path.join(CLIP_GDRIVE, nome_output)
 
+    # Comando FFmpeg ultra-veloce (-c copy)
     comando = [
-        'ffmpeg',
-        '-y',
-        '-ss', str(inizio_sec),
-        '-t', str(durata_sec),
+        'ffmpeg', '-y',
+        '-ss', str(inizio_sec), # Punto di inizio
+        '-t', str(durata_sec),  # Durata del taglio
         '-i', input_p,
-        '-c', 'copy',
+        '-c', 'copy',           # Copia pura senza sforzo CPU
         output_p
     ]
 
     try:
-        subprocess.run(comando, check=True)
-
+        # Eseguiamo il taglio nel "sottobosco" del PC
+        subprocess.run(comando, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        # Salviamo l'evento del taglio su Supabase per lo storico dell'utente
+        supabase.table("clip_generate").insert({
+            "email_utente": utente_email,
+            "nome_file": nome_output,
+            "data_creazione": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }).execute()
+        
         return output_p
-
     except Exception as e:
-        print("Errore FFmpeg:", e)
+        st.error(f"Errore durante il taglio video: {e}")
         return None
 
-CLIP_GDRIVE = r"G:\Il mio Drive\CLIP_MYPLAYR"
-
-if not os.path.exists(CLIP_GDRIVE):
-    os.makedirs(CLIP_GDRIVE)
-    
-# --- FUNZIONE NEWSLETTER (SUPABASE + EMAIL) ---
+# --- FUNZIONE NEWSLETTER E CONFERMA EMAIL ---
 def invia_conferma_e_salva(email_utente):
+    """Salva l'email su Supabase e invia il benvenuto"""
     email_clean = email_utente.strip().lower()
 
-    # 1. SALVATAGGIO SU SUPABASE (Sostituisce il file .txt)
+    # 1. SALVATAGGIO CLOUD
     try:
         supabase.table("newsletter").insert({
             "email": email_clean,
             "data_iscrizione": datetime.now().strftime('%Y-%m-%d %H:%M')
         }).execute()
     except Exception as e:
-        print(f"Errore salvataggio database: {e}")
-        # Continuiamo comunque con l'invio email anche se il database fallisce
+        print(f"Errore database Supabase: {e}")
 
-    # 2. CONFIGURAZIONE EMAIL (I tuoi dati sono corretti)
+    # 2. INVIO EMAIL (SMTP GMAIL)
     mio_indirizzo = "simone.fardella@gmail.com"  
     mia_password = "xinqcxwubwuasurc"   
     
-    msg = MIMEText(f"Grazie per esserti iscritto alla newsletter di MyPlayr!")
+    testo_mail = f"Benvenuto in MyPlayr! Da ora potrai rivedere le tue azioni migliori."
+    msg = MIMEText(testo_mail)
     msg['Subject'] = "Conferma Iscrizione MyPlayr"
     msg['From'] = mio_indirizzo
     msg['To'] = email_clean
@@ -169,858 +228,1036 @@ def invia_conferma_e_salva(email_utente):
             server.sendmail(mio_indirizzo, email_clean, msg.as_string())
         return True
     except Exception as e:
-        print(f"Errore invio email: {e}")
+        st.warning(f"Newsletter salvata, ma email di conferma non inviata: {e}")
         return False
 
 
-# --- CONFIGURAZIONE PERCORSI ---
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Percorsi per i file temporanei o immagini
-VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
-
-# ✅ ELIMINATO DB_PATH (Ora usiamo Supabase nel cloud)
-
-# Creazione cartelle (Necessario solo per il Mini PC o caricamenti temporanei)
-os.makedirs(VIDEO_DIR, exist_ok=True)
-os.makedirs(IMG_DIR, exist_ok=True)
-
-
-# --- FUNZIONI DATABASE CLOUD (SUPABASE) ---
+# --- BLOCCO 5: FUNZIONI UTENTI (SUPABASE CLOUD) ---
 
 def get_utente_per_email(email):
-    """Cerca un utente nel Cloud tramite email"""
+    """Recupera i dati di un utente dal Cloud tramite la sua email"""
+    if not email: return None
+    
     email_clean = email.strip().lower()
     try:
+        # Cerchiamo nella tabella 'utenti' l'email corrispondente
         res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
+        
+        # Se res.data ha qualcosa, restituiamo il primo (e unico) risultato
         return res.data[0] if res.data else None
     except Exception as e:
-        st.error(f"Errore connessione database: {e}")
+        st.error(f"⚠️ Errore di connessione al database: {e}")
         return None
 
 def crea_nuovo_utente(dati_utente):
-    """Registra un nuovo utente nel Cloud"""
+    """Registra un nuovo ragazzo o allenatore nel Cloud"""
     try:
-        # Assicurati che l'email sia sempre pulita prima del salvataggio
-        dati_utente["email"] = dati_utente["email"].strip().lower()
-        res = supabase.table("utenti").insert(dati_utente).execute()
+        # 1. Pulizia obbligatoria dell'email
+        email_pulita = dati_utente["email"].strip().lower()
+        dati_utente["email"] = email_pulita
+        
+        # 2. Controllo: Esiste già questo utente?
+        utente_esistente = get_utente_per_email(email_pulita)
+        if utente_esistente:
+            st.warning("Quest'email è già registrata su MyPlayr!")
+            return False
+            
+        # 3. Se non esiste, procediamo con l'inserimento
+        supabase.table("utenti").insert(dati_utente).execute()
+        st.success("✅ Registrazione completata con successo!")
         return True
+        
     except Exception as e:
-        st.error(f"Errore durante la registrazione: {e}")
+        st.error(f"❌ Errore durante la registrazione: {e}")
         return False
 
-    
-    # --- CONFIGURAZIONE PERCORSI ---
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Percorsi per i file temporanei o immagini
-VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
-
-# ✅ ELIMINATO DB_PATH (Ora usiamo Supabase nel cloud)
-
-# Creazione cartelle (Necessario solo per il Mini PC o caricamenti temporanei)
-os.makedirs(VIDEO_DIR, exist_ok=True)
-os.makedirs(IMG_DIR, exist_ok=True)
-
-# --- GESTIONE PROFILO UTENTE (SUPABASE) ---
+   
+# --- BLOCCO: GESTIONE PROFILO UTENTE (SUPABASE) ---
 
 def aggiorna_profilo_social(email, nuovo_tag_ig):
-    """Aggiorna il tag Instagram dell'utente nel Cloud"""
+    """
+    Aggiorna il tag Instagram dell'utente nel database Cloud.
+    Serve per taggare automaticamente i ragazzi nelle clip social.
+    """
     try:
+        # Pulizia dell'email per sicurezza
         email_clean = email.strip().lower()
+        
+        # Comando Supabase: Cerca l'utente con quella mail e cambia il campo 'ig_tag'
         supabase.table("utenti").update({"ig_tag": nuovo_tag_ig}).eq("email", email_clean).execute()
-        st.success("✅ Profilo Instagram aggiornato!")
+        
+        st.success(f"✅ Profilo Instagram aggiornato a: {nuovo_tag_ig}")
     except Exception as e:
-        st.error(f"Errore durante l'aggiornamento: {e}")
+        st.error(f"❌ Errore durante l'aggiornamento del profilo: {e}")
 
 def ottieni_dati_profilo(email):
-    """Recupera tutte le info dell'utente (Bio, IG, Foto) dal Cloud"""
-    email_clean = email.strip().lower()
-    res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
-    return res.data[0] if res.data else None
+    """
+    Recupera tutte le informazioni dell'utente (Bio, Instagram, Foto, Ruolo) 
+    dal Cloud per visualizzarle nella pagina Profilo.
+    """
+    try:
+        email_clean = email.strip().lower()
+        
+        # Interroga Supabase
+        res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
+        
+        # Se trova l'utente, restituisce il primo risultato della lista [0]
+        if res.data:
+            return res.data[0]
+        else:
+            return None
+    except Exception as e:
+        st.error(f"⚠️ Impossibile caricare i dati del profilo: {e}")
+        return None
+
+def aggiorna_foto_profilo_db(email, url_foto):
+    """
+    Funzione aggiuntiva: salva l'indirizzo della foto profilo 
+    così l'utente la vede ogni volta che fa il login.
+    """
+    try:
+        email_clean = email.strip().lower()
+        supabase.table("utenti").update({"foto_url": url_foto}).eq("email", email_clean).execute()
+    except Exception as e:
+        print(f"Errore salvataggio URL foto: {e}")
 
 
 
-# --- PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
+
+# --- BLOCCO: PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
+
+# 1. Inizializziamo lo stato della protezione (se non esiste già)
 if "password_dev_corretta" not in st.session_state:
     st.session_state["password_dev_corretta"] = False
 
+# 2. Se l'utente non ha ancora inserito la password corretta, fermiamo tutto qui
 if not st.session_state["password_dev_corretta"]:
     st.markdown("<h1 style='text-align: center;'>🚧 MyPlayr - Area Protetta</h1>", unsafe_allow_html=True)
-    st.info("Il sito è in fase di test. Inserisci la password per sbloccare l'anteprima.")
+    st.info("⚠️ Il sito è in fase di test. Inserisci la password per sbloccare l'anteprima.")
     
+    # Creiamo due colonne per un layout pulito
     col_p1, col_p2 = st.columns([2, 1])
+    
     with col_p1:
-        # Usiamo .strip() per evitare errori se l'utente mette uno spazio per sbaglio
-        pwd_inserita = st.text_input("Password Sviluppatore", type="password", placeholder="Scrivi qui...").strip()
+        # Il .strip() rimuove spazi vuoti accidentali prima o dopo la password
+        pwd_inserita = st.text_input("Password Sviluppatore", type="password", placeholder="Inserisci chiave...").strip()
+    
     with col_p2:
-        st.write("<br>", unsafe_allow_html=True) 
-        if st.button("SBLOCCA SITO"):
-            # Controllo password (puoi cambiarla qui o metterla nei Secrets)
+        # Aggiungiamo un po' di spazio per allineare il bottone alla casella di testo
+        st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True) 
+        if st.button("SBLOCCA SITO", use_container_width=True):
+            # Controllo password: la rendiamo minuscola per evitare errori di battitura
             if pwd_inserita.lower() == "myplayr2026": 
                 st.session_state["password_dev_corretta"] = True
-                st.rerun()
+                st.success("✅ Accesso autorizzato!")
+                st.rerun() # Ricarica il sito mostrando il vero contenuto
             else:
                 st.error("❌ Password errata!")
+    
+    # st.stop() blocca l'esecuzione di tutto il codice che sta SOTTO questa riga
     st.stop() 
+ 
 
 
-# --- LOGICA NAVIGAZIONE E SESSIONE ---
-if 'pagina' not in st.session_state: 
-    st.session_state.pagina = 'home'
-if 'autenticato' not in st.session_state: 
-    st.session_state.autenticato = False
-if 'user_email' not in st.session_state: 
-    st.session_state.user_email = ""
-if 'user_role' not in st.session_state: # <--- Fondamentale per distinguere Admin/Giocatore
-    st.session_state.user_role = "user"
-if 'user_nick' not in st.session_state: # <--- Per visualizzare il nome in alto
-    st.session_state.user_nick = ""
-if 'editing' not in st.session_state: 
-    st.session_state.editing = False
+# --- BLOCCO: LOGICA NAVIGAZIONE E SESSIONE ---
 
-def vai_a(nome):
-    st.session_state.pagina = nome
-    # Non serve rerun() qui se vai_a viene chiamata dentro un evento pulsante
+# 1. INIZIALIZZAZIONE DELLA SESSIONE (Memoria del sito)
+# Definiamo tutti i valori di partenza in un colpo solo per non fare confusione
+def inizializza_sessione():
+    # Creiamo un elenco di impostazioni standard
+    defaults = {
+        'pagina': 'home',           # Pagina di partenza
+        'autenticato': False,       # L'utente parte come "non collegato"
+        'user_email': "",           # Email vuota all'inizio
+        'user_role': "user",        # Ruolo standard: Giocatore (può diventare 'admin')
+        'user_nick': "",            # Nome visualizzato dell'utente
+        'editing': False            # Se l'utente sta modificando il suo profilo
+    }
+    
+    # Controlliamo ogni voce: se non esiste ancora nella memoria (session_state), la creiamo
+    for chiave, valore in defaults.items():
+        if chiave not in st.session_state:
+            st.session_state[chiave] = valore
+
+# Eseguiamo subito l'inizializzazione
+inizializza_sessione()
+
+# 2. FUNZIONE DI NAVIGAZIONE
+def vai_a(nome_pagina):
+    """
+    Cambia la pagina visualizzata sul sito.
+    Esempio: vai_a('profilo') porta l'utente nella sua area personale.
+    """
+    st.session_state.pagina = nome_pagina
+    # Non serve st.rerun() se chiamata in un pulsante (callback), 
+    # ma averla pronta aiuta in casi particolari.
 
 
-# --- NAVBAR DINAMICA (SUPABASE READY) ---
+
+# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
+
+# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
 if st.session_state.autenticato:
-    # Usiamo il 'ruolo' salvato nel session_state invece della sola email
+    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # Creiamo le colonne: 7 per l'Admin (ha il tasto in più), 6 per l'Utente
-    nav_cols = st.columns(7 if is_admin else 6)
+    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
+    # Usiamo col_nav per indicare le colonne della barra
+    col_nav = st.columns(7 if is_admin else 6)
     
-    with nav_cols[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'))
-    with nav_cols[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'))
-    with nav_cols[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'))
-    with nav_cols[3]: st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'))
-    with nav_cols[4]: st.button("🎞️ Le Mie Clip", on_click=lambda: vai_a('mie_clip'))
+    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
+    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
     
-    # Tasto Admin visibile solo se il ruolo su Supabase è 'admin'
+    # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
-        with nav_cols[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'))
+        with col_nav[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
     
-    # Il tasto Logout è sempre l'ultimo
-    with nav_cols[-1]: 
-        if st.button("🚪 Esci", type="secondary"): # 'secondary' per non farlo troppo invasivo
-            # Puliamo la sessione al logout
+    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
+    with col_nav[-1]: 
+        if st.button("🚪 Esci", type="secondary", use_container_width=True):
+            # Azioni di pulizia totale quando l'utente se ne va
             st.session_state.autenticato = False
             st.session_state.user_email = ""
             st.session_state.user_role = "user"
-            vai_a('home')
+            st.session_state.user_nick = ""
+            st.session_state.pagina = 'home' # Torna alla pagina pubblica
+            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
             
-    st.divider() # Linea verde di separazione (dal tuo CSS)
+    # Linea verde di separazione definita nel tuo CSS (hr)
+    st.divider() 
 
-# --- PAGINA: HALL OF FAME (PUBBLICA - SUPABASE READY) ---
-elif st.session_state.pagina == 'hall_of_fame':
-    st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
-    st.write("---")
 
-    # 1. Recupero dati da Supabase invece di SQLite
-    # Cerchiamo solo le clip che hanno lo stato 'CLIP_UTENTE' e il consenso attivo
-    response = supabase.table("calendario")\
-        .select("*")\
-        .eq("stato", "CLIP_UTENTE")\
-        .eq("consenso_social", 1)\
-        .execute()
+# --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
+
+if st.session_state.pagina == 'home':
+    # 1. LOGO CENTRATO (Gestione sicura: se non c'è il file, il sito non crasha)
+    try:
+        if os.path.exists("logo.png"):
+            _, col_logo, _ = st.columns([1, 1.5, 1]) # Proporzioni centrate
+            with col_logo:
+                st.image("logo.png", use_container_width=True)
+    except:
+        st.markdown("<h1 style='text-align: center; color: #28a745;'>MyPlayr</h1>", unsafe_allow_html=True)
     
-    clip_visibili = pd.DataFrame(response.data)
+    st.write(" ") # Spaziatura estetica
 
-    # --- SPIE DI CONTROLLO (DEBUG) ---
-    if not clip_visibili.empty:
-        st.success(f"✅ Ci sono {len(clip_visibili)} azioni spettacolari nella Hall of Fame!")
-        
-        for i, clip in clip_visibili.iterrows():
-            # 2. Usiamo il link_video (URL Cloud) invece del percorso locale G:
-            url_video = clip.get('link_video')
-            
-            with st.container():
-                if url_video:
-                    # Visualizzazione tramite URL (Funziona su smartphone e PC)
-                    st.video(url_video)
-                    st.write(f"🏟️ Campo: **{clip['campo']}**")
-                    if clip.get('evento'):
-                        st.caption(f"🎬 Azione: {clip['evento']}")
-                else:
-                    st.warning(f"⚠️ Link video non disponibile per la clip ID: {clip['id']}")
-                st.divider()
-    else:
-        st.info("📌 La Hall of Fame è temporaneamente vuota. Carica le tue prodezze per apparire qui!")
-
-
-# --- PAGINA 1: HOME PAGE (INTEGRALE - SUPABASE READY) ---
-elif st.session_state.pagina == 'home':
-    # 1. LOGO CENTRATO (Gestione sicura del file)
-    if os.path.exists("logo.png"):
-        _, col_logo, _ = st.columns([1, 2, 1])
-        with col_logo:
-            st.image("logo.png", use_container_width=True)
-    
-    st.write(" ") # Spaziatura
-
-    # Mostra i contenuti solo se l'utente NON è ancora autenticato
+    # Visualizziamo i contenuti solo se l'utente non è loggato
     if not st.session_state.autenticato:
         st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; font-size: 16px;'>Ogni partita merita di essere ricordata!<br>Il calcio amatoriale come quello vero.<br>Condividi le tue giornate con amici, famiglia e sui social media.</p>", unsafe_allow_html=True)
+        st.markdown("""
+            <p style='text-align: center; font-size: 16px;'>
+            Ogni partita merita di essere ricordata!<br>
+            Il calcio amatoriale e il padel come quelli veri.<br>
+            Condividi le tue prodezze con amici, famiglia e sui social.
+            </p>
+        """, unsafe_allow_html=True)
         
-        # --- SEZIONE COME FUNZIONA ---
+        st.divider()
+
+        # --- SEZIONE: COME FUNZIONA (LAYOUT A 3 COLONNE) ---
         st.markdown("<h2 style='text-align: center;'>Come Funziona</h2>", unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
+        
         with c1:
-            st.success("📹 **Giochi la Partita**")
-            st.markdown("<p style='font-size: 14px;'>Scendi in campo e gioca. Ogni azione viene registrata in HD.</p>", unsafe_allow_html=True)
+            st.success("📹 **GIOCHI LA PARTITA**")
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Scendi in campo. La nostra AI registra ogni tua azione in alta definizione.</p>", unsafe_allow_html=True)
+        
         with c2:
-            st.success("🔍 **Trovi il Video**")
-            st.markdown("<p style='font-size: 14px;'>Accedi al portale e trova i video organizzati per data e campo.</p>", unsafe_allow_html=True)
+            st.success("🔍 **TROVI IL VIDEO**")
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Accedi al portale e trova i video organizzati per data, ora e campo di gioco.</p>", unsafe_allow_html=True)
+        
         with c3:
-            st.success("📥 **Scarichi la Clip**")
-            st.markdown("<p style='font-size: 14px;'>Taglia i tuoi momenti migliori e scarica le clip per i social.</p>", unsafe_allow_html=True)
+            st.success("📥 **SCARICHI LE CLIP**")
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Usa il nostro editor per tagliare i tuoi momenti migliori e scaricarli subito.</p>", unsafe_allow_html=True)
             
-        # --- SEZIONE NEWSLETTER (COLLEGATA A SUPABASE) ---
-        st.markdown("<h3 style='text-align: center;'>Resta in contatto</h3>", unsafe_allow_html=True)
-        _, col_news, _ = st.columns([1, 2, 1])
-        with col_news:
-            with st.form("newsletter_form", clear_on_submit=True):
-                # Usiamo .strip().lower() per pulire l'input subito
-                email_input = st.text_input("La tua mail", placeholder="esempio@mail.com").strip().lower()
-                submit_button = st.form_submit_button("ISCRIVITI ORA")
-                
-                if submit_button:
-                    if "@" in email_input and "." in email_input:
-                        # Qui chiamiamo la funzione che salva su Supabase (quella vista prima)
-                        successo = invia_conferma_e_salva(email_input)
-                        if successo:
-                            st.success("✅ Iscrizione salvata! Riceverai le novità.")
-                        else:
-                            st.warning("⚠️ Salvato nel database, ma l'email di conferma ha avuto un ritardo.")
-                    else:
-                        st.error("❌ Inserisci un'email valida.")
-
-        # --- TASTO ACCESSO FINALE ---
         st.write("<br>", unsafe_allow_html=True)
-        _, col_btn, _ = st.columns([1, 1, 1])
-        with col_btn:
-            # Questo tasto porta l'utente alla pagina di Login reale
-            st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
 
-# --- PAGINA: LOGIN / REGISTRAZIONE / RECUPERO ---
-elif st.session_state.pagina == 'login':
-    _, col_log, _ = st.columns(3)
+        # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
+        st.markdown("<h3 style='text-align: center;'>Resta aggiornato su MyPlayr</h3>", unsafe_allow_html=True)
+        _, col_news, _ = st.columns([1, 2, 1])
+        
+        with col_news:
+            # Usiamo un form per pulire i campi dopo l'invio
+            with st.form("newsletter_form", clear_on_submit=True):
+                email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com").strip().lower()
+                submit_news = st.form_submit_button("ISCRIVITI ALLA NEWSLETTER")
+                
+                if submit_news:
+                    if "@" in email_input and "." in email_input:
+                        # Funzione definita nel Blocco 3 (Salva su Supabase e invia Mail)
+                        invio_ok = invia_conferma_e_salva(email_input)
+                        if invio_ok:
+                            st.success("✅ Benvenuto a bordo! Controlla la tua email.")
+                        else:
+                            st.info("ℹ️ Ti abbiamo registrato nel database, ma l'email di conferma arriverà a breve.")
+                    else:
+                        st.error("❌ Per favore, inserisci un indirizzo email valido.")
+
+        # --- PULSANTE DI ACCESSO PRINCIPALE ---
+        st.write("<br><br>", unsafe_allow_html=True)
+        _, col_btn_home, _ = st.columns([1, 1, 1])
+        with col_btn_home:
+            # Reindirizza alla pagina di Login
+            st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), use_container_width=True)
+
+        # --- FOOTER ---
+        st.markdown("""
+            <div class='footer-main'>
+                <p>MyPlayr © 2026 - Video Analysis for Future Champions</p>
+                <p class='footer-sub'>Sviluppato con Passione per lo Sport</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+
+# --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
+
+if st.session_state.pagina == 'login':
+    # Centriamo il modulo di accesso con le colonne
+    _, col_log, _ = st.columns([1, 2, 1])
+    
     with col_log:
-        # Inizializzazione dello stato interno (Login / Reg / Recupero)
+        # Inizializzazione dello stato interno per navigare tra Login e Registrazione
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
-        # --- 1. SOTTO-PAGINA: ACCEDI (Modulo Standard) ---
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
-            st.markdown("<h2 style='text-align: center;'>Accedi</h2>", unsafe_allow_html=True)
-            u = st.text_input("Email").strip().lower()
-            p = st.text_input("Password", type="password")
+            st.markdown("<h2 style='text-align: center;'>Accedi a MyPlayr</h2>", unsafe_allow_html=True)
             
-            if st.button("ENTRA"):
-                # Sostituito SQLite con Supabase: Cerchiamo l'utente
-                res = supabase.table("utenti").select("*").eq("email", u).eq("password", p).execute()
-                
-                # Controllo Admin manuale (come avevi tu) o utente trovato nel DB
-                if (u == "admin@myplayr.com" and p == "admin123") or (res.data and len(res.data) > 0):
-                    st.session_state.autenticato = True
-                    st.session_state.user_email = u
-                    # Recuperiamo il ruolo dal DB se esiste, altrimenti 'Player'
-                    role = res.data[0].get('ruolo', 'Player') if res.data else 'admin'
-                    st.session_state.user_role = role
-                    vai_a('profilo')
-                else: 
-                    st.error("Credenziali errate!")
+            # Input utente
+            u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
+            p_login = st.text_input("Password", type="password", placeholder="******")
             
-            # Pulsanti di scambio (Mantengono la tua logica originale)
-            if st.button("password dimenticata?", type="secondary"): 
-                st.session_state.sub = 'recupero'
-                st.rerun()
-            if st.button("Non hai ancora un account? Registrati", type="secondary"):
-                st.session_state.sub = 'reg'
-                st.rerun()
-            st.button("🔙 INDIETRO", on_click=lambda: vai_a('home'))
-
-        # --- 2. SOTTO-PAGINA: REGISTRAZIONE (Sostituisce il Login) ---
-        elif st.session_state.sub == 'reg':
-            st.markdown("<h2 style='text-align: center;'>Registrati</h2>", unsafe_allow_html=True)
-            r_n = st.text_input("Nome")
-            r_c = st.text_input("Cognome")
-            r_e = st.text_input("Email").strip().lower()
-            r_p = st.text_input("Password", type="password")
-            
-            if st.button("CONFERMA REGISTRAZIONE"):
-                if r_n and r_c and r_e and r_p:
-                    # Sostituito SQLite con Supabase: Inserimento Cloud
-                    nuovo_utente = {
-                        "nome": r_n, 
-                        "cognome": r_c, 
-                        "email": r_e, 
-                        "password": r_p, 
-                        "ruolo": "Player"
-                    }
+            if st.button("ENTRA", use_container_width=True):
+                if u_login and p_login:
                     try:
+                        # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
+                        res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
+                        
+                        if res_log.data:
+                            # UTENTE TROVATO: Salviamo i dati nella sessione
+                            utente = res_log.data[0]
+                            st.session_state.autenticato = True
+                            st.session_state.user_email = utente['email']
+                            st.session_state.user_role = utente.get('ruolo', 'Player')
+                            st.session_state.user_nick = utente.get('nome', 'Campione')
+                            
+                            st.success(f"Bentornato {st.session_state.user_nick}!")
+                            vai_a('home_auth')
+                            st.rerun()
+                        else:
+                            st.error("❌ Credenziali errate o account inesistente.")
+                    except Exception as e:
+                        st.error(f"⚠️ Errore di connessione: {e}")
+                else:
+                    st.warning("Compila tutti i campi!")
+            
+            # Opzioni secondarie
+            col_l1, col_l2 = st.columns(2)
+            with col_l1:
+                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
+                    st.session_state.sub = 'recupero'
+                    st.rerun()
+            with col_l2:
+                if st.button("Registrati ora", type="secondary", use_container_width=True):
+                    st.session_state.sub = 'reg'
+                    st.rerun()
+            
+            st.write("---")
+            st.button("🔙 TORNA ALLA HOME", on_click=lambda: vai_a('home'), use_container_width=True)
+
+        # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
+        elif st.session_state.sub == 'reg':
+            st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
+            
+            r_n = st.text_input("Nome", placeholder="es. Mario")
+            r_c = st.text_input("Cognome", placeholder="es. Rossi")
+            r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
+            r_p = st.text_input("Scegli una Password", type="password")
+            
+            if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                if r_n and r_c and r_e and r_p:
+                    try:
+                        # Controlliamo prima se l'email esiste già (Uso della funzione creata nel Blocco 5)
+                        nuovo_utente = {
+                            "nome": r_n, 
+                            "cognome": r_c, 
+                            "email": r_e, 
+                            "password": r_p, 
+                            "ruolo": "Player"
+                        }
                         supabase.table("utenti").insert(nuovo_utente).execute()
-                        st.success("✅ Account creato!")
+                        st.success("✅ Account creato con successo! Ora puoi accedere.")
                         st.session_state.sub = 'login'
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Errore: {e}")
+                        st.error(f"Errore: Email già registrata o problema tecnico.")
                 else: 
-                    st.error("Riempi tutti i campi")
+                    st.error("⚠️ Inserisci tutti i dati richiesti!")
             
-            if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
+            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
                 st.session_state.sub = 'login'
                 st.rerun()
 
-        # --- 3. SOTTO-PAGINA: RECUPERO (Sostituisce il Login) ---
+        # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
         elif st.session_state.sub == 'recupero':
-            st.markdown("<h2 style='text-align: center;'>Recupero</h2>", unsafe_allow_html=True)
-            m_rec = st.text_input("Inserisci la tua Email").strip().lower()
-            if st.button("INVIA PASSWORD"):
-                # Qui potrai collegare la funzione newsletter per inviare la mail
-                st.info("Email inviata (funzione in test)")
-            if st.button("🔙 TORNA AL LOGIN", type="secondary"): 
+            st.markdown("<h2 style='text-align: center;'>Recupero Credenziali</h2>", unsafe_allow_html=True)
+            m_rec = st.text_input("La tua Email di registrazione").strip().lower()
+            
+            if st.button("INVIA ISTRUZIONI", use_container_width=True):
+                if m_rec:
+                    st.info(f"Se l'account esiste, riceverai una mail a {m_rec} (Funzione in test)")
+                else:
+                    st.warning("Inserisci un'email!")
+            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
                 st.session_state.sub = 'login'
                 st.rerun()
 
-# --- PAGINA ADMIN (DASHBOARD COMPLETA - SUPABASE READY) ---
-elif st.session_state.pagina == 'admin':
-    # 1. Recupero dati reali dal Cloud (Supabase)
-    res_utenti = supabase.table("utenti").select("id", count="exact").execute()
-    num_utenti = res_utenti.count if res_utenti.count else 0
-    
-    res_partite = supabase.table("calendario").select("id", count="exact").execute()
-    num_partite = res_partite.count if res_partite.count else 0
-    
-    res_news = supabase.table("newsletter").select("id", count="exact").execute()
-    num_newsletter = res_news.count if res_news.count else 0
+
+# --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
+
+if st.session_state.pagina == 'admin':
+    # 1. RECUPERO CONTEGGI REALI (Cloud)
+    try:
+        # Conteggio utenti registrati
+        res_u = supabase.table("utenti").select("id", count="exact").execute()
+        num_utenti = res_u.count if res_u.count else 0
+        
+        # Conteggio partite totali nel database
+        res_p = supabase.table("calendario").select("id", count="exact").execute()
+        num_partite = res_p.count if res_p.count else 0
+        
+        # Conteggio iscritti alla newsletter
+        res_n = supabase.table("newsletter").select("id", count="exact").execute()
+        num_newsletter = res_n.count if res_n.count else 0
+    except Exception as e:
+        st.error(f"Errore caricamento dati statistici: {e}")
+        num_utenti = num_partite = num_newsletter = 0
 
     st.title("📊 Dashboard Amministratore")
 
-    # 2. Riga dei contatori (Cards) - Fedele al tuo layout
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
+    # 2. RIGA DEI CONTATORI (Metriche veloci)
+    c1, c2, c3, c4, c5 = st.columns(5)
     with c1: st.metric("⚽ Partite", num_partite)
-    with c2: st.metric("🎞️ Clip Visitate", "0")
-    with c3: st.metric("💰 Ricavi", "€0.00")
-    with c4: st.metric("👥 Giocatori", num_utenti)
-    with c5: st.metric("📧 Newsletter", num_newsletter)
-    with c6: st.metric("📈 Conv. Rate", "0.0%")
+    with c2: st.metric("👥 Giocatori", num_utenti)
+    with c3: st.metric("📧 Newsletter", num_newsletter)
+    with c4: st.metric("🎞️ Clip Generate", "0") # Dato da collegare alla tabella 'clip_generate'
+    with c5: st.metric("💰 Ricavi Est.", "€0.00")
 
     st.divider()
 
-    # 3. Grafico e Azioni Rapide (Mantenuti come da tua richiesta)
-    col_graf, col_act = st.columns(2)
+    # 3. GRAFICO E AZIONI RAPIDE
+    col_graf, col_act = st.columns([1.5, 1]) # Grafico più largo per leggibilità
+    
     with col_graf:
-        st.subheader("📈 Ricavi (7gg)")
-        dati_grafico = pd.DataFrame({"G": ["L", "M", "M", "G", "V", "S", "D"], "€": [10, 45, 30, 80, 60, 120, 90]})
-        st.line_chart(dati_grafico, x="G", y="€", color="#28a745")
+        st.subheader("📈 Attività Settimanale")
+        # Dati simulati per il grafico (in futuro potrai renderli reali)
+        dati_grafico = pd.DataFrame({
+            "Giorno": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"], 
+            "Partite": [2, 5, 4, 8, 6, 12, 10]
+        })
+        st.line_chart(dati_grafico, x="Giorno", y="Partite", color="#28a745")
+    
     with col_act:
         st.subheader("⚡ Azioni Rapide")
-        ca, cb = st.columns(2)
-        with ca:
-            st.button("📧 Invia Newsletter", use_container_width=True)
-            if st.button("📂 Export Utenti CSV", use_container_width=True):
-                # Esempio rapido export
-                df_csv = pd.DataFrame(supabase.table("utenti").select("*").execute().data)
-                st.download_button("Scarica CSV", df_csv.to_csv(), "utenti.csv")
-        with cb:
-            st.button("🧹 Pulisci Cache", use_container_width=True)
-            st.button("📊 Report Mensile", use_container_width=True)
+        # Layout compatto per i bottoni
+        if st.button("📥 Export Utenti (CSV)", use_container_width=True):
+            try:
+                res_export = supabase.table("utenti").select("*").execute()
+                df_export = pd.DataFrame(res_export.data)
+                csv = df_export.to_csv(index=False).encode('utf-8')
+                st.download_button("⬇️ Scarica File CSV", csv, "utenti_myplayr.csv", "text/csv")
+            except:
+                st.error("Errore durante l'export.")
+        
+        st.button("📧 Invia Newsletter Massiva", use_container_width=True)
+        st.button("📊 Genera Report Mensile", use_container_width=True)
+        if st.button("🧹 Svuota Cache Sistema", use_container_width=True):
+            st.cache_data.clear()
+            st.success("Cache pulita!")
 
     st.divider()
 
-    # 4. Top 5 e Richieste Clip (Dati simulati mantenuti per ora)
-    col_top, col_req = st.columns(2)
-    with col_top:
-        st.subheader("🏆 Top 5 Giocatori")
-        st.table(pd.DataFrame({"USER": ["Bomber9", "Alex_G", "Simo_F", "Luca_S", "Pippo_I"], "TOT": ["€120", "€85", "€70", "€55", "€40"]}))
-    with col_req:
-        st.subheader("📩 Richieste Recenti")
-        # Qui in futuro leggeremo la tabella 'comandi_clip'
-        st.info("Richiesta: Alex_Goal (03/03)")
-        st.info("Richiesta: Bomber99 (04/03)")
-
-    st.divider()
-
-    # --- 5. VISUALIZZAZIONE VIDEO REGISTRATI (Admin) ---
-    st.subheader("🎞️ Archivio Registrazioni Completate")
+    # 4. ARCHIVIO REGISTRAZIONI (Gestione Video)
+    st.subheader("🎞️ Archivio Video Master (4K)")
     
-    # Recuperiamo i match 'FATTO' dal Cloud
-    res_fatto = supabase.table("calendario")\
-        .select("id, data, campo, ora, evento, link_video")\
+    try:
+        # Recuperiamo i match completati ordinati dal più recente
+        res_video = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+        
+        partite_fatte = res_video.data
+
+        if partite_fatte:
+            for partita in partite_fatte:
+                # Creiamo un contenitore pulito per ogni partita
+                with st.expander(f"📅 {partita['data']} - {partita['campo']} ({partita['ora']})"):
+                    col_v_info, col_v_video = st.columns([1, 2])
+                    
+                    with col_v_info:
+                        st.write(f"📄 **File:** `{partita['evento']}`")
+                        st.write(f"🆔 **ID Match:** {partita['id']}")
+                        
+                        # Tasto eliminazione con conferma
+                        if st.button(f"🗑️ Elimina Record {partita['id']}", key=f"del_{partita['id']}"):
+                            supabase.table("calendario").delete().eq("id", partita['id']).execute()
+                            st.warning(f"Record {partita['id']} eliminato.")
+                            st.rerun()
+                    
+                    with col_v_video:
+                        if partita.get('link_video'):
+                            st.video(partita['link_video'])
+                        else:
+                            st.info("Video non ancora caricato sul Cloud.")
+        else:
+            st.info("Nessuna registrazione completata trovata nel database.")
+            
+    except Exception as e:
+        st.error(f"Errore nel caricamento dell'archivio: {e}")
+
+    # 5. RICHIESTE CLIP DAGLI UTENTI (Monitoraggio)
+    st.divider()
+    st.subheader("📩 Richieste Clip in Attesa")
+    # Qui leggeremo la tabella dei comandi inviati dagli utenti
+    st.info("Al momento non ci sono richieste manuali di taglio clip in sospeso.")
+
+
+    # --- BLOCCO: PROGRAMMAZIONE REGISTRAZIONE (ADMIN - SUPABASE READY) ---
+
+st.divider()
+
+# Usiamo un expander per non occupare spazio prezioso nella Dashboard
+with st.expander("📅 PROGRAMMA NUOVA REGISTRAZIONE 🎥", expanded=False):
+    st.markdown("<p style='font-size: 14px;'>Inserisci i dettagli del match. Il Mini PC in campo riceverà l'ordine in tempo reale.</p>", unsafe_allow_html=True)
+    
+    with st.form("form_admin_reg", clear_on_submit=True):
+        # 1. INPUT DATI
+        col_d1, col_d2 = st.columns(2)
+        with col_d1:
+            data_gara = st.date_input("Giorno della Gara", datetime.now())
+        with col_d2:
+            ora_gara = st.text_input("Ora Inizio (es: 19:30)", placeholder="HH:MM")
+            
+        titolo_match = st.text_input("Titolo Partita (es: Squadra A vs Squadra B)")
+        campo_selezionato = st.selectbox("Seleziona Campo", ["Campo A (Calcio a 5)", "Campo B (Padel)", "Campo C (Calcio a 7)"])
+        
+        # 2. BOTTONE DI CONFERMA
+        if st.form_submit_button("CONFERMA E PROGRAMMA REGISTRAZIONE", use_container_width=True):
+            if ora_gara and titolo_match:
+                # Prepariamo l'oggetto per Supabase
+                nuovo_match = {
+                    "data": data_gara.strftime('%d-%m-%Y'),
+                    "ora": ora_gara.strip(),
+                    "campo": campo_selezionato,
+                    "evento": titolo_match.strip(),
+                    "stato": "PROGRAMMATO" # Lo stato 'PROGRAMMATO' è il segnale per il Mini PC
+                }
+                
+                try:
+                    # Invio dati al Cloud
+                    supabase.table("calendario").insert(nuovo_match).execute()
+                    
+                    st.success(f"✅ Gara '{titolo_match}' programmata con successo!")
+                    # Aspettiamo un istante per far vedere il messaggio e poi ricarichiamo
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Errore durante il salvataggio sul Cloud: {e}")
+            else:
+                st.warning("⚠️ Per favore, inserisci almeno l'orario e il titolo della partita.")
+
+
+# --- BLOCCO: ARCHIVIO VIDEO TOTALE (VISTA TABELLARE PER ADMIN) ---
+
+st.divider()
+st.subheader("📊 Riepilogo Attività Video")
+
+# 1. ARCHIVIO PARTITE INTERE (Tutto ciò che il Mini PC ha registrato)
+st.markdown("#### 🏟️ Match Registrati (Master 4K)")
+
+try:
+    # Recuperiamo i dati delle partite concluse (stato 'FATTO')
+    res_vids = supabase.table("calendario")\
+        .select("id, data, ora, campo, evento")\
         .eq("stato", "FATTO")\
         .order("id", desc=True)\
         .execute()
     
-    df_partite = pd.DataFrame(res_fatto.data)
-
-    if not df_partite.empty:
-        for idx, row in df_partite.iterrows():
-            with st.container():
-                col_info, col_del = st.columns([4, 1])
-                with col_info:
-                    st.write(f"📅 **{row['data']}** | 🏟️ {row['campo']} | 🕒 {row['ora']}")
-                    st.write(f"📄 File: `{row['evento']}`")
-                    if row['link_video']:
-                        st.video(row['link_video']) # L'Admin può vedere il video direttamente dal Cloud!
-                with col_del:
-                    if st.button("🗑️", key=f"del_adm_{row['id']}"):
-                        # Eliminiamo la riga su Supabase
-                        supabase.table("calendario").delete().eq("id", row['id']).execute()
-                        st.success("Riga eliminata!")
-                        st.rerun()
-                st.divider()
+    if res_vids.data:
+        df_vids = pd.DataFrame(res_vids.data)
+        # Mostriamo una tabella interattiva e pulita
+        st.dataframe(
+            df_vids[['id', 'data', 'ora', 'campo', 'evento']], 
+            use_container_width=True,
+            column_config={
+                "id": "ID",
+                "data": "Data Gara",
+                "ora": "Orario",
+                "campo": "Campo",
+                "evento": "Descrizione Match"
+            },
+            hide_index=True # Nascondiamo i numeri di riga per ordine
+        )
     else:
-        st.info("Nessun video registrato presente nel Cloud.")
+        st.info("ℹ️ Nessuna partita intera registrata al momento.")
 
-    # --- PROGRAMMAZIONE REGISTRAZIONE (Solo per Admin - SUPABASE READY) ---
-st.divider()
-with st.expander("📅 PROGRAMMA NUOVA REGISTRAZIONE", expanded=False):
-    with st.form("form_admin_reg"):
-        d_reg = st.date_input("Giorno Gara", datetime.now())
-        f_ora = st.text_input("Ora Inizio (es: 19:30)")
-        f_titolo = st.text_input("Titolo Partita (Squadre)")
+except Exception as e:
+    st.error(f"Errore caricamento tabella partite: {e}")
+
+st.write("<br>", unsafe_allow_html=True)
+
+# 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
+st.markdown("#### ✂️ Clip Generate dagli Utenti")
+
+try:
+    # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
+    res_clips = supabase.table("calendario")\
+        .select("id, data, campo, evento")\
+        .eq("stato", "CLIP_UTENTE")\
+        .order("id", desc=True)\
+        .execute()
+
+    if res_clips.data:
+        df_clips_admin = pd.DataFrame(res_clips.data)
         
-        if st.form_submit_button("CONFERMA PROGRAMMAZIONE"):
-            # Salvataggio su Supabase invece di SQLite
-            nuovo_match = {
-                "data": d_reg.strftime('%d-%m-%Y'),
-                "ora": f_ora,
-                "campo": "Campo A", # Puoi renderlo dinamico se hai più campi
-                "evento": f_titolo,
-                "stato": "PROGRAMMATO"
-            }
-            try:
-                supabase.table("calendario").insert(nuovo_match).execute()
-                st.success("✅ Gara programmata sul Cloud! Il Mini PC la caricherà a breve.")
-                time.sleep(1)
-                st.rerun()
-            except Exception as e:
-                st.error(f"Errore: {e}")
+        # Rinominia per rendere la tabella comprensibile al gestore
+        # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
+        df_visualizza = df_clips_admin.rename(columns={
+            'id': 'ID Clip',
+            'data': 'Data Taglio',
+            'campo': 'Email Utente', 
+            'evento': 'Nome File Clip'
+        })
+        
+        st.dataframe(
+            df_visualizza, 
+            use_container_width=True,
+            hide_index=True
+        )
+    else:
+        st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
+
+except Exception as e:
+    st.error(f"Errore caricamento tabella clip: {e}")
 
 st.divider()
 
-# --- 6. ARCHIVIO VIDEO TOTALE (VISTA TABELLARE) ---
-st.subheader("🎞️ Archivio Video Totale")
 
-# 1. Recupero PARTITE INTERE (stato 'FATTO')
-st.markdown("### 🏟️ Archivio Partite Registrate")
-res_vids = supabase.table("calendario").select("id, data, ora, campo, evento, link_video").eq("stato", "FATTO").order("id", desc=True).execute()
-df_vids = pd.DataFrame(res_vids.data)
-
-if not df_vids.empty:
-    st.dataframe(df_vids[['id', 'data', 'ora', 'campo', 'evento']], use_container_width=True)
-else:
-    st.info("Nessuna partita intera registrata al momento.")
-
-# 2. Recupero CLIP TAGLIATE (stato 'CLIP_UTENTE')
-st.markdown("### ✂️ Archivio Clip Tagliate dagli Utenti")
-res_clips = supabase.table("calendario").select("id, data, campo, evento").eq("stato", "CLIP_UTENTE").order("id", desc=True).execute()
-df_clips_admin = pd.DataFrame(res_clips.data)
-
-if not df_clips_admin.empty:
-    # Rinominiamo le colonne per chiarezza come nel tuo codice originale
-    df_visualizza = df_clips_admin.rename(columns={'campo': 'utente', 'evento': 'nome_clip'})
-    st.dataframe(df_visualizza, use_container_width=True)
-else:
-    st.info("Nessun utente ha ancora tagliato delle clip.")
+# --- BLOCCO: GESTIONE RAPIDA ARCHIVIO (CANCELLAZIONE ADMIN) ---
 
 st.divider()
+st.subheader("🗑️ Pulizia Rapida Archivio")
+st.markdown("<p style='font-size: 13px; color: #888;'>Usa questa sezione per rimuovere i match obsoleti o errati dal portale.</p>", unsafe_allow_html=True)
 
-# --- 7. GESTIONE SINGOLI VIDEO (Cancellazione) ---
-st.subheader("🗑️ Gestione Rapida Archivio")
+# Verifichiamo se ci sono dati da mostrare (usiamo df_vids creato nel blocco precedente)
 if not df_vids.empty:
     for idx, row in df_vids.iterrows():
-        c1, c2, c3, c4, c5 = st.columns([1.5, 2, 1.5, 3.5, 1])
-        c1.write(f"📅 {row['data']}")
-        c2.write("🏟️ Campo A")
-        c3.write(f"🕒 {row['ora']}")
-        c4.write(row['evento'] if row['evento'] else "In elaborazione...")
+        # Creiamo una riga con colonne ben proporzionate
+        c1, c2, c3, c4, c5 = st.columns([1.2, 1.5, 1, 3, 0.8])
         
-        if c5.button("🗑️", key=f"del_g_{row['id']}"):
-            # Eliminiamo la riga dal database Cloud
+        c1.write(f"📅 **{row['data']}**")
+        c2.write(f"🏟️ {row['campo']}")
+        c3.write(f"🕒 {row['ora']}")
+        
+        # Mostriamo il titolo o un segnaposto se vuoto
+        titolo_gara = row['evento'] if row['evento'] else "Senza Titolo"
+        c4.write(f"📝 {titolo_gara}")
+        
+        # TASTO CANCELLA con chiave unica basata sull'ID del database
+        if c5.button("🗑️", key=f"btn_del_{row['id']}", help="Elimina definitivamente questo record"):
+            # --- LOGICA DI CANCELLAZIONE SICURA ---
             try:
+                # 1. Comando di eliminazione su Supabase
                 supabase.table("calendario").delete().eq("id", row['id']).execute()
-                st.success(f"Match {row['id']} rimosso dal portale.")
-                time.sleep(1)
+                
+                # 2. Feedback visivo per l'Admin
+                st.toast(f"✅ Match #{row['id']} rimosso con successo!", icon='🗑️')
+                
+                # 3. Aspettiamo un attimo per dare tempo al database di aggiornarsi
+                time.sleep(0.5)
                 st.rerun()
             except Exception as e:
-                st.error(f"Errore durante l'eliminazione: {e}")
+                st.error(f"❌ Impossibile eliminare il record: {e}")
 else:
-    st.info("Nessun video registrato in archivio.")
+    st.info("📂 L'archivio è attualmente vuoto. Nessun dato da gestire.")
+
+st.divider()
 
 
 
 
-    # --- 7. BOTTONE INDIETRO (NAVIGAZIONE ADMIN) ---
-st.write(" ") # Un po' di spazio prima del tasto
-if st.button("🔙 Torna alla Home", key="back_adm"):
-    # Reindirizza alla Home per utenti loggati
-    vai_a('home_auth')
+
+    # --- BLOCCO: BOTTONE INDIETRO (NAVIGAZIONE ADMIN) ---
+
+st.write("<br>", unsafe_allow_html=True) # Spaziatura estetica dal contenuto precedente
+
+# Creiamo una riga dedicata per il tasto di uscita
+col_back_adm, _ = st.columns([1, 3]) # Lo mettiamo a sinistra, piccolo
+
+with col_back_adm:
+    # Usiamo 'secondary' per renderlo meno "pesante" alla vista (grigio/trasparente)
+    if st.button("🔙 Torna alla Home", key="back_adm_unique", type="secondary", use_container_width=True):
+        # 1. Cambiamo la variabile della pagina
+        st.session_state.pagina = 'home_auth'
+        
+        # 2. Forza il sito a caricare la nuova pagina immediatamente
+        st.rerun()
+
+st.divider() # Chiudiamo la sezione Admin in modo pulito
 
 
-# --- PAGINA PARTITE (PROGRAMMAZIONE + ARCHIVIO + TAGLIO) ---
-elif st.session_state.pagina == "Pannello Admin":
-    st.title("⚙️ Controllo MyPlayr (Riservato)")
+
+# --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
+
+if st.session_state.pagina == "Pannello Admin":
+    st.title("⚙️ Controllo Operativo MyPlayr")
     
-    # 1. FORM PROGRAMMAZIONE (Sincronizzato con Supabase)
-    with st.form("programma_match"):
-        data_p = st.date_input("Data", key="admin_data")
-        ora_p = st.text_input("Ora (es. 15:30)", key="admin_ora")
-        campo_p = st.text_input("Campo", key="admin_campo")
-        if st.form_submit_button("🔴 CONFERMA PROGRAMMAZIONE"):
-            # Scrittura su Supabase
-            supabase.table("calendario").insert({
-                "data": data_p.strftime("%d-%m-%Y"),
-                "ora": ora_p,
-                "campo": campo_p,
-                "stato": 'PROGRAMMATO'
-            }).execute()
-            st.success(f"✅ Registrazione programmata alle {ora_p} sul Cloud!")
-            st.rerun()
+    # 1. FORM PROGRAMMAZIONE REGISTRAZIONE
+    # Serve per dire al Mini PC: "A quest'ora accendi la camera"
+    with st.expander("📅 PROGRAMMA NUOVO MATCH", expanded=True):
+        with st.form("programma_match", clear_on_submit=True):
+            col_d, col_o = st.columns(2)
+            with col_d:
+                data_p = st.date_input("Data Evento", datetime.now())
+            with col_o:
+                ora_p = st.text_input("Ora Inizio (es. 20:30)", placeholder="HH:MM")
+            
+            campo_p = st.selectbox("Seleziona Campo", ["Campo A", "Campo B", "Campo C", "Padel 1"])
+            titolo_p = st.text_input("Squadre / Titolo Partita", placeholder="es. Rossi vs Bianchi")
+
+            if st.form_submit_button("🔴 CONFERMA PROGRAMMAZIONE", use_container_width=True):
+                if ora_p and titolo_p:
+                    try:
+                        supabase.table("calendario").insert({
+                            "data": data_p.strftime("%d-%m-%Y"),
+                            "ora": ora_p.strip(),
+                            "campo": campo_p,
+                            "evento": titolo_p.strip(),
+                            "stato": 'PROGRAMMATO' # Segnale per il Mini PC
+                        }).execute()
+                        st.success(f"✅ Registrazione programmata con successo!")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Errore database: {e}")
+                else:
+                    st.warning("Completa tutti i campi prima di confermare.")
 
     st.divider()
 
-    # 2. VISUALIZZAZIONE PARTITE REGISTRATE E TAGLIO CLIP
-    st.markdown("### 🎞️ Partite Disponibili")
+    # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
+    st.markdown("### 🎞️ Archivio Match Registrati")
     
-    # Recuperiamo le partite 'FATTO' da Supabase
-    res = supabase.table("calendario").select("*").eq("status", "FATTO").order("id", desc=True).execute()
-    df_partite = pd.DataFrame(res.data)
+    try:
+        # Recuperiamo le partite concluse (stato 'FATTO')
+        res_matches = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+        
+        partite_fatte = res_matches.data
 
-    if df_partite.empty:
-        st.info("Nessuna partita registrata trovata nel Cloud.")
-    else:
-        for index, row in df_partite.iterrows():
-            st.subheader(f"🏟️ Partita: {row['data']} - {row['ora']} ({row['campo']})")
-            
-            video_url = row.get('link_video') # URL pubblico di Google Drive (generato dal Mini PC)
-
-            if video_url:
-                # Visualizziamo il video dal Cloud (Funziona ovunque!)
-                st.video(video_url)
+        if not partite_fatte:
+            st.info("ℹ️ Nessuna partita registrata disponibile per il taglio.")
+        else:
+            for partita in partite_fatte:
+                st.subheader(f"🏟️ {partita['evento']} ({partita['data']})")
                 
-                # Box per il taglio della clip (LOGICA ASINCRONA)
-                with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
-                    st.write("Scegli il momento dell'azione:")
-                    c1, col_s, c3 = st.columns(3)
-                    with c1:
-                        m_in = st.number_input("Minuto inizio", min_value=0, step=1, key=f"min_{row['id']}")
-                    with col_s:
-                        s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"sec_{row['id']}")
-                    with c3:
-                        durata_clip = st.number_input("Durata (sec)", min_value=1, max_value=60, value=10, key=f"dur_{row['id']}")
+                video_url = partita.get('link_video') # URL caricato dal Mini PC (GDrive/S3/Cloud)
 
-                    if st.button("🎬 RICHIEDI TAGLIO CLIP", key=f"req_{row['id']}", type='primary', use_container_width=True):
-                        inizio_tot = (m_in * 60) + s_in
-                        
-                        # Invece di tagliare subito, mandiamo un comando al Mini PC tramite Supabase
-                        supabase.table("comandi_clip").insert({
-                            "id_partita": row['id'],
-                            "inizio_secondi": inizio_tot,
-                            "durata_secondi": durata_clip,
-                            "email_utente": st.session_state.user_email,
-                            "stato": "RICHIESTO"
-                        }).execute()
-                        
-                        st.success("✅ Richiesta inviata! Il Mini PC sta preparando la tua clip. La troverai tra poco in 'Le Mie Clip'.")
-            else:
-                st.warning("⚠️ Video in fase di caricamento sul Cloud... Riprova tra poco.")
-            
-            st.divider()
-
-# --- PAGINA PARTITE (VISIBILE A TUTTI - SUPABASE READY) ---
-elif st.session_state.pagina == 'partite':
-    st.title("🏟️ Archivio Partite MyPlayr")
-    
-    # 1. Recupero dati da Supabase (Niente più SQLite locale)
-    res = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
-    df_partite = pd.DataFrame(res.data)
-
-    if df_partite.empty:
-        st.info("📌 Nessuna partita ancora disponibile. Torna a trovarci dopo il prossimo match!")
-    else:
-        for index, row in df_partite.iterrows():
-            st.subheader(f"📅 Partita del {row['data']} - Ore {row['ora']}")
-            
-            # Recuperiamo il link pubblico generato da Rclone
-            video_url = row.get('link_video') 
-
-            if video_url:
-                # Mostriamo il video in streaming (Funziona su smartphone!)
-                st.video(video_url)
-                
-                # --- BOX PER IL TAGLIO ASINCRONO ---
-                with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
-                    st.write("Seleziona l'azione che vuoi salvare:")
-                    c1, col_s, c3 = st.columns(3)
-                    with c1:
-                        m_in = st.number_input("Minuto inizio", min_value=0, step=1, key=f"min_u_{row['id']}")
-                    with col_s:
-                        s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"sec_u_{row['id']}")
-                    with c3:
-                        durata_clip = st.number_input("Durata (sec)", min_value=1, max_value=60, value=10, key=f"dur_u_{row['id']}")
-
-                    if st.button("🎬 GENERA CLIP", key=f"btn_u_{row['id']}", use_container_width=True, type='primary'):
-                        inizio_tot = (m_in * 60) + s_in
-                        
-                        # MANDIAMO IL COMANDO AL MINI PC TRAMITE SUPABASE
-                        # Il Mini PC ha il file originale sul disco G: e farà il taglio fisico
-                        supabase.table("comandi_clip").insert({
-                            "id_partita": row['id'],
-                            "inizio_secondi": inizio_tot,
-                            "durata_secondi": durata_clip,
-                            "email_utente": st.session_state.user_email.strip().lower(),
-                            "stato": "RICHIESTO"
-                        }).execute()
-                        
-                        st.success("🚀 Richiesta inviata al sistema centrale! La tua clip sarà pronta tra pochi minuti nella sezione 'Le Mie Clip'.")
-            else:
-                st.warning(f"⚠️ Il video è in fase di elaborazione nel Cloud. Riprova tra poco!")
-            
-            st.divider()
-
-# --- PAGINA: LE MIE CLIP (VISIBILE ALL'UTENTE - SUPABASE READY) ---
-elif st.session_state.pagina == 'mie_clip':
-    st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight</h2>", unsafe_allow_html=True)
-    
-    # 1. Recupero clip personali da Supabase
-    # Filtriamo per l'email dell'utente loggato
-    email_u = st.session_state.user_email.strip().lower()
-    res = supabase.table("calendario")\
-        .select("*")\
-        .eq("stato", "CLIP_UTENTE")\
-        .eq("campo", email_u)\
-        .order("id", desc=True)\
-        .execute()
-    
-    mie_clip = pd.DataFrame(res.data)
-
-    if not mie_clip.empty:
-        for index, row_c in mie_clip.iterrows():
-            url_clip = row_c.get('link_video') # URL pubblico Cloud
-            nome_file = row_c.get('evento', 'myplayr_clip.mp4')
-            
-            with st.container():
-                if url_clip:
-                    # Visualizzazione Video dal Cloud
-                    st.video(url_clip)
+                if video_url:
+                    # Anteprima video per trovare il momento del goal
+                    st.video(video_url)
                     
-                    c1, c2 = st.columns(2)
-                    with c1:
-                        # Il download ora punta al link web, non al file locale G:
-                        st.markdown(f"""
-                            <a href="{url_clip}" target="_blank" style="text-decoration: none;">
-                                <button style="width:100%; background-color:#28a745; color:white; border:none; padding:10px; border-radius:5px; font-weight:bold;">
-                                    📥 SCARICA CLIP
-                                </button>
-                            </a>
-                        """, unsafe_allow_html=True)
+                    # BOX TAGLIO CLIP
+                    with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
+                        st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
                         
-                    with c2:
-                        # Gestione Consenso Social (Hall of Fame)
-                        stato_db = True if row_c.get('consenso_social', 0) == 1 else False
-                        consenso = st.toggle("Sì, pubblicami su @MyPlayr", value=stato_db, key=f"tog_{row_c['id']}")
-                        
-                        if consenso != stato_db:
-                            nuovo_valore = 1 if consenso else 0
-                            # Aggiornamento immediato su Supabase
-                            supabase.table("calendario").update({"consenso_social": nuovo_valore}).eq("id", row_c['id']).execute()
-                            st.toast("✅ Impostazioni social aggiornate!")
-                            time.sleep(0.5)
-                            st.rerun()
+                        c1, c2, c3 = st.columns(3)
+                        with c1:
+                            m_in = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_{partita['id']}")
+                        with c2:
+                            s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_{partita['id']}")
+                        with c3:
+                            durata_clip = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
+
+                        if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
+                            # Calcolo del tempo totale in secondi per FFmpeg
+                            inizio_totale_secondi = (m_in * 60) + s_in
                             
-                    if stato_db:
-                        st.success("✨ Questa clip è visibile nella Hall of Fame!")
+                            # Inviamo l'ordine di lavoro alla tabella 'comandi_clip'
+                            # Il Mini PC in campo leggerà questa riga e taglierà il file originale 4K
+                            try:
+                                supabase.table("comandi_clip").insert({
+                                    "id_partita": partita['id'],
+                                    "inizio_secondi": inizio_totale_secondi,
+                                    "durata_secondi": durata_clip,
+                                    "email_utente": st.session_state.user_email,
+                                    "stato": "RICHIESTO"
+                                }).execute()
+                                
+                                st.success("✅ Richiesta inviata! Il Mini PC sta lavorando il video. La troverai tra poco in 'Le Mie Clip'.")
+                            except Exception as e:
+                                st.error(f"Errore invio comando: {e}")
                 else:
-                    st.warning(f"⏳ La clip '{nome_file}' è in fase di generazione dal Mini PC...")
+                    st.warning("⚠️ Video Master in fase di caricamento sul Cloud...")
+                
                 st.divider()
-    else:
-        st.info("💡 Non hai ancora creato nessuna clip. Vai nella sezione 'Partite' per tagliare i tuoi momenti migliori!")
+
+    except Exception as e:
+        st.error(f"Errore caricamento archivio: {e}")
+
+
+# --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
+
+if st.session_state.pagina == 'partite':
+    st.title("🏟️ Archivio Partite MyPlayr")
+    st.markdown("<p style='font-size: 14px;'>Rivedi i tuoi match e taglia le tue azioni migliori in pochi secondi.</p>", unsafe_allow_html=True)
+    
+    # 1. RECUPERO DATI DAL CLOUD
+    try:
+        # Recuperiamo solo i match completati (stato 'FATTO')
+        res_matches = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+        
+        dati_partite = res_matches.data if res_matches.data else []
+
+        if not dati_partite:
+            st.info("📌 Nessuna partita ancora disponibile. Torna a trovarci dopo il tuo prossimo match!")
+        else:
+            # 2. CICLO DI VISUALIZZAZIONE PARTITE
+            for partita in dati_partite:
+                st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
+                
+                # Link video generato dal Mini PC e caricato sul Cloud
+                video_url = partita.get('link_video') 
+
+                if video_url:
+                    # Player video compatibile con tutti i dispositivi
+                    st.video(video_url)
+                    
+                    # --- INTERFACCIA DI TAGLIO CLIP (LOGICA ASINCRONA) ---
+                    with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
+                        st.write("Inserisci il minuto e il secondo dell'azione che vuoi salvare:")
+                        
+                        col_m, col_s, col_d = st.columns(3)
+                        with col_m:
+                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_u_{partita['id']}")
+                        with col_s:
+                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_u_{partita['id']}")
+                        with col_d:
+                            durata_richiesta = st.number_input("Durata (secondi)", min_value=5, max_value=60, value=15, key=f"d_u_{partita['id']}")
+
+                        # Tasto per inviare l'ordine di taglio al Mini PC
+                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_u_{partita['id']}", use_container_width=True, type='primary'):
+                            # Calcolo tempo totale in secondi per FFmpeg sul Mini PC
+                            tempo_totale_sec = (min_inizio * 60) + sec_inizio
+                            email_pulita = st.session_state.user_email.strip().lower()
+                            
+                            try:
+                                # MANDIAMO IL COMANDO AL MINI PC TRAMITE SUPABASE
+                                # Il Mini PC leggerà questa riga e taglierà il file originale 4K (Disco G:)
+                                supabase.table("comandi_clip").insert({
+                                    "id_partita": partita['id'],
+                                    "inizio_secondi": tempo_totale_sec,
+                                    "durata_secondi": durata_richiesta,
+                                    "email_utente": email_pulita,
+                                    "stato": "RICHIESTO"
+                                }).execute()
+                                
+                                st.success("🚀 Richiesta inviata! Il sistema sta preparando il tuo video. Lo troverai tra poco nella sezione 'Le Mie Clip'.")
+                                st.toast("Richiesta inviata con successo!", icon="✅")
+                            except Exception as e:
+                                st.error(f"Errore nell'invio della richiesta: {e}")
+                else:
+                    st.warning(f"⚠️ Il video Master è in fase di caricamento. Riprova tra poco!")
+                
+                st.divider()
+
+    except Exception as e:
+        st.error(f"Impossibile caricare l'archivio partite: {e}")
+
+
+# --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
+
+if st.session_state.pagina == 'mie_clip':
+    st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight Personali</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: 14px;'>Qui trovi tutte le azioni che hai tagliato. Scaricale o rendile pubbliche!</p>", unsafe_allow_html=True)
+    
+    # 1. RECUPERO CLIP DALL'ACCOUNT UTENTE
+    # Filtriamo su Supabase per l'email dell'utente loggato
+    email_utente_loggato = st.session_state.user_email.strip().lower()
+    
+    try:
+        res_mie_clip = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "CLIP_UTENTE")\
+            .eq("campo", email_utente_loggato)\
+            .order("id", desc=True)\
+            .execute()
+        
+        elenco_clip = res_mie_clip.data if res_mie_clip.data else []
+
+        if elenco_clip:
+            for clip in elenco_clip:
+                url_cloud = clip.get('link_video') # URL pubblico generato dal Mini PC
+                id_clip = clip.get('id')
+                
+                with st.container():
+                    if url_cloud:
+                        # Anteprima Video
+                        st.video(url_cloud)
+                        
+                        col_down, col_social = st.columns(2)
+                        
+                        with col_down:
+                            # TASTO DOWNLOAD PROFESSIONALE
+                            # Usiamo un link HTML perché st.download_button con URL esterni è instabile
+                            st.markdown(f"""
+                                <a href="{url_cloud}" download="MyPlayr_Clip_{id_clip}.mp4" target="_blank" style="text-decoration: none;">
+                                    <div style="text-align: center; background-color: #28a745; color: white; 
+                                         padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                                        📥 SCARICA SUL TELEFONO
+                                    </div>
+                                </a>
+                            """, unsafe_allow_html=True)
+                            
+                        with col_social:
+                            # GESTIONE CONSENSO HALL OF FAME
+                            # Leggiamo il valore attuale dal database (1 = Sì, 0 = No)
+                            consenso_attuale = True if clip.get('consenso_social', 0) == 1 else False
+                            
+                            nuovo_consenso = st.toggle(
+                                "Pubblica in Hall of Fame 🏆", 
+                                value=consenso_attuale, 
+                                key=f"tog_social_{id_clip}"
+                            )
+                            
+                            # Se l'utente cambia l'interruttore, aggiorniamo Supabase istantaneamente
+                            if nuovo_consenso != consenso_attuale:
+                                valore_db = 1 if nuovo_consenso else 0
+                                supabase.table("calendario").update({"consenso_social": valore_db}).eq("id", id_clip).execute()
+                                st.toast("✅ Preferenze social aggiornate!", icon="✨")
+                                time.sleep(0.5)
+                                st.rerun()
+                        
+                        if consenso_attuale:
+                            st.caption("✨ Questa clip è visibile a tutti nella Hall of Fame.")
+                    else:
+                        st.info(f"⏳ Clip #{id_clip} in fase di elaborazione... Il Mini PC la caricherà tra poco.")
+                    
+                    st.divider()
+        else:
+            st.info("💡 Non hai ancora creato nessuna clip. Vai nella sezione 'Partite' per tagliare i tuoi momenti migliori!")
+
+    except Exception as e:
+        st.error(f"Errore nel caricamento delle tue clip: {e}")
 
 
 
 
-# --- PAGINA: HALL OF FAME (PUBBLICA - SUPABASE READY) ---
-elif st.session_state.pagina == 'hall_of_fame':
+
+# --- BLOCCO: PAGINA HALL OF FAME PRO (CON JOIN AUTORE) ---
+
+if st.session_state.pagina == 'hall_of_fame':
     st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
     st.divider()
 
-    # 1. Recupero dati con Join (Video + Info Utente) da Supabase
-    # Nota: Supabase gestisce le relazioni automaticamente se le tabelle sono collegate
-    res = supabase.table("calendario")\
-        .select("evento, campo, consenso_social, stato, link_video, utenti(nickname, ig_tag)")\
-        .eq("stato", "CLIP_UTENTE")\
-        .eq("consenso_social", 1)\
-        .order("id", desc=True)\
-        .execute()
-    
-    df_fame = pd.DataFrame(res.data)
-
-    if not df_fame.empty:
-        # Lista per evitare duplicati (come nel tuo codice originale)
-        video_mostrati = []
+    try:
+        # 1. RECUPERO DATI CON JOIN (Video + Info Utente)
+        # Chiediamo a Supabase: "Dammi la clip E il Nickname/IG dell'utente che l'ha fatta"
+        res_pro = supabase.table("calendario")\
+            .select("id, evento, campo, consenso_social, stato, link_video, utenti(nome, ig_tag)")\
+            .eq("stato", "CLIP_UTENTE")\
+            .eq("consenso_social", 1)\
+            .order("id", desc=True)\
+            .execute()
         
-        for i, clip in df_fame.iterrows():
-            nome_file = clip['evento']
-            url_video = clip.get('link_video') # URL pubblico Cloud
+        dati_fame = res_pro.data if res_pro.data else []
+
+        if dati_fame:
+            # Lista per evitare di mostrare lo stesso file due volte
+            gia_visti = []
             
-            if nome_file in video_mostrati:
-                continue
-            
-            if url_video:
-                # Visualizzazione Video dal Cloud (Funziona ovunque)
-                st.video(url_video)
-                video_mostrati.append(nome_file)
+            for clip in dati_fame:
+                url_v = clip.get('link_video')
+                nome_f = clip.get('evento', 'clip.mp4')
                 
-                # Recupero info autore (Nickname o Email)
-                info_utente = clip.get('utenti', {}) # Dati dalla JOIN
-                autore = info_utente.get('nickname') if info_utente and info_utente.get('nickname') else clip['campo']
+                # Se abbiamo già mostrato questo file o non c'è l'URL, saltiamo
+                if nome_f in gia_visti or not url_v:
+                    continue
                 
-                st.success(f"⚽ **Azione di: {autore}**")
-                
-                # Mostra Tag Instagram se presente
-                ig = info_utente.get('ig_tag') if info_utente else None
-                if ig:
-                    st.caption(f"📸 Segui su Instagram: {ig}")
-                st.divider()
-            else:
-                st.warning(f"⏳ La clip '{nome_file}' è in fase di caricamento...")
-    else:
-        st.info("📌 La Hall of Fame è ancora vuota. Dai il consenso in 'Le Mie Clip' per apparire qui!")
+                # --- VISUALIZZAZIONE ---
+                with st.container():
+                    st.video(url_v)
+                    gia_visti.append(nome_f)
+                    
+                    # Recupero dati dell'autore dalla JOIN (Tabella utenti)
+                    info_u = clip.get('utenti', {})
+                    # Se non c'è il nome, usiamo l'email (campo) come riserva
+                    autore = info_u.get('nome') if info_u and info_u.get('nome') else clip['campo']
+                    
+                    st.success(f"⚽ **Protagonista: {autore}**")
+                    
+                    # Se il ragazzo ha inserito Instagram, lo tagghiamo!
+                    ig = info_u.get('ig_tag') if info_u else None
+                    if ig:
+                        st.caption(f"📸 Instagram: **{ig}**")
+                    
+                    st.divider()
+        else:
+            st.info("📌 La Hall of Fame è vuota. Dai il consenso in 'Le Mie Clip' per apparire qui!")
+
+    except Exception as e:
+        st.error(f"Errore nel caricamento della Hall of Fame: {e}")
+
+# --- TASTO DI RITORNO SICURO (DA METTERE PRIMA DEL FOOTER) ---
+# Usiamo una chiave diversa per non andare in conflitto con i tasti precedenti
+if st.session_state.pagina not in ['home', 'home_auth']:
+    if st.button("🔙 Torna alla Home", key="btn_ritorno_universale"):
+        if st.session_state.get('autenticato', False):
+            st.session_state.pagina = 'home_auth'
+        else:
+            st.session_state.pagina = 'home'
+        st.rerun()
 
 
-            # --- FINE BLOCCO VISUALIZZAZIONE ---
 
+# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
+# 1. GESTIONE PAGINE MINORI (Recupero Password)
+if st.session_state.pagina == 'recupero_password': 
+    st.markdown("<h2 style='text-align: center;'>Recupero Password</h2>", unsafe_allow_html=True)
+    st.info("Abbiamo inviato le istruzioni alla tua email.")
+    st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- BOTTONE TORNA ALLA HOME (FINE FILE) ---
-if st.button("🔙 Torna alla Home", key="btn_final_back"):
-    st.session_state.pagina = 'home_auth' if st.session_state.autenticato else 'home'
-    st.rerun()
+# 2. FOOTER UNIVERSALE (Appare in fondo a TUTTE le pagine)
+st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
+# Scritta principale del marchio
+st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyPlayr - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-
-
-
-
-    # --- ARCHIVIO REGISTRAZIONI EFFETTUATE ---
-    st.subheader("🎞️ Archivio Video Registrati")
-    conn = sqlite3.connect(DB_PATH)
-    # Mostriamo solo quelle con stato 'FATTO' (registrate dal Regista)
-    query = "SELECT id, data, campo, ora, evento FROM calendario WHERE stato = 'FATTO' ORDER BY id DESC"
-    df_partite = pd.read_sql_query(query, conn)
-    conn.close()
-
-    if not df_partite.empty:
-        for idx, row in df_partite.iterrows():
-            c1, c2, c3, c4, c5 = st.columns([2,2,1,3,1])
-            c1.write(f"📅 {row['data']}")
-            c2.write(f"🏟️ {row['campo']}")
-            c3.write(f"🕒 {row['ora']}")
-            c4.write(f"📹 {row['evento']}") # Qui apparirà il nome file match_...
-            if c5.button("🗑️", key=f"del_{row['id']}"):
-                # Elimina record e file fisico
-                if os.path.exists(os.path.join(VIDEO_DIR, row['evento'])):
-                    os.remove(os.path.join(VIDEO_DIR, row['evento']))
-                conn = sqlite3.connect(DB_PATH); conn.execute("DELETE FROM calendario WHERE id=?", (row['id'],)); conn.commit(); conn.close()
-                st.rerun()
-    else:
-        st.info("Nessuna registrazione completata dal Regista.")
-
-
-# --- PROFILO ATLETA ---
-elif st.session_state.pagina == 'profilo':
-    st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
-    
-    conn = sqlite3.connect(DB_PATH)
-    # 1. Recuperiamo i dati dell'utente
-    user_query = pd.read_sql("SELECT * FROM utenti WHERE email=?", conn, params=(st.session_state.user_email,))
-    
-    if not user_query.empty:
-        user = user_query.iloc[0]
-        
-        # --- SEZIONE MODIFICA (FORM) ---
-        with st.expander("⚙️ Modifica Dati Profilo e Foto"):
-            col_f, col_i = st.columns(2)
-            with col_f:
-                nuova_foto = st.file_uploader("Aggiorna Foto Profilo", type=['jpg', 'png', 'jpeg'])
-            with col_i:
-                nuovo_nick = st.text_input("Nickname", value=user['nickname'] if user['nickname'] else "")
-                tag_ig_attuale = user['ig_tag'] if 'ig_tag' in user and user['ig_tag'] else ""
-                nuovo_ig = st.text_input("Il tuo Tag Instagram (es. @nomeutente)", value=tag_ig_attuale)
-                nuovo_ruolo = st.selectbox("Il tuo Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere"])
-                nuova_bio = st.text_area("La tua Bio", value=user['bio'] if user['bio'] else "")
-
-            if st.button("💾 SALVA MODIFICHE", use_container_width=True):
-                percorso_f = user['foto_path']
-                if nuova_foto:
-                    percorso_f = os.path.join(IMG_DIR, f"foto_{user['id']}.jpg")
-                    with open(percorso_f, "wb") as f:
-                        f.write(nuova_foto.getbuffer())
-                
-                c = conn.cursor()
-                c.execute("UPDATE utenti SET nickname=?, ruolo=?, bio=?, foto_path=?, ig_tag=? WHERE email=?", 
-                          (nuovo_nick, nuovo_ruolo, nuova_bio, percorso_f, nuovo_ig, st.session_state.user_email))
-                conn.commit()
-                st.success("✅ Profilo aggiornato!")
-                st.rerun()
-
-        st.divider()
-
-        # --- SEZIONE VISUALIZZAZIONE (GRAFICA) ---
-        c_left, c_right = st.columns([1, 2])
-        with c_left:
-            st.markdown('<div class="avatar-container">', unsafe_allow_html=True)
-            if user['foto_path'] and os.path.exists(user['foto_path']):
-                st.image(user['foto_path'], width=120)
-            else:
-                st.markdown('<div class="avatar-img">👤</div>', unsafe_allow_html=True)
-            st.markdown(f"<p style='margin-top:10px;'><b>{user['nome']} {user['cognome']}</b><br><span style='color:#28a745; font-size:14px; font-weight:bold;'>{user['ruolo']}</span></p>", unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with c_right:
-            d1, d2 = st.columns(2)
-            with d1:
-                st.markdown(f'<div class="data-card"><b>Nickname:</b> {user["nickname"]}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user["ig_tag"] if user["ig_tag"] else "-"}</div>', unsafe_allow_html=True)
-            with d2:
-                st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user["ruolo"]}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user["data_iscrizione"]}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="data-card"><b>Email:</b> {st.session_state.user_email}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="data-card"><b>Bio:</b> {user["bio"]}</div>', unsafe_allow_html=True)
-
-        st.divider()
-        st.subheader("📊 Le tue statistiche")
-        s_cols = st.columns(6)
-        st_list = [("🎞️","Clip", "0"), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Ranking", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
-        for i, (ico, tit, val) in enumerate(st_list):
-            with s_cols[i]: st.markdown(f'<div class="stat-box">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
-
-        st.divider()
-        st.subheader("🏆 I tuoi trofei")
-        st.info("Non hai ancora guadagnato nessun badge.")
-        
-        st.divider()
-        st.subheader("🎥 Clip recenti")
-        st.markdown('<p style="text-align:center; padding: 20px; background: #3E444A; border-radius: 10px;">📹<br>Non hai acquistato nessuna clip</p>', unsafe_allow_html=True)
-    
-    conn.close()
-
-# --- ALTRE PAGINE & FOOTER ---
-elif st.session_state.pagina == 'recupero_password': st.button("Torna a login", on_click=lambda: vai_a('login'))
-st.markdown("<br><hr><p class='footer-main'> myplayr</p>", unsafe_allow_html=True)
+# Colonne per i link legali
 f_l, f_r = st.columns(2)
-with f_l: st.markdown("<p class='footer-sub'>Privacy Policy</p>", unsafe_allow_html=True)
-with f_r: st.markdown("<p class='footer-sub' style='text-align:right;'>Termini e Condizioni</p>", unsafe_allow_html=True)
-st.markdown("<p class='footer-sub' style='text-align:center;'>© 2026 tutti i diritti riservati</p>", unsafe_allow_html=True)
+with f_l: 
+    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+with f_r: 
+    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+
+# Copyright finale centrato
+st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyPlayr - Tutti i diritti riservati</p>", unsafe_allow_html=True)
+
 
 
 
