@@ -21,7 +21,7 @@ st.set_page_config(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Cartelle principali
-
+VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
 IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
 CLIP_DIR = os.path.join(BASE_DIR, "CLIP_TAGLIATE")
 
