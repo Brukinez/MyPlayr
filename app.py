@@ -1082,45 +1082,7 @@ st.divider()  # Chiudiamo la sezione Admin in modo pulito
 if st.session_state.pagina == "Pannello Admin":
     st.title("⚙️ Controllo Operativo MyPlayr")
 
-    # 1. FORM PROGRAMMAZIONE REGISTRAZIONE
-    # Serve per dire al Mini PC: "A quest'ora accendi la camera"
-    with st.expander("📅 PROGRAMMA NUOVO MATCH", expanded=True):
-        with st.form("programma_match", clear_on_submit=True):
-            col_d, col_o = st.columns(2)
-            with col_d:
-                data_p = st.date_input("Data Evento", datetime.now())
-            with col_o:
-                ora_p = st.text_input("Ora Inizio (es. 20:30)", placeholder="HH:MM")
-
-            campo_p = st.selectbox(
-                "Seleziona Campo", ["Campo A", "Campo B", "Campo C", "Padel 1"]
-            )
-            titolo_p = st.text_input(
-                "Squadre / Titolo Partita", placeholder="es. Rossi vs Bianchi"
-            )
-
-            if st.form_submit_button(
-                "🔴 CONFERMA PROGRAMMAZIONE", use_container_width=True
-            ):
-                if ora_p and titolo_p:
-                    try:
-                        supabase.table("calendario").insert(
-                            {
-                                "data": data_p.strftime("%d-%m-%Y"),
-                                "ora": ora_p.strip(),
-                                "campo": campo_p,
-                                "evento": titolo_p.strip(),
-                                "stato": "PROGRAMMATO",  # Segnale per il Mini PC
-                            }
-                        ).execute()
-                        st.success(f"✅ Registrazione programmata con successo!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Errore database: {e}")
-                else:
-                    st.warning("Completa tutti i campi prima di confermare.")
-
-    st.divider()
+    
 
     # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
     st.markdown("### 🎞️ Archivio Match Registrati")
