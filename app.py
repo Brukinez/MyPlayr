@@ -1257,13 +1257,3 @@ with f_r:
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyPlayr - Tutti i diritti riservati</p>", unsafe_allow_html=True)
-
-
-
-
-
-
-
-
-
-
