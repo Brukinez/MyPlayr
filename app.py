@@ -917,7 +917,7 @@ st.divider() # Chiudiamo la sezione Admin in modo pulito
 
 # --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
 
-if st.session_state.pagina == "Pannello Admin":
+if st.session_state.pagina == "Admin":
     st.title("⚙️ Controllo Operativo MyPlayr")
     
     # 1. FORM PROGRAMMAZIONE REGISTRAZIONE
