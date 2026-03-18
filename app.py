@@ -777,8 +777,8 @@ with st.expander("📅 PROGRAMMA NUOVA REGISTRAZIONE 🎥", expanded=False):
 
 # --- BLOCCO: ARCHIVIO VIDEO TOTALE (VISTA TABELLARE PER ADMIN) ---
 
-st.divider()
-st.subheader("📊 Riepilogo Attività Video")
+        st.divider()
+        st.subheader("📊 Riepilogo Attività Video")
 
 # 1. ARCHIVIO PARTITE INTERE (Tutto ciò che il Mini PC ha registrato)
 st.markdown("#### 🏟️ Match Registrati (Master 4K)")
