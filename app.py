@@ -622,7 +622,7 @@ if st.session_state.pagina == 'login':
 
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
-if st.session_state.pagina == 'admin':
+elif st.session_state.pagina == 'admin':
     # 1. RECUPERO CONTEGGI REALI (Cloud)
     try:
         # Conteggio utenti registrati
