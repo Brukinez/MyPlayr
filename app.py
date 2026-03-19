@@ -1020,6 +1020,38 @@ elif st.session_state.pagina == 'admin':
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
 
+ # --- PAGINA: HALL OF FAME (PUBBLICA) ---
+elif st.session_state.pagina == 'hall_of_fame':
+    st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
+    st.write("---")
+
+    conn = sqlite3.connect(DB_PATH)
+    # Prendiamo TUTTE le clip utente senza filtri per testare la connessione
+    df_fame = pd.read_sql("SELECT * FROM calendario WHERE stato='CLIP_UTENTE'", conn)
+    conn.close()
+
+    # --- SPIE DI CONTROLLO (DEBUG) ---
+    st.info(f"📊 Clip totali nel sistema: {len(df_fame)}")
+    
+    # Filtriamo quelle con il consenso (1)
+    clip_visibili = df_fame[df_fame['consenso_social'] == 1]
+    st.success(f"✅ Clip con consenso attivo: {len(clip_visibili)}")
+
+    if not clip_visibili.empty:
+        for i, clip in clip_visibili.iterrows():
+            path_fame = os.path.join(CLIP_GDRIVE, clip['evento'])
+            
+            with st.container():
+                if os.path.exists(path_fame):
+                    st.video(path_fame)
+                    st.write(f"⚽ Azione di: **{clip['campo']}**")
+                else:
+                    st.warning(f"⚠️ File {clip['evento']} non trovato su Drive G:")
+                st.divider()
+    else:
+        st.warning("La Hall of Fame è vuota. Assicurati di aver attivato 'Sì, pubblicami' in Le Mie Clip.")
+           
+
 # ---BLOCCO: PROFILO ATLETA (VERSIONE SUPABASE) ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
@@ -1074,7 +1106,7 @@ elif st.session_state.pagina == 'profilo':
             
     except Exception as e:
         st.error(f"Errore caricamento profilo: {e}")
-        
+
 # --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
 
 if st.session_state.pagina == 'partite':
