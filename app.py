@@ -624,61 +624,6 @@ elif st.session_state.pagina == 'login':
             if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
                 st.session_state.sub = 'login'
                 st.rerun()
-
-# ---BLOCCO: PROFILO ATLETA (VERSIONE SUPABASE) ---
-elif st.session_state.pagina == 'profilo':
-    st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
-    
-    # 1. Recuperiamo i dati dell'utente da Supabase
-    try:
-        res_u = supabase.table("utenti").select("*").eq("email", st.session_state.user_email).execute()
-        
-        if res_u.data:
-            user = res_u.data[0]
-            
-            # --- SEZIONE MODIFICA (FORM) ---
-            with st.expander("⚙️ Modifica Dati Profilo e Foto"):
-                col_f, col_i = st.columns(2)
-                
-                with col_f:
-                    # Nota: Per la foto profilo online, useremo un link di testo per ora
-                    nuova_foto_url = st.text_input("Link Foto Profilo (URL)", value=user.get('foto_path', ''))
-                    st.info("💡 Per ora usa un link (es. da Facebook o Google Drive).")
-                
-                with col_i:
-                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
-                    nuovo_ig = st.text_input("Il tuo Tag Instagram (es. @nomeutente)", value=user.get('ig_tag', ''))
-                    nuovo_ruolo = st.selectbox("Il tuo Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
-                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
-
-                if st.button("💾 SALVA MODIFICHE", use_container_width=True):
-                    # Prepariamo i dati per l'aggiornamento Cloud
-                    dati_aggiornati = {
-                        "nickname": nuovo_nick,
-                        "ruolo": nuovo_ruolo,
-                        "bio": nuova_bio,
-                        "ig_tag": nuovo_ig,
-                        "foto_path": nuova_foto_url
-                    }
-                    
-                    # Comando Supabase per aggiornare la riga dell'utente
-                    supabase.table("utenti").update(dati_aggiornati).eq("email", st.session_state.user_email).execute()
-                    
-                    st.success("✅ Profilo Cloud aggiornato!")
-                    st.rerun()
-
-            st.divider()
-            
-            # --- VISUALIZZAZIONE DATI ATTUALI ---
-            st.write(f"**Nickname:** {user.get('nickname', 'Non impostato')}")
-            st.write(f"**Ruolo:** {user.get('ruolo', 'Non impostato')}")
-            st.write(f"**Instagram:** {user.get('ig_tag', 'Non impostato')}")
-
-        else:
-            st.error("Dati utente non trovati nel database.")
-            
-    except Exception as e:
-        st.error(f"Errore caricamento profilo: {e}")
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
@@ -1075,7 +1020,61 @@ elif st.session_state.pagina == 'admin':
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
 
+# ---BLOCCO: PROFILO ATLETA (VERSIONE SUPABASE) ---
+elif st.session_state.pagina == 'profilo':
+    st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
+    
+    # 1. Recuperiamo i dati dell'utente da Supabase
+    try:
+        res_u = supabase.table("utenti").select("*").eq("email", st.session_state.user_email).execute()
+        
+        if res_u.data:
+            user = res_u.data[0]
+            
+            # --- SEZIONE MODIFICA (FORM) ---
+            with st.expander("⚙️ Modifica Dati Profilo e Foto"):
+                col_f, col_i = st.columns(2)
+                
+                with col_f:
+                    # Nota: Per la foto profilo online, useremo un link di testo per ora
+                    nuova_foto_url = st.text_input("Link Foto Profilo (URL)", value=user.get('foto_path', ''))
+                    st.info("💡 Per ora usa un link (es. da Facebook o Google Drive).")
+                
+                with col_i:
+                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
+                    nuovo_ig = st.text_input("Il tuo Tag Instagram (es. @nomeutente)", value=user.get('ig_tag', ''))
+                    nuovo_ruolo = st.selectbox("Il tuo Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
+                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
 
+                if st.button("💾 SALVA MODIFICHE", use_container_width=True):
+                    # Prepariamo i dati per l'aggiornamento Cloud
+                    dati_aggiornati = {
+                        "nickname": nuovo_nick,
+                        "ruolo": nuovo_ruolo,
+                        "bio": nuova_bio,
+                        "ig_tag": nuovo_ig,
+                        "foto_path": nuova_foto_url
+                    }
+                    
+                    # Comando Supabase per aggiornare la riga dell'utente
+                    supabase.table("utenti").update(dati_aggiornati).eq("email", st.session_state.user_email).execute()
+                    
+                    st.success("✅ Profilo Cloud aggiornato!")
+                    st.rerun()
+
+            st.divider()
+            
+            # --- VISUALIZZAZIONE DATI ATTUALI ---
+            st.write(f"**Nickname:** {user.get('nickname', 'Non impostato')}")
+            st.write(f"**Ruolo:** {user.get('ruolo', 'Non impostato')}")
+            st.write(f"**Instagram:** {user.get('ig_tag', 'Non impostato')}")
+
+        else:
+            st.error("Dati utente non trovati nel database.")
+            
+    except Exception as e:
+        st.error(f"Errore caricamento profilo: {e}")
+        
 # --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
 
 if st.session_state.pagina == 'partite':
