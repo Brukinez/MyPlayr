@@ -736,6 +736,44 @@ elif st.session_state.pagina == 'admin':
     # Qui leggeremo la tabella dei comandi inviati dagli utenti
     st.info("Al momento non ci sono richieste manuali di taglio clip in sospeso.")
 
+# --- PROFILO ATLETA ---
+elif st.session_state.pagina == 'profilo':
+    st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
+    
+    conn = sqlite3.connect(DB_PATH)
+    # 1. Recuperiamo i dati dell'utente
+    user_query = pd.read_sql("SELECT * FROM utenti WHERE email=?", conn, params=(st.session_state.user_email,))
+    
+    if not user_query.empty:
+        user = user_query.iloc[0]
+        
+        # --- SEZIONE MODIFICA (FORM) ---
+        with st.expander("⚙️ Modifica Dati Profilo e Foto"):
+            col_f, col_i = st.columns(2)
+            with col_f:
+                nuova_foto = st.file_uploader("Aggiorna Foto Profilo", type=['jpg', 'png', 'jpeg'])
+            with col_i:
+                nuovo_nick = st.text_input("Nickname", value=user['nickname'] if user['nickname'] else "")
+                tag_ig_attuale = user['ig_tag'] if 'ig_tag' in user and user['ig_tag'] else ""
+                nuovo_ig = st.text_input("Il tuo Tag Instagram (es. @nomeutente)", value=tag_ig_attuale)
+                nuovo_ruolo = st.selectbox("Il tuo Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere"])
+                nuova_bio = st.text_area("La tua Bio", value=user['bio'] if user['bio'] else "")
+
+            if st.button("💾 SALVA MODIFICHE", use_container_width=True):
+                percorso_f = user['foto_path']
+                if nuova_foto:
+                    percorso_f = os.path.join(IMG_DIR, f"foto_{user['id']}.jpg")
+                    with open(percorso_f, "wb") as f:
+                        f.write(nuova_foto.getbuffer())
+                
+                c = conn.cursor()
+                c.execute("UPDATE utenti SET nickname=?, ruolo=?, bio=?, foto_path=?, ig_tag=? WHERE email=?", 
+                          (nuovo_nick, nuovo_ruolo, nuova_bio, percorso_f, nuovo_ig, st.session_state.user_email))
+                conn.commit()
+                st.success("✅ Profilo aggiornato!")
+                st.rerun()
+
+        st.divider()
 
     # --- BLOCCO: PROGRAMMAZIONE REGISTRAZIONE (ADMIN - SUPABASE READY) ---
 
