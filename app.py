@@ -516,7 +516,7 @@ if st.session_state.pagina == 'home':
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
-if st.session_state.pagina == 'login':
+elif st.session_state.pagina == 'login':
     # Centriamo il modulo di accesso con le colonne
     _, col_log, _ = st.columns([1, 2, 1])
     
