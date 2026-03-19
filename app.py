@@ -775,245 +775,245 @@ elif st.session_state.pagina == 'admin':
                     st.warning("⚠️ Per favore, inserisci almeno l'orario e il titolo della partita.")
 
 
-# --- BLOCCO: ARCHIVIO VIDEO TOTALE (VISTA TABELLARE PER ADMIN) ---
+    # --- BLOCCO: ARCHIVIO VIDEO TOTALE (VISTA TABELLARE PER ADMIN) ---
 
-        st.divider()
-        st.subheader("📊 Riepilogo Attività Video")
+            st.divider()
+            st.subheader("📊 Riepilogo Attività Video")
 
-# 1. ARCHIVIO PARTITE INTERE (Tutto ciò che il Mini PC ha registrato)
-        st.markdown("#### 🏟️ Match Registrati (Master 4K)")
+    # 1. ARCHIVIO PARTITE INTERE (Tutto ciò che il Mini PC ha registrato)
+            st.markdown("#### 🏟️ Match Registrati (Master 4K)")
 
-try:
-    # Recuperiamo i dati delle partite concluse (stato 'FATTO')
-    res_vids = supabase.table("calendario")\
-        .select("id, data, ora, campo, evento")\
-        .eq("stato", "FATTO")\
-        .order("id", desc=True)\
-        .execute()
-    
-    if res_vids.data:
-        df_vids = pd.DataFrame(res_vids.data)
-        # Mostriamo una tabella interattiva e pulita
-        st.dataframe(
-            df_vids[['id', 'data', 'ora', 'campo', 'evento']], 
-            use_container_width=True,
-            column_config={
-                "id": "ID",
-                "data": "Data Gara",
-                "ora": "Orario",
-                "campo": "Campo",
-                "evento": "Descrizione Match"
-            },
-            hide_index=True # Nascondiamo i numeri di riga per ordine
-        )
-    else:
-        st.info("ℹ️ Nessuna partita intera registrata al momento.")
-
-except Exception as e:
-    st.error(f"Errore caricamento tabella partite: {e}")
-
-st.write("<br>", unsafe_allow_html=True)
-
-# 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
-st.markdown("#### ✂️ Clip Generate dagli Utenti")
-
-try:
-    # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
-    res_clips = supabase.table("calendario")\
-        .select("id, data, campo, evento")\
-        .eq("stato", "CLIP_UTENTE")\
-        .order("id", desc=True)\
-        .execute()
-
-    if res_clips.data:
-        df_clips_admin = pd.DataFrame(res_clips.data)
-        
-        # Rinominia per rendere la tabella comprensibile al gestore
-        # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
-        df_visualizza = df_clips_admin.rename(columns={
-            'id': 'ID Clip',
-            'data': 'Data Taglio',
-            'campo': 'Email Utente', 
-            'evento': 'Nome File Clip'
-        })
-        
-        st.dataframe(
-            df_visualizza, 
-            use_container_width=True,
-            hide_index=True
-        )
-    else:
-        st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
-
-except Exception as e:
-    st.error(f"Errore caricamento tabella clip: {e}")
-
-st.divider()
-
-
-# --- BLOCCO: GESTIONE RAPIDA ARCHIVIO (CANCELLAZIONE ADMIN) ---
-
-st.divider()
-st.subheader("🗑️ Pulizia Rapida Archivio")
-st.markdown("<p style='font-size: 13px; color: #888;'>Usa questa sezione per rimuovere i match obsoleti o errati dal portale.</p>", unsafe_allow_html=True)
-
-# Verifichiamo se ci sono dati da mostrare (usiamo df_vids creato nel blocco precedente)
-if not df_vids.empty:
-    for idx, row in df_vids.iterrows():
-        # Creiamo una riga con colonne ben proporzionate
-        c1, c2, c3, c4, c5 = st.columns([1.2, 1.5, 1, 3, 0.8])
-        
-        c1.write(f"📅 **{row['data']}**")
-        c2.write(f"🏟️ {row['campo']}")
-        c3.write(f"🕒 {row['ora']}")
-        
-        # Mostriamo il titolo o un segnaposto se vuoto
-        titolo_gara = row['evento'] if row['evento'] else "Senza Titolo"
-        c4.write(f"📝 {titolo_gara}")
-        
-        # TASTO CANCELLA con chiave unica basata sull'ID del database
-        if c5.button("🗑️", key=f"btn_del_{row['id']}", help="Elimina definitivamente questo record"):
-            # --- LOGICA DI CANCELLAZIONE SICURA ---
-            try:
-                # 1. Comando di eliminazione su Supabase
-                supabase.table("calendario").delete().eq("id", row['id']).execute()
-                
-                # 2. Feedback visivo per l'Admin
-                st.toast(f"✅ Match #{row['id']} rimosso con successo!", icon='🗑️')
-                
-                # 3. Aspettiamo un attimo per dare tempo al database di aggiornarsi
-                time.sleep(0.5)
-                st.rerun()
-            except Exception as e:
-                st.error(f"❌ Impossibile eliminare il record: {e}")
-else:
-    st.info("📂 L'archivio è attualmente vuoto. Nessun dato da gestire.")
-
-st.divider()
-
-
-
-
-
-    # --- BLOCCO: BOTTONE INDIETRO (NAVIGAZIONE ADMIN) ---
-
-st.write("<br>", unsafe_allow_html=True) # Spaziatura estetica dal contenuto precedente
-
-# Creiamo una riga dedicata per il tasto di uscita
-col_back_adm, _ = st.columns([1, 3]) # Lo mettiamo a sinistra, piccolo
-
-with col_back_adm:
-    # Usiamo 'secondary' per renderlo meno "pesante" alla vista (grigio/trasparente)
-    if st.button("🔙 Torna alla Home", key="back_adm_unique", type="secondary", use_container_width=True):
-        # 1. Cambiamo la variabile della pagina
-        st.session_state.pagina = 'home_auth'
-        
-        # 2. Forza il sito a caricare la nuova pagina immediatamente
-        st.rerun()
-
-st.divider() # Chiudiamo la sezione Admin in modo pulito
-
-
-
-# --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
-
-if st.session_state.pagina == "Admin":
-    st.title("⚙️ Controllo Operativo MyPlayr")
-    
-    # 1. FORM PROGRAMMAZIONE REGISTRAZIONE
-    # Serve per dire al Mini PC: "A quest'ora accendi la camera"
-    with st.expander("📅 PROGRAMMA NUOVO MATCH", expanded=True):
-        with st.form("programma_match", clear_on_submit=True):
-            col_d, col_o = st.columns(2)
-            with col_d:
-                data_p = st.date_input("Data Evento", datetime.now())
-            with col_o:
-                ora_p = st.text_input("Ora Inizio (es. 20:30)", placeholder="HH:MM")
-            
-            campo_p = st.selectbox("Seleziona Campo", ["Campo A", "Campo B", "Campo C", "Padel 1"])
-            titolo_p = st.text_input("Squadre / Titolo Partita", placeholder="es. Rossi vs Bianchi")
-
-            if st.form_submit_button("🔴 CONFERMA PROGRAMMAZIONE", use_container_width=True):
-                if ora_p and titolo_p:
-                    try:
-                        supabase.table("calendario").insert({
-                            "data": data_p.strftime("%d-%m-%Y"),
-                            "ora": ora_p.strip(),
-                            "campo": campo_p,
-                            "evento": titolo_p.strip(),
-                            "stato": 'PROGRAMMATO' # Segnale per il Mini PC
-                        }).execute()
-                        st.success(f"✅ Registrazione programmata con successo!")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Errore database: {e}")
-                else:
-                    st.warning("Completa tutti i campi prima di confermare.")
-
-    st.divider()
-
-    # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
-    st.markdown("### 🎞️ Archivio Match Registrati")
-    
     try:
-        # Recuperiamo le partite concluse (stato 'FATTO')
-        res_matches = supabase.table("calendario")\
-            .select("*")\
+        # Recuperiamo i dati delle partite concluse (stato 'FATTO')
+        res_vids = supabase.table("calendario")\
+            .select("id, data, ora, campo, evento")\
             .eq("stato", "FATTO")\
             .order("id", desc=True)\
             .execute()
         
-        partite_fatte = res_matches.data
-
-        if not partite_fatte:
-            st.info("ℹ️ Nessuna partita registrata disponibile per il taglio.")
+        if res_vids.data:
+            df_vids = pd.DataFrame(res_vids.data)
+            # Mostriamo una tabella interattiva e pulita
+            st.dataframe(
+                df_vids[['id', 'data', 'ora', 'campo', 'evento']], 
+                use_container_width=True,
+                column_config={
+                    "id": "ID",
+                    "data": "Data Gara",
+                    "ora": "Orario",
+                    "campo": "Campo",
+                    "evento": "Descrizione Match"
+                },
+                hide_index=True # Nascondiamo i numeri di riga per ordine
+            )
         else:
-            for partita in partite_fatte:
-                st.subheader(f"🏟️ {partita['evento']} ({partita['data']})")
-                
-                video_url = partita.get('link_video') # URL caricato dal Mini PC (GDrive/S3/Cloud)
-
-                if video_url:
-                    # Anteprima video per trovare il momento del goal
-                    st.video(video_url)
-                    
-                    # BOX TAGLIO CLIP
-                    with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
-                        st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
-                        
-                        c1, c2, c3 = st.columns(3)
-                        with c1:
-                            m_in = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_{partita['id']}")
-                        with c2:
-                            s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_{partita['id']}")
-                        with c3:
-                            durata_clip = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
-
-                        if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
-                            # Calcolo del tempo totale in secondi per FFmpeg
-                            inizio_totale_secondi = (m_in * 60) + s_in
-                            
-                            # Inviamo l'ordine di lavoro alla tabella 'comandi_clip'
-                            # Il Mini PC in campo leggerà questa riga e taglierà il file originale 4K
-                            try:
-                                supabase.table("comandi_clip").insert({
-                                    "id_partita": partita['id'],
-                                    "inizio_secondi": inizio_totale_secondi,
-                                    "durata_secondi": durata_clip,
-                                    "email_utente": st.session_state.user_email,
-                                    "stato": "RICHIESTO"
-                                }).execute()
-                                
-                                st.success("✅ Richiesta inviata! Il Mini PC sta lavorando il video. La troverai tra poco in 'Le Mie Clip'.")
-                            except Exception as e:
-                                st.error(f"Errore invio comando: {e}")
-                else:
-                    st.warning("⚠️ Video Master in fase di caricamento sul Cloud...")
-                
-                st.divider()
+            st.info("ℹ️ Nessuna partita intera registrata al momento.")
 
     except Exception as e:
-        st.error(f"Errore caricamento archivio: {e}")
+        st.error(f"Errore caricamento tabella partite: {e}")
+
+    st.write("<br>", unsafe_allow_html=True)
+
+    # 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
+    st.markdown("#### ✂️ Clip Generate dagli Utenti")
+
+    try:
+        # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
+        res_clips = supabase.table("calendario")\
+            .select("id, data, campo, evento")\
+            .eq("stato", "CLIP_UTENTE")\
+            .order("id", desc=True)\
+            .execute()
+
+        if res_clips.data:
+            df_clips_admin = pd.DataFrame(res_clips.data)
+            
+            # Rinominia per rendere la tabella comprensibile al gestore
+            # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
+            df_visualizza = df_clips_admin.rename(columns={
+                'id': 'ID Clip',
+                'data': 'Data Taglio',
+                'campo': 'Email Utente', 
+                'evento': 'Nome File Clip'
+            })
+            
+            st.dataframe(
+                df_visualizza, 
+                use_container_width=True,
+                hide_index=True
+            )
+        else:
+            st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
+
+    except Exception as e:
+        st.error(f"Errore caricamento tabella clip: {e}")
+
+    st.divider()
+
+
+    # --- BLOCCO: GESTIONE RAPIDA ARCHIVIO (CANCELLAZIONE ADMIN) ---
+
+    st.divider()
+    st.subheader("🗑️ Pulizia Rapida Archivio")
+    st.markdown("<p style='font-size: 13px; color: #888;'>Usa questa sezione per rimuovere i match obsoleti o errati dal portale.</p>", unsafe_allow_html=True)
+
+    # Verifichiamo se ci sono dati da mostrare (usiamo df_vids creato nel blocco precedente)
+    if not df_vids.empty:
+        for idx, row in df_vids.iterrows():
+            # Creiamo una riga con colonne ben proporzionate
+            c1, c2, c3, c4, c5 = st.columns([1.2, 1.5, 1, 3, 0.8])
+            
+            c1.write(f"📅 **{row['data']}**")
+            c2.write(f"🏟️ {row['campo']}")
+            c3.write(f"🕒 {row['ora']}")
+            
+            # Mostriamo il titolo o un segnaposto se vuoto
+            titolo_gara = row['evento'] if row['evento'] else "Senza Titolo"
+            c4.write(f"📝 {titolo_gara}")
+            
+            # TASTO CANCELLA con chiave unica basata sull'ID del database
+            if c5.button("🗑️", key=f"btn_del_{row['id']}", help="Elimina definitivamente questo record"):
+                # --- LOGICA DI CANCELLAZIONE SICURA ---
+                try:
+                    # 1. Comando di eliminazione su Supabase
+                    supabase.table("calendario").delete().eq("id", row['id']).execute()
+                    
+                    # 2. Feedback visivo per l'Admin
+                    st.toast(f"✅ Match #{row['id']} rimosso con successo!", icon='🗑️')
+                    
+                    # 3. Aspettiamo un attimo per dare tempo al database di aggiornarsi
+                    time.sleep(0.5)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"❌ Impossibile eliminare il record: {e}")
+    else:
+        st.info("📂 L'archivio è attualmente vuoto. Nessun dato da gestire.")
+
+    st.divider()
+
+
+
+
+
+        # --- BLOCCO: BOTTONE INDIETRO (NAVIGAZIONE ADMIN) ---
+
+    st.write("<br>", unsafe_allow_html=True) # Spaziatura estetica dal contenuto precedente
+
+    # Creiamo una riga dedicata per il tasto di uscita
+    col_back_adm, _ = st.columns([1, 3]) # Lo mettiamo a sinistra, piccolo
+
+    with col_back_adm:
+        # Usiamo 'secondary' per renderlo meno "pesante" alla vista (grigio/trasparente)
+        if st.button("🔙 Torna alla Home", key="back_adm_unique", type="secondary", use_container_width=True):
+            # 1. Cambiamo la variabile della pagina
+            st.session_state.pagina = 'home_auth'
+            
+            # 2. Forza il sito a caricare la nuova pagina immediatamente
+            st.rerun()
+
+    st.divider() # Chiudiamo la sezione Admin in modo pulito
+
+
+
+    # --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
+
+    if st.session_state.pagina == "Admin":
+        st.title("⚙️ Controllo Operativo MyPlayr")
+        
+        # 1. FORM PROGRAMMAZIONE REGISTRAZIONE
+        # Serve per dire al Mini PC: "A quest'ora accendi la camera"
+        with st.expander("📅 PROGRAMMA NUOVO MATCH", expanded=True):
+            with st.form("programma_match", clear_on_submit=True):
+                col_d, col_o = st.columns(2)
+                with col_d:
+                    data_p = st.date_input("Data Evento", datetime.now())
+                with col_o:
+                    ora_p = st.text_input("Ora Inizio (es. 20:30)", placeholder="HH:MM")
+                
+                campo_p = st.selectbox("Seleziona Campo", ["Campo A", "Campo B", "Campo C", "Padel 1"])
+                titolo_p = st.text_input("Squadre / Titolo Partita", placeholder="es. Rossi vs Bianchi")
+
+                if st.form_submit_button("🔴 CONFERMA PROGRAMMAZIONE", use_container_width=True):
+                    if ora_p and titolo_p:
+                        try:
+                            supabase.table("calendario").insert({
+                                "data": data_p.strftime("%d-%m-%Y"),
+                                "ora": ora_p.strip(),
+                                "campo": campo_p,
+                                "evento": titolo_p.strip(),
+                                "stato": 'PROGRAMMATO' # Segnale per il Mini PC
+                            }).execute()
+                            st.success(f"✅ Registrazione programmata con successo!")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Errore database: {e}")
+                    else:
+                        st.warning("Completa tutti i campi prima di confermare.")
+
+        st.divider()
+
+        # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
+        st.markdown("### 🎞️ Archivio Match Registrati")
+        
+        try:
+            # Recuperiamo le partite concluse (stato 'FATTO')
+            res_matches = supabase.table("calendario")\
+                .select("*")\
+                .eq("stato", "FATTO")\
+                .order("id", desc=True)\
+                .execute()
+            
+            partite_fatte = res_matches.data
+
+            if not partite_fatte:
+                st.info("ℹ️ Nessuna partita registrata disponibile per il taglio.")
+            else:
+                for partita in partite_fatte:
+                    st.subheader(f"🏟️ {partita['evento']} ({partita['data']})")
+                    
+                    video_url = partita.get('link_video') # URL caricato dal Mini PC (GDrive/S3/Cloud)
+
+                    if video_url:
+                        # Anteprima video per trovare il momento del goal
+                        st.video(video_url)
+                        
+                        # BOX TAGLIO CLIP
+                        with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
+                            st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
+                            
+                            c1, c2, c3 = st.columns(3)
+                            with c1:
+                                m_in = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_{partita['id']}")
+                            with c2:
+                                s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_{partita['id']}")
+                            with c3:
+                                durata_clip = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
+
+                            if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
+                                # Calcolo del tempo totale in secondi per FFmpeg
+                                inizio_totale_secondi = (m_in * 60) + s_in
+                                
+                                # Inviamo l'ordine di lavoro alla tabella 'comandi_clip'
+                                # Il Mini PC in campo leggerà questa riga e taglierà il file originale 4K
+                                try:
+                                    supabase.table("comandi_clip").insert({
+                                        "id_partita": partita['id'],
+                                        "inizio_secondi": inizio_totale_secondi,
+                                        "durata_secondi": durata_clip,
+                                        "email_utente": st.session_state.user_email,
+                                        "stato": "RICHIESTO"
+                                    }).execute()
+                                    
+                                    st.success("✅ Richiesta inviata! Il Mini PC sta lavorando il video. La troverai tra poco in 'Le Mie Clip'.")
+                                except Exception as e:
+                                    st.error(f"Errore invio comando: {e}")
+                    else:
+                        st.warning("⚠️ Video Master in fase di caricamento sul Cloud...")
+                    
+                    st.divider()
+
+        except Exception as e:
+            st.error(f"Errore caricamento archivio: {e}")
 
 
 # --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
