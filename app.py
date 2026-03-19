@@ -733,46 +733,46 @@ elif st.session_state.pagina == 'admin':
 
     # --- BLOCCO: PROGRAMMAZIONE REGISTRAZIONE (ADMIN - SUPABASE READY) ---
 
-st.divider()
+    st.divider()
 
-# Usiamo un expander per non occupare spazio prezioso nella Dashboard
-with st.expander("📅 PROGRAMMA NUOVA REGISTRAZIONE 🎥", expanded=False):
-    st.markdown("<p style='font-size: 14px;'>Inserisci i dettagli del match. Il Mini PC in campo riceverà l'ordine in tempo reale.</p>", unsafe_allow_html=True)
-    
-    with st.form("form_admin_reg", clear_on_submit=True):
-        # 1. INPUT DATI
-        col_d1, col_d2 = st.columns(2)
-        with col_d1:
-            data_gara = st.date_input("Giorno della Gara", datetime.now())
-        with col_d2:
-            ora_gara = st.text_input("Ora Inizio (es: 19:30)", placeholder="HH:MM")
-            
-        titolo_match = st.text_input("Titolo Partita (es: Squadra A vs Squadra B)")
-        campo_selezionato = st.selectbox("Seleziona Campo", ["Campo A (Calcio a 5)", "Campo B (Padel)", "Campo C (Calcio a 7)"])
+    # Usiamo un expander per non occupare spazio prezioso nella Dashboard
+    with st.expander("📅 PROGRAMMA NUOVA REGISTRAZIONE 🎥", expanded=False):
+        st.markdown("<p style='font-size: 14px;'>Inserisci i dettagli del match. Il Mini PC in campo riceverà l'ordine in tempo reale.</p>", unsafe_allow_html=True)
         
-        # 2. BOTTONE DI CONFERMA
-        if st.form_submit_button("CONFERMA E PROGRAMMA REGISTRAZIONE", use_container_width=True):
-            if ora_gara and titolo_match:
-                # Prepariamo l'oggetto per Supabase
-                nuovo_match = {
-                    "data": data_gara.strftime('%d-%m-%Y'),
-                    "ora": ora_gara.strip(),
-                    "campo": campo_selezionato,
-                    "evento": titolo_match.strip(),
-                    "stato": "PROGRAMMATO" # Lo stato 'PROGRAMMATO' è il segnale per il Mini PC
-                }
+        with st.form("form_admin_reg", clear_on_submit=True):
+            # 1. INPUT DATI
+            col_d1, col_d2 = st.columns(2)
+            with col_d1:
+                data_gara = st.date_input("Giorno della Gara", datetime.now())
+            with col_d2:
+                ora_gara = st.text_input("Ora Inizio (es: 19:30)", placeholder="HH:MM")
                 
-                try:
-                    # Invio dati al Cloud
-                    supabase.table("calendario").insert(nuovo_match).execute()
+            titolo_match = st.text_input("Titolo Partita (es: Squadra A vs Squadra B)")
+            campo_selezionato = st.selectbox("Seleziona Campo", ["Campo A (Calcio a 5)", "Campo B (Padel)", "Campo C (Calcio a 7)"])
+            
+            # 2. BOTTONE DI CONFERMA
+            if st.form_submit_button("CONFERMA E PROGRAMMA REGISTRAZIONE", use_container_width=True):
+                if ora_gara and titolo_match:
+                    # Prepariamo l'oggetto per Supabase
+                    nuovo_match = {
+                        "data": data_gara.strftime('%d-%m-%Y'),
+                        "ora": ora_gara.strip(),
+                        "campo": campo_selezionato,
+                        "evento": titolo_match.strip(),
+                        "stato": "PROGRAMMATO" # Lo stato 'PROGRAMMATO' è il segnale per il Mini PC
+                    }
                     
-                    st.success(f"✅ Gara '{titolo_match}' programmata con successo!")
-                    # Aspettiamo un istante per far vedere il messaggio e poi ricarichiamo
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"❌ Errore durante il salvataggio sul Cloud: {e}")
-            else:
-                st.warning("⚠️ Per favore, inserisci almeno l'orario e il titolo della partita.")
+                    try:
+                        # Invio dati al Cloud
+                        supabase.table("calendario").insert(nuovo_match).execute()
+                        
+                        st.success(f"✅ Gara '{titolo_match}' programmata con successo!")
+                        # Aspettiamo un istante per far vedere il messaggio e poi ricarichiamo
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Errore durante il salvataggio sul Cloud: {e}")
+                else:
+                    st.warning("⚠️ Per favore, inserisci almeno l'orario e il titolo della partita.")
 
 
 # --- BLOCCO: ARCHIVIO VIDEO TOTALE (VISTA TABELLARE PER ADMIN) ---
