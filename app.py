@@ -1020,37 +1020,47 @@ elif st.session_state.pagina == 'admin':
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
 
- # --- PAGINA: HALL OF FAME (PUBBLICA) ---
+# --- BLOCCO: PAGINA HALL OF FAME (SUPABASE READY) ---
 elif st.session_state.pagina == 'hall_of_fame':
-    st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
-    st.write("---")
+    st.markdown("<h1 style='text-align: center; color: #28a745;'>🏆 Hall of Fame MyPlayr</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center;'>I migliori talenti e le giocate leggendarie del nostro centro sportivo.</p>", unsafe_allow_html=True)
+    st.divider()
 
-    conn = sqlite3.connect(DB_PATH)
-    # Prendiamo TUTTE le clip utente senza filtri per testare la connessione
-    df_fame = pd.read_sql("SELECT * FROM calendario WHERE stato='CLIP_UTENTE'", conn)
-    conn.close()
+    try:
+        # 1. Recuperiamo gli utenti che hanno un nickname o una foto impostata
+        # Nota: puoi filtrare come preferisci, qui prendiamo tutti i "Player"
+        res_hall = supabase.table("utenti").select("*").eq("ruolo", "Player").execute()
+        
+        if res_hall.data:
+            # Creiamo una griglia a 3 colonne per mostrare i profili
+            cols = st.columns(3)
+            for i, atleta in enumerate(res_hall.data):
+                with cols[i % 3]:
+                    # Usiamo una "Card" personalizzata (definita nel tuo CSS nel Blocco 2)
+                    st.markdown(f"""
+                    <div class="stat-box">
+                        <div class="avatar-container">
+                            <img src="{atleta.get('foto_path', 'https://via.placeholder.com')}" class="avatar-img">
+                        </div>
+                        <h3 style='margin-bottom:0;'>{atleta.get('nickname') if atleta.get('nickname') else atleta.get('nome', 'Campione')}</h3>
+                        <p style='color: #28a745; font-weight: bold;'>{atleta.get('ruolo', 'Player')}</p>
+                        <p style='font-size: 12px; font-style: italic;'>"{atleta.get('bio', 'Nato per giocare.')}"</p>
+                        <hr>
+                        <p style='font-size: 14px;'>📸 IG: {atleta.get('ig_tag', 'Non collegato')}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    st.write("") # Spaziatura tra le righe
+        else:
+            st.info("🏅 La Hall of Fame si sta popolando. Inizia a giocare per apparire qui!")
 
-    # --- SPIE DI CONTROLLO (DEBUG) ---
-    st.info(f"📊 Clip totali nel sistema: {len(df_fame)}")
-    
-    # Filtriamo quelle con il consenso (1)
-    clip_visibili = df_fame[df_fame['consenso_social'] == 1]
-    st.success(f"✅ Clip con consenso attivo: {len(clip_visibili)}")
+    except Exception as e:
+        st.error(f"Errore nel caricamento dei campioni: {e}")
 
-    if not clip_visibili.empty:
-        for i, clip in clip_visibili.iterrows():
-            path_fame = os.path.join(CLIP_GDRIVE, clip['evento'])
-            
-            with st.container():
-                if os.path.exists(path_fame):
-                    st.video(path_fame)
-                    st.write(f"⚽ Azione di: **{clip['campo']}**")
-                else:
-                    st.warning(f"⚠️ File {clip['evento']} non trovato su Drive G:")
-                st.divider()
-    else:
-        st.warning("La Hall of Fame è vuota. Assicurati di aver attivato 'Sì, pubblicami' in Le Mie Clip.")
-           
+    # Tasto per tornare indietro
+    if st.button("🔙 Torna alla Home", key="back_hall"):
+        st.session_state.pagina = 'home_auth'
+        st.rerun()
+
 
 # ---BLOCCO: PROFILO ATLETA (VERSIONE SUPABASE) ---
 elif st.session_state.pagina == 'profilo':
