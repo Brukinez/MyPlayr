@@ -400,7 +400,7 @@ def vai_a(nome_pagina):
 # Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
 if st.session_state.autenticato:
     # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
-    is_admin = st.session_state.get('user_role') == "admin"
+    is_admin = st.session_state.get('ruolo') == "admin"
     
     # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
     # Usiamo col_nav per indicare le colonne della barra
@@ -548,7 +548,13 @@ elif st.session_state.pagina == 'login':
                             st.session_state.user_nick = utente.get('nome', 'Campione')
                             
                             st.success(f"Bentornato {st.session_state.user_nick}!")
-                            vai_a('home_auth')
+                            
+                            # Controllo automatico: se sei admin vai in dashboard, altrimenti in home_auth
+                            if st.session_state.user_role == "admin":
+                                vai_a('admin')
+                            else:
+                                vai_a('home_auth')
+                                
                             st.rerun()
                         else:
                             st.error("❌ Credenziali errate o account inesistente.")
@@ -556,7 +562,7 @@ elif st.session_state.pagina == 'login':
                         st.error(f"⚠️ Errore di connessione: {e}")
                 else:
                     st.warning("Compila tutti i campi!")
-            
+
             # Opzioni secondarie
             col_l1, col_l2 = st.columns(2)
             with col_l1:
