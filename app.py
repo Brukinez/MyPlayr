@@ -1193,7 +1193,7 @@ if st.session_state.pagina == 'partite':
 
 # --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
 
-if st.session_state.pagina == 'mie_clip':
+elif st.session_state.pagina == 'mie_clip':
     st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight Personali</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; font-size: 14px;'>Qui trovi tutte le azioni che hai tagliato. Scaricale o rendile pubbliche!</p>", unsafe_allow_html=True)
     
