@@ -981,7 +981,7 @@ elif st.session_state.pagina == 'admin':
 
                     if video_url:
                         # Anteprima video per trovare il momento del goal
-                        st.video(video_url)
+                        st.video(video_url, format="video/mp4")
                         
                         # BOX TAGLIO CLIP
                         with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
