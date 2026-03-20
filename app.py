@@ -451,9 +451,9 @@ if st.session_state.pagina == 'home':
         st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
         st.markdown("""
             <p style='text-align: center; font-size: 16px;'>
-            Ogni partita merita di essere ricordata!<br>
-            Condividi le tue prodezze con amici, famiglia e sui social.
-            </p>
+            Ogni partita merita di essere ricordata.Myplayr registra<br>
+            automaticamnete le tue azioni e ti permette di creare highlight.
+            professionali</p>
         """, unsafe_allow_html=True)
         
         st.divider()
