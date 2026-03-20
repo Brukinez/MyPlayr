@@ -479,7 +479,7 @@ if st.session_state.pagina == 'home':
         # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
         st.markdown("<h3 style='text-align: center;'>Resta aggiornato su MyPlayr</h3>", unsafe_allow_html=True)
         _, col_news, _ = st.columns([1, 2, 1])
-        st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Ricevi una notifica appena i tuoi video sono pronti e scopri le nuove funzioni.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Iscriviti alla newsletter per ircevere novità, offerte e aggiornamenti sul mondo MyPlayr.</p>", unsafe_allow_html=True)
 
         _, col_news, _ = st.columns([1, 2, 1])
         with col_news:
