@@ -452,7 +452,6 @@ if st.session_state.pagina == 'home':
         st.markdown("""
             <p style='text-align: center; font-size: 16px;'>
             Ogni partita merita di essere ricordata!<br>
-            Il calcio amatoriale e il padel come quelli veri.<br>
             Condividi le tue prodezze con amici, famiglia e sui social.
             </p>
         """, unsafe_allow_html=True)
