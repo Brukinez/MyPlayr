@@ -463,16 +463,16 @@ if st.session_state.pagina == 'home':
         c1, c2, c3 = st.columns(3)
         
         with c1:
-            st.success("📹 **GIOCHI LA PARTITA**")
-            st.markdown("<p style='font-size: 14px; text-align: center;'>Scendi in campo. La nostra AI registra ogni tua azione in alta definizione.</p>", unsafe_allow_html=True)
+            st.success("📹 **REGISTRAZIONE AUTOMATICA**")
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>", unsafe_allow_html=True)
         
         with c2:
-            st.success("🔍 **TROVI IL VIDEO**")
-            st.markdown("<p style='font-size: 14px; text-align: center;'>Accedi al portale e trova i video organizzati per data, ora e campo di gioco.</p>", unsafe_allow_html=True)
+            st.success("🔍 **TAGLIO CLIP ISTANTANEO**")
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.</p>", unsafe_allow_html=True)
         
         with c3:
-            st.success("📥 **SCARICHI LE CLIP**")
-            st.markdown("<p style='font-size: 14px; text-align: center;'>Usa il nostro editor per tagliare i tuoi momenti migliori e scaricarli subito.</p>", unsafe_allow_html=True)
+            st.success("📥 **CONDIVISIONE SOCIAL**")
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.</p>", unsafe_allow_html=True)
             
         st.write("<br>", unsafe_allow_html=True)
 
