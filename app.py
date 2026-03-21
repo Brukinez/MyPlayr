@@ -387,12 +387,12 @@ inizializza_sessione()
 # 2. FUNZIONE DI NAVIGAZIONE
 def vai_a(nome_pagina):
     """
-    Cambia la pagina visualizzata sul sito.
-    Esempio: vai_a('profilo') porta l'utente nella sua area personale.
+    Cambia la pagina visualizzata sul sito e forza l'aggiornamento.
     """
     st.session_state.pagina = nome_pagina
-    # Non serve st.rerun() se chiamata in un pulsante (callback), 
-    # ma averla pronta aiuta in casi particolari.
+    # Aggiungiamo st.rerun() per essere sicuri che il cambio pagina sia ISTANTANEO
+    st.rerun()
+
 
 
 
