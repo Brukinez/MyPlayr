@@ -1170,8 +1170,11 @@ if st.session_state.pagina == 'partite':
                 video_url = partita.get('link_video') 
 
                 if video_url:
-                    # Player video compatibile con tutti i dispositivi
-                    st.video(video_url)
+                    # --- MODIFICA QUI ---
+                    link_funzionante = trasforma_link_diretto(video_url)
+                    # Player video con il link trasformato
+                    st.video(link_funzionante)
+                    # --------------------
                     
                     # --- INTERFACCIA DI TAGLIO CLIP (LOGICA ASINCRONA) ---
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
