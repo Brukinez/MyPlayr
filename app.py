@@ -288,6 +288,7 @@ def aggiorna_profilo_social(email, nuovo_tag_ig):
         supabase.table("utenti").update({"ig_tag": nuovo_tag_ig}).eq("email", email_clean).execute()
         
         st.success(f"✅ Profilo Instagram aggiornato a: {nuovo_tag_ig}")
+        st.rerun()
     except Exception as e:
         st.error(f"❌ Errore durante l'aggiornamento del profilo: {e}")
 
@@ -318,7 +319,7 @@ def aggiorna_foto_profilo_db(email, url_foto):
     """
     try:
         email_clean = email.strip().lower()
-        supabase.table("utenti").update({"foto_url": url_foto}).eq("email", email_clean).execute()
+        supabase.table("utenti").update({"foto_path": url_foto}).eq("email", email_clean).execute()
     except Exception as e:
         print(f"Errore salvataggio URL foto: {e}")
 
