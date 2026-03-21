@@ -1018,29 +1018,32 @@ elif st.session_state.pagina == 'hall_of_fame':
     st.divider()
 
     try:
-        # 1. CERCHIAMO SOLO LE AZIONI PUBBLICATE
-        # Chiediamo a Supabase solo le clip che hanno la spunta 'pubblico' = True
-        res_hall = supabase.table("clip_generate").select("*").eq("pubblico", True).execute()
+        # 1. Recuperiamo gli utenti, ma solo quelli che hanno caricato una FOTO (segno che sono attivi)
+        # O in alternativa, quelli che hanno un nickname impostato.
+        res_hall = supabase.table("utenti").select("*").eq("ruolo", "Player").neq("foto_path", None).execute()
         
         if res_hall.data:
-            # Creiamo la griglia a 3 colonne per i video
+            # Creiamo una griglia a 3 colonne per mostrare i profili
             cols = st.columns(3)
-            for i, clip in enumerate(res_hall.data):
+            for i, atleta in enumerate(res_hall.data):
                 with cols[i % 3]:
-                    # Mostriamo il VIDEO reale dell'azione
-                    st.video(clip.get('url_video')) 
+                    # Mostriamo la Card solo se i dati ci sono davvero
+                    foto_mostrata = atleta.get('foto_path') if atleta.get('foto_path') else "https://via.placeholder.com"
                     
                     st.markdown(f"""
                     <div class="stat-box">
-                        <h4 style='margin-bottom:0;'>⚽ Azione di {clip.get('utente_nick', 'Campione')}</h4>
-                        <p style='color: #28a745; font-size: 14px;'>❤️ Likes: {clip.get('likes', 0)}</p>
-                        <hr style="border: 0.5px solid #444;">
-                        <p style='font-size: 13px;'>📸 IG: @{clip.get('ig_tag', 'myplayr_app')}</p>
+                        <div class="avatar-container">
+                            <img src="{foto_mostrata}" class="avatar-img">
+                        </div>
+                        <h3 style='margin-bottom:0;'>{atleta.get('nickname', 'Campione')}</h3>
+                        <p style='color: #28a745; font-weight: bold;'>{atleta.get('ruolo', 'Player')}</p>
+                        <hr>
+                        <p style='font-size: 14px;'>📸 IG: @{atleta.get('ig_tag', 'non_collegato')}</p>
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            # Se nessuno ha pubblicato clip, la pagina sarà pulita così:
-            st.info("🏅 La Hall of Fame si sta popolando. Le azioni migliori appariranno qui!")
+            # Se nessuno ha ancora caricato dati/foto, la pagina sarà pulita
+            st.info("🏅 La Hall of Fame si sta popolando. I campioni appariranno qui appena completeranno il profilo!")
 
     except Exception as e:
         st.error(f"Errore nel caricamento della Hall of Fame: {e}")
