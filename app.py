@@ -714,10 +714,11 @@ elif st.session_state.pagina == 'admin':
                         st.write(f"🆔 **ID Match:** {partita['id']}")
                         
                         # Tasto eliminazione con conferma
-                        if st.button(f"🗑️ Elimina Record {partita['id']}", key=f"del_{partita['id']}"):
-                            supabase.table("calendario").delete().eq("id", partita['id']).execute()
-                            st.warning(f"Record {partita['id']} eliminato.")
-                            st.rerun()
+                        if st.checkbox(f"Conferma eliminazione ID {partita['id']}", key=f"chk_{partita['id']}"):
+                            if st.button(f"🔴 ELIMINA DEFINITIVAMENTE", key=f"del_{partita['id']}", type="primary"):
+                                supabase.table("calendario").delete().eq("id", partita['id']).execute()
+                                st.warning(f"Record {partita['id']} eliminato.")
+                                st.rerun()
                     
                     with col_v_video:
                         if partita.get('link_video'):
@@ -759,13 +760,20 @@ elif st.session_state.pagina == 'admin':
             # 2. BOTTONE DI CONFERMA
             if st.form_submit_button("CONFERMA E PROGRAMMA REGISTRAZIONE", use_container_width=True):
                 if ora_gara and titolo_match:
+                    
+                    # --- AGGIUNTA SICUREZZA: Pulizia automatica orario ---
+                    ora_pulita = ora_gara.strip()
+                    # Se scrivi 9:30, lo trasformiamo in 09:30 per il Mini PC
+                    if len(ora_pulita) == 4 and ":" in ora_pulita:
+                        ora_pulita = "0" + ora_pulita
+                    
                     # Prepariamo l'oggetto per Supabase
                     nuovo_match = {
                         "data": data_gara.strftime('%d-%m-%Y'),
-                        "ora": ora_gara.strip(),
+                        "ora": ora_pulita,  # Usiamo l'ora pulita
                         "campo": campo_selezionato,
                         "evento": titolo_match.strip(),
-                        "stato": "PROGRAMMATO" # Lo stato 'PROGRAMMATO' è il segnale per il Mini PC
+                        "stato": "PROGRAMMATO"
                     }
                     
                     try:
