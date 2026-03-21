@@ -1018,35 +1018,32 @@ elif st.session_state.pagina == 'hall_of_fame':
     st.divider()
 
     try:
-        # 1. Recuperiamo gli utenti, ma solo quelli che hanno caricato una FOTO (segno che sono attivi)
-        # O in alternativa, quelli che hanno un nickname impostato.
-        res_hall = supabase.table("utenti").select("*").eq("ruolo", "Player").neq("foto_path", None).execute()
+        # 1. PRENDIAMO SOLO GLI UTENTI (Senza collegarli ad altre tabelle)
+        res_hall = supabase.table("utenti").select("*").execute()
         
-        if res_hall.data:
-            # Creiamo una griglia a 3 colonne per mostrare i profili
+        # 2. FILTRIAMO NOI "A MANO" PER EVITARE ERRORI DI SUPABASE
+        # Mostriamo solo chi è un Player e ha caricato una foto (così Giovanni e Angelo spariscono se sono vuoti)
+        lista_atleti = [a for a in res_hall.data if a.get('ruolo') == 'Player' and a.get('foto_path')]
+
+        if lista_atleti:
             cols = st.columns(3)
-            for i, atleta in enumerate(res_hall.data):
+            for i, atleta in enumerate(lista_atleti):
                 with cols[i % 3]:
-                    # Mostriamo la Card solo se i dati ci sono davvero
-                    foto_mostrata = atleta.get('foto_path') if atleta.get('foto_path') else "https://via.placeholder.com"
-                    
+                    foto = atleta.get('foto_path')
                     st.markdown(f"""
                     <div class="stat-box">
-                        <div class="avatar-container">
-                            <img src="{foto_mostrata}" class="avatar-img">
-                        </div>
-                        <h3 style='margin-bottom:0;'>{atleta.get('nickname', 'Campione')}</h3>
-                        <p style='color: #28a745; font-weight: bold;'>{atleta.get('ruolo', 'Player')}</p>
-                        <hr>
-                        <p style='font-size: 14px;'>📸 IG: @{atleta.get('ig_tag', 'non_collegato')}</p>
+                        <img src="{foto}" style="width:100px; height:100px; border-radius:50%; border:2px solid #28a745;">
+                        <h3>{atleta.get('nickname', 'Campione')}</h3>
+                        <p>📸 IG: @{atleta.get('ig_tag', 'non_collegato')}</p>
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            # Se nessuno ha ancora caricato dati/foto, la pagina sarà pulita
-            st.info("🏅 La Hall of Fame si sta popolando. I campioni appariranno qui appena completeranno il profilo!")
+            # Se nessuno ha la foto, mostriamo questo:
+            st.info("🏅 La Hall of Fame si sta popolando. I campioni appariranno qui appena caricheranno una foto profilo!")
 
     except Exception as e:
-        st.error(f"Errore nel caricamento della Hall of Fame: {e}")
+        st.error(f"Errore tecnico: {e}")
+
 
         
         if res_hall.data:
