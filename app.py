@@ -1018,63 +1018,46 @@ elif st.session_state.pagina == 'hall_of_fame':
     st.divider()
 
     try:
-        # 1. PRENDIAMO SOLO GLI UTENTI (Senza collegarli ad altre tabelle)
+        # 1. PRENDIAMO SOLO GLI UTENTI DALLA TABELLA 'utenti'
+        # Nota: Non aggiungiamo .eq o filtri complessi qui per evitare l'errore di relazione
         res_hall = supabase.table("utenti").select("*").execute()
         
-        # 2. FILTRIAMO NOI "A MANO" PER EVITARE ERRORI DI SUPABASE
-        # Mostriamo solo chi è un Player e ha caricato una foto (così Giovanni e Angelo spariscono se sono vuoti)
-        lista_atleti = [a for a in res_hall.data if a.get('ruolo') == 'Player' and a.get('foto_path')]
-
-        if lista_atleti:
+        # 2. FILTRIAMO NOI I DATI (Così Giovanni e Angelo spariscono se non hanno la foto)
+        # Filtro: deve essere un Player e deve avere una foto (foto_path non deve essere vuoto)
+        atleti_validi = [
+            a for a in res_hall.data 
+            if a.get('ruolo') == 'Player' and a.get('foto_path') is not None
+        ]
+        
+        if atleti_validi:
             cols = st.columns(3)
-            for i, atleta in enumerate(lista_atleti):
+            for i, atleta in enumerate(atleti_validi):
                 with cols[i % 3]:
-                    foto = atleta.get('foto_path')
+                    foto = atleta.get('foto_path', 'https://via.placeholder.com')
+                    nome = atleta.get('nickname') if atleta.get('nickname') else atleta.get('nome', 'Campione')
+                    
                     st.markdown(f"""
-                    <div class="stat-box">
-                        <img src="{foto}" style="width:100px; height:100px; border-radius:50%; border:2px solid #28a745;">
-                        <h3>{atleta.get('nickname', 'Campione')}</h3>
-                        <p>📸 IG: @{atleta.get('ig_tag', 'non_collegato')}</p>
+                    <div style="text-align: center; background: #3E444A; padding: 20px; border-radius: 15px; border: 1px solid #28a745; margin-bottom: 20px;">
+                        <img src="{foto}" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #28a745; object-fit: cover; margin-bottom: 10px;">
+                        <h3 style='margin:0; color: white;'>{nome}</h3>
+                        <p style='color: #28a745; font-size: 14px;'>📸 IG: @{atleta.get('ig_tag', 'myplayr')}</p>
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            # Se nessuno ha la foto, mostriamo questo:
+            # Se la lista è vuota (perché nessuno ha ancora la foto), mostriamo questo:
             st.info("🏅 La Hall of Fame si sta popolando. I campioni appariranno qui appena caricheranno una foto profilo!")
 
     except Exception as e:
-        st.error(f"Errore tecnico: {e}")
-
-
-        
-        if res_hall.data:
-            # Creiamo una griglia a 3 colonne per mostrare i profili
-            cols = st.columns(3)
-            for i, atleta in enumerate(res_hall.data):
-                with cols[i % 3]:
-                    # Usiamo una "Card" personalizzata (definita nel tuo CSS nel Blocco 2)
-                    st.markdown(f"""
-                    <div class="stat-box">
-                        <div class="avatar-container">
-                            <img src="{atleta.get('foto_path', 'https://via.placeholder.com')}" class="avatar-img">
-                        </div>
-                        <h3 style='margin-bottom:0;'>{atleta.get('nickname') if atleta.get('nickname') else atleta.get('nome', 'Campione')}</h3>
-                        <p style='color: #28a745; font-weight: bold;'>{atleta.get('ruolo', 'Player')}</p>
-                        <p style='font-size: 12px; font-style: italic;'>"{atleta.get('bio', 'Nato per giocare.')}"</p>
-                        <hr>
-                        <p style='font-size: 14px;'>📸 IG: {atleta.get('ig_tag', 'Non collegato')}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    st.write("") # Spaziatura tra le righe
-        else:
-            st.info("🏅 La Hall of Fame si sta popolando. Inizia a giocare per apparire qui!")
-
-    except Exception as e:
-        st.error(f"Errore nel caricamento dei campioni: {e}")
+        # Se c'è ancora un errore, questo lo mostrerà in modo pulito senza bloccare il sito
+        st.warning(f"Siamo in fase di aggiornamento dei campioni. Torna tra poco!")
+        print(f"DEBUG ERROR: {e}") # Questo lo vedi solo tu nei log, non l'utente
 
     # Tasto per tornare indietro
-    if st.button("🔙 Torna alla Home", key="back_hall"):
+    st.write("<br>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_hall_final"):
         st.session_state.pagina = 'home_auth'
         st.rerun()
+
 
 
 # ---BLOCCO: PROFILO ATLETA (VERSIONE SUPABASE) ---
