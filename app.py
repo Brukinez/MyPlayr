@@ -1066,42 +1066,50 @@ elif st.session_state.pagina == 'profilo':
         if res_u.data:
             user = res_u.data[0]
             
-            # --- PARTE 1: FORM DI MODIFICA (EXPANDER) ---
+                       # --- SEZIONE MODIFICA (SOVRASCRIVI DA QUI) ---
             with st.expander("⚙️ Modifica Dati Profilo e Foto"):
                 col_f, col_i = st.columns(2)
                 
                 with col_f:
                     st.write("📷 **La tua Immagine**")
-                    # Tasto per selezionare il file dal PC o Smartphone
-                    foto_file = st.file_uploader("Carica foto profilo", type=['png', 'jpg', 'jpeg'], help="Scegli un'immagine quadrata per un risultato migliore")
+                    # Nuovo tasto per selezionare il file dal dispositivo
+                    foto_file = st.file_uploader("Carica nuova foto", type=['png', 'jpg', 'jpeg'])
                     
                     if foto_file:
-                        # Mostriamo un'anteprima istantanea della foto scelta
-                        st.image(foto_file, width=100, caption="Anteprima")
-                        # Messaggio di conferma
-                        st.success("Immagine pronta!")
+                        st.image(foto_file, width=100, caption="Anteprima nuova foto")
                     elif user.get('foto_path'):
-                        # Se non carichiamo nulla, mostriamo la foto attuale
                         st.image(user['foto_path'], width=80, caption="Foto attuale")
-
                 
                 with col_i:
-                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
-                    nuovo_ig = st.text_input("Instagram (es. @tuonome)", value=user.get('ig_tag') if user.get('ig_tag') else "")
+                    # Campi di testo collegati ai dati esistenti
+                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname', ''))
+                    nuovo_ig = st.text_input("Instagram (es. @nome)", value=user.get('ig_tag', ''))
                     nuovo_ruolo = st.selectbox("Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
-                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
+                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio', ''))
 
-                if st.button("💾 SALVA MODIFICHE", use_container_width=True):
-                    dati_aggiornati = {
+                if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
+                    # 1. Creiamo il pacchetto di dati da inviare a Supabase
+                    dati_da_salvare = {
                         "nickname": nuovo_nick,
                         "ruolo": nuovo_ruolo,
                         "bio": nuova_bio,
-                        "ig_tag": nuovo_ig,
-                        "foto_path": nuova_foto_url
+                        "ig_tag": nuovo_ig
                     }
-                    supabase.table("utenti").update(dati_aggiornati).eq("email", st.session_state.user_email).execute()
-                    st.success("✅ Profilo Cloud aggiornato!")
-                    st.rerun()
+                    
+                    # 2. Se hai scelto una foto, salviamo temporaneamente il nome 
+                    if foto_file is not None:
+                        dati_da_salvare["foto_path"] = f"https://myplayr.it{foto_file.name}"
+
+                    # 3. Invio effettivo al Cloud
+                    try:
+                        supabase.table("utenti").update(dati_da_salvare).eq("email", st.session_state.user_email).execute()
+                        st.success("✅ Profilo e dati salvati con successo!")
+                        # Forza il ricaricamento per mostrare i cambiamenti subito
+                        st.rerun() 
+                    except Exception as e:
+                        st.error(f"⚠️ Errore durante il salvataggio: {e}")
+            # --- FINE SEZIONE MODIFICA (FINO AL DIVIDER) ---
+
 
             st.divider()
 
