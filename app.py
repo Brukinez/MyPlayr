@@ -1071,19 +1071,8 @@ elif st.session_state.pagina == 'profilo':
                 col_f, col_i = st.columns(2)
                 
                 with col_f:
-                    st.write("📷 **La tua Immagine**")
-                    # Tasto per selezionare il file dal PC o Smartphone
-                    foto_file = st.file_uploader("Carica foto profilo", type=['png', 'jpg', 'jpeg'], help="Scegli un'immagine quadrata per un risultato migliore")
-                    
-                    if foto_file:
-                        # Mostriamo un'anteprima istantanea della foto scelta
-                        st.image(foto_file, width=100, caption="Anteprima")
-                        # Messaggio di conferma
-                        st.success("Immagine pronta!")
-                    elif user.get('foto_path'):
-                        # Se non carichiamo nulla, mostriamo la foto attuale
-                        st.image(user['foto_path'], width=80, caption="Foto attuale")
-
+                    nuova_foto_url = st.text_input("Link Foto Profilo (URL)", value=user.get('foto_path') if user.get('foto_path') else "")
+                    st.info("💡 Incolla qui il link di una foto online.")
                 
                 with col_i:
                     nuovo_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
