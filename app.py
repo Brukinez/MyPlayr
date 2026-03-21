@@ -453,7 +453,7 @@ if st.session_state.pagina == 'home':
         st.markdown("""
             <p style='text-align: center; font-size: 16px;'>
             Ogni partita merita di essere ricordata!<br>
-            Myplayr registra automaticamnete le tue azioni e ti permette di creare highlight
+            Myplayr registra automaticamente le tue azioni e ti permette di creare highlight
             professionali</p>
         """, unsafe_allow_html=True)
         
@@ -480,7 +480,7 @@ if st.session_state.pagina == 'home':
         # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
         st.markdown("<h3 style='text-align: center;'>Resta aggiornato</h3>", unsafe_allow_html=True)
         _, col_news, _ = st.columns([1, 2, 1])
-        st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Iscriviti alla newsletter per ircevere novità, offerte e aggiornamenti sul mondo MyPlayr.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyPlayr.</p>", unsafe_allow_html=True)
 
         _, col_news, _ = st.columns([1, 2, 1])
         with col_news:
@@ -576,8 +576,7 @@ elif st.session_state.pagina == 'login':
                     st.session_state.sub = 'reg'
                     st.rerun()
             
-            st.write("---")
-            st.button("🔙 TORNA ALLA HOME", on_click=lambda: vai_a('home'), use_container_width=True)
+            
 
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
