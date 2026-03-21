@@ -1135,7 +1135,15 @@ elif st.session_state.pagina == 'profilo':
 
 
 # --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
-
+def trasforma_link_diretto(url):
+    """Trasforma un link Google Drive standard in un link diretto per il player video"""
+    if "drive.google.com" in url:
+        # Estraiamo l'ID del file dal link
+        if "/file/d/" in url:
+            file_id = url.split("/file/d/")[1].split("/")[0]
+            # Creiamo il link di download diretto
+            return f"https://drive.google.com{file_id}"
+    return url # Se non è Google Drive, restituisce il link originale
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     st.markdown("<p style='font-size: 14px;'>Rivedi i tuoi match e taglia le tue azioni migliori in pochi secondi.</p>", unsafe_allow_html=True)
