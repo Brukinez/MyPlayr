@@ -807,9 +807,13 @@ elif st.session_state.pagina == 'admin':
         
         if res_vids.data:
             df_vids = pd.DataFrame(res_vids.data)
-            # Mostriamo una tabella interattiva e pulita
+            
+            # --- MODIFICA SICURA QUI ---
+            # Questo controllo evita che il sito crashi se mancano dati
+            colonne_da_mostrare = [c for c in ['id', 'data', 'ora', 'campo', 'evento'] if c in df_vids.columns]
+            
             st.dataframe(
-                df_vids[['id', 'data', 'ora', 'campo', 'evento']], 
+                df_vids[colonne_da_mostrare], 
                 use_container_width=True,
                 column_config={
                     "id": "ID",
@@ -818,8 +822,10 @@ elif st.session_state.pagina == 'admin':
                     "campo": "Campo",
                     "evento": "Descrizione Match"
                 },
-                hide_index=True # Nascondiamo i numeri di riga per ordine
+                hide_index=True
             )
+        # --- FINE MODIFICA ---
+
         else:
             st.info("ℹ️ Nessuna partita intera registrata al momento.")
 
@@ -871,10 +877,10 @@ elif st.session_state.pagina == 'admin':
     st.subheader("🗑️ Pulizia Rapida Archivio")
     st.markdown("<p style='font-size: 13px; color: #888;'>Usa questa sezione per rimuovere i match obsoleti o errati dal portale.</p>", unsafe_allow_html=True)
 
-    # Verifichiamo se ci sono dati da mostrare (usiamo df_vids creato nel blocco precedente)
-    if not df_vids.empty:
+    # --- MODIFICA DI SICUREZZA: Controlliamo se df_vids esiste davvero prima di usarlo ---
+    if 'df_vids' in locals() and not df_vids.empty:
         for idx, row in df_vids.iterrows():
-            # Creiamo una riga con colonne ben proporzionate
+            # Da qui in poi il tuo codice originale (c1, c2, c3...) continua uguale
             c1, c2, c3, c4, c5 = st.columns([1.2, 1.5, 1, 3, 0.8])
             
             c1.write(f"📅 **{row['data']}**")
@@ -905,31 +911,7 @@ elif st.session_state.pagina == 'admin':
 
     st.divider()
 
-
-
-
-
-        # --- BLOCCO: BOTTONE INDIETRO (NAVIGAZIONE ADMIN) ---
-
-    st.write("<br>", unsafe_allow_html=True) # Spaziatura estetica dal contenuto precedente
-
-    # Creiamo una riga dedicata per il tasto di uscita
-    col_back_adm, _ = st.columns([1, 3]) # Lo mettiamo a sinistra, piccolo
-
-    with col_back_adm:
-        # Usiamo 'secondary' per renderlo meno "pesante" alla vista (grigio/trasparente)
-        if st.button("🔙 Torna alla Home", key="back_adm_unique", type="secondary", use_container_width=True):
-            # 1. Cambiamo la variabile della pagina
-            st.session_state.pagina = 'home_auth'
-            
-            # 2. Forza il sito a caricare la nuova pagina immediatamente
-            st.rerun()
-
-    st.divider() # Chiudiamo la sezione Admin in modo pulito
-
-
-
-    # --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
+            # --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
 
     if st.session_state.pagina == "Admin":
         st.title("⚙️ Controllo Operativo MyPlayr")
@@ -1036,9 +1018,33 @@ elif st.session_state.pagina == 'hall_of_fame':
     st.divider()
 
     try:
-        # 1. Recuperiamo gli utenti che hanno un nickname o una foto impostata
-        # Nota: puoi filtrare come preferisci, qui prendiamo tutti i "Player"
-        res_hall = supabase.table("utenti").select("*").eq("ruolo", "Player").execute()
+        # 1. CERCHIAMO SOLO LE AZIONI PUBBLICATE
+        # Chiediamo a Supabase solo le clip che hanno la spunta 'pubblico' = True
+        res_hall = supabase.table("clip_generate").select("*").eq("pubblico", True).execute()
+        
+        if res_hall.data:
+            # Creiamo la griglia a 3 colonne per i video
+            cols = st.columns(3)
+            for i, clip in enumerate(res_hall.data):
+                with cols[i % 3]:
+                    # Mostriamo il VIDEO reale dell'azione
+                    st.video(clip.get('url_video')) 
+                    
+                    st.markdown(f"""
+                    <div class="stat-box">
+                        <h4 style='margin-bottom:0;'>⚽ Azione di {clip.get('utente_nick', 'Campione')}</h4>
+                        <p style='color: #28a745; font-size: 14px;'>❤️ Likes: {clip.get('likes', 0)}</p>
+                        <hr style="border: 0.5px solid #444;">
+                        <p style='font-size: 13px;'>📸 IG: @{clip.get('ig_tag', 'myplayr_app')}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+        else:
+            # Se nessuno ha pubblicato clip, la pagina sarà pulita così:
+            st.info("🏅 La Hall of Fame si sta popolando. Le azioni migliori appariranno qui!")
+
+    except Exception as e:
+        st.error(f"Errore nel caricamento della Hall of Fame: {e}")
+
         
         if res_hall.data:
             # Creiamo una griglia a 3 colonne per mostrare i profili
