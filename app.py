@@ -1088,7 +1088,6 @@ elif st.session_state.pagina == 'profilo':
                     nuova_bio = st.text_area("La tua Bio", value=user.get('bio', ''))
 
                 if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
-                    # 1. Creiamo il pacchetto di dati da inviare a Supabase
                     dati_da_salvare = {
                         "nickname": nuovo_nick,
                         "ruolo": nuovo_ruolo,
@@ -1096,18 +1095,37 @@ elif st.session_state.pagina == 'profilo':
                         "ig_tag": nuovo_ig
                     }
                     
-                    # 2. Se hai scelto una foto, salviamo temporaneamente il nome 
+                    # --- LOGICA CARICAMENTO FOTO REALE ---
                     if foto_file is not None:
-                        dati_da_salvare["foto_path"] = f"https://myplayr.it{foto_file.name}"
+                        try:
+                            # 1. Puliamo il nome del file per evitare errori con spazi o parentesi
+                            nome_file_pulito = f"foto_{st.session_state.user_email.replace('@','_')}.jpg"
+                            
+                            # 2. Carichiamo il file nel Bucket che hai creato su Supabase
+                            # .upload caricherà il file "Screenshot (87).png" rinominandolo in modo pulito
+                            supabase.storage.from_("foto_profili").upload(
+                                path=nome_file_pulito,
+                                file=foto_file.getvalue(),
+                                file_options={"content-type": foto_file.type, "upsert": "true"} # 'upsert' sovrascrive se esiste già
+                            )
+                            
+                            # 3. Otteniamo il LINK PUBBLICO REALE (quello che inizia con https://xxx.supabase.co...)
+                            url_pubblica = supabase.storage.from_("foto_profili").get_public_url(nome_file_pulito)
+                            
+                            # 4. Salviamo questo LINK VERO nel database utenti
+                            dati_da_salvare["foto_path"] = url_pubblica
+                            
+                        except Exception as e_foto:
+                            st.warning(f"Errore tecnico caricamento immagine: {e_foto}")
 
-                    # 3. Invio effettivo al Cloud
+                    # --- INVIO FINALE AL DATABASE UTENTI ---
                     try:
                         supabase.table("utenti").update(dati_da_salvare).eq("email", st.session_state.user_email).execute()
-                        st.success("✅ Profilo e dati salvati con successo!")
-                        # Forza il ricaricamento per mostrare i cambiamenti subito
+                        st.success("✅ Profilo e Foto salvati correttamente!")
                         st.rerun() 
                     except Exception as e:
-                        st.error(f"⚠️ Errore durante il salvataggio: {e}")
+                        st.error(f"⚠️ Errore salvataggio dati: {e}")
+
             # --- FINE SEZIONE MODIFICA (FINO AL DIVIDER) ---
 
 
