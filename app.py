@@ -151,15 +151,13 @@ from database import supabase
 
 # Configurazione Percorsi per le Clip (Google Drive o Locale)
 # NOTA: Se il disco G: non è collegato, il programma userà una cartella locale di emergenza
+# Prova a usare il Google Drive, altrimenti usa una cartella locale sicura
 CLIP_GDRIVE = r"G:\Il mio Drive\CLIP_MYPLAYR"
 
 if not os.path.exists(CLIP_GDRIVE):
-    try:
-        os.makedirs(CLIP_GDRIVE)
-    except:
-        # Se il disco G non esiste, salva nella cartella del progetto
-        CLIP_GDRIVE = os.path.join(BASE_DIR, "CLIP_EMERGENZA")
-        if not os.path.exists(CLIP_GDRIVE): os.makedirs(CLIP_GDRIVE)
+    # Se il disco G non esiste (es. sei sul Web), usa la cartella CLIP_TAGLIATE che abbiamo creato nel Blocco 2
+    CLIP_GDRIVE = CLIP_DIR 
+
 
 # --- FUNZIONE TAGLIO VIDEO (FFMPEG) ---
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
@@ -175,12 +173,13 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     # Comando FFmpeg ultra-veloce (-c copy)
     comando = [
         'ffmpeg', '-y',
-        '-ss', str(inizio_sec), # Punto di inizio
-        '-t', str(durata_sec),  # Durata del taglio
-        '-i', input_p,
-        '-c', 'copy',           # Copia pura senza sforzo CPU
+        '-i', input_p,          # Prima carichiamo il video
+        '-ss', str(inizio_sec), # Poi diciamo da dove iniziare
+        '-t', str(durata_sec),  # Per quanto tempo
+        '-c', 'copy',           # Copia senza sforzo
         output_p
     ]
+
 
     try:
         # Eseguiamo il taglio nel "sottobosco" del PC
@@ -213,8 +212,9 @@ def invia_conferma_e_salva(email_utente):
         print(f"Errore database Supabase: {e}")
 
     # 2. INVIO EMAIL (SMTP GMAIL)
-    mio_indirizzo = "simone.fardella@gmail.com"  
-    mia_password = "xinqcxwubwuasurc"   
+    # Sostituisci le vecchie righe con queste:
+    mio_indirizzo = st.secrets["email"]["indirizzo"]
+    mia_password = st.secrets["email"]["password"]   
     
     testo_mail = f"Benvenuto in MyPlayr! Da ora potrai rivedere le tue azioni migliori."
     msg = MIMEText(testo_mail)
