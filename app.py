@@ -1057,82 +1057,58 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 # ---BLOCCO: PROFILO ATLETA (VERSIONE SUPABASE) ---
 elif st.session_state.pagina == 'profilo':
-    st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
     
+    # 1. Recuperiamo i dati dell'utente da Supabase
     try:
-        # 1. Recupero dati Utente da Supabase
         res_u = supabase.table("utenti").select("*").eq("email", st.session_state.user_email).execute()
         
         if res_u.data:
-            user = res_u.data[0] # Prendiamo il primo utente trovato
+            user = res_u.data[0]
             
-            # --- SEZIONE A: MODIFICA DATI E UPLOAD FOTO ---
-            with st.expander("⚙️ Modifica Profilo e Carica Foto", expanded=False):
+            # --- SEZIONE MODIFICA (FORM) ---
+            with st.expander("⚙️ Modifica Dati Profilo e Foto"):
                 col_f, col_i = st.columns(2)
                 
                 with col_f:
-                    st.write("📷 **Nuova Foto Profilo**")
-                    foto_file = st.file_uploader("Scegli un file", type=['png', 'jpg', 'jpeg'])
-                    if foto_file:
-                        st.image(foto_file, width=100, caption="Anteprima")
+                    # Nota: Per la foto profilo online, useremo un link di testo per ora
+                    nuova_foto_url = st.text_input("Link Foto Profilo (URL)", value=user.get('foto_path', ''))
+                    st.info("💡 Per ora usa un link (es. da Facebook o Google Drive).")
                 
                 with col_i:
-                    n_nick = st.text_input("Nickname", value=user.get('nickname', ''))
-                    n_ig = st.text_input("Instagram (es. @nome)", value=user.get('ig_tag', ''))
-                    n_ruolo = st.selectbox("Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
-                    n_bio = st.text_area("Bio", value=user.get('bio', ''))
+                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
+                    nuovo_ig = st.text_input("Il tuo Tag Instagram (es. @nomeutente)", value=user.get('ig_tag', ''))
+                    nuovo_ruolo = st.selectbox("Il tuo Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
+                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
 
-                if st.button("💾 SALVA TUTTO", use_container_width=True):
-                    dati_agg = {"nickname": n_nick, "ig_tag": n_ig, "ruolo": n_ruolo, "bio": n_bio}
+                if st.button("💾 SALVA MODIFICHE", use_container_width=True):
+                    # Prepariamo i dati per l'aggiornamento Cloud
+                    dati_aggiornati = {
+                        "nickname": nuovo_nick,
+                        "ruolo": nuovo_ruolo,
+                        "bio": nuova_bio,
+                        "ig_tag": nuovo_ig,
+                        "foto_path": nuova_foto_url
+                    }
                     
-                    # Logica Upload Foto su Supabase Storage
-                    if foto_file:
-                        try:
-                            nome_f = f"avatar_{user['id']}.jpg"
-                            # Carichiamo nel bucket 'foto_profili' (assicurati che sia PUBBLICO su Supabase)
-                            supabase.storage.from_("foto_profili").upload(
-                                path=nome_f, 
-                                file=foto_file.getvalue(), 
-                                file_options={"content-type": foto_file.type, "upsert": "true"}
-                            )
-                            # Otteniamo il link pubblico
-                            dati_agg["foto_path"] = supabase.storage.from_("foto_profili").get_public_url(nome_f)
-                        except Exception as e_f:
-                            st.error(f"Errore caricamento foto: {e_f}")
-
-                    # Salvataggio finale nel database
-                    supabase.table("utenti").update(dati_agg).eq("email", st.session_state.user_email).execute()
-                    st.success("✅ Profilo aggiornato!")
+                    # Comando Supabase per aggiornare la riga dell'utente
+                    supabase.table("utenti").update(dati_aggiornati).eq("email", st.session_state.user_email).execute()
+                    
+                    st.success("✅ Profilo Cloud aggiornato!")
                     st.rerun()
 
             st.divider()
-
-            # --- SEZIONE B: VISUALIZZAZIONE GRAFICA ---
-            cl, cr = st.columns([1, 2])
             
-            with cl:
-                st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
-                f_path = user.get('foto_path')
-                # Se il link esiste e inizia con http, mostriamo la foto, altrimenti icona
-                if f_path and str(f_path).startswith("http"):
-                    st.image(f_path, width=150)
-                else:
-                    st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
-                st.markdown(f"<h3>{user.get('nome', 'Campione')}</h3>", unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-            
-            with cr:
-                st.markdown(f'<div class="data-card"><b>Nickname:</b> {user.get("nickname", "-")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag", "-")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo", "-")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio", "Nato per giocare.")}</div>', unsafe_allow_html=True)
+            # --- VISUALIZZAZIONE DATI ATTUALI ---
+            st.write(f"**Nickname:** {user.get('nickname', 'Non impostato')}")
+            st.write(f"**Ruolo:** {user.get('ruolo', 'Non impostato')}")
+            st.write(f"**Instagram:** {user.get('ig_tag', 'Non impostato')}")
 
         else:
-            st.error("Utente non trovato.")
+            st.error("Dati utente non trovati nel database.")
             
     except Exception as e:
-        st.error(f"Errore tecnico: {e}")
-
+        st.error(f"Errore caricamento profilo: {e}")
 
 # --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
 
