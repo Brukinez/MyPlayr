@@ -1014,49 +1014,44 @@ elif st.session_state.pagina == 'admin':
 # --- BLOCCO: PAGINA HALL OF FAME (SUPABASE READY) ---
 elif st.session_state.pagina == 'hall_of_fame':
     st.markdown("<h1 style='text-align: center; color: #28a745;'>🏆 Hall of Fame MyPlayr</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>I migliori talenti e le giocate leggendarie del nostro centro sportivo.</p>", unsafe_allow_html=True)
     st.divider()
 
     try:
-        # 1. PRENDIAMO SOLO GLI UTENTI DALLA TABELLA 'utenti'
-        # Nota: Non aggiungiamo .eq o filtri complessi qui per evitare l'errore di relazione
+        # CHIAMATA SEMPLICE: Chiediamo SOLO la tabella utenti, senza filtri o legami
         res_hall = supabase.table("utenti").select("*").execute()
         
-        # 2. FILTRIAMO NOI I DATI (Così Giovanni e Angelo spariscono se non hanno la foto)
-        # Filtro: deve essere un Player e deve avere una foto (foto_path non deve essere vuoto)
-        atleti_validi = [
+        # Filtriamo noi nel codice (Python) invece che nel database (Supabase)
+        # Mostriamo solo chi è un Player e ha una foto caricata
+        atleti_con_foto = [
             a for a in res_hall.data 
             if a.get('ruolo') == 'Player' and a.get('foto_path') is not None
         ]
-        
-        if atleti_validi:
+
+        if atleti_con_foto:
             cols = st.columns(3)
-            for i, atleta in enumerate(atleti_validi):
+            for i, atleta in enumerate(atleti_con_foto):
                 with cols[i % 3]:
                     foto = atleta.get('foto_path', 'https://via.placeholder.com')
-                    nome = atleta.get('nickname') if atleta.get('nickname') else atleta.get('nome', 'Campione')
-                    
                     st.markdown(f"""
-                    <div style="text-align: center; background: #3E444A; padding: 20px; border-radius: 15px; border: 1px solid #28a745; margin-bottom: 20px;">
-                        <img src="{foto}" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #28a745; object-fit: cover; margin-bottom: 10px;">
-                        <h3 style='margin:0; color: white;'>{nome}</h3>
-                        <p style='color: #28a745; font-size: 14px;'>📸 IG: @{atleta.get('ig_tag', 'myplayr')}</p>
+                    <div style="text-align: center; background: #3E444A; padding: 15px; border-radius: 15px; border: 1px solid #28a745;">
+                        <img src="{foto}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                        <h4 style="margin-top: 10px;">{atleta.get('nickname', 'Campione')}</h4>
+                        <p style="font-size: 12px;">📸 IG: @{atleta.get('ig_tag', 'non_collegato')}</p>
                     </div>
                     """, unsafe_allow_html=True)
         else:
-            # Se la lista è vuota (perché nessuno ha ancora la foto), mostriamo questo:
             st.info("🏅 La Hall of Fame si sta popolando. I campioni appariranno qui appena caricheranno una foto profilo!")
 
     except Exception as e:
-        # Se c'è ancora un errore, questo lo mostrerà in modo pulito senza bloccare il sito
-        st.warning(f"Siamo in fase di aggiornamento dei campioni. Torna tra poco!")
-        print(f"DEBUG ERROR: {e}") # Questo lo vedi solo tu nei log, non l'utente
+        # Se l'errore compare ancora, scriviamo un messaggio generico per l'utente
+        st.warning("Aggiornamento della classifica in corso... Torna tra poco!")
+        # Questo serve a te per capire se l'errore è sparito:
+        print(f"DEBUG: {e}")
 
-    # Tasto per tornare indietro
-    st.write("<br>", unsafe_allow_html=True)
-    if st.button("🔙 Torna alla Home", key="back_hall_final"):
+    if st.button("🔙 Torna alla Home", key="btn_back_hall_safe"):
         st.session_state.pagina = 'home_auth'
         st.rerun()
+
 
 
 
