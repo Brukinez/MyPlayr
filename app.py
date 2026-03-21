@@ -1055,98 +1055,91 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 
 
-# --- BLOCCO PROFILO AGGIORNATO: CARICAMENTO FOTO + MIE CLIP ---
+# --- BLOCCO: PROFILO ATLETA (UNIFICATO: DATI + GRAFICA) ---
 elif st.session_state.pagina == 'profilo':
-    st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>👤 Il Tuo Profilo MyPlayr</h2>", unsafe_allow_html=True)
     
     try:
-        # 1. Recupero dati Utente
+        # 1. RECUPERO DATI DA SUPABASE (Solo tabella utenti)
         res_u = supabase.table("utenti").select("*").eq("email", st.session_state.user_email).execute()
         
         if res_u.data:
             user = res_u.data[0]
             
-            # --- SEZIONE MODIFICA (EXPANDER) ---
-            with st.expander("⚙️ Personalizza il tuo Profilo", expanded=False):
-                col_foto, col_dati = st.columns([1, 2])
+            # --- PARTE 1: FORM DI MODIFICA (EXPANDER) ---
+            with st.expander("⚙️ Modifica Dati Profilo e Foto"):
+                col_f, col_i = st.columns(2)
                 
-                with col_foto:
-                    st.write("📷 **Foto Profilo**")
-                    # TASTO PER SELEZIONARE LA FOTO DIRETTAMENTE
-                    foto_caricata = st.file_uploader("Scegli un'immagine", type=['png', 'jpg', 'jpeg'])
-                    if foto_caricata:
-                        # Nota: Qui in futuro aggiungeremo l'upload su Supabase Storage. 
-                        # Per ora simuliamo il salvataggio del nome file.
-                        st.image(foto_caricata, width=100)
-                        st.success("Foto pronta per il caricamento!")
-
-                with col_dati:
-                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname', ''))
-                    nuovo_ig = st.text_input("Instagram (es. @tuonome)", value=user.get('ig_tag', ''))
+                with col_f:
+                    nuova_foto_url = st.text_input("Link Foto Profilo (URL)", value=user.get('foto_path') if user.get('foto_path') else "")
+                    st.info("💡 Incolla qui il link di una foto online.")
+                
+                with col_i:
+                    nuovo_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
+                    nuovo_ig = st.text_input("Instagram (es. @tuonome)", value=user.get('ig_tag') if user.get('ig_tag') else "")
                     nuovo_ruolo = st.selectbox("Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
-                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio', ''))
+                    nuova_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
 
-                if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
-                    # Prepariamo l'aggiornamento
-                    update_data = {
+                if st.button("💾 SALVA MODIFICHE", use_container_width=True):
+                    dati_aggiornati = {
                         "nickname": nuovo_nick,
-                        "ig_tag": nuovo_ig,
                         "ruolo": nuovo_ruolo,
-                        "bio": nuova_bio
+                        "bio": nuova_bio,
+                        "ig_tag": nuovo_ig,
+                        "foto_path": nuova_foto_url
                     }
-                    supabase.table("utenti").update(update_data).eq("email", st.session_state.user_email).execute()
-                    st.success("✅ Profilo aggiornato sul Cloud!")
+                    supabase.table("utenti").update(dati_aggiornati).eq("email", st.session_state.user_email).execute()
+                    st.success("✅ Profilo Cloud aggiornato!")
                     st.rerun()
 
             st.divider()
 
-            # --- SEZIONE: LE MIE CLIP (VIDEOTECA PERSONALE) ---
-            st.subheader("🎥 Le Mie Clip")
+            # --- PARTE 2: SEZIONE VISUALIZZAZIONE (GRAFICA) ---
+            c_left, c_right = st.columns([1, 2])
             
-            # Cerchiamo nella tabella 'clip_generate' solo le clip di questo utente
-            res_c = supabase.table("clip_generate").select("*").eq("email_utente", st.session_state.user_email).execute()
-            
-            if res_c.data:
-                # Creiamo una griglia per i video dell'utente
-                c_clip = st.columns(2)
-                for idx, clip in enumerate(res_c.data):
-                    with c_clip[idx % 2]:
-                        st.video(clip.get('url_video'))
-                        st.caption(f"📅 Creata il: {clip.get('data_creazione', 'Recentemente')}")
-                        
-                        # Tasto per rendere pubblica l'azione nella Hall of Fame
-                        if not clip.get('pubblico'):
-                            if st.button(f"🌟 Rendi Pubblica Action #{clip['id']}", key=f"pub_{clip['id']}"):
-                                supabase.table("clip_generate").update({"pubblico": True}).eq("id", clip['id']).execute()
-                                st.success("Ora la tua azione è nella Hall of Fame!")
-                                st.rerun()
-            else:
-                st.info("📺 Non hai ancora clip salvate. Vai nella sezione 'Partite' per tagliare la tua prima azione!")
-
-            st.divider()
-
-            # --- SEZIONE VISUALIZZAZIONE GRAFICA (Avatar e Info) ---
-            cl, cr = st.columns([1, 2])
-            with cl:
+            with c_left:
                 st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+                # Gestione foto: se c'è l'URL lo carichiamo, altrimenti icona standard
                 if user.get('foto_path'):
                     st.image(user['foto_path'], width=150)
                 else:
                     st.markdown('<div style="font-size: 80px; background: #3E444A; border-radius: 50%; padding: 20px; display: inline-block;">👤</div>', unsafe_allow_html=True)
-                st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
+                
+                st.markdown(f"<p style='margin-top:10px;'><b>{user.get('nome', 'Atleta')} {user.get('cognome', '')}</b><br><span style='color:#28a745; font-size:16px; font-weight:bold;'>{user.get('ruolo', 'Player')}</span></p>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
-            with cr:
-                st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio", "Nato per giocare.")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag", "-")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo", "Player")}</div>', unsafe_allow_html=True)
+            with c_right:
+                d1, d2 = st.columns(2)
+                with d1:
+                    st.markdown(f'<div class="data-card"><b>Nickname:</b> {user.get("nickname", "-")}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag", "-")}</div>', unsafe_allow_html=True)
+                with d2:
+                    st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo", "-")}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user.get("data_iscrizione", "-")}</div>', unsafe_allow_html=True)
+                
+                st.markdown(f'<div class="data-card"><b>Email:</b> {st.session_state.user_email}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio", "-")}</div>', unsafe_allow_html=True)
+
+            # --- STATISTICHE ---
+            st.divider()
+            st.subheader("📊 Le tue statistiche")
+            s_cols = st.columns(6)
+            st_list = [("🎞️","Clip", "0"), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
+            for i, (ico, tit, val) in enumerate(st_list):
+                with s_cols[i]: 
+                    st.markdown(f'<div style="text-align:center; background:#3E444A; padding:10px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
+
+            st.divider()
+            st.subheader("🏆 I tuoi badge")
+            st.info("Continua a giocare per sbloccare i tuoi primi trofei!")
 
         else:
-            st.error("Dati non trovati.")
-
+            st.error("⚠️ Errore: Dati utente non trovati nel database.")
+            
     except Exception as e:
-        st.error(f"Errore tecnico: {e}")
-
+        # Questo cattura l'errore senza bloccare il sito
+        st.warning("⚠️ Stiamo sincronizzando il tuo profilo con il Cloud...")
+        print(f"DEBUG: {e}")
 
 
 # --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
