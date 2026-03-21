@@ -401,7 +401,7 @@ def vai_a(nome_pagina):
 # Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
 if st.session_state.autenticato:
     # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
-    is_admin = st.session_state.get('ruolo') == "admin"
+    is_admin = st.session_state.get('user_role') == "admin"
     
     # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
     # Usiamo col_nav per indicare le colonne della barra
