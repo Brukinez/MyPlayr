@@ -1011,7 +1011,7 @@ elif st.session_state.pagina == 'admin':
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
 
-# --- BLOCCO PROFILO: FIX FINALE E INTEGRALE ---
+# --- BLOCCO PROFILO: FIX ERRORI LAYOUT E DATI ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
     
@@ -1020,17 +1020,15 @@ elif st.session_state.pagina == 'profilo':
         email_sessione = st.session_state.user_email.strip().lower()
         res_u = supabase.table("utenti").select("*").eq("email", email_sessione).execute()
         
-        # CONTROLLO CRITICO: Verifichiamo che la lista non sia vuota e prendiamo il primo elemento [0]
-        if res_u.data and len(res_u.data) > 0:
-            user = res_u.data[0] # <--- QUESTO È IL FIX: ora 'user' è un dizionario leggibile
+        if res_u.data:
+            user = res_u.data[0] # <--- PRENDE IL PRIMO UTENTE DALLA LISTA
             
             # --- SEZIONE A: MODIFICA PROFILO ---
             with st.expander("⚙️ Modifica Dati e Carica Foto"):
-                col_f, col_i = st.columns(2)
+                col_f, col_i = st.columns(2) # <--- FIX: AGGIUNTO IL NUMERO 2
                 with col_f:
                     st.write("📷 **La tua Foto**")
                     foto_file = st.file_uploader("Scegli file", type=['png', 'jpg', 'jpeg'], key="up_profilo")
-                    # Anteprima intelligente
                     if foto_file: st.image(foto_file, width=100)
                     elif user.get('foto_path'): st.image(user['foto_path'], width=80)
                 
@@ -1042,25 +1040,20 @@ elif st.session_state.pagina == 'profilo':
 
                 if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
                     dati_agg = {"nickname": v_nick, "ig_tag": v_ig, "ruolo": v_ruolo, "bio": v_bio}
-                    
                     if foto_file:
                         try:
-                            # Upload reale sul bucket 'foto_profili'
                             n_f = f"avatar_{user['id']}.jpg"
                             supabase.storage.from_("foto_profili").upload(path=n_f, file=foto_file.getvalue(), file_options={"content-type": foto_file.type, "upsert": "true"})
                             dati_agg["foto_path"] = supabase.storage.from_("foto_profili").get_public_url(n_f)
                         except: pass
-
-                    # INVIO AL DATABASE
-                    res_up = supabase.table("utenti").update(dati_agg).eq("email", email_sessione).execute()
-                    if res_up.data:
-                        st.success("✅ Dati aggiornati con successo!")
-                        st.rerun()
+                    supabase.table("utenti").update(dati_agg).eq("email", email_sessione).execute()
+                    st.success("✅ Profilo aggiornato!")
+                    st.rerun()
 
             st.divider()
 
-            # --- SEZIONE B: VISUALIZZAZIONE DATI (Nickname, IG, Ruolo, Iscrizione, Email, Bio) ---
-            cl, cr = st.columns()
+            # --- SEZIONE B: VISUALIZZAZIONE DATI (Nickname, IG, Bio, ecc.) ---
+            cl, cr = st.columns(2) # <--- FIX: AGGIUNTO IL NUMERO 2
             with cl:
                 st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
                 f_p = user.get('foto_path')
@@ -1087,8 +1080,7 @@ elif st.session_state.pagina == 'profilo':
                     with cols_v[i % 2]:
                         v_u = clip.get('link_video')
                         if v_u:
-                            link_f = v_u.replace("file/d/", "uc?export=download&id=").split("/view") if "drive.google.com" in v_u else v_u
-                            st.video(link_f)
+                            st.video(v_u)
                             st.markdown(f'<a href="{v_u}" target="_blank" style="text-decoration:none;"><div style="background:#28a745; color:white; padding:8px; border-radius:5px; text-align:center; font-weight:bold;">📥 DOWNLOAD</div></a>', unsafe_allow_html=True)
             else: st.info("📺 Nessuna clip salvata.")
 
@@ -1100,13 +1092,14 @@ elif st.session_state.pagina == 'profilo':
             for i, (ico, tit, val) in enumerate(stats):
                 with s_cols[i]: st.markdown(f'<div style="text-align:center; background:#3E444A; padding:10px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
 
-            # --- SEZIONE E: I TUOI BADGE ---
             st.divider()
             st.subheader("🏆 I tuoi badge")
             st.info("🏅 Non hai ancora guadagnato nessun badge.")
 
         else: st.error("Utente non trovato.")
-    except Exception as e: st.error(f"Errore tecnico: {e}")
+    except Exception as e:
+        st.error(f"Errore tecnico: {e}")
+
 
 
 
