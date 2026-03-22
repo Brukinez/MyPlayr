@@ -33,7 +33,6 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
 # --- 3. COSTANTI ---
 GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyPlayr
 
-
 # --- BLOCCO 2: STILE E CSS ---
 # Nota: st.set_page_config è stato rimosso da qui perché deve stare all'inizio del file (Blocco 1)
 
@@ -143,7 +142,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-
 # --- BLOCCO 3: CONNESSIONE CLOUD E LOGICA CLIP ---
 
 # Importiamo la connessione dal tuo file database.py
@@ -157,7 +155,6 @@ CLIP_GDRIVE = r"G:\Il mio Drive\CLIP_MYPLAYR"
 if not os.path.exists(CLIP_GDRIVE):
     # Se il disco G non esiste (es. sei sul Web), usa la cartella CLIP_TAGLIATE che abbiamo creato nel Blocco 2
     CLIP_GDRIVE = CLIP_DIR 
-
 
 # --- FUNZIONE TAGLIO VIDEO (FFMPEG) ---
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
@@ -179,7 +176,6 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
         '-c', 'copy',           # Copia senza sforzo
         output_p
     ]
-
 
     try:
         # Eseguiamo il taglio nel "sottobosco" del PC
@@ -231,8 +227,6 @@ def invia_conferma_e_salva(email_utente):
         st.warning(f"Newsletter salvata, ma email di conferma non inviata: {e}")
         return False
 
-
-
 # --- BLOCCO 5: FUNZIONI UTENTI (SUPABASE CLOUD) ---
 
 def get_utente_per_email(email):
@@ -272,7 +266,6 @@ def crea_nuovo_utente(dati_utente):
         st.error(f"❌ Errore durante la registrazione: {e}")
         return False
 
-   
 # --- BLOCCO: GESTIONE PROFILO UTENTE (SUPABASE) ---
 
 def aggiorna_profilo_social(email, nuovo_tag_ig):
@@ -323,9 +316,6 @@ def aggiorna_foto_profilo_db(email, url_foto):
     except Exception as e:
         print(f"Errore salvataggio URL foto: {e}")
 
-
-
-
 # --- BLOCCO: PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 
 # 1. Inizializziamo lo stato della protezione (se non esiste già)
@@ -358,7 +348,6 @@ if not st.session_state["password_dev_corretta"]:
     
     # st.stop() blocca l'esecuzione di tutto il codice che sta SOTTO questa riga
     st.stop() 
- 
 
 
 # --- BLOCCO: LOGICA NAVIGAZIONE E SESSIONE ---
@@ -392,8 +381,6 @@ def vai_a(nome_pagina):
     st.session_state.pagina = nome_pagina
     # Aggiungiamo st.rerun() per essere sicuri che il cambio pagina sia ISTANTANEO
     st.rerun()
-
-
 
 
 # --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
@@ -431,7 +418,6 @@ if st.session_state.autenticato:
             
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
-
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
@@ -1260,9 +1246,6 @@ elif st.session_state.pagina == 'mie_clip':
         st.error(f"Errore nel caricamento delle tue clip: {e}")
 
 
-
-
-
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
 
 if st.session_state.pagina == 'hall_of_fame':
@@ -1332,7 +1315,6 @@ if st.session_state.pagina not in ['home', 'home_auth']:
         else:
             st.session_state.pagina = 'home'
         st.rerun()
-
 
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
