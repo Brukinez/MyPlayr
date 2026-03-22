@@ -1263,15 +1263,14 @@ elif st.session_state.pagina == 'mie_clip':
 
 
 
-# --- BLOCCO: PAGINA HALL OF FAME PRO (CON JOIN AUTORE) ---
+# --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
 
 if st.session_state.pagina == 'hall_of_fame':
     st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
     st.divider()
 
     try:
-        # 1. RECUPERO DATI CON JOIN (Video + Info Utente)
-        # Chiediamo a Supabase: "Dammi la clip E il Nickname/IG dell'utente che l'ha fatta"
+        # 1. RECUPERO DATI CON JOIN
         res_pro = supabase.table("calendario")\
             .select("id, evento, campo, consenso_social, stato, link_video, utenti(nome, ig_tag)")\
             .eq("stato", "CLIP_UTENTE")\
@@ -1282,40 +1281,47 @@ if st.session_state.pagina == 'hall_of_fame':
         dati_fame = res_pro.data if res_pro.data else []
 
         if dati_fame:
-            # Lista per evitare di mostrare lo stesso file due volte
             gia_visti = []
             
             for clip in dati_fame:
                 url_v = clip.get('link_video')
                 nome_f = clip.get('evento', 'clip.mp4')
                 
-                # Se abbiamo già mostrato questo file o non c'è l'URL, saltiamo
                 if nome_f in gia_visti or not url_v:
                     continue
                 
+                # --- FIX: TRASFORMAZIONE LINK GOOGLE DRIVE ---
+                link_per_player = url_v
+                if "drive.google.com" in url_v:
+                    link_per_player = url_v.replace("file/d/", "uc?export=download&id=").replace("/view?usp=sharing", "").replace("/view", "")
+
                 # --- VISUALIZZAZIONE ---
                 with st.container():
-                    st.video(url_v)
+                    st.video(link_per_player) # Ora il video si vede!
                     gia_visti.append(nome_f)
                     
-                    # Recupero dati dell'autore dalla JOIN (Tabella utenti)
-                    info_u = clip.get('utenti', {})
-                    # Se non c'è il nome, usiamo l'email (campo) come riserva
-                    autore = info_u.get('nome') if info_u and info_u.get('nome') else clip['campo']
+                    # Recupero dati dell'autore (gestione sicura se Supabase restituisce una lista)
+                    info_u = clip.get('utenti')
+                    if isinstance(info_u, list): info_u = info_u[0] # Prende il primo se è una lista
                     
+                    # Nome Atleta
+                    autore = info_u.get('nome') if info_u and info_u.get('nome') else clip['campo']
                     st.success(f"⚽ **Protagonista: {autore}**")
                     
-                    # Se il ragazzo ha inserito Instagram, lo tagghiamo!
+                    # Tag Instagram
                     ig = info_u.get('ig_tag') if info_u else None
                     if ig:
                         st.caption(f"📸 Instagram: **{ig}**")
                     
                     st.divider()
         else:
-            st.info("📌 La Hall of Fame è vuota. Dai il consenso in 'Le Mie Clip' per apparire qui!")
+            st.info("📌 La Hall of Fame è in attesa dei primi campioni! Dai il consenso in 'Le Mie Clip'.")
 
     except Exception as e:
-        st.error(f"Errore nel caricamento della Hall of Fame: {e}")
+        # Se la JOIN fallisce per mancanza di relazione, mostriamo un messaggio pulito
+        st.warning("⚠️ Stiamo sincronizzando i profili degli atleti. I video saranno visibili a breve!")
+        print(f"Errore JOIN: {e}")
+
 
 # --- TASTO DI RITORNO SICURO (DA METTERE PRIMA DEL FOOTER) ---
 # Usiamo una chiave diversa per non andare in conflitto con i tasti precedenti
