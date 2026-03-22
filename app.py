@@ -1102,73 +1102,67 @@ elif st.session_state.pagina == 'profilo':
     except Exception as e:
         st.error(f"Errore tecnico: {e}")
 
-# --- BLOCCO: PAGINA PARTITE (FIX VIDEO PLAYER) ---
-if st.session_state.pagina == 'partite':
+# --- PAGINA PARTITE DISPONIBILI (VERSIONE CLOUD AGGIORNATA) ---
+elif st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
-    st.markdown("<p style='font-size: 14px;'>Rivedi i tuoi match e taglia le tue azioni migliori in pochi secondi.</p>", unsafe_allow_html=True)
     
     try:
-        res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
-        dati_partite = res_matches.data if res_matches.data else []
+        # 1. Recupero dati da Supabase (Invece di sqlite3)
+        res = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        dati_partite = res.data if res.data else []
 
         if not dati_partite:
-            st.info("📌 Nessuna partita ancora disponibile.")
+            st.info("Nessuna partita trovata nel database.")
         else:
             for partita in dati_partite:
-                st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
+                st.subheader(f"Partita: {partita['data']} - {partita['ora']}")
                 
-                video_url = partita.get('link_video') 
+                # 2. Gestione Link Video (Google Drive con fix striscia nera)
+                video_url = partita.get('link_video')
 
                 if video_url:
-                    # --- FIX TRASFORMAZIONE LINK GOOGLE DRIVE (CORRETTO) ---
+                    # FIX: Trasformazione automatica per Google Drive
                     link_diretto = video_url
                     if "drive.google.com" in video_url:
-                        try:
-                            # Estraiamo l'ID del file e creiamo il link di download diretto
-                            if "/file/d/" in video_url:
-                                file_id = video_url.split("/file/d/")[1].split("/")[0]
-                                link_diretto = f"https://drive.google.com{file_id}"
-                            elif "id=" in video_url:
-                                file_id = video_url.split("id=")[1].split("&")[0]
-                                link_diretto = f"https://drive.google.com{file_id}"
-                        except:
-                            link_diretto = video_url
-
-                    # Player video con il link corretto: ORA IL CAMPO SARÀ VISIBILE!
-                    st.video(link_diretto)
-
+                        link_diretto = video_url.replace("file/d/", "uc?export=download&id=").replace("/view", "").replace("?usp=sharing", "")
                     
-                    # --- INTERFACCIA DI TAGLIO ---
+                    # Mostriamo il video (Niente più striscia nera!)
+                    st.video(link_diretto)
+                    
+                    # 3. Box per il taglio della clip (Grafica originale mantenuta)
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
-                        col_m, col_s, col_d = st.columns(3)
-                        with col_m:
-                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=90, key=f"m_u_{partita['id']}")
+                        st.write("Scegli il momento dell'azione:")
+                        c1, col_s, c3 = st.columns(3)
+                        with c1:
+                            m_in = st.number_input("Minuto inizio", min_value=0, step=1, key=f"min_{partita['id']}")
                         with col_s:
-                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, key=f"s_u_{partita['id']}")
-                        with col_d:
-                            durata_richiesta = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_u_{partita['id']}")
+                            s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"sec_{partita['id']}")
+                        with c3:
+                            durata_clip = st.number_input("Durata (sec)", min_value=1, max_value=60, value=10, key=f"dur_{partita['id']}")
 
-                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_u_{partita['id']}", use_container_width=True, type='primary'):
-                            tempo_totale_sec = (min_inizio * 60) + sec_inizio
-                            email_pulita = st.session_state.user_email.strip().lower()
+                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_pay_{partita['id']}", use_container_width=True):
+                            inizio_tot = (m_in * 60) + s_in
                             
+                            # Inviamo il comando a Supabase (Il Mini PC lo leggerà e taglierà il file reale)
                             try:
                                 supabase.table("comandi_clip").insert({
                                     "id_partita": partita['id'],
-                                    "inizio_secondi": tempo_totale_sec,
-                                    "durata_secondi": durata_richiesta,
-                                    "email_utente": email_pulita,
+                                    "inizio_secondi": inizio_tot,
+                                    "durata_secondi": durata_clip,
+                                    "email_utente": st.session_state.user_email,
                                     "stato": "RICHIESTO"
                                 }).execute()
-                                st.success("🚀 Richiesta inviata! Controlla tra poco in 'Le Mie Clip'.")
-                            except Exception as e:
-                                st.error(f"Errore: {e}")
+                                st.success("🚀 Richiesta inviata! Il Mini PC sta preparando il video. Lo troverai tra poco in 'Le Mie Clip'.")
+                            except Exception as e_cmd:
+                                st.error(f"Errore invio comando: {e_cmd}")
                 else:
-                    st.warning(f"⚠️ Video in caricamento...")
+                    st.warning(f"File video non ancora disponibile sul cloud.")
+                
                 st.divider()
 
     except Exception as e:
-        st.error(f"Errore: {e}")
+        st.error(f"Errore tecnico: {e}")
+
 
 
 
