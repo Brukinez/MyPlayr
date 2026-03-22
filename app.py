@@ -1167,12 +1167,28 @@ if st.session_state.pagina == 'partite':
             for partita in dati_partite:
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
-                # Link video generato dal Mini PC e caricato sul Cloud
+                # Link video generato dal Mini PC
                 video_url = partita.get('link_video') 
 
                 if video_url:
-                    # Player video compatibile con tutti i dispositivi
-                    st.video(video_url)
+                    # --- TRASFORMAZIONE LINK GOOGLE DRIVE PER STREAMLIT ---
+                    link_diretto = video_url # Partiamo dal link originale
+                    
+                    if "drive.google.com" in video_url:
+                        try:
+                            # Trasformiamo il link da "visualizzazione" a "flusso diretto"
+                            if "/file/d/" in video_url:
+                                file_id = video_url.split("/file/d/")[1].split("/")[0]
+                                link_diretto = f"https://drive.google.com{file_id}"
+                            elif "id=" in video_url:
+                                file_id = video_url.split("id=")[1].split("&")[0]
+                                link_diretto = f"https://drive.google.com{file_id}"
+                        except:
+                            # Se la trasformazione fallisce, usiamo il link originale
+                            link_diretto = video_url
+
+                    # Player video con il link corretto
+                    st.video(link_diretto)
                     
                     # --- INTERFACCIA DI TAGLIO CLIP (LOGICA ASINCRONA) ---
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
