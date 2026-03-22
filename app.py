@@ -1011,24 +1011,26 @@ elif st.session_state.pagina == 'admin':
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
 
-# --- BLOCCO PROFILO COMPLETO: TUTTE LE SEZIONI E I DATI RICHIESTI ---
+# --- BLOCCO PROFILO: FIX FINALE E INTEGRALE ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
     
     try:
-        # 1. Recupero dati Utente (Corretto per Supabase)
-        res_u = supabase.table("utenti").select("*").eq("email", st.session_state.user_email).execute()
+        # 1. Recupero dati Utente
+        email_sessione = st.session_state.user_email.strip().lower()
+        res_u = supabase.table("utenti").select("*").eq("email", email_sessione).execute()
         
-        if res_u.data:
-            user = res_u.data[0] # <--- FIX: Estrazione corretta
-            email_utente = st.session_state.user_email.strip().lower()
-
-            # --- SEZIONE A: MODIFICA PROFILO (EXPANDER) ---
+        # CONTROLLO CRITICO: Verifichiamo che la lista non sia vuota e prendiamo il primo elemento [0]
+        if res_u.data and len(res_u.data) > 0:
+            user = res_u.data[0] # <--- QUESTO È IL FIX: ora 'user' è un dizionario leggibile
+            
+            # --- SEZIONE A: MODIFICA PROFILO ---
             with st.expander("⚙️ Modifica Dati e Carica Foto"):
                 col_f, col_i = st.columns(2)
                 with col_f:
                     st.write("📷 **La tua Foto**")
-                    foto_file = st.file_uploader("Scegli un file", type=['png', 'jpg', 'jpeg'], key="up_f")
+                    foto_file = st.file_uploader("Scegli file", type=['png', 'jpg', 'jpeg'], key="up_profilo")
+                    # Anteprima intelligente
                     if foto_file: st.image(foto_file, width=100)
                     elif user.get('foto_path'): st.image(user['foto_path'], width=80)
                 
@@ -1040,20 +1042,25 @@ elif st.session_state.pagina == 'profilo':
 
                 if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
                     dati_agg = {"nickname": v_nick, "ig_tag": v_ig, "ruolo": v_ruolo, "bio": v_bio}
+                    
                     if foto_file:
                         try:
+                            # Upload reale sul bucket 'foto_profili'
                             n_f = f"avatar_{user['id']}.jpg"
                             supabase.storage.from_("foto_profili").upload(path=n_f, file=foto_file.getvalue(), file_options={"content-type": foto_file.type, "upsert": "true"})
                             dati_agg["foto_path"] = supabase.storage.from_("foto_profili").get_public_url(n_f)
                         except: pass
-                    supabase.table("utenti").update(dati_agg).eq("email", email_utente).execute()
-                    st.success("✅ Profilo aggiornato!")
-                    st.rerun()
+
+                    # INVIO AL DATABASE
+                    res_up = supabase.table("utenti").update(dati_agg).eq("email", email_sessione).execute()
+                    if res_up.data:
+                        st.success("✅ Dati aggiornati con successo!")
+                        st.rerun()
 
             st.divider()
 
-            # --- SEZIONE B: VISUALIZZAZIONE DATI (ORDINE RICHIESTO) ---
-            cl, cr = st.columns([1, 2])
+            # --- SEZIONE B: VISUALIZZAZIONE DATI (Nickname, IG, Ruolo, Iscrizione, Email, Bio) ---
+            cl, cr = st.columns()
             with cl:
                 st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
                 f_p = user.get('foto_path')
@@ -1067,39 +1074,27 @@ elif st.session_state.pagina == 'profilo':
                 st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag") if user.get("ig_tag") else "None"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo", "Player")}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user.get("created_at", "2026-03-16")[:10]}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Email:</b> {email_utente}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio") if user.get("bio") else "None"}</div>', unsafe_allow_html=True)
 
+            # --- SEZIONE C: LE MIE CLIP ---
             st.divider()
-
-            # --- SEZIONE C: LE MIE CLIP (VIDEOTECA) ---
             st.subheader("🎥 I Tuoi Highlight")
-            res_c = supabase.table("calendario").select("*").eq("stato", "CLIP_UTENTE").eq("campo", email_utente).execute()
+            res_c = supabase.table("calendario").select("*").eq("stato", "CLIP_UTENTE").eq("campo", email_sessione).execute()
             if res_c.data:
                 cols_v = st.columns(2)
                 for i, clip in enumerate(res_c.data):
                     with cols_v[i % 2]:
                         v_u = clip.get('link_video')
                         if v_u:
-                            st.video(v_u)
-                            cd, ch = st.columns(2)
-                            with cd: st.markdown(f'<a href="{v_u}" target="_blank" style="text-decoration:none;"><div style="background:#28a745; color:white; padding:8px; border-radius:5px; text-align:center; font-weight:bold;">📥 DOWNLOAD</div></a>', unsafe_allow_html=True)
-                            with ch:
-                                cons = True if clip.get('consenso_social', 0) == 1 else False
-                                if st.toggle("Hall of Fame 🏆", value=cons, key=f"tg_{clip['id']}"):
-                                    if not cons:
-                                        supabase.table("calendario").update({"consenso_social": 1}).eq("id", clip['id']).execute()
-                                        st.rerun()
-                                else:
-                                    if cons:
-                                        supabase.table("calendario").update({"consenso_social": 0}).eq("id", clip['id']).execute()
-                                        st.rerun()
-                        else: st.info("⏳ In elaborazione...")
+                            link_f = v_u.replace("file/d/", "uc?export=download&id=").split("/view") if "drive.google.com" in v_u else v_u
+                            st.video(link_f)
+                            st.markdown(f'<a href="{v_u}" target="_blank" style="text-decoration:none;"><div style="background:#28a745; color:white; padding:8px; border-radius:5px; text-align:center; font-weight:bold;">📥 DOWNLOAD</div></a>', unsafe_allow_html=True)
             else: st.info("📺 Nessuna clip salvata.")
 
-            # --- SEZIONE D: STATISTICHE (I 6 BOX VERDI) ---
+            # --- SEZIONE D: STATISTICHE (BOX VERDI) ---
             st.divider()
-            st.subheader("📊 Le tue statistiche")
+            st.subheader("📊 Statistiche")
             s_cols = st.columns(6)
             stats = [("🎞️","Clip", len(res_c.data)), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
             for i, (ico, tit, val) in enumerate(stats):
@@ -1108,10 +1103,11 @@ elif st.session_state.pagina == 'profilo':
             # --- SEZIONE E: I TUOI BADGE ---
             st.divider()
             st.subheader("🏆 I tuoi badge")
-            st.info("🏅 Non hai ancora guadagnato nessun badge. Continua a giocare per sbloccarli!")
+            st.info("🏅 Non hai ancora guadagnato nessun badge.")
 
         else: st.error("Utente non trovato.")
     except Exception as e: st.error(f"Errore tecnico: {e}")
+
 
 
 
