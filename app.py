@@ -1115,48 +1115,29 @@ elif st.session_state.pagina == 'profilo':
     except Exception as e:
         st.error(f"Errore tecnico: {e}")
 
-
-
-
-
-
-
-
-
-# --- BLOCCO: PAGINA PARTITE (UTENTI - SUPABASE READY) ---
-
+# --- BLOCCO: PAGINA PARTITE (FIX VIDEO PLAYER) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     st.markdown("<p style='font-size: 14px;'>Rivedi i tuoi match e taglia le tue azioni migliori in pochi secondi.</p>", unsafe_allow_html=True)
     
-    # 1. RECUPERO DATI DAL CLOUD
     try:
-        # Recuperiamo solo i match completati (stato 'FATTO')
-        res_matches = supabase.table("calendario")\
-            .select("*")\
-            .eq("stato", "FATTO")\
-            .order("id", desc=True)\
-            .execute()
-        
+        res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
         if not dati_partite:
-            st.info("📌 Nessuna partita ancora disponibile. Torna a trovarci dopo il tuo prossimo match!")
+            st.info("📌 Nessuna partita ancora disponibile.")
         else:
-            # 2. CICLO DI VISUALIZZAZIONE PARTITE
             for partita in dati_partite:
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
-                # Link video generato dal Mini PC
                 video_url = partita.get('link_video') 
 
                 if video_url:
-                    # --- TRASFORMAZIONE LINK GOOGLE DRIVE PER STREAMLIT ---
-                    link_diretto = video_url # Partiamo dal link originale
-                    
+                    # --- FIX TRASFORMAZIONE LINK GOOGLE DRIVE ---
+                    link_diretto = video_url
                     if "drive.google.com" in video_url:
                         try:
-                            # Trasformiamo il link da "visualizzazione" a "flusso diretto"
+                            # Estraiamo l'ID correttamente senza errori di parentesi
                             if "/file/d/" in video_url:
                                 file_id = video_url.split("/file/d/")[1].split("/")[0]
                                 link_diretto = f"https://drive.google.com{file_id}"
@@ -1164,33 +1145,26 @@ if st.session_state.pagina == 'partite':
                                 file_id = video_url.split("id=")[1].split("&")[0]
                                 link_diretto = f"https://drive.google.com{file_id}"
                         except:
-                            # Se la trasformazione fallisce, usiamo il link originale
                             link_diretto = video_url
 
-                    # Player video con il link corretto
+                    # Player video con il link corretto (niente più striscia nera)
                     st.video(link_diretto)
                     
-                    # --- INTERFACCIA DI TAGLIO CLIP (LOGICA ASINCRONA) ---
+                    # --- INTERFACCIA DI TAGLIO ---
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
-                        st.write("Inserisci il minuto e il secondo dell'azione che vuoi salvare:")
-                        
                         col_m, col_s, col_d = st.columns(3)
                         with col_m:
-                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_u_{partita['id']}")
+                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=90, key=f"m_u_{partita['id']}")
                         with col_s:
-                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_u_{partita['id']}")
+                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, key=f"s_u_{partita['id']}")
                         with col_d:
-                            durata_richiesta = st.number_input("Durata (secondi)", min_value=5, max_value=60, value=15, key=f"d_u_{partita['id']}")
+                            durata_richiesta = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_u_{partita['id']}")
 
-                        # Tasto per inviare l'ordine di taglio al Mini PC
                         if st.button("🎬 GENERA CLIP ORA", key=f"btn_u_{partita['id']}", use_container_width=True, type='primary'):
-                            # Calcolo tempo totale in secondi per FFmpeg sul Mini PC
                             tempo_totale_sec = (min_inizio * 60) + sec_inizio
                             email_pulita = st.session_state.user_email.strip().lower()
                             
                             try:
-                                # MANDIAMO IL COMANDO AL MINI PC TRAMITE SUPABASE
-                                # Il Mini PC leggerà questa riga e taglierà il file originale 4K (Disco G:)
                                 supabase.table("comandi_clip").insert({
                                     "id_partita": partita['id'],
                                     "inizio_secondi": tempo_totale_sec,
@@ -1198,18 +1172,16 @@ if st.session_state.pagina == 'partite':
                                     "email_utente": email_pulita,
                                     "stato": "RICHIESTO"
                                 }).execute()
-                                
-                                st.success("🚀 Richiesta inviata! Il sistema sta preparando il tuo video. Lo troverai tra poco nella sezione 'Le Mie Clip'.")
-                                st.toast("Richiesta inviata con successo!", icon="✅")
+                                st.success("🚀 Richiesta inviata! Controlla tra poco in 'Le Mie Clip'.")
                             except Exception as e:
-                                st.error(f"Errore nell'invio della richiesta: {e}")
+                                st.error(f"Errore: {e}")
                 else:
-                    st.warning(f"⚠️ Il video Master è in fase di caricamento. Riprova tra poco!")
-                
+                    st.warning(f"⚠️ Video in caricamento...")
                 st.divider()
 
     except Exception as e:
-        st.error(f"Impossibile caricare l'archivio partite: {e}")
+        st.error(f"Errore: {e}")
+
 
 
 # --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
