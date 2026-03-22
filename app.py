@@ -1055,7 +1055,7 @@ elif st.session_state.pagina == 'hall_of_fame':
 
 
 
-# --- BLOCCO PROFILO TOTALE: DATI + FOTO + MIE CLIP + STATS ---
+# --- BLOCCO PROFILO TOTALE E DEFINITIVO (DATI + FOTO + CLIP + STATS + BADGE) ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
     
@@ -1064,7 +1064,7 @@ elif st.session_state.pagina == 'profilo':
         res_u = supabase.table("utenti").select("*").eq("email", st.session_state.user_email).execute()
         
         if res_u.data:
-            user = res_u.data[0]
+            user = res_u.data[0] # Estraiamo l'utente
             email_pulita = st.session_state.user_email.strip().lower()
 
             # --- SEZIONE A: MODIFICA PROFILO (EXPANDER) ---
@@ -1072,17 +1072,17 @@ elif st.session_state.pagina == 'profilo':
                 col_f, col_i = st.columns(2)
                 with col_f:
                     st.write("📷 **La tua Foto**")
-                    foto_file = st.file_uploader("Carica file immagine", type=['png', 'jpg', 'jpeg'])
+                    foto_file = st.file_uploader("Carica file immagine", type=['png', 'jpg', 'jpeg'], key="uploader_profilo")
                     if foto_file: st.image(foto_file, width=100)
                     elif user.get('foto_path'): st.image(user['foto_path'], width=80)
                 
                 with col_i:
-                    n_nick = st.text_input("Nickname", value=user.get('nickname', ''))
-                    n_ig = st.text_input("Instagram", value=user.get('ig_tag', ''))
-                    n_ruolo = st.selectbox("Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
-                    n_bio = st.text_area("Bio", value=user.get('bio', ''))
+                    n_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
+                    n_ig = st.text_input("Instagram", value=user.get('ig_tag') if user.get('ig_tag') else "")
+                    n_ruolo = st.selectbox("Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"], index=0)
+                    n_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
 
-                if st.button("💾 SALVA MODIFICHE", use_container_width=True):
+                if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
                     dati_agg = {"nickname": n_nick, "ig_tag": n_ig, "ruolo": n_ruolo, "bio": n_bio}
                     if foto_file:
                         try:
@@ -1096,7 +1096,7 @@ elif st.session_state.pagina == 'profilo':
 
             st.divider()
 
-            # --- SEZIONE B: VISUALIZZAZIONE GRAFICA (Avatar e Info) ---
+            # --- SEZIONE B: VISUALIZZAZIONE DATI (COME RICHIESTO) ---
             cl, cr = st.columns([1, 2])
             with cl:
                 st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
@@ -1105,16 +1105,20 @@ elif st.session_state.pagina == 'profilo':
                 else: st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
                 st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
+            
             with cr:
-                st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio", "Nato per giocare.")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag", "-")}</div>', unsafe_allow_html=True)
+                # Elenco dati puntuale come richiesto
+                st.markdown(f'<div class="data-card"><b>Nickname:</b> {user.get("nickname") if user.get("nickname") else "None"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag") if user.get("ig_tag") else "None"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo", "Player")}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user.get("created_at", "2026-03-16")[:10]}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Email:</b> {st.session_state.user_email}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio") if user.get("bio") else "None"}</div>', unsafe_allow_html=True)
 
             st.divider()
 
             # --- SEZIONE C: LE MIE CLIP (VIDEOTECA PERSONALE) ---
             st.subheader("🎥 I Tuoi Highlight")
-            # Cerchiamo le clip nella tabella calendario (come nel tuo codice originale)
             res_c = supabase.table("calendario").select("*").eq("stato", "CLIP_UTENTE").eq("campo", email_pulita).execute()
             
             if res_c.data:
@@ -1147,14 +1151,20 @@ elif st.session_state.pagina == 'profilo':
 
             # --- SEZIONE D: STATISTICHE (BOX VERDI) ---
             st.divider()
-            st.subheader("📊 Statistiche")
+            st.subheader("📊 Statistiche Generali")
             s_cols = st.columns(6)
             stats = [("🎞️","Clip", len(res_c.data)), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
             for i, (ico, tit, val) in enumerate(stats):
                 with s_cols[i]: st.markdown(f'<div style="text-align:center; background:#3E444A; padding:10px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
 
+            # --- SEZIONE E: I TUOI BADGE (TROFEI) ---
+            st.divider()
+            st.subheader("🏆 I Tuoi Badge")
+            st.info("🎖️ Non hai ancora guadagnato nessun badge. Continua a giocare per sbloccare i trofei MyPlayr!")
+
         else: st.error("Utente non trovato.")
     except Exception as e: st.error(f"Errore tecnico: {e}")
+
 
 
 
