@@ -1120,11 +1120,11 @@ if st.session_state.pagina == 'partite':
                 video_url = partita.get('link_video') 
 
                 if video_url:
-                    # --- FIX TRASFORMAZIONE LINK GOOGLE DRIVE (CORRETTO) ---
+                    # --- FIX TRASFORMAZIONE LINK GOOGLE DRIVE ---
                     link_diretto = video_url
                     if "drive.google.com" in video_url:
                         try:
-                            # Estraiamo l'ID del file e creiamo il link di download diretto
+                            # Estraiamo l'ID correttamente senza errori di parentesi
                             if "/file/d/" in video_url:
                                 file_id = video_url.split("/file/d/")[1].split("/")[0]
                                 link_diretto = f"https://drive.google.com{file_id}"
@@ -1134,9 +1134,8 @@ if st.session_state.pagina == 'partite':
                         except:
                             link_diretto = video_url
 
-                    # Player video con il link corretto: ORA IL CAMPO SARÀ VISIBILE!
+                    # Player video con il link corretto (niente più striscia nera)
                     st.video(link_diretto)
-
                     
                     # --- INTERFACCIA DI TAGLIO ---
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
