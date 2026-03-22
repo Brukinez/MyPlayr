@@ -1147,11 +1147,6 @@ if st.session_state.pagina == 'partite':
         st.error(f"Errore: {e}")
 
 
-
-
-
-
-
 # --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
 
 elif st.session_state.pagina == 'mie_clip':
