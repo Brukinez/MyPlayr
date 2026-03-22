@@ -1121,22 +1121,30 @@ if st.session_state.pagina == 'partite':
                 video_url = partita.get('link_video') 
 
                 if video_url:
-                    # --- FIX DEFINITIVO TRASFORMAZIONE LINK GOOGLE DRIVE ---
-                    link_diretto = video_url
-                    if "drive.google.com" in video_url:
+                    # --- PULIZIA E FIX LINK GOOGLE DRIVE ---
+                    def convert_drive_link(url):
                         try:
-                            # Estraiamo l'ID in modo sicuro per Streamlit
-                            if "/file/d/" in video_url:
-                                file_id = video_url.split("/file/d/")[1].split("/")[0]
-                                link_diretto = f"https://drive.google.com{file_id}"
-                            elif "id=" in video_url:
-                                file_id = video_url.split("id=")[1].split("&")[0]
-                                link_diretto = f"https://drive.google.com{file_id}"
+                            # Se è un link tipo /file/d/ID/view
+                            if "/file/d/" in url:
+                                file_id = url.split("/file/d/")[1].split("/")[0]
+                                return f"https://drive.google.com{file_id}"
+                            # Se è un link tipo ?id=ID
+                            elif "id=" in url:
+                                file_id = url.split("id=")[1].split("&")[0]
+                                return f"https://drive.google.com{file_id}"
+                            return url
                         except:
-                            link_diretto = video_url # Fallback se il link è strano
+                            return url
 
-                    # Player video: ora il link punta al file reale, non alla pagina web
+                    link_diretto = convert_drive_link(str(video_url).strip())
+                    
+                    # DEBUG: Scommenta la riga sotto se vuoi vedere il link finale prodotto
+                    # st.write(f"DEBUG Link: {link_diretto}")
+
+                    # IL PLAYER: Se vedi ancora nero, controlla che il file su Drive 
+                    # sia impostato su "Chiunque abbia il link può visualizzare"
                     st.video(link_diretto)
+
                     
                     # --- INTERFACCIA DI TAGLIO ---
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
