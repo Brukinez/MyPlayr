@@ -614,8 +614,8 @@ elif st.session_state.pagina == 'login':
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
-elif st.session_state.pagina == 'admin': # Assicurati che sia tutto minuscolo
-    st.title("📊 Dashboard Amministratore")
+elif st.session_state.pagina == 'admin':
+    
     # 1. RECUPERO CONTEGGI REALI (Cloud)
     try:
         # Conteggio utenti registrati
