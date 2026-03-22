@@ -1102,29 +1102,59 @@ elif st.session_state.pagina == 'profilo':
     except Exception as e:
         st.error(f"Errore tecnico: {e}")
 
+# --- BLOCCO: PAGINA PARTITE (FIX FINALE LINK) ---
 if st.session_state.pagina == 'partite':
-    st.title("🛠️ Test Diagnostico Video")
-    res = supabase.table("calendario").select("*").order("id", desc=True).limit(1).execute()
+    st.title("🏟️ Archivio Partite MyPlayr")
     
-    if res.data:
-        partita = res.data[0]
-        url = partita.get('link_video')
-        st.write(f"**Link nel Database:** `{url}`")
-        
-        if url:
-            import re
-            match = re.search(r'[-\w]{25,}', url)
-            if match:
-                id_drive = match.group()
-                link_diretto = f"https://drive.google.com{id_drive}"
-                st.write(f"**ID Estratto:** `{id_drive}`")
-                st.write(f"**Link che Streamlit prova a usare:** [CLICCA QUI]({link_diretto})")
-                st.info("Prova a cliccare il link sopra: se il video non parte o dice 'Accesso Negato', il problema è nei permessi di Google Drive.")
-                st.video(link_diretto)
-            else:
-                st.error("L'ID del video non è stato trovato nel link. Il link su Supabase è corretto?")
-    else:
-        st.warning("Nessun dato trovato nel database.")
+    try:
+        res_matches = supabase.table("calendario").select("*").order("id", desc=True).execute()
+        dati_partite = res_matches.data if res_matches.data else []
+
+        if not dati_partite:
+            st.info("📌 Nessuna partita trovata.")
+        else:
+            for partita in dati_partite:
+                st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
+                
+                v_url = partita.get('link_video')
+
+                if v_url and "http" in str(v_url):
+                    # --- ESTRAZIONE ID E COSTRUZIONE LINK CORRETTO ---
+                    import re
+                    match = re.search(r'[-\w]{25,}', str(v_url))
+                    if match:
+                        drive_id = match.group()
+                        # FIX: Aggiunta la "/" dopo .com e i parametri corretti
+                        link_diretto = f"https://drive.google.com{drive_id}"
+                        
+                        # Mostriamo il video
+                        st.video(link_diretto)
+                        
+                        # Sezione Taglio Clip
+                        with st.expander("✂️ TAGLIA UNA CLIP"):
+                            c1, c2, c3 = st.columns(3)
+                            with c1: m = st.number_input("Min", 0, 90, key=f"m_{partita['id']}")
+                            with c2: s = st.number_input("Sec", 0, 59, key=f"s_{partita['id']}")
+                            with c3: d = st.number_input("Durata", 5, 60, 15, key=f"d_{partita['id']}")
+                            
+                            if st.button("🎬 GENERA", key=f"btn_{partita['id']}", use_container_width=True):
+                                t_sec = (m * 60) + s
+                                supabase.table("comandi_clip").insert({
+                                    "id_partita": partita['id'],
+                                    "inizio_secondi": t_sec,
+                                    "durata_secondi": d,
+                                    "email_utente": st.session_state.user_email,
+                                    "stato": "RICHIESTO"
+                                }).execute()
+                                st.success("✅ Richiesta inviata!")
+                    else:
+                        st.error("Link video non valido su Supabase.")
+                else:
+                    st.warning(f"⏳ Video non ancora disponibile.")
+                st.divider()
+
+    except Exception as e:
+        st.error(f"Errore: {e}")
 
 
 
