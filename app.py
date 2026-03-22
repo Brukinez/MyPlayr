@@ -1102,85 +1102,61 @@ elif st.session_state.pagina == 'profilo':
     except Exception as e:
         st.error(f"Errore tecnico: {e}")
 
-# --- BLOCCO: PAGINA PARTITE (FIX VIDEO PLAYER & CLIP) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE RECOVER) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
-    st.markdown("<p style='font-size: 14px;'>Rivedi i tuoi match e taglia le tue azioni migliori in pochi secondi.</p>", unsafe_allow_html=True)
     
     try:
-        # Recupero partite caricate (Stato FATTO)
-        res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        # Recuperiamo le partite (mostriamo tutto per debug)
+        res_matches = supabase.table("calendario").select("*").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
         if not dati_partite:
-            st.info("📌 Nessuna partita ancora disponibile.")
+            st.info("📌 Nessuna partita trovata.")
         else:
             for partita in dati_partite:
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
-                video_url = partita.get('link_video') 
+                v_url = partita.get('link_video')
 
-                if video_url:
-                    # --- PULIZIA E FIX LINK GOOGLE DRIVE ---
-                    def convert_drive_link(url):
-                        try:
-                            # Se è un link tipo /file/d/ID/view
-                            if "/file/d/" in url:
-                                file_id = url.split("/file/d/")[1].split("/")[0]
-                                return f"https://drive.google.com{file_id}"
-                            # Se è un link tipo ?id=ID
-                            elif "id=" in url:
-                                file_id = url.split("id=")[1].split("&")[0]
-                                return f"https://drive.google.com{file_id}"
-                            return url
-                        except:
-                            return url
-
-                    link_diretto = convert_drive_link(str(video_url).strip())
+                if v_url and "http" in str(v_url):
+                    # --- MOTORE DI CONVERSIONE DRIVE ---
+                    final_link = v_url
+                    if "drive.google.com" in v_url:
+                        # Estrazione ID universale
+                        import re
+                        match = re.search(r'[-\w]{25,}', v_url)
+                        if match:
+                            drive_id = match.group()
+                            final_link = f"https://drive.google.com{drive_id}"
                     
-                    # DEBUG: Scommenta la riga sotto se vuoi vedere il link finale prodotto
-                    # st.write(f"DEBUG Link: {link_diretto}")
-
-                    # IL PLAYER: Se vedi ancora nero, controlla che il file su Drive 
-                    # sia impostato su "Chiunque abbia il link può visualizzare"
-                    st.video(link_diretto)
-
+                    # PLAYER VIDEO
+                    st.video(final_link)
                     
-                    # --- INTERFACCIA DI TAGLIO ---
-                    with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
-                        st.write("Seleziona il momento esatto in cui inizia l'azione che vuoi salvare:")
-                        col_m, col_s, col_d = st.columns(3)
-                        with col_m:
-                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=120, key=f"min_{partita['id']}")
-                        with col_s:
-                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, key=f"sec_{partita['id']}")
-                        with col_d:
-                            durata_richiesta = st.number_input("Durata clip (sec)", min_value=5, max_value=60, value=15, key=f"dur_{partita['id']}")
-
-                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_{partita['id']}", use_container_width=True, type='primary'):
-                            # Calcolo tempo totale in secondi per il regista (FFmpeg)
-                            tempo_totale_sec = (min_inizio * 60) + sec_inizio
-                            email_utente = st.session_state.user_email.strip().lower()
-                            
-                            # Inserimento comando nel database per il PC in campo
-                            try:
-                                supabase.table("comandi_clip").insert({
-                                    "id_partita": partita['id'],
-                                    "inizio_secondi": tempo_totale_sec,
-                                    "durata_secondi": durata_richiesta,
-                                    "email_utente": email_utente,
-                                    "stato": "RICHIESTO"
-                                }).execute()
-                                st.success("🚀 Richiesta inviata! Il sistema sta tagliando il video. La troverai tra poco in 'Le Mie Clip'.")
-                            except Exception as e:
-                                st.error(f"Errore nell'invio della richiesta: {e}")
+                    # --- SEZIONE TAGLIO CLIP ---
+                    with st.expander("✂️ TAGLIA UNA CLIP"):
+                        c1, c2, c3 = st.columns(3)
+                        with c1: m = st.number_input("Min", 0, 90, key=f"m_{partita['id']}")
+                        with c2: s = st.number_input("Sec", 0, 59, key=f"s_{partita['id']}")
+                        with c3: d = st.number_input("Durata", 5, 60, 15, key=f"d_{partita['id']}")
+                        
+                        if st.button("🎬 GENERA", key=f"btn_{partita['id']}", use_container_width=True):
+                            t_sec = (m * 60) + s
+                            supabase.table("comandi_clip").insert({
+                                "id_partita": partita['id'],
+                                "inizio_secondi": t_sec,
+                                "durata_secondi": d,
+                                "email_utente": st.session_state.user_email,
+                                "stato": "RICHIESTO"
+                            }).execute()
+                            st.success("✅ Richiesta inviata al PC in campo!")
                 else:
-                    st.warning(f"⚠️ Il video di questa partita è in fase di elaborazione...")
-                
+                    st.warning(f"⏳ Video non ancora disponibile (Stato: {partita.get('stato')})")
                 st.divider()
 
     except Exception as e:
-        st.error(f"Si è verificato un errore nel caricamento delle partite: {e}")
+        st.error(f"Errore: {e}")
+
 
 
 
