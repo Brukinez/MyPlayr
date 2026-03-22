@@ -1102,12 +1102,13 @@ elif st.session_state.pagina == 'profilo':
     except Exception as e:
         st.error(f"Errore tecnico: {e}")
 
-# --- BLOCCO: PAGINA PARTITE (FIX VIDEO PLAYER) ---
+# --- BLOCCO: PAGINA PARTITE (FIX VIDEO PLAYER & CLIP) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     st.markdown("<p style='font-size: 14px;'>Rivedi i tuoi match e taglia le tue azioni migliori in pochi secondi.</p>", unsafe_allow_html=True)
     
     try:
+        # Recupero partite caricate (Stato FATTO)
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
@@ -1120,11 +1121,11 @@ if st.session_state.pagina == 'partite':
                 video_url = partita.get('link_video') 
 
                 if video_url:
-                    # --- FIX TRASFORMAZIONE LINK GOOGLE DRIVE ---
+                    # --- FIX DEFINITIVO TRASFORMAZIONE LINK GOOGLE DRIVE ---
                     link_diretto = video_url
                     if "drive.google.com" in video_url:
                         try:
-                            # Estraiamo l'ID correttamente senza errori di parentesi
+                            # Estraiamo l'ID in modo sicuro per Streamlit
                             if "/file/d/" in video_url:
                                 file_id = video_url.split("/file/d/")[1].split("/")[0]
                                 link_diretto = f"https://drive.google.com{file_id}"
@@ -1132,42 +1133,47 @@ if st.session_state.pagina == 'partite':
                                 file_id = video_url.split("id=")[1].split("&")[0]
                                 link_diretto = f"https://drive.google.com{file_id}"
                         except:
-                            link_diretto = video_url
+                            link_diretto = video_url # Fallback se il link è strano
 
-                    # Player video con il link corretto (niente più striscia nera)
+                    # Player video: ora il link punta al file reale, non alla pagina web
                     st.video(link_diretto)
                     
                     # --- INTERFACCIA DI TAGLIO ---
                     with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
+                        st.write("Seleziona il momento esatto in cui inizia l'azione che vuoi salvare:")
                         col_m, col_s, col_d = st.columns(3)
                         with col_m:
-                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=90, key=f"m_u_{partita['id']}")
+                            min_inizio = st.number_input("Minuto inizio", min_value=0, max_value=120, key=f"min_{partita['id']}")
                         with col_s:
-                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, key=f"s_u_{partita['id']}")
+                            sec_inizio = st.number_input("Secondo inizio", min_value=0, max_value=59, key=f"sec_{partita['id']}")
                         with col_d:
-                            durata_richiesta = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_u_{partita['id']}")
+                            durata_richiesta = st.number_input("Durata clip (sec)", min_value=5, max_value=60, value=15, key=f"dur_{partita['id']}")
 
-                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_u_{partita['id']}", use_container_width=True, type='primary'):
+                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_{partita['id']}", use_container_width=True, type='primary'):
+                            # Calcolo tempo totale in secondi per il regista (FFmpeg)
                             tempo_totale_sec = (min_inizio * 60) + sec_inizio
-                            email_pulita = st.session_state.user_email.strip().lower()
+                            email_utente = st.session_state.user_email.strip().lower()
                             
+                            # Inserimento comando nel database per il PC in campo
                             try:
                                 supabase.table("comandi_clip").insert({
                                     "id_partita": partita['id'],
                                     "inizio_secondi": tempo_totale_sec,
                                     "durata_secondi": durata_richiesta,
-                                    "email_utente": email_pulita,
+                                    "email_utente": email_utente,
                                     "stato": "RICHIESTO"
                                 }).execute()
-                                st.success("🚀 Richiesta inviata! Controlla tra poco in 'Le Mie Clip'.")
+                                st.success("🚀 Richiesta inviata! Il sistema sta tagliando il video. La troverai tra poco in 'Le Mie Clip'.")
                             except Exception as e:
-                                st.error(f"Errore: {e}")
+                                st.error(f"Errore nell'invio della richiesta: {e}")
                 else:
-                    st.warning(f"⚠️ Video in caricamento...")
+                    st.warning(f"⚠️ Il video di questa partita è in fase di elaborazione...")
+                
                 st.divider()
 
     except Exception as e:
-        st.error(f"Errore: {e}")
+        st.error(f"Si è verificato un errore nel caricamento delle partite: {e}")
+
 
 
 
