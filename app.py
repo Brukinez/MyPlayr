@@ -998,109 +998,122 @@ elif st.session_state.pagina == 'admin':
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
 
-# --- BLOCCO PROFILO: FIX DEFINITIVO ACCESSO DATI [0] ---
+# --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
     
     try:
-        # 1. Recupero dati Utente dal Cloud
+        import time
         email_sessione = st.session_state.user_email.strip().lower()
-        res_u = supabase.table("utenti").select("*").eq("email", email_sessione).execute()
         
-        # CONTROLLO REALE: Se esiste almeno un utente, prendiamo il PRIMO (indice 0)
-        if res_u.data and len(res_u.data) > 0:
-            user = res_u.data[0] # <--- FIX FONDAMENTALE: prendiamo il primo record
-            
-            # --- SEZIONE A: MODIFICA PROFILO ---
+        # 1. Recupero dati Utente (FIX: single record)
+        res_u = supabase.table("utenti").select("*").eq("email", email_sessione).maybe_single().execute()
+        user = res_u.data
+        
+        if user:
+            # --- SEZIONE A: MODIFICA DATI ---
             with st.expander("⚙️ Modifica Dati e Carica Foto"):
                 col_f, col_i = st.columns(2)
                 with col_f:
                     st.write("📷 **La tua Foto**")
                     foto_file = st.file_uploader("Scegli file", type=['png', 'jpg', 'jpeg'], key="up_p")
+                    
+                    # Visualizzazione foto attuale
+                    f_path = user.get('foto_path')
                     if foto_file: 
                         st.image(foto_file, width=100)
-                    elif user.get('foto_path'): 
-                        st.image(user['foto_path'], width=80)
+                    elif f_path: 
+                        st.image(f"{f_path}?t={int(time.time())}", width=80)
                 
                 with col_i:
-                    v_nick = st.text_input("Nickname", value=user.get('nickname') if user.get('nickname') else "")
-                    v_ig = st.text_input("Instagram", value=user.get('ig_tag') if user.get('ig_tag') else "")
-                    v_ruolo = st.selectbox("Ruolo", ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"])
-                    v_bio = st.text_area("La tua Bio", value=user.get('bio') if user.get('bio') else "")
+                    v_nick = st.text_input("Nickname", value=user.get('nickname') or "")
+                    v_ig = st.text_input("Instagram", value=user.get('ig_tag') or "")
+                    ruoli = ["Attaccante", "Centrocampista", "Difensore", "Portiere", "Padel Player"]
+                    v_ruolo = st.selectbox("Ruolo", ruoli, index=ruoli.index(user.get('ruolo')) if user.get('ruolo') in ruoli else 0)
+                    v_bio = st.text_area("La tua Bio", value=user.get('bio') or "")
 
-                if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True):
+                if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True, type="primary"):
                     dati_agg = {"nickname": v_nick, "ig_tag": v_ig, "ruolo": v_ruolo, "bio": v_bio}
                     
                     if foto_file:
                         try:
-                            # Caricamento reale nel bucket 'foto_profili'
                             nome_f = f"avatar_{user['id']}.jpg"
+                            # Caricamento REALE nello storage di Supabase
                             supabase.storage.from_("foto_profili").upload(
                                 path=nome_f, 
                                 file=foto_file.getvalue(), 
-                                file_options={"content-type": foto_file.type, "upsert": "true"}
+                                file_options={"content-type": "image/jpeg", "x-upsert": "true"}
                             )
-                            # Otteniamo l'URL pubblico e lo mettiamo nei dati da salvare
                             dati_agg["foto_path"] = supabase.storage.from_("foto_profili").get_public_url(nome_f)
                         except Exception as e_f:
                             st.error(f"Errore caricamento foto: {e_f}")
 
-                    # Aggiornamento database utenti
+                    # Aggiornamento Database
                     supabase.table("utenti").update(dati_agg).eq("email", email_sessione).execute()
                     st.success("✅ Dati salvati!")
+                    time.sleep(1)
                     st.rerun()
 
             st.divider()
 
-            # --- SEZIONE B: VISUALIZZAZIONE DATI (Nickname, IG, Ruolo, Iscrizione, Email, Bio) ---
+            # --- SEZIONE B: VISUALIZZAZIONE DATI ---
             cl, cr = st.columns(2)
             with cl:
                 st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
                 f_p = user.get('foto_path')
-                # Se il link è valido (contiene http), mostra la foto
-                if f_p and str(f_p).startswith("http"): 
-                    st.image(f_p, width=150)
+                if f_p: 
+                    st.image(f"{f_p}?t={int(time.time())}", width=150)
                 else: 
                     st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
                 st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with cr:
-                st.markdown(f'<div class="data-card"><b>Nickname:</b> {user.get("nickname") if user.get("nickname") else "None"}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Instagram:</b> {user.get("ig_tag") if user.get("ig_tag") else "None"}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Ruolo:</b> {user.get("ruolo", "Player")}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Iscrizione:</b> {user.get("created_at", "2026-03-16")[:10]}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div class="data-card"><b>Bio:</b> {user.get("bio") if user.get("bio") else "None"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Instagram:</b> {user.get("ig_tag") or "N/A"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Ruolo:</b> {user.get("ruolo") or "Player"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px;"><b>Bio:</b> {user.get("bio") or "Nessuna bio"}</div>', unsafe_allow_html=True)
 
-            # --- SEZIONE C: LE MIE CLIP ---
+            # --- SEZIONE C: LE MIE CLIP (FIX: recupero video) ---
             st.divider()
             st.subheader("🎥 I Tuoi Highlight")
+            # Cerchiamo clip dove l'utente è il proprietario (campo campo = email)
             res_c = supabase.table("calendario").select("*").eq("stato", "CLIP_UTENTE").eq("campo", email_sessione).execute()
+            
             if res_c.data:
                 cols_v = st.columns(2)
                 for i, clip in enumerate(res_c.data):
                     with cols_v[i % 2]:
                         v_u = clip.get('link_video')
                         if v_u:
-                            st.video(v_u)
-            else: st.info("📺 Nessuna clip salvata.")
+                            # Applichiamo il fix del link Drive anche qui
+                            import re
+                            match = re.search(r'([-\w]{25,})', str(v_u))
+                            final_v = f"https://drive.google.com{match.group(1)}" if match else v_u
+                            st.video(final_v)
+            else: 
+                st.info("📺 Nessuna clip salvata nel tuo archivio.")
 
-            # --- SEZIONE D: STATISTICHE (BOX VERDI) ---
+            # --- SEZIONE D: STATISTICHE ---
             st.divider()
-            st.subheader("📊 Statistiche")
+            st.subheader("📊 Statistiche Personali")
             s_cols = st.columns(6)
             stats = [("🎞️","Clip", len(res_c.data)), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
             for i, (ico, tit, val) in enumerate(stats):
-                with s_cols[i]: st.markdown(f'<div style="text-align:center; background:#3E444A; padding:10px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
+                with s_cols[i]: 
+                    st.markdown(f'<div style="text-align:center; background:#1E1E1E; padding:10px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
 
             st.divider()
             st.subheader("🏆 I tuoi badge")
-            st.info("🏅 Non hai ancora guadagnato nessun badge.")
+            st.info("🏅 Partecipa a più partite per sbloccare i tuoi primi badge!")
 
-        else: st.error("Utente non trovato nel database.")
+        else: 
+            st.error("⚠️ Utente non trovato nel database.")
+            
     except Exception as e:
-        st.error(f"Errore tecnico: {e}")
+        st.error(f"Errore tecnico nel profilo: {e}")
+
 
 # --- BLOCCO: PAGINA PARTITE (VERSIONE FINALE TESTATA) ---
 if st.session_state.pagina == 'partite':
