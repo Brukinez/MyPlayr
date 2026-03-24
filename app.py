@@ -1264,10 +1264,13 @@ if st.session_state.pagina == 'partite':
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
                 v_url = str(partita.get('link_video', '')).strip()
-                link_player = converti_link_drive_diretto(v_url)
 
-                if link_player:
-                    st.video(link_player)
+                if v_url:
+                    link_modificato = v_url
+                    if "drive.google.com" in link_modificato:
+                        link_modificato = link_modificato.replace("/view", "/preview")
+
+                    st.video(link_modificato)
                     with st.expander("✂️ CREA CLIP"):
                         st.write("Inserisci i tempi e clicca su Genera")
                         # ... (tua logica dei tasti qui sotto)
