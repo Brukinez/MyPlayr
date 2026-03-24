@@ -8,6 +8,160 @@ from datetime import datetime
 from PIL import Image
 from email.mime.text import MIMEText
 
+# --- BLOCCO STILE GLOBALE (EMERGENT STYLE) ---
+# Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
+EMERGENT_CSS = """
+<style>
+    :root {
+        --bg-main: #0f141a;
+        --bg-panel: #19212b;
+        --bg-soft: #24303d;
+        --text-main: #f5f7fb;
+        --text-soft: #c4d0dc;
+        --neon: #24e170;
+        --neon-strong: #17c95f;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(circle at 15% -10%, rgba(36, 225, 112, 0.18), transparent 35%),
+            radial-gradient(circle at 90% 0%, rgba(36, 225, 112, 0.10), transparent 28%),
+            linear-gradient(180deg, #111821 0%, var(--bg-main) 100%);
+        color: var(--text-main);
+    }
+
+    [data-testid="stHeader"] {
+        background: rgba(15, 20, 26, 0.75);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid rgba(36, 225, 112, 0.20);
+    }
+
+    h1, h2, h3, h4, h5, p, span, label, li, .stMarkdown {
+        color: var(--text-main) !important;
+    }
+
+    .stApp a {
+        color: var(--neon) !important;
+    }
+
+    .stApp hr {
+        border: 1px solid rgba(36, 225, 112, 0.50) !important;
+        opacity: 1;
+    }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #121a23 0%, #0f141a 100%);
+        border-right: 1px solid rgba(36, 225, 112, 0.16);
+    }
+
+    /* Bottoni principali verde neon */
+    div.stButton > button:first-child {
+        background: linear-gradient(90deg, var(--neon) 0%, var(--neon-strong) 100%) !important;
+        color: #03160b !important;
+        border: 1px solid #2aff8b !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.4px;
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        font-size: 15px;
+        box-shadow:
+            0 0 0 1px rgba(36, 225, 112, 0.25),
+            0 8px 24px rgba(36, 225, 112, 0.28);
+        transition: all 0.2s ease;
+    }
+
+    div.stButton > button:first-child:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+        box-shadow:
+            0 0 0 1px rgba(42, 255, 139, 0.45),
+            0 10px 28px rgba(36, 225, 112, 0.38);
+    }
+
+    /* Bottoni secondari trasparenti */
+    div[data-testid="stButton"] > button[kind="secondary"] {
+        background-color: transparent !important;
+        color: var(--text-soft) !important;
+        border: 1px solid rgba(196, 208, 220, 0.30) !important;
+        border-radius: 10px;
+        font-size: 13px !important;
+        text-transform: none !important;
+    }
+
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {
+        color: var(--neon) !important;
+        border-color: rgba(36, 225, 112, 0.65) !important;
+        background-color: rgba(36, 225, 112, 0.08) !important;
+    }
+
+    /* Input e uploader con bordo neon */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div,
+    .stTextArea textarea,
+    .stNumberInput input,
+    [data-testid="stFileUploaderDropzone"] {
+        background: var(--bg-panel) !important;
+        color: var(--text-main) !important;
+        border: 1px solid rgba(36, 225, 112, 0.30) !important;
+        border-radius: 10px !important;
+    }
+
+    .stFileUploader label {
+        color: var(--neon) !important;
+        font-weight: 700 !important;
+    }
+
+    /* Card personalizzate */
+    .data-card, .stat-box {
+        background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
+        border: 1px solid rgba(36, 225, 112, 0.25);
+        border-left: 4px solid var(--neon);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+    }
+
+    .data-card {
+        padding: 15px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .avatar-container { text-align: center; margin-bottom: 20px; }
+    .avatar-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid var(--neon);
+        box-shadow: 0 0 28px rgba(36, 225, 112, 0.22);
+        object-fit: cover;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-soft);
+        font-size: 60px;
+    }
+
+    .footer-main {
+        text-align: center;
+        font-size: 16px;
+        margin-top: 50px;
+    }
+
+    .footer-sub {
+        font-size: 12px;
+        color: #8aa0b5;
+    }
+</style>
+"""
+
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
 st.set_page_config(
@@ -34,113 +188,7 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
 GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyPlayr
 
 # --- BLOCCO 2: STILE E CSS ---
-# Nota: st.set_page_config è stato rimosso da qui perché deve stare all'inizio del file (Blocco 1)
-
-st.markdown("""
-<style>
-    /* Sfondo generale e colore testo */
-    .stApp { 
-        background-color: #2F353B; 
-        color: white; 
-    }
-
-    /* Forziamo il bianco per tutti i testi principali */
-    h1, h2, h3, p, span, label, .stMarkdown { 
-        color: white !important; 
-    }
-
-    /* Pulsanti VERDI Principali (Pieni) */
-    div.stButton > button:first-child {
-        background-color: #28a745 !important;
-        color: white !important;
-        border: none !important;
-        font-weight: bold !important;
-        width: 100%;
-        padding: 12px;
-        border-radius: 8px;
-        text-transform: uppercase;
-        font-size: 16px;
-        transition: 0.3s; /* Effetto morbido al passaggio del mouse */
-    }
-    
-    div.stButton > button:first-child:hover {
-        background-color: #218838 !important; /* Verde un po' più scuro quando passi sopra */
-        border: none !important;
-    }
-
-    /* Linea di divisione verde */
-    hr { border: 1px solid #28a745 !important; opacity: 1; }
-
-    /* Avatar Profilo circolare */
-    .avatar-container { text-align: center; margin-bottom: 20px; }
-    .avatar-img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 4px solid #28a745;
-        object-fit: cover;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #3E444A;
-        font-size: 60px;
-    }
-
-    /* Schede Dati (Card) con bordo sinistro verde */
-    .data-card {
-        background-color: #3E444A;
-        padding: 15px;
-        border-radius: 8px;
-        border-left: 6px solid #28a745;
-        margin-bottom: 10px;
-        font-size: 14px;
-    }
-
-    /* Box Statistiche */
-    .stat-box {
-        text-align: center;
-        background: #3E444A;
-        padding: 15px;
-        border-radius: 10px;
-        border: 1px solid #28a745;
-    }
-
-    /* Pulsanti SECONDARI (tipo Link/Trasparenza) */
-    div[data-testid="stButton"] > button[kind="secondary"] {
-        background-color: transparent !important;
-        color: #d1d1d1 !important;
-        border: none !important;
-        font-size: 13px !important;
-        text-transform: none !important;
-        text-decoration: none !important;
-    }
-
-    div[data-testid="stButton"] > button[kind="secondary"]:hover {
-        color: #28a745 !important;
-        background-color: transparent !important;
-        text-decoration: underline !important;
-    }
-
-    /* Label del caricamento file */
-    .stFileUploader label {
-        font-weight: bold !important;
-        color: #28a745 !important;
-        font-size: 16px !important;
-    }
-
-    /* Footer personalizzato */
-    .footer-main {
-        text-align: center;
-        font-size: 16px;
-        margin-top: 50px;
-    }
-    .footer-sub {
-        font-size: 12px;
-        color: #888;
-    }
-</style>
-""", unsafe_allow_html=True)
+st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
 
 # --- BLOCCO 3: CONNESSIONE CLOUD E LOGICA CLIP ---
 
