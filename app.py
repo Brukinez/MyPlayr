@@ -7,6 +7,7 @@ import subprocess # Fondamentale per far lavorare FFmpeg e tagliare i video
 from datetime import datetime
 from PIL import Image
 from email.mime.text import MIMEText
+import re
 
 # --- BLOCCO STILE GLOBALE (EMERGENT STYLE) ---
 # Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
@@ -363,6 +364,94 @@ def aggiorna_foto_profilo_db(email, url_foto):
         supabase.table("utenti").update({"foto_path": url_foto}).eq("email", email_clean).execute()
     except Exception as e:
         print(f"Errore salvataggio URL foto: {e}")
+
+def converti_link_drive_diretto(url_video):
+    """
+    Converte i link Google Drive in link diretto:
+    https://drive.google.com/uc?export=download&id=FILE_ID
+    """
+    if not url_video:
+        return ""
+
+    url_pulito = str(url_video).strip()
+    if "drive.google.com" not in url_pulito:
+        return url_pulito
+
+    # Caso 1: link classico /file/d/FILE_ID/view
+    m_file = re.search(r"/file/d/([a-zA-Z0-9_-]+)", url_pulito)
+    if m_file:
+        return f"https://drive.google.com/uc?export=download&id={m_file.group(1)}"
+
+    # Caso 2: link con ?id=FILE_ID
+    m_id = re.search(r"[?&]id=([a-zA-Z0-9_-]+)", url_pulito)
+    if m_id:
+        return f"https://drive.google.com/uc?export=download&id={m_id.group(1)}"
+
+    return url_pulito
+
+def carica_foto_profilo_storage(user_id, foto_file):
+    """
+    Carica la foto profilo nel bucket Supabase 'foto_profili'
+    e restituisce l'URL pubblico.
+    """
+    if not foto_file:
+        return None
+
+    est = "jpg"
+    nome_originale = (foto_file.name or "").lower()
+    if "." in nome_originale:
+        est = nome_originale.rsplit(".", 1)[-1]
+    if est not in ["jpg", "jpeg", "png", "webp"]:
+        est = "jpg"
+
+    content_type = getattr(foto_file, "type", None)
+    if not content_type:
+        if est in ["jpg", "jpeg"]:
+            content_type = "image/jpeg"
+        else:
+            content_type = f"image/{est}"
+
+    nome_file = f"avatar_{user_id}.{est}"
+    file_bytes = foto_file.getvalue()
+
+    supabase.storage.from_("foto_profili").upload(
+        path=nome_file,
+        file=file_bytes,
+        file_options={"content-type": content_type, "x-upsert": "true"}
+    )
+
+    public_url = supabase.storage.from_("foto_profili").get_public_url(nome_file)
+    if isinstance(public_url, dict):
+        return public_url.get("publicURL") or public_url.get("publicUrl")
+    return public_url
+
+def salva_dati_profilo(email, nickname, bio, ig_tag=None, ruolo=None, foto_file=None, user_id=None):
+    """
+    Salva davvero i dati profilo su Supabase.
+    """
+    email_clean = (email or "").strip().lower()
+    if not email_clean:
+        return False, "Email utente non valida."
+
+    payload = {
+        "nickname": (nickname or "").strip(),
+        "bio": (bio or "").strip(),
+    }
+    if ig_tag is not None:
+        payload["ig_tag"] = ig_tag.strip()
+    if ruolo is not None:
+        payload["ruolo"] = ruolo
+
+    try:
+        if foto_file and user_id:
+            url_pubblica = carica_foto_profilo_storage(user_id, foto_file)
+            if url_pubblica:
+                payload["foto_path"] = url_pubblica
+
+        supabase.table("utenti").update(payload).eq("email", email_clean).execute()
+        return True, "✅ Profilo salvato correttamente!"
+    except Exception as e:
+        return False, f"❌ Errore salvataggio profilo: {e}"
 
 # --- BLOCCO: PROTEZIONE SITO (PASSWORD SVILUPPATORE) ---
 
@@ -1051,7 +1140,6 @@ elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyPlayr</h2>", unsafe_allow_html=True)
     
     try:
-        import time
         email_sessione = st.session_state.user_email.strip().lower()
         
         # 1. Recupero dati Utente (FIX: single record)
@@ -1081,26 +1169,20 @@ elif st.session_state.pagina == 'profilo':
                     v_bio = st.text_area("La tua Bio", value=user.get('bio') or "")
 
                 if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True, type="primary"):
-                    dati_agg = {"nickname": v_nick, "ig_tag": v_ig, "ruolo": v_ruolo, "bio": v_bio}
-                    
-                    if foto_file:
-                        try:
-                            nome_f = f"avatar_{user['id']}.jpg"
-                            # Caricamento REALE nello storage di Supabase
-                            supabase.storage.from_("foto_profili").upload(
-                                path=nome_f, 
-                                file=foto_file.getvalue(), 
-                                file_options={"content-type": "image/jpeg", "x-upsert": "true"}
-                            )
-                            dati_agg["foto_path"] = supabase.storage.from_("foto_profili").get_public_url(nome_f)
-                        except Exception as e_f:
-                            st.error(f"Errore caricamento foto: {e_f}")
-
-                    # Aggiornamento Database
-                    supabase.table("utenti").update(dati_agg).eq("email", email_sessione).execute()
-                    st.success("✅ Dati salvati!")
-                    time.sleep(1)
-                    st.rerun()
+                    ok, msg = salva_dati_profilo(
+                        email=email_sessione,
+                        nickname=v_nick,
+                        bio=v_bio,
+                        ig_tag=v_ig,
+                        ruolo=v_ruolo,
+                        foto_file=foto_file,
+                        user_id=user.get("id")
+                    )
+                    if ok:
+                        st.success(msg)
+                        st.rerun()
+                    else:
+                        st.error(msg)
 
             st.divider()
 
@@ -1109,10 +1191,14 @@ elif st.session_state.pagina == 'profilo':
             with cl:
                 st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
                 f_p = user.get('foto_path')
-                if f_p: 
-                    st.image(f"{f_p}?t={int(time.time())}", width=150)
+                if f_p:
+                    f_cache = f"{f_p}?v={datetime.now().strftime('%Y%m%d%H%M%S')}"
+                    st.markdown(
+                        f'<img src="{f_cache}" class="avatar-img" alt="Avatar utente" />',
+                        unsafe_allow_html=True
+                    )
                 else: 
-                    st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="avatar-img">👤</div>', unsafe_allow_html=True)
                 st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
@@ -1178,28 +1264,13 @@ if st.session_state.pagina == 'partite':
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
                 v_url = str(partita.get('link_video', '')).strip()
+                link_player = converti_link_drive_diretto(v_url)
 
-                if "drive.google.com" in v_url:
-                    # ESTRAZIONE ID SUPER ROBUSTA
-                    import re
-                    # Cerchiamo una stringa di circa 33 caratteri alfanumerici (l'ID di Drive)
-                    match = re.search(r'([-\w]{25,})', v_url)
-                    if match:
-                        drive_id = match.group(1)
-                        # COSTRUZIONE LINK DIRETTO PER STREAMLIT
-                        link_diretto = f"https://drive.google.com{drive_id}"
-                        
-                        # DEBUG VISIVO (Solo per te, poi lo togliamo)
-                        # st.write(f"ID TROVATO: {drive_id}")
-                        
-                        # IL PLAYER
-                        st.video(link_diretto)
-                        
-                        with st.expander("✂️ CREA CLIP"):
-                            st.write("Inserisci i tempi e clicca su Genera")
-                            # ... (tua logica dei tasti qui sotto)
-                    else:
-                        st.error("⚠️ Il link incollato su Supabase non sembra un link valido di Google Drive.")
+                if link_player:
+                    st.video(link_player)
+                    with st.expander("✂️ CREA CLIP"):
+                        st.write("Inserisci i tempi e clicca su Genera")
+                        # ... (tua logica dei tasti qui sotto)
                 else:
                     st.warning("⏳ Link video non trovato o non valido.")
                 st.divider()
