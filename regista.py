@@ -41,22 +41,25 @@ def registra_clip(id_partita):
                                   capture_output=True, text=True, check=True)
         link_web = res_link.stdout.strip()
 
-        # Step 4: Aggiornamento SUPABASE
-        # Usiamo i nomi colonne: 'evento' per il nome file, 'link_video' per l'URL, 'stato' per chiudere
+                # Step 4: TRASFORMAZIONE LINK E AGGIORNAMENTO SUPABASE
+        # Puliamo il link di Drive per renderlo uno streaming diretto per l'app
+        link_diretto = link_web.replace('/view?usp=drivesdk', '').replace('/view', '').replace('file/d/', 'uc?export=download&id=')
+        
         supabase.table("calendario").update({
             "evento": nome_file, 
-            "link_video": link_web, 
-            "stato": "FATTO"
+            "link_video": link_diretto, 
+            "stato": "COMPLETATO" # Usiamo 'COMPLETATO' così l'app lo riconosce subito
         }).eq("id", id_partita).execute()
         
-        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online!")
+        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online con link diretto!")
         return True
 
     except Exception as e:
-        print(f"❌ ERRORE CRITICO: {e}")
-        # Se fallisce, rimettiamo lo stato a PROGRAMMATO così il sistema può riprovare o segnalare l'errore
+        print(f"❌ ERRORE CRITICO DURANTE REGISTRAZIONE/UPLOAD: {e}")
+        # Se fallisce, mettiamo lo stato a ERRORE per diagnostica
         supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
         return False
+
 
 def monitor():
     print("🚀 MOTORE MyPlayr LIVE ATTIVO. In ascolto su Supabase...")
