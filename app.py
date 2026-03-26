@@ -436,6 +436,7 @@ elif st.session_state.pagina == 'partite':
                 # 1. Mostriamo il video
                 st.video(video_path)
                 
+<<<<<<< HEAD
                 # 2. Box per il taglio della clip (Tutto allineato correttamente)
                 with st.expander("✂️ CREA LA TUA CLIP PERSONALIZZATA"):
                     st.write("Scegli il momento dell'azione:")
@@ -446,6 +447,25 @@ elif st.session_state.pagina == 'partite':
                         s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"sec_{row['id']}")
                     with c3:
                         durata_clip = st.number_input("Durata (sec)", min_value=1, max_value=60, value=10, key=f"dur_{row['id']}")
+=======
+                v_url = str(partita.get('link_video', '')).strip()
+                link_player = converti_link_drive_diretto(v_url)
+
+                if link_player:
+                    st.video(link_player)
+                    with st.expander("✂️ CREA CLIP"):
+                        st.write("Inserisci i tempi e clicca su Genera")
+                        # ... (tua logica dei tasti qui sotto)
+                else:
+                    st.warning("⏳ Link video non trovato o non valido.")
+                st.divider()
+
+    except Exception as e:
+        st.error(f"Errore: {e}")
+
+
+# --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
+>>>>>>> parent of 7c1d749 (Update app.py)
 
                     if st.button("🎬 GENERA E SCARICA CLIP", key=f"btn_pay_{row['id']}", use_container_width=True):
                         inizio_tot = (m_in * 60) + s_in
