@@ -13,6 +13,8 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     nome_output = f"MyPlayr_{datetime.now().strftime('%H%M%S')}.mp4"
     output_p = os.path.join(CLIP_GDRIVE, nome_output) # Salva su G:
     
+    # update 2.0
+    
     # Comando ultra-leggero (Stream Copy)
     comando = ['ffmpeg', '-y', '-ss', str(inizio_sec), '-t', str(durata_sec), 
                '-i', input_p, '-c', 'copy', output_p]
