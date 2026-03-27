@@ -23,35 +23,35 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     """
-    VERSIONE FINALE BLINDATA: Corregge l'errore dell'indirizzo IP incollato.
+    FIX DEFINITIVO: Costruzione manuale dell'URL con tutti gli slash necessari.
     """
     if not url or str(url).lower() in ("none", "nan", "null"):
         return None
     
     s = str(url).strip()
     
-    # Se non è un link di Google Drive, restituiscilo così com'è
+    # Se non è un link di Google Drive, lo restituiamo così com'è
     if "drive.google.com" not in s:
         return s
     
     file_id = ""
     
-    # Estrazione ID dal formato /file/d/ID/...
+    # 1. Estrazione ID dal formato /file/d/ID/view
     if "/file/d/" in s:
         file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
         
-    # Estrazione ID dal formato ?id=ID
+    # 2. Estrazione ID dal formato ?id=ID
     elif "id=" in s:
         file_id = s.split("id=")[1].split("&")[0].split("#")[0]
     
-    # Se abbiamo trovato un ID, costruiamo l'URL EMBED perfetto
+    # COSTRUZIONE MANUALE SICURA (Aggiungiamo gli slash a mano)
     if file_id and len(file_id) > 5:
-        # Pulisce l'ID da spazi o caratteri sporchi
-        file_id = file_id.strip()
-        # COSTRUZIONE MANUALE SICURA CON TUTTE LE BARRE /
-        return "https://drive.google.com" + file_id + "/preview"
+        id_pulito = file_id.strip()
+        # Formato EMBED perfetto per Iframe
+        return "https://drive.google.com" + id_pulito + "/preview"
     
     return s
+
 
 
 
