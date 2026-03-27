@@ -1256,7 +1256,7 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- BLOCCO: PAGINA PARTITE (VERSIONE ATOMICA - FIX IP ERROR) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE SUPER-BLINDATA) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
@@ -1264,36 +1264,33 @@ if st.session_state.pagina == 'partite':
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
-        if not dati_partite:
-            st.info("📌 Nessuna partita trovata con stato 'FATTO'.")
-        else:
-            for partita in dati_partite:
-                st.subheader(f"📅 Gara del {partita.get('data', 'N/D')}")
+        for partita in dati_partite:
+            st.subheader(f"📅 Gara del {partita.get('data', 'N/D')}")
+            
+            # --- ESTRAZIONE ID MANUALE E PULITA ---
+            url_grezzo = str(partita.get("link_video", ""))
+            video_id = ""
+            
+            # Cerchiamo l'ID in tutti i modi possibili
+            if "/file/d/" in url_grezzo:
+                video_id = url_grezzo.split("/file/d/")[1].split("/")[0].split("?")[0]
+            elif "id=" in url_grezzo:
+                video_id = url_grezzo.split("id=")[1].split("&")[0]
+            
+            # --- COSTRUZIONE URL CON SLASH FORZATI ---
+            if len(video_id) > 10:
+                # Usiamo la virgola in st.video o l'iframe con URL pulito
+                url_embed = f"https://drive.google.com{video_id.strip()}/preview"
                 
-                # --- LOGICA DI EMERGENZA PER ESTRARRE L'ID ---
-                url_grezzo = str(partita.get("link_video", ""))
-                id_video = ""
-                
-                if "id=" in url_grezzo:
-                    id_video = url_grezzo.split("id=")[-1].split("&")[0]
-                elif "/file/d/" in url_grezzo:
-                    id_video = url_grezzo.split("/file/d/")[-1].split("/")[0]
-                
-                # --- COSTRUZIONE URL "BLINDATA" CON TUTTI GLI SLASH / ---
-                if len(id_video) > 10:
-                    # Usiamo i + per essere sicuri che Python metta le barre /
-                    url_finale = "https://drive.google.com" + id_video.strip() + "/preview"
+                # USA L'IFRAME (Più stabile per Drive)
+                st.components.v1.iframe(url_embed, height=450)
+            else:
+                st.warning(f"⚠️ ID Video non trovato nel link: {url_grezzo}")
+            
+            st.divider()
 
-                    
-                    # VISUALIZZAZIONE IFRAME
-                    st.components.v1.iframe(url_finale, height=450, scrolling=False)
-                    
-                    with st.expander("✂️ CREA CLIP"):
-                        st.write("Inserisci i tempi e clicca su Genera")
-                else:
-                    st.warning(f"⚠️ Link non valido su Supabase: {url_grezzo}")
-                
-                st.divider()
+    except Exception as e:
+        st.error(f"Errore: {e}")
 
     except Exception as e:
         st.error(f"Errore caricamento: {e}")
