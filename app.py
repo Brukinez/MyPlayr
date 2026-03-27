@@ -1256,12 +1256,11 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- BLOCCO: PAGINA PARTITE (VERSIONE DEFINITIVA IFRAME) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE ATOMICA - FIX IP ERROR) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
-        # Recupero dati da Supabase
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
@@ -1269,32 +1268,35 @@ if st.session_state.pagina == 'partite':
             st.info("📌 Nessuna partita trovata con stato 'FATTO'.")
         else:
             for partita in dati_partite:
-                st.subheader(f"📅 Gara del {partita.get('data', 'N/D')} - Ore {partita.get('ora', 'N/D')}")
+                st.subheader(f"📅 Gara del {partita.get('data', 'N/D')}")
                 
-                # TRASFORMAZIONE LINK CON LA NUOVA FUNZIONE REGEX
-                url_grezzo = partita.get("link_video")
-                link_diretto = make_direct_link(url_grezzo)
-
-                if link_diretto:
-                    # FIX FINALE: Usiamo l'Iframe per visualizzare il video senza blocchi
-                    st.components.v1.iframe(link_diretto, height=450, scrolling=False)
+                # --- LOGICA DI EMERGENZA PER ESTRARRE L'ID ---
+                url_grezzo = str(partita.get("link_video", ""))
+                id_video = ""
+                
+                if "id=" in url_grezzo:
+                    id_video = url_grezzo.split("id=")[-1].split("&")[0]
+                elif "/file/d/" in url_grezzo:
+                    id_video = url_grezzo.split("/file/d/")[-1].split("/")[0]
+                
+                # --- COSTRUZIONE URL "BLINDATA" CON TUTTI GLI SLASH / ---
+                if len(id_video) > 10:
+                    # Usiamo i + per essere sicuri che Python metta le barre /
+                    url_finale = "https://drive.google.com" + id_video.strip() + "/preview"
+                    
+                    # VISUALIZZAZIONE IFRAME
+                    st.components.v1.iframe(url_finale, height=450, scrolling=False)
                     
                     with st.expander("✂️ CREA CLIP"):
                         st.write("Inserisci i tempi e clicca su Genera")
                 else:
-                    st.warning("⚠️ Link video non disponibile o non valido.")
+                    st.warning(f"⚠️ Link non valido su Supabase: {url_grezzo}")
                 
                 st.divider()
 
     except Exception as e:
-        st.error(f"Errore nel caricamento: {e}")
-
-    except Exception as e:
         st.error(f"Errore caricamento: {e}")
 
-
-    except Exception as e:
-        st.error(f"Errore caricamento: {e}")
 
 
 
