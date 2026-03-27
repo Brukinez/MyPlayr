@@ -23,21 +23,30 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     """
-    Versione Potenziata: Gestisce link /file/d/... e link open?id=...
+    Versione Definitiva: Estrae l'ID e usa il formato /preview 
+    che bypassa i blocchi dei browser.
     """
-    if url is None:
+    if not url or pd.isna(url):
         return None
-    try:
-        if pd.isna(url):
-            return None
-    except:
-        pass
-    
     s = str(url).strip()
-    if not s or s.lower() in ("none", "nan", "null"):
-        return None
     if "drive.google.com" not in s:
         return s
+    
+    file_id = None
+    # Caso 1: link con /file/d/ID/view
+    if "/file/d/" in s:
+        file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
+    # Caso 2: link con ?id=ID
+    elif "id=" in s:
+        parsed = urlparse(s)
+        file_id = parse_qs(parsed.query).get("id", [None])[0]
+        
+    if file_id:
+        # Usiamo il formato /preview che è lo stesso che vedi nel browser
+        return f"https://drive.google.com{file_id}/preview"
+    
+    return s
+
     
     parsed = urlparse(s)
     qs = parse_qs(parsed.query)
