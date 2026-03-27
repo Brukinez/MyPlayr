@@ -1258,41 +1258,36 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- BLOCCO: PAGINA PARTITE (VERSIONE SUPER-BLINDATA) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE 2.0 AUTOMATICA) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
+        # Recuperiamo solo i match pronti (Stato FATTO)
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
-        for partita in dati_partite:
-            st.subheader(f"📅 Gara del {partita.get('data', 'N/D')}")
-            
-            # --- ESTRAZIONE ID MANUALE E PULITA ---
-            url_grezzo = str(partita.get("link_video", ""))
-            video_id = ""
-            
-            # Cerchiamo l'ID in tutti i modi possibili
-            if "/file/d/" in url_grezzo:
-                video_id = url_grezzo.split("/file/d/")[1].split("/")[0].split("?")[0]
-            elif "id=" in url_grezzo:
-                video_id = url_grezzo.split("id=")[1].split("&")[0]
-            
-            # --- COSTRUZIONE URL CON SLASH FORZATI ---
-            if len(video_id) > 10:
-                # Usiamo la virgola in st.video o l'iframe con URL pulito
-                url_embed = f"https://drive.google.com{video_id.strip()}/preview"
+        if not dati_partite:
+            st.info("📌 Nessuna partita pronta nel database. In attesa del Regista...")
+        else:
+            for partita in dati_partite:
+                st.subheader(f"📅 Gara del {partita.get('data', 'N/D')} - Ore {partita.get('ora', 'N/D')}")
                 
-                # USA L'IFRAME (Più stabile per Drive)
-                st.components.v1.iframe(url_embed, height=450)
-            else:
-                st.warning(f"⚠️ ID Video non trovato nel link: {url_grezzo}")
-            
-            st.divider()
+                # 1. TRASFORMAZIONE AUTOMATICA (Usa la funzione professionale che hai scritto sopra)
+                url_grezzo = partita.get("link_video", "")
+                link_diretto = make_direct_link(url_grezzo)
 
-    except Exception as e:
-        st.error(f"Errore: {e}")
+                # 2. VISUALIZZAZIONE PLAYER
+                if link_diretto:
+                    # Usiamo st.video con il link uc?id=... che è il più stabile
+                    st.video(link_diretto, format="video/mp4")
+                    
+                    with st.expander("✂️ CREA CLIP"):
+                        st.write("Inserisci i tempi e clicca su Genera")
+                else:
+                    st.warning(f"⚠️ Link non valido o ID non trovato: {url_grezzo}")
+                
+                st.divider()
 
     except Exception as e:
         st.error(f"Errore caricamento: {e}")
