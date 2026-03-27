@@ -23,29 +23,36 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     """
-    Versione Definitiva: Estrae l'ID e usa il formato /preview 
-    che bypassa i blocchi dei browser.
+    FIX CHIRURGICO FINALE: Estrazione ID sicura e URL corretto con SLASH.
     """
-    if not url or pd.isna(url):
+    if not url or str(url).lower() in ("none", "nan", "null"):
         return None
+    
     s = str(url).strip()
+    
+    # Se non è un link di Google Drive, restituiscilo così com'è
     if "drive.google.com" not in s:
         return s
     
     file_id = None
-    # Caso 1: link con /file/d/ID/view
+    
+    # Caso A: link tipo /file/d/ID/view
     if "/file/d/" in s:
         file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
-    # Caso 2: link con ?id=ID
-    elif "id=" in s:
-        parsed = urlparse(s)
-        file_id = parse_qs(parsed.query).get("id", [None])[0]
         
+    # Caso B: link tipo ?id=ID
+    elif "id=" in s:
+        file_id = s.split("id=")[1].split("&")[0].split("#")[0]
+    
+    # COSTRUZIONE URL: Assicuriamoci che ci sia lo slash dopo .com/
     if file_id:
-        # Usiamo il formato /preview che è lo stesso che vedi nel browser
+        # Pulisce l'ID da eventuali spazi rimasti
+        file_id = file_id.strip()
+        # Formato EMBED (PREVIEW) per Iframe
         return f"https://drive.google.com{file_id}/preview"
     
     return s
+
 
     
     file_id = None
