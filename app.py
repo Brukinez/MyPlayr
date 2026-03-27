@@ -1232,32 +1232,39 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- BLOCCO: PAGINA PARTITE (VERSIONE FINALE TESTATA) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE IFRAME CORRETTA) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
+        # Recupero dati da Supabase
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
         if not dati_partite:
-            st.info("📌 Nessuna partita trovata con stato 'FATTO'. Controlla Supabase!")
+            st.info("📌 Nessuna partita trovata con stato 'FATTO'.")
         else:
             for partita in dati_partite:
-                st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
+                st.subheader(f"📅 Gara del {partita.get('data', 'N/D')} - Ore {partita.get('ora', 'N/D')}")
                 
-                link_diretto = make_direct_link(partita.get("link_video"))
+                # TRASFORMAZIONE LINK DRIVE IN EMBED
+                url_grezzo = partita.get("link_video")
+                link_diretto = make_direct_link(url_grezzo)
 
                 if link_diretto:
-                    st.video(link_diretto)
+                    # FIX CHIRURGICO: Usiamo Iframe per bypassare i blocchi di Google
+                    st.components.v1.iframe(link_diretto, height=450, scrolling=False)
+                    
                     with st.expander("✂️ CREA CLIP"):
                         st.write("Inserisci i tempi e clicca su Genera")
                 else:
-                    st.warning("⏳ Link video non disponibile (manca su Supabase o non è ancora pronto).")
+                    st.warning("⏳ Link video non disponibile o non valido.")
+                
                 st.divider()
 
     except Exception as e:
-        st.error(f"Errore: {e}")
+        st.error(f"Errore caricamento: {e}")
+
 
 
 # --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
