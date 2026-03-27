@@ -22,26 +22,29 @@ if 'supabase' not in st.session_state:
 supabase = st.session_state.supabase
 
 def make_direct_link(url):
-    """Estrae l'ID e crea un link di embedding per Iframe"""
-    if not url or str(url).lower() in ("none", "nan", "null"):
+    """
+    Versione Definitiva: Estrae l'ID e usa il formato /preview 
+    che bypassa i blocchi dei browser.
+    """
+    if not url or pd.isna(url):
         return None
     s = str(url).strip()
     if "drive.google.com" not in s:
         return s
     
     file_id = None
+    # Caso 1: link con /file/d/ID/view
     if "/file/d/" in s:
-        # Estrazione ID dal formato standard
         file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
+    # Caso 2: link con ?id=ID
     elif "id=" in s:
-        # Estrazione ID dal formato ?id=
-        import urllib.parse as urlparse
-        parsed = urlparse.urlparse(s)
-        file_id = urlparse.parse_qs(parsed.query).get("id", [None])[0]
-    
+        parsed = urlparse(s)
+        file_id = parse_qs(parsed.query).get("id", [None])[0]
+        
     if file_id:
-        # Formato EMBED: l'unico che Google permette di visualizzare dentro altri siti
+        # Usiamo il formato /preview che è lo stesso che vedi nel browser
         return f"https://drive.google.com{file_id}/preview"
+    
     return s
 
     
