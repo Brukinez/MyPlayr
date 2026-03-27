@@ -15,7 +15,7 @@ from supabase import create_client, Client
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
 # Incolla qui la Service Role Key tra le virgolette
-KEY_SUPABASE = "sb_secret_b0mTLmvs9KjGs-Zo4j2bxQ_eLshdqBG" 
+KEY_SUPABASE = st.secrets["SUPABASE_KEY"]
 
 if 'supabase' not in st.session_state:
     st.session_state.supabase = create_client(URL_SUPABASE, KEY_SUPABASE)
