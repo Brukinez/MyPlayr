@@ -1243,12 +1243,11 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- BLOCCO: PAGINA PARTITE (VERSIONE IFRAME CORRETTA) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE CON FIX URL MANUALE) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
-        # Recupero dati da Supabase
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
@@ -1258,20 +1257,32 @@ if st.session_state.pagina == 'partite':
             for partita in dati_partite:
                 st.subheader(f"📅 Gara del {partita.get('data', 'N/D')} - Ore {partita.get('ora', 'N/D')}")
                 
-                # TRASFORMAZIONE LINK DRIVE IN EMBED
-                url_grezzo = partita.get("link_video")
-                link_diretto = make_direct_link(url_grezzo)
-
-                if link_diretto:
-                    # FIX CHIRURGICO: Usiamo Iframe per bypassare i blocchi di Google
-                    st.components.v1.iframe(link_diretto, height=450, scrolling=False)
+                # --- LOGICA DI ESTRAZIONE ID MANUALE (NO FUNZIONI ESTERNE) ---
+                url_grezzo = str(partita.get("link_video", ""))
+                id_video = ""
+                
+                if "id=" in url_grezzo:
+                    id_video = url_grezzo.split("id=")[-1].split("&")[0]
+                elif "/file/d/" in url_grezzo:
+                    id_video = url_grezzo.split("/file/d/")[1].split("/")[0]
+                
+                # COSTRUZIONE URL FORZATA CON SLASH
+                if id_video and len(id_video) > 5:
+                    url_finale = f"https://drive.google.com{id_video.strip()}/preview"
+                    
+                    # FIX CHIRURGICO: Usiamo Iframe con URL forzato
+                    st.components.v1.iframe(url_finale, height=450, scrolling=False)
                     
                     with st.expander("✂️ CREA CLIP"):
                         st.write("Inserisci i tempi e clicca su Genera")
                 else:
-                    st.warning("⏳ Link video non disponibile o non valido.")
+                    st.warning("⚠️ Link video non valido o ID non trovato su Supabase.")
                 
                 st.divider()
+
+    except Exception as e:
+        st.error(f"Errore caricamento: {e}")
+
 
     except Exception as e:
         st.error(f"Errore caricamento: {e}")
