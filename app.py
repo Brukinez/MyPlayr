@@ -23,34 +23,39 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     """
-    Per link Google Drive: ricava l'id del file e restituisce un URL in formato
-    uc?export=download&id=... (adatto al player). Altrimenti restituisce l'URL originale.
-    Valori mancanti (None, vuoti, NaN) -> None (così non si passa nulla a st.video).
+    Versione Potenziata: Gestisce link /file/d/... e link open?id=...
     """
     if url is None:
         return None
     try:
         if pd.isna(url):
             return None
-    except (TypeError, ValueError):
+    except:
         pass
+    
     s = str(url).strip()
     if not s or s.lower() in ("none", "nan", "null"):
         return None
     if "drive.google.com" not in s:
         return s
+    
     parsed = urlparse(s)
     qs = parse_qs(parsed.query)
-    file_id = (qs.get("id") or [None])[0]
-    if file_id:
-        file_id = file_id.strip()
+    
+    # FIX CHIRURGICO: Cerca l'ID sia in formato "id=" che nell'URL path
+    file_id = qs.get("id", [None])[0]
+    
     if not file_id:
+        # Se non è in "id=", lo cerca nel percorso del link /file/d/ID/view
         m = re.search(r"/file/d/([a-zA-Z0-9_-]+)", s)
         if m:
             file_id = m.group(1)
+            
     if not file_id:
         return s
-    return f"https://drive.google.com/uc?export=download&id={file_id}"
+        
+    return f"https://drive.google.com{file_id}"
+
 
 
 # --- BLOCCO STILE GLOBALE (EMERGENT STYLE) ---
