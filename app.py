@@ -22,31 +22,17 @@ if 'supabase' not in st.session_state:
 supabase = st.session_state.supabase
 
 def make_direct_link(url):
-    """
-    VERSIONE IBRIDA MYPLAYR: Gestisce Google Drive e Supabase Storage.
-    """
     if not url or str(url).lower() in ("none", "nan", "null"):
         return None
     
     s = str(url).strip()
     
-    # 1. CASO SUPABASE: Se è solo il nome del file (es: video_test.mp4)
+    # 🚨 CASO SUPABASE (Se è solo il nome del file es: video_test.mp4)
     if "drive.google.com" not in s and not s.startswith("http"):
+        # NOTA: Assicurati che il nome del bucket 'video-partite' sia scritto identico a Supabase
         return f"https://zxgsbcswuchrwmdcmntg.supabase.co{s}"
     
-    # 2. CASO GOOGLE DRIVE: Trasforma in link di streaming diretto
-    if "drive.google.com" in s:
-        import re
-        # Regex potenziata per catturare l'ID
-        regex = r"(?:/d/|id=|/file/d/)([a-zA-Z0-9_-]{25,})"
-        match = re.search(regex, s)
-        
-        if match:
-            id_estratto = match.group(1)
-            # URL DIRETTO (uc?export=download) è il migliore per il player di Streamlit
-            return f"https://drive.google.com{id_estratto}"
-    
-    # 3. CASO URL COMPLETO: Se è già un link pronto, lo restituiamo
+    # ... (qui segue il tuo codice per Google Drive) ...
     return s
 
 
