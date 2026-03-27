@@ -1283,6 +1283,7 @@ if st.session_state.pagina == 'partite':
                 if len(id_video) > 10:
                     # Usiamo i + per essere sicuri che Python metta le barre /
                     url_finale = "https://drive.google.com" + id_video.strip() + "/preview"
+
                     
                     # VISUALIZZAZIONE IFRAME
                     st.components.v1.iframe(url_finale, height=450, scrolling=False)
