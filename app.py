@@ -23,30 +23,32 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     """
-    VERSIONE FINALE PROFESSIONALE (REGEX): Estrae l'ID e crea l'URL corretto.
+    VERSIONE IBRIDA MYPLAYR: Gestisce Google Drive e Supabase Storage.
     """
     if not url or str(url).lower() in ("none", "nan", "null"):
         return None
     
     s = str(url).strip()
     
-    # Se non è un link di Google Drive, restituiscilo così com'è
-    if "drive.google.com" not in s:
-        return s
+    # 1. CASO SUPABASE: Se è solo il nome del file (es: video_test.mp4)
+    if "drive.google.com" not in s and not s.startswith("http"):
+        return f"https://zxgsbcswuchrwmdcmntg.supabase.co{s}"
     
-    # Usa le Espressioni Regolari per trovare l'ID in QUALSIASI tipo di link Drive
-    import re
-    regex = r"(?:/d/|id=|folders/|/file/d/)([a-zA-Z0-9_-]{25,})"
-    match = re.search(regex, s)
+    # 2. CASO GOOGLE DRIVE: Trasforma in link di streaming diretto
+    if "drive.google.com" in s:
+        import re
+        # Regex potenziata per catturare l'ID
+        regex = r"(?:/d/|id=|/file/d/)([a-zA-Z0-9_-]{25,})"
+        match = re.search(regex, s)
+        
+        if match:
+            id_estratto = match.group(1)
+            # URL DIRETTO (uc?export=download) è il migliore per il player di Streamlit
+            return f"https://drive.google.com{id_estratto}"
     
-    if match:
-        # Recuperiamo l'ID trovato
-        id_estratto = match.group(1)
-        # COSTRUZIONE URL PERFETTA (con tutti gli slash / necessari)
-        return f"https://drive.google.com{id_estratto}/preview"
-    
-    # Se non trova l'ID, restituisce il link originale per non rompere nulla
+    # 3. CASO URL COMPLETO: Se è già un link pronto, lo restituiamo
     return s
+
 
     
     # 1. Estrazione ID dal formato /file/d/ID/view
