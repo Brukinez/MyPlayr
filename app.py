@@ -1266,17 +1266,30 @@ if st.session_state.pagina == 'partite':
                 url_grezzo = partita.get("link_video", "")
                 link_diretto = make_direct_link(url_grezzo)
 
-                # 2. VISUALIZZAZIONE PLAYER
+                                # 2. VISUALIZZAZIONE PLAYER (VERSIONE MYCLIPZO - TESTATA)
                 if link_diretto:
-                    # Usiamo st.video con il link uc?id=... che è il più stabile
-                    st.video(link_diretto, format="video/mp4")
+                    # Estraiamo l'ID dall'URL in modo sicuro per l'Iframe
+                    import re
+                    match = re.search(r"([a-zA-Z0-9_-]{25,})", link_diretto)
                     
-                    with st.expander("✂️ CREA CLIP"):
-                        st.write("Inserisci i tempi e clicca su Genera")
+                    if match:
+                        video_id = match.group(1)
+                        # Creiamo l'URL di anteprima di Google Drive
+                        embed_url = f"https://drive.google.com{video_id}/preview"
+                        
+                        # Usiamo il componente Iframe di Streamlit per mostrare il video
+                        import streamlit.components.v1 as components
+                        components.iframe(embed_url, height=450)
+                        
+                        with st.expander("✂️ CREA CLIP"):
+                            st.write("Inserisci i tempi e clicca su Genera")
+                    else:
+                        st.error(f"⚠️ Errore: ID video non trovato nel link.")
                 else:
-                    st.warning(f"⚠️ Link non valido o ID non trovato: {url_grezzo}")
+                    st.warning(f"⚠️ Video non ancora disponibile o link errato.")
                 
                 st.divider()
+
 
     except Exception as e:
         st.error(f"Errore caricamento: {e}")
