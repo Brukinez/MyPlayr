@@ -3,90 +3,75 @@ import time
 import subprocess
 import re
 from datetime import datetime
-from database import supabase  # Assicurati che database.py sia nella stessa cartella
+from database import supabase 
 
 # --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe" # Percorso assoluto rclone.exe
+RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe" 
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)
 
 def registra_clip(id_partita):
-    """Esegue la registrazione FFmpeg, carica su Drive e aggiorna Supabase."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
     percorso_completo = os.path.join(VIDEO_DIR, nome_file)
     
     print(f"🔴 1. AVVIO REGISTRAZIONE FISICA: {nome_file}...")
 
-    # COMANDO FFmpeg (30 secondi di test - Adatta il nome della webcam se necessario)
+    # COMANDO FFMPEG (DEFINITO PRIMA DI TRY)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
         '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
     ]
     
     try:
-        # Step 1: Registrazione fisica
+        # --- STEP 1: REGISTRAZIONE FISICA ---
         subprocess.run(command, check=True)
-        print(f"✅ Registrazione completata localmente in: {percorso_completo}")
+        print(f"✅ Registrazione completata localmente.")
 
-        # Step 2: Caricamento su Google Drive tramite Rclone
-        print(f"🚀 2. CARICAMENTO SU CLOUD (Google Drive)...")
+        # --- STEP 2: CARICAMENTO SU CLOUD ---
+        print(f"🚀 2. CARICAMENTO SU CLOUD...")
         subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
         
-        # Step 3: Recupero Link da Drive
+        # --- STEP 3: GENERAZIONE LINK PUBBLICO ---
         print(f"🔗 3. GENERAZIONE LINK PUBBLICO...")
         res_link = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"], 
                                   capture_output=True, text=True, check=True)
         link_web = res_link.stdout.strip()
 
-                        # --- Step 4 (VERSIONE DEFINITIVA) ---
-        print(f"🔗 4. GENERAZIONE LINK DIRETTO...")
-        
-        # Estraiamo solo l'ID (le 25+ cifre finali) dal link grezzo di Rclone
-        import re
+        # --- STEP 4: TRASFORMAZIONE E AGGIORNAMENTO SUPABASE ---
+        print(f"🏁 4. TRASFORMAZIONE LINK E AGGIORNAMENTO SUPABASE...")
         match_id_drive = re.search(r"([a-zA-Z0-9_-]{25,})", link_web)
-        
         if match_id_drive:
             id_puro = match_id_drive.group(1)
-            # COSTRUZIONE LINK PERFETTO PER STREAMLIT
             link_diretto = f"https://drive.google.com{id_puro}"
         else:
-            link_diretto = link_web # Fallback
+            link_diretto = link_web
 
-        # Aggiornamento Supabase
         supabase.table("calendario").update({
             "evento": nome_file, 
             "link_video": link_diretto, 
             "stato": "FATTO" 
         }).eq("id", id_partita).execute()
         
-        print(f"🏁 ONLINE: {link_diretto}")
-
-
-        
-        print(f"🏁 PROCESSO FINITO: Match {id_partita} è ora online e visibile nell'app!")
+        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online!")
         return True
 
     except Exception as e:
-        print(f"❌ ERRORE CRITICO DURANTE IL PROCESSO: {e}")
-        # In caso di errore, marchiamo il match così l'admin può resettarlo
+        print(f"❌ ERRORE CRITICO DURANTE REGISTRAZIONE/UPLOAD: {e}")
         supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
         return False
 
-
 def monitor():
-    """Resta in ascolto di nuovi match programmati su Supabase."""
     print("🚀 MOTORE MyPlayr LIVE ATTIVO. In ascolto su Supabase...")
     while True:
         try:
             now = datetime.now()
-            data_oggi = now.strftime("%Y-%m-%d")
+            data_oggi = now.strftime("%Y-%m-%d") 
             ora_attuale = now.strftime("%H:%M")
             
-            # Cerchiamo match programmati per l'ora esatta di oggi
             response = supabase.table("calendario")\
                 .select("*")\
                 .eq("data", data_oggi)\
@@ -103,7 +88,7 @@ def monitor():
                 
                 print(f"🎬 MATCH TROVATO! ID: {id_p} - Ore: {ora_attuale}")
                 
-                # CAMBIAMO SUBITO LO STATO per evitare che il loop trovi lo stesso match nel prossimo ciclo di 30s
+                # CAMBIAMO SUBITO LO STATO per evitare che il loop lo trovi lo stesso match nel prossimo ciclo di 30s
                 supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", id_p).execute()
                 
                 # Avviamo la sequenza di registrazione e upload
@@ -120,3 +105,4 @@ def monitor():
 
 if __name__ == "__main__":
     monitor()
+
