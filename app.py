@@ -22,18 +22,21 @@ if 'supabase' not in st.session_state:
 supabase = st.session_state.supabase
 
 def make_direct_link(url):
-    if not url or str(url).lower() in ("none", "nan", "null"):
-        return None
-    
+    if not url or str(url).lower() in ("none", "nan", "null"): return None
     s = str(url).strip()
     
-    # 🚨 CASO SUPABASE (Se è solo il nome del file es: video_test.mp4)
-    if "drive.google.com" not in s and not s.startswith("http"):
-        # NOTA: Assicurati che il nome del bucket 'video-partite' sia scritto identico a Supabase
+    # Estrae l'ID da qualsiasi link Google Drive (anche se manca lo slash o è rotto)
+    import re
+    match = re.search(r"([a-zA-Z0-9_-]{25,})", s)
+    if "drive.google" in s and match:
+        return f"https://drive.google.com{match.group(1)}"
+    
+    # Se è Supabase
+    if not s.startswith("http"):
         return f"https://zxgsbcswuchrwmdcmntg.supabase.co{s}"
     
-    # ... (qui segue il tuo codice per Google Drive) ...
     return s
+
 
 
     

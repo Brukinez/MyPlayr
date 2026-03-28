@@ -42,24 +42,30 @@ def registra_clip(id_partita):
                                   capture_output=True, text=True, check=True)
         link_web = res_link.stdout.strip()
 
-        # Step 4: Trasformazione Link per Streaming e Aggiornamento Finale
-        print(f"🔗 4. PULIZIA LINK PER STREAMING E CHIUSURA...")
+                        # --- Step 4 (VERSIONE DEFINITIVA) ---
+        print(f"🔗 4. GENERAZIONE LINK DIRETTO...")
         
-        # Estraiamo l'ID univoco di Google Drive per creare il link di download diretto
+        # Estraiamo solo l'ID (le 25+ cifre finali) dal link grezzo di Rclone
+        import re
         match_id_drive = re.search(r"([a-zA-Z0-9_-]{25,})", link_web)
         
         if match_id_drive:
             id_puro = match_id_drive.group(1)
+            # COSTRUZIONE LINK PERFETTO PER STREAMLIT
             link_diretto = f"https://drive.google.com{id_puro}"
         else:
-            link_diretto = link_web # Fallback se la regex non trova l'ID
+            link_diretto = link_web # Fallback
 
-        # Aggiorniamo Supabase: Stato passa a FATTO e inseriamo il link pulito
+        # Aggiornamento Supabase
         supabase.table("calendario").update({
             "evento": nome_file, 
             "link_video": link_diretto, 
             "stato": "FATTO" 
         }).eq("id", id_partita).execute()
+        
+        print(f"🏁 ONLINE: {link_diretto}")
+
+
         
         print(f"🏁 PROCESSO FINITO: Match {id_partita} è ora online e visibile nell'app!")
         return True
@@ -77,7 +83,7 @@ def monitor():
     while True:
         try:
             now = datetime.now()
-            data_oggi = now.strftime("%d-%m-%Y") # Assicurati che il formato su Supabase sia GG-MM-AAAA
+            data_oggi = now.strftime("%Y-%m-%d")
             ora_attuale = now.strftime("%H:%M")
             
             # Cerchiamo match programmati per l'ora esatta di oggi
