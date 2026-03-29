@@ -48,7 +48,7 @@ def registra_clip(id_partita):
         supabase.table("calendario").update({
             "evento": nome_file, 
             "link_video": link_diretto, 
-            "stato": "COMPLETATO" # Usiamo 'COMPLETATO' così l'app lo riconosce subito
+            "stato": "FATTO" # Usiamo 'FATTO' così l'app lo riconosce subito
         }).eq("id", id_partita).execute()
         
         print(f"🏁 PROCESSO FINITO: Match {id_partita} è online con link diretto!")
