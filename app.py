@@ -594,6 +594,38 @@ if st.session_state.pagina == 'home':
             </div>
         """, unsafe_allow_html=True)
 
+# --- PAGINA PRIVACY POLICY ---
+elif st.session_state.pagina == 'privacy':
+    st.title("📄 Privacy Policy")
+    st.markdown("""
+    **Informativa sul Trattamento dei Dati Personali**
+    
+    1. **Titolare del Trattamento**: MyPlayr di [Tuo Nome/Società].
+    2. **Dati Raccolti**: Raccogliamo la tua email per l'accesso e i video delle tue prestazioni sportive registrati dalle telecamere PoE sui campi.
+    3. **Finalità**: I video vengono trattati esclusivamente per permetterti di rivedere le tue azioni e generare clip personali.
+    4. **Conservazione**: I video master sono conservati localmente e i ritagli su Google Drive. I dati personali non vengono ceduti a terzi.
+    5. **Diritti**: Puoi richiedere la cancellazione del tuo account e dei tuoi video in qualsiasi momento scrivendo alla nostra assistenza.
+    """)
+    if st.button("⬅️ Torna alla Home"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
+# --- PAGINA TERMINI E CONDIZIONI ---
+elif st.session_state.pagina == 'termini':
+    st.title("⚖️ Termini e Condizioni")
+    st.markdown("""
+    **Termini di Utilizzo del Servizio MyPlayr**
+    
+    1. **Descrizione Servizio**: MyPlayr fornisce un sistema di registrazione automatica e taglio clip per eventi sportivi.
+    2. **Responsabilità**: MyPlayr non è responsabile per infortuni o incidenti avvenuti durante le riprese. Il servizio dipende dalla connettività internet del centro sportivo.
+    3. **Utilizzo dei Video**: L'utente si impegna a non utilizzare le clip per scopi che violino il decoro o la privacy altrui.
+    4. **Abbonamenti**: Se previsto, l'accesso alle clip master è subordinato al pagamento della tariffa del centro sportivo o dell'abbonamento MyPlayr.
+    5. **Modifiche**: MyPlayr si riserva il diritto di sospendere il servizio per manutenzione tecnica dei Mini PC o del Cloud.
+    """)
+    if st.button("⬅️ Torna alla Home"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
@@ -1393,12 +1425,22 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyPlayr - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali
+# --- NUOVO FOOTER CLICCABILE ---
+st.markdown("<br><br><hr>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-weight: bold;'>MyPlayr - Video Analysis Pro</p>", unsafe_allow_html=True)
+
 f_l, f_r = st.columns(2)
 with f_l: 
-    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+    if st.button("📄 Privacy Policy", key="btn_privacy", use_container_width=True):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
 with f_r: 
-    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+    if st.button("⚖️ Termini e Condizioni", key="btn_termini", use_container_width=True):
+        st.session_state.pagina = 'termini'
+        st.rerun()
+
+st.markdown("<p style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyPlayr - Tutti i diritti riservati</p>", unsafe_allow_html=True)
+
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyPlayr - Tutti i diritti riservati</p>", unsafe_allow_html=True)
