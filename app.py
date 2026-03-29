@@ -777,7 +777,7 @@ elif st.session_state.pagina == 'admin':
         # Recuperiamo i match completati ordinati dal più recente
         res_video = supabase.table("calendario")\
             .select("*")\
-            .eq("stato", "PROGRAMMATO")\
+            .eq("stato", "FATTO")\
             .order("id", desc=True)\
             .execute()
         
@@ -854,7 +854,7 @@ elif st.session_state.pagina == 'admin':
                         "ora": ora_pulita,  # Usiamo l'ora pulita
                         "campo": campo_selezionato,
                         "evento": titolo_match.strip(),
-                        "stato": "PROGRAMMATO"
+                        "stato": "FATTO"
                     }
                     
                     try:
@@ -879,10 +879,10 @@ elif st.session_state.pagina == 'admin':
             st.markdown("#### 🏟️ Match Registrati (Master 4K)")
 
     try:
-        # Recuperiamo i dati delle partite concluse (stato 'PROGRAMMATO')
+        # Recuperiamo i dati delle partite concluse (stato 'FATTO')
         res_vids = supabase.table("calendario")\
             .select("id, data, ora, campo, evento")\
-            .eq("stato", "PROGRAMMATO")\
+            .eq("stato", "FATTO")\
             .order("id", desc=True)\
             .execute()
         
@@ -1018,7 +1018,7 @@ elif st.session_state.pagina == 'admin':
                                 "ora": ora_p.strip(),
                                 "campo": campo_p,
                                 "evento": titolo_p.strip(),
-                                "stato": 'PROGRAMMATO' # Segnale per il Mini PC
+                                "stato": 'FATTO' # Segnale per il Mini PC
                             }).execute()
                             st.success(f"✅ Registrazione programmata con successo!")
                             st.rerun()
@@ -1033,10 +1033,10 @@ elif st.session_state.pagina == 'admin':
         st.markdown("### 🎞️ Archivio Match Registrati")
         
         try:
-            # Recuperiamo le partite concluse (stato 'PROGRAMMATO')
+            # Recuperiamo le partite concluse (stato 'FATTO')
             res_matches = supabase.table("calendario")\
                 .select("*")\
-                .eq("stato", "PROGRAMMATO")\
+                .eq("stato", "FATTO")\
                 .order("id", desc=True)\
                 .execute()
             
@@ -1210,11 +1210,11 @@ if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
-        res_matches = supabase.table("calendario").select("*").eq("stato", "PROGRAMMATO").order("id", desc=True).execute()
+        res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
         if not dati_partite:
-            st.info("📌 Nessuna partita trovata con stato 'PROGRAMMATO'. Controlla Supabase!")
+            st.info("📌 Nessuna partita trovata con stato 'FATTO'. Controlla Supabase!")
         else:
             for partita in dati_partite:
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
