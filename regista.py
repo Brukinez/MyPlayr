@@ -74,7 +74,7 @@ def monitor():
                 .select("*")\
                 .eq("data", data_oggi)\
                 .eq("ora", ora_attuale)\
-                .eq("stato", "FATO")\
+                .eq("stato", "FATTO")\
                 .execute()
             
             match_list = response.data
