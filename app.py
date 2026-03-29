@@ -22,77 +22,35 @@ if 'supabase' not in st.session_state:
 supabase = st.session_state.supabase
 
 def make_direct_link(url):
-    if not url or str(url).lower() in ("none", "nan", "null"): return None
+    """
+    Per link Google Drive: ricava l'id del file e restituisce un URL in formato
+    uc?export=download&id=... (adatto al player). Altrimenti restituisce l'URL originale.
+    Valori mancanti (None, vuoti, NaN) -> None (così non si passa nulla a st.video).
+    """
+    if url is None:
+        return None
+    try:
+        if pd.isna(url):
+            return None
+    except (TypeError, ValueError):
+        pass
     s = str(url).strip()
-    
-    # Estrae l'ID da qualsiasi link Google Drive (anche se manca lo slash o è rotto)
-    import re
-    match = re.search(r"([a-zA-Z0-9_-]{25,})", s)
-    if "drive.google" in s and match:
-        return f"https://drive.google.com{match.group(1)}"
-    
-    # Se è Supabase
-    if not s.startswith("http"):
-        return f"https://zxgsbcswuchrwmdcmntg.supabase.co{s}"
-    
-    return s
-
-
-
-    
-    # 1. Estrazione ID dal formato /file/d/ID/view
-    if "/file/d/" in s:
-        file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
-        
-    # 2. Estrazione ID dal formato ?id=ID
-    elif "id=" in s:
-        file_id = s.split("id=")[1].split("&")[0].split("#")[0]
-    
-    # COSTRUZIONE MANUALE SICURA (Aggiungiamo gli slash a mano)
-    if file_id and len(file_id) > 5:
-        id_pulito = file_id.strip()
-        # Formato EMBED perfetto per Iframe
-        return "https://drive.google.com" + id_pulito + "/preview"
-    
-    return s
-
-
-
-
-    
-    file_id = None
-    # Caso 1: link con /file/d/ID/view
-    if "/file/d/" in s:
-        file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
-    # Caso 2: link con ?id=ID
-    elif "id=" in s:
-        parsed = urlparse(s)
-        file_id = parse_qs(parsed.query).get("id", [None])[0]
-        
-    if file_id:
-        # Usiamo il formato /preview che è lo stesso che vedi nel browser
-        return f"https://drive.google.com{file_id}/preview"
-    
-    return s
-
-    
+    if not s or s.lower() in ("none", "nan", "null"):
+        return None
+    if "drive.google.com" not in s:
+        return s
     parsed = urlparse(s)
     qs = parse_qs(parsed.query)
-    
-    # FIX CHIRURGICO: Cerca l'ID sia in formato "id=" che nell'URL path
-    file_id = qs.get("id", [None])[0]
-    
+    file_id = (qs.get("id") or [None])[0]
+    if file_id:
+        file_id = file_id.strip()
     if not file_id:
-        # Se non è in "id=", lo cerca nel percorso del link /file/d/ID/view
         m = re.search(r"/file/d/([a-zA-Z0-9_-]+)", s)
         if m:
             file_id = m.group(1)
-            
     if not file_id:
         return s
-        
-    return f"https://drive.google.com{file_id}"
-
+    return f"https://drive.google.com/uc?export=download&id={file_id}"
 
 
 # --- BLOCCO STILE GLOBALE (EMERGENT STYLE) ---
@@ -1247,41 +1205,32 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- BLOCCO: PAGINA PARTITE (VERSIONE 2.0 AUTOMATICA) ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE FINALE TESTATA) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
-        # Recuperiamo solo i match pronti (Stato FATTO)
         res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
         dati_partite = res_matches.data if res_matches.data else []
 
         if not dati_partite:
-            st.info("📌 Nessuna partita pronta nel database. In attesa del Regista...")
+            st.info("📌 Nessuna partita trovata con stato 'FATTO'. Controlla Supabase!")
         else:
             for partita in dati_partite:
-                st.subheader(f"📅 Gara del {partita.get('data', 'N/D')} - Ore {partita.get('ora', 'N/D')}")
+                st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
-                # 1. TRASFORMAZIONE AUTOMATICA (Usa la funzione professionale che hai scritto sopra)
-                url_grezzo = partita.get("link_video", "")
-                link_diretto = make_direct_link(url_grezzo)
+                link_diretto = make_direct_link(partita.get("link_video"))
 
-                # 2. VISUALIZZAZIONE PLAYER
                 if link_diretto:
-                    # Usiamo st.video con il link uc?id=... che è il più stabile
                     st.video(link_diretto, format="video/mp4")
-                    
                     with st.expander("✂️ CREA CLIP"):
                         st.write("Inserisci i tempi e clicca su Genera")
                 else:
-                    st.warning(f"⚠️ Link non valido o ID non trovato: {url_grezzo}")
-                
+                    st.warning("⏳ Link video non disponibile (manca su Supabase o non è ancora pronto).")
                 st.divider()
 
     except Exception as e:
-        st.error(f"Errore caricamento: {e}")
-
-
+        st.error(f"Errore: {e}")
 
 
 # --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
