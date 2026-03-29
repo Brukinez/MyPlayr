@@ -608,7 +608,7 @@ elif st.session_state.pagina == 'login':
 
         # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
-            st.markdown("<h2 style='text-align: center;'>Accedi a MyPlayr</h2>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
             
             # Input utente
             u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
