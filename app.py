@@ -25,15 +25,17 @@ def make_direct_link(url):
     if not url or str(url).lower() in ("none", "nan", "null"): return None
     s = str(url).strip()
     
-    # 1. Estraiamo l'ID (quello che inizia con 1gIm...)
+    # 1. Pulizia chirurgica dell'ID di Google Drive
     import re
+    # Questa riga cerca l'ID tra gli slash / o dopo id=
     match = re.search(r"(?:id=|/d/|/file/d/)([a-zA-Z0-9_-]{25,})", s)
     
-    if match:
+    if "drive.google" in s and match:
         file_id = match.group(1)
-        # 2. COSTRUIAMO IL LINK MAGICO (quello con /preview finale)
+        # 2. Restituisce il formato EMBED che Google accetta nei siti
         return f"https://drive.google.com{file_id}/preview"
     
+    # Se il link non è Google Drive, lo restituiamo così com'è
     return s
 
 
