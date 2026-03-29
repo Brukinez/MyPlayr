@@ -589,7 +589,7 @@ if st.session_state.pagina == 'home':
         # --- FOOTER ---
         st.markdown("""
             <div class='footer-main'>
-                <p>MyPlayr © 2026 - Video Analysis for Future Champions</p>
+                <p>MyClipzo © 2026 - Video Analysis for Future Champions</p>
                 <p class='footer-sub'>Sviluppato con Passione per lo Sport</p>
             </div>
         """, unsafe_allow_html=True)
@@ -1401,5 +1401,5 @@ with f_r:
     st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
 
 # Copyright finale centrato
-st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyPlayr - Tutti i diritti riservati</p>", unsafe_allow_html=True)
+st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
 
