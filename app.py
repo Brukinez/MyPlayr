@@ -1312,7 +1312,7 @@ elif st.session_state.pagina == 'mie_clip':
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
 
 if st.session_state.pagina == 'hall_of_fame':
-    st.markdown("<h1 style='text-align: center;'>🏆 MyPlayr Hall of Fame</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🏆 MyClipzo Hall of Fame</h1>", unsafe_allow_html=True)
     st.divider()
 
     try:
