@@ -32,7 +32,7 @@ def make_direct_link(url):
     if match:
         id_video = match.group(1)
         # COSTRUZIONE PULITA: aggiungiamo noi i pezzi mancanti /file/d/ e /preview
-        return f"https://drive.google.com//file/d/{id_video}/preview"
+        return f"https://drive.google.com/file/d/{id_video}/preview"
     
     return s
 
