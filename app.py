@@ -585,7 +585,11 @@ if st.session_state.pagina == 'home':
                             st.rerun()
                         st.title("📄 Privacy Policy")
                         st.markdown("""
-                        INSERISCI QUI IL TUO TESTO DELLA PRIVACY (Puoi usare il grassetto con i due asterischi)
+                        PRIVACY POLICY – MYCLIPZO
+
+1. Titolare del Trattamento
+Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
+
     """)
 
 # --- PAGINA TERMINI E CONDIZIONI ---
