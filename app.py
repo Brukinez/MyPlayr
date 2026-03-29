@@ -777,7 +777,7 @@ elif st.session_state.pagina == 'admin':
         # Recuperiamo i match completati ordinati dal più recente
         res_video = supabase.table("calendario")\
             .select("*")\
-            .eq("stato", "COMPLETATO")\
+            .eq("stato", "FATTO")\
             .order("id", desc=True)\
             .execute()
         
@@ -854,7 +854,7 @@ elif st.session_state.pagina == 'admin':
                         "ora": ora_pulita,  # Usiamo l'ora pulita
                         "campo": campo_selezionato,
                         "evento": titolo_match.strip(),
-                        "stato": "PROGRAMMATO"
+                        "stato": "FATTO"
                     }
                     
                     try:
@@ -1018,7 +1018,7 @@ elif st.session_state.pagina == 'admin':
                                 "ora": ora_p.strip(),
                                 "campo": campo_p,
                                 "evento": titolo_p.strip(),
-                                "stato": 'PROGRAMMATO' # Segnale per il Mini PC
+                                "stato": 'FATTO' # Segnale per il Mini PC
                             }).execute()
                             st.success(f"✅ Registrazione programmata con successo!")
                             st.rerun()
