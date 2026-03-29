@@ -704,19 +704,6 @@ elif st.session_state.pagina == 'login':
             if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
                 st.session_state.sub = 'login'
                 st.rerun()
-elif st.session_state.pagina == 'privacy':
-    if st.button("⬅️ Torna alla Home"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-    st.title("📄 Privacy Policy")
-    st.write("I tuoi video sono trattati per finalità di analisi sportiva e conservati in modo sicuro su Google Drive. Non cediamo i tuoi dati a terzi.")
-
-elif st.session_state.pagina == 'termini':
-    if st.button("⬅️ Torna alla Home"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-    st.title("⚖️ Termini e Condizioni")
-    st.write("MyClipzo fornisce un servizio di registrazione video. L'uso del servizio implica l'accettazione delle riprese sul campo da gioco.")
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
