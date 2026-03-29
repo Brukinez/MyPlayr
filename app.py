@@ -23,20 +23,21 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     if not url or str(url).lower() in ("none", "nan", "null"): return None
+    import re
     s = str(url).strip()
     
-    # 1. Pulizia chirurgica dell'ID di Google Drive
-    import re
-    # Questa riga cerca l'ID tra gli slash / o dopo id=
-    match = re.search(r"(?:id=|/d/|/file/d/)([a-zA-Z0-9_-]{25,})", s)
+    # 1. Cerchiamo l'ID (quella stringa lunga che inizia con 1gIm...)
+    # Questa regex è potentissima: trova l'ID ovunque sia nascosto
+    match = re.search(r"([a-zA-Z0-9_-]{25,})", s)
     
-    if "drive.google" in s and match:
+    if match:
         file_id = match.group(1)
-        # 2. Restituisce il formato EMBED che Google accetta nei siti
+        # 2. COSTRUZIONE CHIRURGICA (con tutti gli slash / al posto giusto)
+        # Importante: non aggiungere spazi o cancellare i punti!
         return f"https://drive.google.com{file_id}/preview"
     
-    # Se il link non è Google Drive, lo restituiamo così com'è
     return s
+
 
 
 
