@@ -777,7 +777,7 @@ elif st.session_state.pagina == 'admin':
         # Recuperiamo i match completati ordinati dal più recente
         res_video = supabase.table("calendario")\
             .select("*")\
-            .eq("stato", "FATTO")\
+            .eq("stato", "COMPLETATO")\
             .order("id", desc=True)\
             .execute()
         
