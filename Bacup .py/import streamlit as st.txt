@@ -1,0 +1,132 @@
+import streamlit as st
+import os
+import pandas as pd
+import numpy as np
+import smtplib
+import subprocess # Fondamentale per far lavorare FFmpeg e tagliare i video
+from datetime import datetime
+from PIL import Image
+from email.mime.text import MIMEText
+import re
+from urllib.parse import urlparse, parse_qs
+from supabase import create_client, Client
+
+
+# --- CONNESSIONE MANCANTE RIPRISTINATA ---
+URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
+# Incolla qui la Service Role Key tra le virgolette
+KEY_SUPABASE = st.secrets["SUPABASE_KEY"]
+
+if 'supabase' not in st.session_state:
+    st.session_state.supabase = create_client(URL_SUPABASE, KEY_SUPABASE)
+supabase = st.session_state.supabase
+
+def make_direct_link(url):
+    if not url or str(url).lower() in ("none", "nan", "null"): return None
+    s = str(url).strip()
+    
+    # Estrae l'ID da qualsiasi link Google Drive (anche se manca lo slash o è rotto)
+    import re
+    match = re.search(r"([a-zA-Z0-9_-]{25,})", s)
+    if "drive.google" in s and match:
+        return f"https://drive.google.com{match.group(1)}"
+    
+    # Se è Supabase
+    if not s.startswith("http"):
+        return f"https://zxgsbcswuchrwmdcmntg.supabase.co{s}"
+    
+    return s
+
+
+
+    
+    # 1. Estrazione ID dal formato /file/d/ID/view
+    if "/file/d/" in s:
+        file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
+        
+    # 2. Estrazione ID dal formato ?id=ID
+    elif "id=" in s:
+        file_id = s.split("id=")[1].split("&")[0].split("#")[0]
+    
+    # COSTRUZIONE MANUALE SICURA (Aggiungiamo gli slash a mano)
+    if file_id and len(file_id) > 5:
+        id_pulito = file_id.strip()
+        # Formato EMBED perfetto per Iframe
+        return "https://drive.google.com" + id_pulito + "/preview"
+    
+    return s
+
+
+
+
+    
+    file_id = None
+    # Caso 1: link con /file/d/ID/view
+    if "/file/d/" in s:
+        file_id = s.split("/file/d/")[1].split("/")[0].split("?")[0]
+    # Caso 2: link con ?id=ID
+    elif "id=" in s:
+        parsed = urlparse(s)
+        file_id = parse_qs(parsed.query).get("id", [None])[0]
+        
+    if file_id:
+        # Usiamo il formato /preview che è lo stesso che vedi nel browser
+        return f"https://drive.google.com{file_id}/preview"
+    
+    return s
+
+    
+    parsed = urlparse(s)
+    qs = parse_qs(parsed.query)
+    
+    # FIX CHIRURGICO: Cerca l'ID sia in formato "id=" che nell'URL path
+    file_id = qs.get("id", [None])[0]
+    
+    if not file_id:
+        # Se non è in "id=", lo cerca nel percorso del link /file/d/ID/view
+        m = re.search(r"/file/d/([a-zA-Z0-9_-]+)", s)
+        if m:
+            file_id = m.group(1)
+            
+    if not file_id:
+        return s
+        
+    return f"https://drive.google.com{file_id}"
+
+
+# --- FUNZIONE TAGLIO VIDEO (FFMPEG) ---
+def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
+    """Taglia una clip dal video 4K senza perdere qualità"""
+    
+    input_p = os.path.join(VIDEO_DIR, video_nome) # Video originale (70 min)
+    
+    # Nome unico per la clip: MyPlayr_ORA_EMAIL.mp4
+    timestamp_clip = datetime.now().strftime('%H%M%S')
+    nome_output = f"MyPlayr_{timestamp_clip}.mp4"
+    output_p = os.path.join(CLIP_GDRIVE, nome_output)
+
+    # Comando FFmpeg ultra-veloce (-c copy)
+    comando = [
+        'ffmpeg', '-y',
+        '-i', input_p,          # Prima carichiamo il video
+        '-ss', str(inizio_sec), # Poi diciamo da dove iniziare
+        '-t', str(durata_sec),  # Per quanto tempo
+        '-c', 'copy',           # Copia senza sforzo
+        output_p
+    ]
+
+    try:
+        # Eseguiamo il taglio nel "sottobosco" del PC
+        subprocess.run(comando, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        # Salviamo l'evento del taglio su Supabase per lo storico dell'utente
+        supabase.table("clip_generate").insert({
+            "email_utente": utente_email,
+            "nome_file": nome_output,
+            "data_creazione": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }).execute()
+        
+        return output_p
+    except Exception as e:
+        st.error(f"Errore durante il taglio video: {e}")
+        return None
