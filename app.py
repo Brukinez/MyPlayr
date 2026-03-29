@@ -578,26 +578,6 @@ if st.session_state.pagina == 'home':
                             st.info("ℹ️ Ti abbiamo registrato nel database, ma l'email di conferma arriverà a breve.")
                     else:
                         st.error("❌ Per favore, inserisci un indirizzo email valido.")
-# --- PAGINA PRIVACY POLICY ---
-                elif st.session_state.pagina == 'privacy':
-                        if st.button("⬅️ Torna alla Home", type="primary"):
-                            st.session_state.pagina = 'home'
-                            st.rerun()
-                        st.title("📄 Privacy Policy")
-                        st.markdown("""PRIVACY POLICY – MYCLIPZO
-1. Titolare del Trattamento
-Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
-    """)
-
-# --- PAGINA TERMINI E CONDIZIONI ---
-                elif st.session_state.pagina == 'termini':
-                        if st.button("⬅️ Torna alla Home", type="primary"):
-                            st.session_state.pagina = 'home'
-                            st.rerun()
-                        st.title("⚖️ Termini e Condizioni")
-                        st.markdown("""
-                    INSERISCI QUI IL TUO TESTO DEI TERMINI E CONDIZIONI
-    """)
 
         # --- PULSANTE DI ACCESSO PRINCIPALE ---
         st.write("<br><br>", unsafe_allow_html=True)
@@ -1407,23 +1387,19 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# 2. FOOTER UNIVERSALE (AGGIORNATO MYCLIPZO)
+# 2. FOOTER UNIVERSALE (Appare in fondo a TUTTE le pagine)
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
-
 
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali (Usiamo il tipo 'tertiary' per farli sembrare scritte grigie)
+# Colonne per i link legali
 f_l, f_r = st.columns(2)
 with f_l: 
-    if st.button("📄 Privacy Policy", key="f_priv", type="tertiary"):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
+    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
 with f_r: 
-    if st.button("⚖️ Termini e Condizioni", key="f_term", type="tertiary"):
-        st.session_state.pagina = 'termini'
-        st.rerun()
+    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
 
-st.markdown("<p style='text-align:center; color: #888; font-size: 12px; margin-top: 10px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
+# Copyright finale centrato
+st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
 
