@@ -210,7 +210,7 @@ EMERGENT_CSS = """
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
 st.set_page_config(
-    page_title="MyPlayr - Video Analysis Pro", 
+    page_title="MyClipzo - Video Analysis Pro", 
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -230,7 +230,7 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
         os.makedirs(cartella)
 
 # --- 3. COSTANTI ---
-GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyPlayr
+GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyClipzo
 
 # --- BLOCCO 2: STILE E CSS ---
 st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
@@ -255,9 +255,9 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     
     input_p = os.path.join(VIDEO_DIR, video_nome) # Video originale (70 min)
     
-    # Nome unico per la clip: MyPlayr_ORA_EMAIL.mp4
+    # Nome unico per la clip: MyClipzo_ORA_EMAIL.mp4
     timestamp_clip = datetime.now().strftime('%H%M%S')
-    nome_output = f"MyPlayr_{timestamp_clip}.mp4"
+    nome_output = f"MyClipzo_{timestamp_clip}.mp4"
     output_p = os.path.join(CLIP_GDRIVE, nome_output)
 
     # Comando FFmpeg ultra-veloce (-c copy)
@@ -305,9 +305,9 @@ def invia_conferma_e_salva(email_utente):
     mio_indirizzo = st.secrets["email"]["indirizzo"]
     mia_password = st.secrets["email"]["password"]   
     
-    testo_mail = f"Benvenuto in MyPlayr! Da ora potrai rivedere le tue azioni migliori."
+    testo_mail = f"Benvenuto in MyClipzo! Da ora potrai rivedere le tue azioni migliori."
     msg = MIMEText(testo_mail)
-    msg['Subject'] = "Conferma Iscrizione MyPlayr"
+    msg['Subject'] = "Conferma Iscrizione MyClipzo"
     msg['From'] = mio_indirizzo
     msg['To'] = email_clean
 
@@ -347,7 +347,7 @@ def crea_nuovo_utente(dati_utente):
         # 2. Controllo: Esiste già questo utente?
         utente_esistente = get_utente_per_email(email_pulita)
         if utente_esistente:
-            st.warning("Quest'email è già registrata su MyPlayr!")
+            st.warning("Quest'email è già registrata su MyClipzo!")
             return False
             
         # 3. Se non esiste, procediamo con l'inserimento
@@ -417,7 +417,7 @@ if "password_dev_corretta" not in st.session_state:
 
 # 2. Se l'utente non ha ancora inserito la password corretta, fermiamo tutto qui
 if not st.session_state["password_dev_corretta"]:
-    st.markdown("<h1 style='text-align: center;'>🚧 MyPlayr - Area Protetta</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🚧 MyClipzo - Area Protetta</h1>", unsafe_allow_html=True)
     st.info("⚠️ Il sito è in fase di test. Inserisci la password per sbloccare l'anteprima.")
     
     # Creiamo due colonne per un layout pulito
@@ -522,7 +522,7 @@ if st.session_state.pagina == 'home':
             with col_logo:
                 st.image("logo.png", use_container_width=True)
     except:
-        st.markdown("<h1 style='text-align: center; color: #28a745;'>MyPlayr</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; color: #28a745;'>MyClipzo</h1>", unsafe_allow_html=True)
     
     st.write(" ") # Spaziatura estetica
 
@@ -995,7 +995,7 @@ elif st.session_state.pagina == 'admin':
             # --- BLOCCO: PAGINA GESTIONE PARTITE E COMANDI CLIP (SUPABASE) ---
 
     if st.session_state.pagina == "Admin":
-        st.title("⚙️ Controllo Operativo MyPlayr")
+        st.title("⚙️ Controllo Operativo MyClipzo")
         
         # 1. FORM PROGRAMMAZIONE REGISTRAZIONE
         # Serve per dire al Mini PC: "A quest'ora accendi la camera"
