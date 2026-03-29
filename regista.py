@@ -46,7 +46,7 @@ def registra_clip(id_partita):
         match_id_drive = re.search(r"([a-zA-Z0-9_-]{25,})", link_web)
         if match_id_drive:
             id_puro = match_id_drive.group(1)
-            link_diretto = f"https://drive.google.com{id_puro}"
+            link_diretto = f"https://drive.google.com{id_puro}/preview"
         else:
             link_diretto = link_web
 

@@ -25,20 +25,17 @@ def make_direct_link(url):
     if not url or str(url).lower() in ("none", "nan", "null"): return None
     s = str(url).strip()
     
-    # Se il link è già a posto, non toccarlo
-    if "://drive.google.com" in s and "/preview" in s:
-        return s
-        
-    # Cerchiamo l'ID (quello che inizia per 1gim...)
+    # 1. Estraiamo l'ID (quello che inizia con 1gIm...)
     import re
-    match = re.search(r"(?:id=|/d/|/file/d/|drive\.google\.com)([a-zA-Z0-9_-]{25,})", s)
+    match = re.search(r"(?:id=|/d/|/file/d/)([a-zA-Z0-9_-]{25,})", s)
     
-    if "drive.google" in s and match:
-        id_video = match.group(1)
-        # QUI ABBIAMO MESSO GLI SLASH CORRETTI /file/d/ e /preview
-        return f"https://://drive.google.com{id_video}/preview"
+    if match:
+        file_id = match.group(1)
+        # 2. COSTRUIAMO IL LINK MAGICO (quello con /preview finale)
+        return f"https://drive.google.com{file_id}/preview"
     
     return s
+
 
 
 
