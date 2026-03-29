@@ -25,17 +25,21 @@ def make_direct_link(url):
     if not url or str(url).lower() in ("none", "nan", "null"): return None
     s = str(url).strip()
     
-    # Se il link contiene già /preview, va bene così
-    if "drive.google" in s and "/preview" in s:
+    # Se il link è già a posto, non toccarlo
+    if "://drive.google.com" in s and "/preview" in s:
         return s
         
-    # Se è un link Drive normale, lo trasformiamo in /preview
+    # Cerchiamo l'ID (quello che inizia per 1gim...)
     import re
-    match = re.search(r"(?:id=|/d/|/file/d/)([a-zA-Z0-9_-]{25,})", s)
+    match = re.search(r"(?:id=|/d/|/file/d/|drive\.google\.com)([a-zA-Z0-9_-]{25,})", s)
+    
     if "drive.google" in s and match:
-        return f"https://drive.google.com{match.group(1)}/preview"
+        id_video = match.group(1)
+        # QUI ABBIAMO MESSO GLI SLASH CORRETTI /file/d/ e /preview
+        return f"https://://drive.google.com{id_video}/preview"
     
     return s
+
 
 
 
@@ -1097,7 +1101,7 @@ elif st.session_state.pagina == 'admin':
                     if video_url:
                         # Usiamo l'Iframe per vedere il video senza errori online
                         import streamlit.components.v1 as components
-                        components.iframe(video_url, height=315, scrolling=False)
+                        components.iframe(video_url, height=450, scrolling=False)
                         # BOX TAGLIO CLIP
                         with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
                             st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
@@ -1412,7 +1416,7 @@ if st.session_state.pagina == 'hall_of_fame':
                     if link_per_player:
                         import streamlit.components.v1 as components
                         components.iframe(link_per_player, height=450, scrolling=False)
-                        
+
                     # Recupero dati dell'autore (gestione sicura se Supabase restituisce una lista)
                     info_u = clip.get('utenti')
                     if isinstance(info_u, list): info_u = info_u[0] # Prende il primo se è una lista
