@@ -1391,7 +1391,7 @@ if st.session_state.pagina == 'recupero_password':
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
 # Scritta principale del marchio
-st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyPlayr - Video Analysis Pro</p>", unsafe_allow_html=True)
+st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
 # Colonne per i link legali
 f_l, f_r = st.columns(2)
