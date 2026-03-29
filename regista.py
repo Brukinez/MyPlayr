@@ -21,42 +21,43 @@ def registra_clip(id_partita):
     print(f"🔴 1. AVVIO REGISTRAZIONE FISICA: {nome_file}...")
 
     # COMANDO FFMPEG (DEFINITO PRIMA DI TRY)
-        # --- 1. REGISTRAZIONE FISICA ---
-    # Abbiamo aggiunto '-c:v libx264' e '-movflags +faststart' per far vedere il video subito online
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-        '-t', '30', '-pix_fmt', 'yuv420p', '-c:v', 'libx264', '-movflags', '+faststart', 
-        percorso_completo
+        '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
     ]
     
     try:
+        # --- STEP 1: REGISTRAZIONE FISICA ---
         subprocess.run(command, check=True)
-        
-        # --- 2. CARICAMENTO SU GOOGLE DRIVE ---
+        print(f"✅ Registrazione completata localmente.")
+
+        # --- STEP 2: CARICAMENTO SU CLOUD ---
+        print(f"🚀 2. CARICAMENTO SU CLOUD...")
         subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
         
-        # --- 3. PRENDIAMO IL LINK DA GOOGLE DRIVE ---
+        # --- STEP 3: GENERAZIONE LINK PUBBLICO ---
+        print(f"🔗 3. GENERAZIONE LINK PUBBLICO...")
         res_link = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"], 
                                   capture_output=True, text=True, check=True)
         link_web = res_link.stdout.strip()
 
-        # --- 4. SISTEMIAMO IL LINK PER IL SITO (Fondamentale!) ---
-        match_id = re.search(r"([a-zA-Z0-9_-]{25,})", link_web)
-        if match_id:
-            id_puro = match_id.group(1)
-            # Creiamo un link speciale che finisce con /preview
-            link_diretto = f"https://drive.google.com{id_puro}/preview"
+        # --- STEP 4: TRASFORMAZIONE E AGGIORNAMENTO SUPABASE ---
+        print(f"🏁 4. TRASFORMAZIONE LINK E AGGIORNAMENTO SUPABASE...")
+        match_id_drive = re.search(r"([a-zA-Z0-9_-]{25,})", link_web)
+        if match_id_drive:
+            id_puro = match_id_drive.group(1)
+            link_diretto = f"https://drive.google.com{id_puro}"
         else:
             link_diretto = link_web
 
-        # Scriviamo il link corretto su Supabase
         supabase.table("calendario").update({
+            "evento": nome_file, 
             "link_video": link_diretto, 
             "stato": "FATTO" 
         }).eq("id", id_partita).execute()
         
+        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online!")
         return True
-
 
     except Exception as e:
         print(f"❌ ERRORE CRITICO DURANTE REGISTRAZIONE/UPLOAD: {e}")
