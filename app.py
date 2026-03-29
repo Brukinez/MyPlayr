@@ -1018,7 +1018,7 @@ elif st.session_state.pagina == 'admin':
                                 "ora": ora_p.strip(),
                                 "campo": campo_p,
                                 "evento": titolo_p.strip(),
-                                "stato": 'FATTO' # Segnale per il Mini PC
+                                "stato": 'PROGRAMMATO' # Segnale per il Mini PC
                             }).execute()
                             st.success(f"✅ Registrazione programmata con successo!")
                             st.rerun()
