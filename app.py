@@ -704,6 +704,19 @@ elif st.session_state.pagina == 'login':
             if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
                 st.session_state.sub = 'login'
                 st.rerun()
+elif st.session_state.pagina == 'privacy':
+    if st.button("⬅️ Torna alla Home"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+    st.title("📄 Privacy Policy")
+    st.write("I tuoi video sono trattati per finalità di analisi sportiva e conservati in modo sicuro su Google Drive. Non cediamo i tuoi dati a terzi.")
+
+elif st.session_state.pagina == 'termini':
+    if st.button("⬅️ Torna alla Home"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+    st.title("⚖️ Termini e Condizioni")
+    st.write("MyClipzo fornisce un servizio di registrazione video. L'uso del servizio implica l'accettazione delle riprese sul campo da gioco.")
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
@@ -1380,6 +1393,22 @@ if st.session_state.pagina not in ['home', 'home_auth']:
 
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
+st.markdown("""
+    <style>
+    div[data-testid="stColumn"] button {
+        background-color: transparent !important;
+        color: #888 !important;
+        border: none !important;
+        padding: 0 !important;
+        font-weight: normal !important;
+        text-decoration: none !important;
+    }
+    div[data-testid="stColumn"] button:hover {
+        color: #28a745 !important;
+        text-decoration: underline !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # 1. GESTIONE PAGINE MINORI (Recupero Password)
 if st.session_state.pagina == 'recupero_password': 
@@ -1393,12 +1422,18 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali
+# Colonne per i link legali (VERSIONE ATTIVA)
 f_l, f_r = st.columns(2)
 with f_l: 
-    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+    if st.button("📄 Privacy Policy", key="footer_priv"):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
 with f_r: 
-    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+    # Usiamo un contenitore per allineare a destra (opzionale)
+    if st.button("⚖️ Termini e Condizioni", key="footer_term"):
+        st.session_state.pagina = 'termini'
+        st.rerun()
+
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
