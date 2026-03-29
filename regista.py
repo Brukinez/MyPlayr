@@ -47,7 +47,7 @@ def registra_clip(id_partita):
         if match_id_drive:
             id_puro = match_id.group(1)
             # NOTA: Qui costruiamo il link perfetto fin dall'inizio
-            link_diretto = f"https://drive.google.com{id_puro}/preview"
+            link_diretto = "https://drive.google.com/file/d/{id_video}/preview"
         else:
             link_diretto = link_web
 
