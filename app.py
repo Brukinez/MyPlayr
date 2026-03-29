@@ -23,23 +23,19 @@ supabase = st.session_state.supabase
 
 def make_direct_link(url):
     if not url or str(url).lower() in ("none", "nan", "null"): return None
-    import re
     s = str(url).strip()
     
-    # Cerchiamo l'ID (quella stringa che inizia con 1gim...)
+    # Estrae l'ID da qualsiasi link Google Drive (anche se manca lo slash o è rotto)
+    import re
     match = re.search(r"([a-zA-Z0-9_-]{25,})", s)
+    if "drive.google" in s and match:
+        return f"https://drive.google.com{match.group(1)}"
     
-    if match:
-        id_video = match.group(1)
-        # COSTRUZIONE PULITA: aggiungiamo noi i pezzi mancanti /file/d/ e /preview
-        return f"https://drive.google.com/file/d/{id_video}/preview"
+    # Se è Supabase
+    if not s.startswith("http"):
+        return f"https://zxgsbcswuchrwmdcmntg.supabase.co{s}"
     
     return s
-
-
-
-
-
 
 
 
@@ -849,12 +845,11 @@ elif st.session_state.pagina == 'admin':
                     with col_v_video:
                         _v = make_direct_link(partita.get("link_video"))
                         if _v:
-        # Usiamo la finestrella magica (Iframe) per Google Drive
-                            import streamlit.components.v1 as components
-                            components.iframe(_v, height=315, scrolling=False)
+                            st.video(_v)
                         else:
                             st.info("Video non ancora caricato sul Cloud.")
-
+        else:
+            st.info("Nessuna registrazione completata trovata nel database.")
             
     except Exception as e:
         st.error(f"Errore nel caricamento dell'archivio: {e}")
@@ -1098,9 +1093,9 @@ elif st.session_state.pagina == 'admin':
                     video_url = make_direct_link(partita.get("link_video"))  # URL caricato dal Mini PC (GDrive/S3/Cloud)
 
                     if video_url:
-                        # Usiamo l'Iframe per vedere il video senza errori online
-                        import streamlit.components.v1 as components
-                        components.iframe(video_url, height=450, scrolling=False)
+                        # Anteprima video per trovare il momento del goal
+                        st.video(video_url, format="video/mp4")
+                        
                         # BOX TAGLIO CLIP
                         with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
                             st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
@@ -1227,9 +1222,8 @@ elif st.session_state.pagina == 'profilo':
                 for i, clip in enumerate(res_c.data):
                     with cols_v[i % 2]:
                         v_u = make_direct_link(clip.get("link_video"))
-                        if video_url:
-                            import streamlit.components.v1 as components
-                            components.iframe(video_url, height=315, scrolling=False)
+                        if v_u:
+                            st.video(v_u)
             else: 
                 st.info("📺 Nessuna clip salvata nel tuo archivio.")
 
@@ -1331,8 +1325,8 @@ elif st.session_state.pagina == 'mie_clip':
                 with st.container():
                     if url_cloud:
                         # Anteprima Video
-                        import streamlit.components.v1 as components
-                        components.iframe(url_cloud, height=450, scrolling=False)
+                        st.video(url_cloud)
+                        
                         col_down, col_social = st.columns(2)
                         
                         with col_down:
@@ -1412,10 +1406,9 @@ if st.session_state.pagina == 'hall_of_fame':
 
                 # --- VISUALIZZAZIONE ---
                 with st.container():
-                    if link_per_player:
-                        import streamlit.components.v1 as components
-                        components.iframe(link_per_player, height=450, scrolling=False)
-
+                    st.video(link_per_player)
+                    gia_visti.append(nome_f)
+                    
                     # Recupero dati dell'autore (gestione sicura se Supabase restituisce una lista)
                     info_u = clip.get('utenti')
                     if isinstance(info_u, list): info_u = info_u[0] # Prende il primo se è una lista

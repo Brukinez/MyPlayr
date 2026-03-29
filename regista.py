@@ -45,9 +45,8 @@ def registra_clip(id_partita):
         print(f"🏁 4. TRASFORMAZIONE LINK E AGGIORNAMENTO SUPABASE...")
         match_id_drive = re.search(r"([a-zA-Z0-9_-]{25,})", link_web)
         if match_id_drive:
-            id_puro = match_id.group(1)
-            # NOTA: Qui costruiamo il link perfetto fin dall'inizio
-            link_diretto = "https://drive.google.com/file/d/{id_video}/preview"
+            id_puro = match_id_drive.group(1)
+            link_diretto = f"https://drive.google.com{id_puro}"
         else:
             link_diretto = link_web
 
