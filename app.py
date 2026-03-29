@@ -50,8 +50,7 @@ def make_direct_link(url):
             file_id = m.group(1)
     if not file_id:
         return s
-    return f"https://drive.google.com{id_video}/preview"
-
+    return f"https://drive.google.com/uc?export=download&id={file_id}"
 
 
 # --- BLOCCO STILE GLOBALE (EMERGENT STYLE) ---
