@@ -26,17 +26,16 @@ def make_direct_link(url):
     import re
     s = str(url).strip()
     
-    # 1. Cerchiamo l'ID (quella stringa lunga che inizia con 1gIm...)
-    # Questa regex è potentissima: trova l'ID ovunque sia nascosto
+    # Cerchiamo l'ID (quella stringa che inizia con 1gim...)
     match = re.search(r"([a-zA-Z0-9_-]{25,})", s)
     
     if match:
-        file_id = match.group(1)
-        # 2. COSTRUZIONE CHIRURGICA (con tutti gli slash / al posto giusto)
-        # Importante: non aggiungere spazi o cancellare i punti!
-        return f"https://drive.google.com{file_id}/preview"
+        id_video = match.group(1)
+        # COSTRUZIONE PULITA: aggiungiamo noi i pezzi mancanti /file/d/ e /preview
+        return f"https://drive.google.com{id_video}/preview"
     
     return s
+
 
 
 
