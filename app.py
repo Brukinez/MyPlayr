@@ -1408,7 +1408,7 @@ if st.session_state.pagina == 'recupero_password':
 
 # 2. FOOTER UNIVERSALE (AGGIORNATO MYCLIPZO)
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
+
 
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
