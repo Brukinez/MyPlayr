@@ -1387,41 +1387,18 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- 2. FOOTER UNIVERSALE (CHIRURGICO) ---
-
-# Questo piccolo pezzo serve a togliere il colore verde dai bottoni del footer
-st.markdown("""
-    <style>
-    div[data-testid="stButton"] > button {
-        background-color: transparent ! IMPORTANT;
-        color: #888 ! IMPORTANT;
-        border: none ! IMPORTANT;
-        padding: 0 ! IMPORTANT;
-        font-size: 14px ! IMPORTANT;
-    }
-    div[data-testid="stButton"] > button:hover {
-        color: #28a745 ! IMPORTANT;
-        text-decoration: underline ! IMPORTANT;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
+# 2. FOOTER UNIVERSALE (Appare in fondo a TUTTE le pagine)
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
-# Manteniamo la tua scritta originale
+# Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyPlayr - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali (Ora funzionanti)
+# Colonne per i link legali
 f_l, f_r = st.columns(2)
 with f_l: 
-    if st.button("📄 Privacy Policy", key="ft_priv"):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
+    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
 with f_r: 
-    # Usiamo un allineamento a destra simulato con uno spazio o colonne
-    if st.button("⚖️ Termini e Condizioni", key="ft_term"):
-        st.session_state.pagina = 'termini'
-        st.rerun()
+    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyPlayr - Tutti i diritti riservati</p>", unsafe_allow_html=True)
