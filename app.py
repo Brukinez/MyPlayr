@@ -1205,37 +1205,32 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- PAGINA PARTITE: INCROCIO CALENDARIO + VIDEO ---
+# --- BLOCCO: PAGINA PARTITE (VERSIONE FINALE TESTATA) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
     try:
-        # 1. Chiediamo al Calendario le partite concluse (stato FATTO)
-        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("data", desc=True).execute()
-        partite_concluse = res_cal.data if res_cal.data else []
+        res_matches = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        dati_partite = res_matches.data if res_matches.data else []
 
-        if not partite_concluse:
-            st.info("📌 Nessuna partita terminata trovata nel calendario.")
+        if not dati_partite:
+            st.info("📌 Nessuna partita trovata con stato 'FATTO'. Controlla Supabase!")
         else:
-            for partita in partite_concluse:
-                # 2. Per ogni partita, cerchiamo il video corrispondente nella tabella 'video'
-                # Cerchiamo un video che abbia nel nome l'ID della partita (es: match_123_...)
-                res_vid = supabase.table("video").select("*").ilike("nome_file", f"%match_{partita['id']}%").execute()
-                video_data = res_vid.data[0] if res_vid.data else None
-
+            for partita in dati_partite:
                 st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
                 
-                if video_data:
-                    link_diretto = video_data.get("url_video")
+                link_diretto = make_direct_link(partita.get("link_video"))
+
+                if link_diretto:
                     st.video(link_diretto, format="video/mp4")
-                    st.success(f"✅ Video caricato correttamente: {video_data['nome_file']}")
+                    with st.expander("✂️ CREA CLIP"):
+                        st.write("Inserisci i tempi e clicca su Genera")
                 else:
-                    st.warning("⏳ Il match è finito, ma il file video non è ancora stato archiviato nella tabella Video.")
+                    st.warning("⏳ Link video non disponibile (manca su Supabase o non è ancora pronto).")
                 st.divider()
 
     except Exception as e:
-        st.error(f"⚠️ Errore nel caricamento: {e}")
-
+        st.error(f"Errore: {e}")
 
 
 # --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
