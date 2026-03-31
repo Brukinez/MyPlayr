@@ -2,7 +2,7 @@ import os
 import time
 import subprocess
 from datetime import datetime
-from database import supabase  # Assicurati che database.py sia nella stessa cartella
+from database import supabase  # Assicuratevi che database.py sia nella stessa cartella
 
 # --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,7 +19,7 @@ def registra_clip(id_partita):
     
     print(f"🔴 1. AVVIO REGISTRAZIONE FISICA: {nome_file}...")
 
-    # COMANDO FFmpeg (30 secondi di test - verifica il nome della tua webcam!)
+    # COMANDO FFmpeg (30 secondi di test)
     command = [
         'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
         '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
@@ -32,7 +32,6 @@ def registra_clip(id_partita):
 
         # Step 2: Caricamento su Google Drive
         print(f"🚀 2. CARICAMENTO SU CLOUD...")
-        # NOTA: Assicurati che "remote:CLIP_MYPLAYR" esista in Rclone
         subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
         
         # Step 3: Generazione Link Pubblico
@@ -41,35 +40,43 @@ def registra_clip(id_partita):
                                   capture_output=True, text=True, check=True)
         link_web = res_link.stdout.strip()
 
-                # Step 4: TRASFORMAZIONE LINK E AGGIORNAMENTO SUPABASE
-        # Puliamo il link di Drive per renderlo uno streaming diretto per l'app
+        # Step 4: TRASFORMAZIONE LINK PER STREAMING DIRETTO
+        # Trasformiamo il link di Drive in un formato che il sito può "leggere" come video
         link_diretto = link_web.replace('/view?usp=drivesdk', '').replace('/view', '').replace('file/d/', 'uc?export=download&id=')
         
+        # --- NUOVA PARTE: SCRITTURA NELLA TABELLA VIDEO ---
+        print(f"💾 4. SALVATAGGIO NEL DATABASE...")
+        
+        # Inseriamo il video nella tabella 'video' (quella che leggerà il sito)
+        supabase.table("video").insert({
+            "nome_file": nome_file,
+            "url_video": link_diretto,
+            "descrizione": f"Registrazione Match ID {id_partita}"
+        }).execute()
+
+        # Aggiorniamo anche il calendario per dire che è 'FATTO'
         supabase.table("calendario").update({
             "evento": nome_file, 
             "link_video": link_diretto, 
-            "stato": "FATTO" # Usiamo 'FATTO' così l'app lo riconosce subito
+            "stato": "FATTO" 
         }).eq("id", id_partita).execute()
         
-        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online con link diretto!")
+        print(f"🏁 PROCESSO FINITO: Video salvato e Match {id_partita} online!")
         return True
 
     except Exception as e:
-        print(f"❌ ERRORE CRITICO DURANTE REGISTRAZIONE/UPLOAD: {e}")
-        # Se fallisce, mettiamo lo stato a ERRORE per diagnostica
+        print(f"❌ ERRORE CRITICO: {e}")
         supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
         return False
-
 
 def monitor():
     print("🚀 MOTORE MyPlayr LIVE ATTIVO. In ascolto su Supabase...")
     while True:
         try:
             now = datetime.now()
-            data_oggi = now.strftime("%d-%m-%Y")
+            data_oggi = now.strftime("%d-%m-%Y") # Assicurati che il formato sia uguale a Supabase
             ora_attuale = now.strftime("%H:%M")
             
-            # 🔎 CERCA MATCH DA INIZIARE ORA
             response = supabase.table("calendario")\
                 .select("*")\
                 .eq("data", data_oggi)\
@@ -83,21 +90,15 @@ def monitor():
                 match = match_list[0]
                 id_p = match['id']
                 print(f"🎬 MATCH TROVATO! ID: {id_p} - Ore: {ora_attuale}")
-                
-                # CAMBIAMO SUBITO LO STATO per evitare che il loop lo trovi di nuovo mentre registra
                 supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", id_p).execute()
-                
-                # Avviamo il processo (Registra -> Carica -> Link -> Fatto)
                 registra_clip(id_p)
             else:
-                # Debug silenzioso ogni 30 secondi
-                print(f"😴 {ora_attuale} - Nessun match. Tutto tranquillo.")
+                print(f"😴 {ora_attuale} - Nessun match in programma ora.")
             
         except Exception as e:
-            print(f"⚠️ Errore di connessione o Database: {e}")
+            print(f"⚠️ Errore: {e}")
             
-        time.sleep(30) # Controllo ogni 30 secondi
+        time.sleep(30)
 
 if __name__ == "__main__":
     monitor()
-
