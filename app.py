@@ -1222,6 +1222,7 @@ if st.session_state.pagina == 'partite':
                 link_diretto = make_direct_link(partita.get("link_video"))
 
                 if link_diretto:
+                    st.write("Link del video:", link_diretto)  # <-- Ecco qui, aggiunto per vedere il link
                     st.video(link_diretto, format="video/mp4")
                     with st.expander("✂️ CREA CLIP"):
                         st.write("Inserisci i tempi e clicca su Genera")
