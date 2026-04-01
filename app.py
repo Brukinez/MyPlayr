@@ -1205,36 +1205,61 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- PAGINA PARTITE: INCROCIO CALENDARIO + VIDEO ---
+# --- NUOVO BLOCCO: PAGINA PARTITE (INTEGRATO E TESTATO) ---
 if st.session_state.pagina == 'partite':
     st.title("🏟️ Archivio Partite MyPlayr")
     
-    try:
-        # 1. Chiediamo al Calendario le partite concluse (stato FATTO)
-        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("data", desc=True).execute()
-        partite_concluse = res_cal.data if res_cal.data else []
+    # Assicurati di avere questo import in alto nel file app.py:
+    # import streamlit.components.v1 as components
 
-        if not partite_concluse:
+    try:
+        # 1. Recuperiamo i match che hanno lo stato 'FATTO' dal calendario
+        match_resp = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .execute()
+
+        match_list = match_resp.data or []
+
+        if not match_list:
             st.info("📌 Nessuna partita terminata trovata nel calendario.")
         else:
-            for partita in partite_concluse:
-                # 2. Per ogni partita, cerchiamo il video corrispondente nella tabella 'video'
-                # Cerchiamo un video che abbia nel nome l'ID della partita (es: match_123_...)
-                res_vid = supabase.table("video").select("*").ilike("nome_file", f"%match_{partita['id']}%").execute()
-                video_data = res_vid.data[0] if res_vid.data else None
-
-                st.subheader(f"📅 Gara del {partita['data']} - Ore {partita['ora']}")
+            # 2. Ciclo per ogni partita trovata
+            for partita in match_list:
+                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
                 
-                if video_data:
-                    link_diretto = video_data.get("url_video")
-                    st.video(link_diretto, format="video/mp4")
-                    st.success(f"✅ Video caricato correttamente: {video_data['nome_file']}")
+                # Cerchiamo il video corrispondente (match_ID_...)
+                id_cercato = f"match_{partita['id']}_"
+                
+                video_resp = supabase.table("video")\
+                    .select("*")\
+                    .like("nome_file", f"%{id_cercato}%")\
+                    .limit(1).execute()
+
+                video = video_resp.data[0] if video_resp.data else None
+
+                if video and video.get("url_video"):
+                    # TRUCCO: Trasformiamo il link di Drive per l'Iframe
+                    # (Se il link è già /preview lo lascia così, altrimenti lo corregge)
+                    url_video = video["url_video"].replace("/view", "/preview")
+                    
+                    st.write(f"🎬 Video: {video['nome_file']}")
+                    
+                    # Usiamo l'Iframe di Google Drive (molto più stabile di st.video)
+                    st.components.v1.iframe(url_video, height=450)
+                    
+                    with st.expander("✂️ DETTAGLI"):
+                        st.write(f"ID Partita: {partita['id']}")
+                        st.write(f"ID Video: {video['id']}")
                 else:
-                    st.warning("⏳ Il match è finito, ma il file video non è ancora stato archiviato nella tabella Video.")
+                    st.warning("⏳ Il video di questo match non è ancora stato archiviato.")
+                
                 st.divider()
 
     except Exception as e:
-        st.error(f"⚠️ Errore nel caricamento: {e}")
+        st.error(f"⚠️ Errore nel caricamento delle partite: {e}")
+
 
 
 
