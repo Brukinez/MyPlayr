@@ -1271,80 +1271,62 @@ if st.session_state.pagina == 'partite':
 
 
 
-# --- BLOCCO: PAGINA LE MIE CLIP (PERSONALE - SUPABASE READY) ---
+# --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA COOKIE/IFRAME) ---
+if st.session_state.pagina == 'partite':
+    import re
+    import streamlit.components.v1 as components
+    
+    st.title("🏟️ Archivio Partite MyPlayr")
+    st.info("💡 Se il riquadro video appare nero, usa il tasto azzurro sotto per guardare il match.")
 
-elif st.session_state.pagina == 'mie_clip':
-    st.markdown("<h2 style='text-align: center;'>🎞️ I Tuoi Highlight Personali</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 14px;'>Qui trovi tutte le azioni che hai tagliato. Scaricale o rendile pubbliche!</p>", unsafe_allow_html=True)
-    
-    # 1. RECUPERO CLIP DALL'ACCOUNT UTENTE
-    # Filtriamo su Supabase per l'email dell'utente loggato
-    email_utente_loggato = st.session_state.user_email.strip().lower()
-    
+    # Funzione "Cervello": pulisce i link e crea i due formati necessari
+    def prepara_link_video(link_grezzo):
+        if not link_grezzo: return None, None
+        # Estraiamo l'ID del video con una Regex potente
+        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link_grezzo)
+        if match:
+            video_id = match.group(1) or match.group(2)
+            # Creiamo i due link: uno per il sito (preview) e uno di riserva (view)
+            url_embed = f"https://google.com{video_id}/preview"
+            url_riserva = f"https://google.com{video_id}/view"
+            return url_embed, url_riserva
+        return link_grezzo, link_grezzo
+
     try:
-        res_mie_clip = supabase.table("calendario")\
-            .select("*")\
-            .eq("stato", "CLIP_UTENTE")\
-            .eq("campo", email_utente_loggato)\
-            .order("id", desc=True)\
-            .execute()
-        
-        elenco_clip = res_mie_clip.data if res_mie_clip.data else []
+        # 1. Recuperiamo i match 'FATTO' dal calendario
+        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        partite_concluse = res_cal.data if res_cal.data else []
 
-        if elenco_clip:
-            for clip in elenco_clip:
-                url_cloud = make_direct_link(clip.get("link_video"))  # URL pubblico generato dal Mini PC
-                id_clip = clip.get('id')
-                
-                with st.container():
-                    if url_cloud:
-                        # Anteprima Video
-                        st.video(url_cloud)
-                        
-                        col_down, col_social = st.columns(2)
-                        
-                        with col_down:
-                            # TASTO DOWNLOAD PROFESSIONALE
-                            # Usiamo un link HTML perché st.download_button con URL esterni è instabile
-                            st.markdown(f"""
-                                <a href="{url_cloud}" download="MyPlayr_Clip_{id_clip}.mp4" target="_blank" style="text-decoration: none;">
-                                    <div style="text-align: center; background-color: #28a745; color: white; 
-                                         padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                                        📥 SCARICA SUL TELEFONO
-                                    </div>
-                                </a>
-                            """, unsafe_allow_html=True)
-                            
-                        with col_social:
-                            # GESTIONE CONSENSO HALL OF FAME
-                            # Leggiamo il valore attuale dal database (1 = Sì, 0 = No)
-                            consenso_attuale = True if clip.get('consenso_social', 0) == 1 else False
-                            
-                            nuovo_consenso = st.toggle(
-                                "Pubblica in Hall of Fame 🏆", 
-                                value=consenso_attuale, 
-                                key=f"tog_social_{id_clip}"
-                            )
-                            
-                            # Se l'utente cambia l'interruttore, aggiorniamo Supabase istantaneamente
-                            if nuovo_consenso != consenso_attuale:
-                                valore_db = 1 if nuovo_consenso else 0
-                                supabase.table("calendario").update({"consenso_social": valore_db}).eq("id", id_clip).execute()
-                                st.toast("✅ Preferenze social aggiornate!", icon="✨")
-                                time.sleep(0.5)
-                                st.rerun()
-                        
-                        if consenso_attuale:
-                            st.caption("✨ Questa clip è visibile a tutti nella Hall of Fame.")
-                    else:
-                        st.info(f"⏳ Clip #{id_clip} in fase di elaborazione... Il Mini PC la caricherà tra poco.")
-                    
-                    st.divider()
+        if not partite_concluse:
+            st.info("📌 Nessuna partita terminata trovata nel calendario.")
         else:
-            st.info("💡 Non hai ancora creato nessuna clip. Vai nella sezione 'Partite' per tagliare i tuoi momenti migliori!")
+            for partita in partite_concluse:
+                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
+
+                # 2. Cerchiamo il video nella tabella 'video' usando l'ID del match
+                id_cercato = f"match_{partita['id']}_"
+                res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
+                video_data = res_vid.data[0] if res_vid.data else None
+
+                if video_data and video_data.get("url_video"):
+                    # Trasformiamo il link "al volo" per gestire i cookie del browser
+                    url_embed, url_riserva = prepara_link_video(video_data["url_video"])
+                    
+                    st.write(f"🎬 Video: {video_data['nome_file']}")
+                    
+                    # PLAYER 1: Iframe (Funziona se i cookie sono attivi o in incognito)
+                    components.iframe(url_embed, height=480, scrolling=False)
+                    
+                    # PLAYER 2: Tasto di emergenza (Infallibile, apre in nuova scheda)
+                    st.link_button("▶️ Guarda a tutto schermo (se il riquadro sopra è nero)", url_riserva, use_container_width=True)
+                else:
+                    st.warning("⏳ Il video di questo match è in fase di elaborazione su Google Drive.")
+                
+                st.divider()
 
     except Exception as e:
-        st.error(f"Errore nel caricamento delle tue clip: {e}")
+        st.error(f"⚠️ Errore nel caricamento: {e}")
+
 
 
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
