@@ -3,27 +3,36 @@ import subprocess
 import time
 from datetime import datetime
 from database import supabase
+import re
 
-# Configurazione percorsi
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe"  # Modifica con il tuo percorso rclone
+RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe"  # Modifica con il tuo percorso
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)
 
+def estrai_id_video(link_drive):
+    """
+    Estrae l'ID file da un link Google Drive generico.
+    """
+    match = re.search(r"/file/d/([a-zA-Z0-9_-]+)", link_drive)
+    if match:
+        return match.group(1)
+    # Prova anche a cercare id nei parametri ?id=...
+    import urllib.parse
+    parsed = urllib.parse.urlparse(link_drive)
+    params = urllib.parse.parse_qs(parsed.query)
+    if "id" in params:
+        return params["id"][0]
+    return None
 
-def trasforma_link_drive(link):
+
+def costruisci_link_preview(video_id):
     """
-    Trasforma un link Google Drive in formato preview per embedding.
-    Es: https://drive.google.com/file/d/ID/view?usp=sharing  ->  https://drive.google.com/file/d/ID/preview
+    Costruisce il link embed preview da ID video Google Drive.
     """
-    if "/view" in link:
-        return link.replace("/view", "/preview")
-    elif "usp=sharing" in link:
-        return link.replace("usp=sharing", "preview")
-    else:
-        return link
+    return f"https://drive.google.com/file/d/{video_id}/preview"
 
 
 def registra_e_carica(id_partita):
@@ -49,7 +58,12 @@ def registra_e_carica(id_partita):
                              capture_output=True, text=True, check=True)
         link_drive = res.stdout.strip()
 
-        link_embed = trasforma_link_drive(link_drive)
+        video_id = estrai_id_video(link_drive)
+        if not video_id:
+            print("Errore: non ho potuto estrarre l'ID video da Google Drive.")
+            return False
+
+        link_embed = costruisci_link_preview(video_id)
 
         # Salva nuovo record nella tabella video
         supabase.table("video").insert({
@@ -65,7 +79,7 @@ def registra_e_carica(id_partita):
             "stato": "FATTO"
         }).eq("id", id_partita).execute()
 
-        print(f"Upload completato, link salvato: {link_embed}")
+        print(f"Upload completato, link embed salvato: {link_embed}")
 
         return True
 
@@ -95,12 +109,8 @@ def monitor():
                 partita = match_list[0]
                 id_p = partita['id']
                 print(f"Trovato match da registrare: ID {id_p}")
-
-                # Cambia stato in REGISTRAZIONE per evitare doppioni
                 supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", id_p).execute()
-
                 registra_e_carica(id_p)
-
             else:
                 print(f"Nessun match da registrare alle {ora_attuale}")
 
@@ -108,7 +118,6 @@ def monitor():
             print(f"Errore monitor: {err}")
 
         time.sleep(30)
-
 
 if __name__ == "__main__":
     monitor()
