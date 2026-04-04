@@ -512,28 +512,6 @@ if st.session_state.autenticato:
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
 
-# --- AGGIUNGI QUESTI DENTRO IL TUO ELENCO DI IF/ELIF PAGINE ---
-
-elif st.session_state.pagina == 'privacy':
-    st.title("🛡️ Privacy Policy")
-    st.markdown("""
-    ### Informativa Privacy MyClipzo
-    Qui incolla il tuo testo. Le triple virgolette permettono 
-    di scrivere su più righe senza errori.
-    """)
-    if st.button("🔙 Torna Indietro"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
-elif st.session_state.pagina == 'termini':
-    st.title("⚖️ Termini e Condizioni")
-    st.markdown("""
-    ### Termini di Servizio
-    Qui incolla il testo dei termini legali.
-    """)
-    if st.button("🔙 Torna Indietro"):
-        st.session_state.pagina = 'home'
-        st.rerun()
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
@@ -617,6 +595,28 @@ if st.session_state.pagina == 'home':
             </div>
         """, unsafe_allow_html=True)
 
+# --- AGGIUNGI QUESTI DENTRO IL TUO ELENCO DI IF/ELIF PAGINE ---
+
+elif st.session_state.pagina == 'privacy':
+    st.title("🛡️ Privacy Policy")
+    st.markdown("""
+    ### Informativa Privacy MyClipzo
+    Qui incolla il tuo testo. Le triple virgolette permettono 
+    di scrivere su più righe senza errori.
+    """)
+    if st.button("🔙 Torna Indietro"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
+elif st.session_state.pagina == 'termini':
+    st.title("⚖️ Termini e Condizioni")
+    st.markdown("""
+    ### Termini di Servizio
+    Qui incolla il testo dei termini legali.
+    """)
+    if st.button("🔙 Torna Indietro"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
