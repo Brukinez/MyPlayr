@@ -329,7 +329,7 @@ def get_utente_per_email(email):
     email_clean = email.strip().lower()
     try:
         # Cerchiamo nella tabella 'utenti' l'email corrispondente
-        res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
+        res = supabase.table("video").select("*").order("id", desc=True).execute()
         
         # Se res.data ha qualcosa, restituiamo il primo (e unico) risultato
         return res.data[0] if res.data else None
@@ -387,7 +387,7 @@ def ottieni_dati_profilo(email):
         email_clean = email.strip().lower()
         
         # Interroga Supabase
-        res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
+        res = supabase.table("video").select("*").order("id", desc=True).execute()
         
         # Se trova l'utente, restituisce il primo risultato della lista [0]
         if res.data:
