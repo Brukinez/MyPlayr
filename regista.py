@@ -38,6 +38,7 @@ def costruisci_link_preview(video_id):
 def registra_e_carica(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
+    path_locale = os.path.join(VIDEO_DIR, nome_file)
     # 1. Definiamo il percorso (usiamo un nome solo!)
     percorso_completo = os.path.join(VIDEO_DIR, nome_file)
 
