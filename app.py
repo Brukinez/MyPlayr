@@ -1406,7 +1406,8 @@ if st.session_state.pagina == 'recupero_password':
 # --- PAGINA PRIVACY ---
 if st.session_state.pagina == 'privacy':
     st.title("🛡️ Privacy Policy")
-    st.write("Qui va il testo della tua Privacy Policy...")
+    st.write("PRIVACY POLICY " \
+    "1. Titolare del Trattamento")
     if st.button("🔙 Torna alla Home"):
         st.session_state.pagina = 'home' # o la pagina che preferisci
         st.rerun()
