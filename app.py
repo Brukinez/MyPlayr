@@ -1394,42 +1394,6 @@ if st.session_state.pagina not in ['home', 'home_auth']:
             st.session_state.pagina = 'home'
         st.rerun()
 
-# --- CODICE PER IL FOOTER CLICCABILE (Senza riavvio login) ---
-st.markdown("""
-    <style>
-    .element-container:has(button.st-key-footer_priv), 
-    .element-container:has(button.st-key-footer_term) {
-        display: inline-block;
-        width: auto;
-    }
-    div.stButton > button[kind="secondary"] {
-        border: none;
-        background: transparent;
-        color: #888; /* Colore grigio come il tuo footer originale */
-        padding: 0;
-        margin: 0;
-        font-size: 14px;
-        text-decoration: underline; /* Opzionale: toglilo se non vuoi la sottolineatura */
-    }
-    div.stButton > button:hover {
-        color: white; /* Diventa bianco quando ci passi sopra */
-        background: transparent;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-f_l, f_r = st.columns(2)
-
-with f_l: 
-    if st.button("📄 Privacy Policy", key="footer_priv"):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
-
-with f_r: 
-    # Per allineare a destra usiamo un trucco di spazi o CSS, per ora lo teniamo semplice
-    if st.button("⚖️ Termini e Condizioni", key="footer_term"):
-        st.session_state.pagina = 'termini'
-        st.rerun()
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
