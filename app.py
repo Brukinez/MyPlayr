@@ -1409,12 +1409,20 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali
+# --- Modifica al tuo BLOCCO 2: FOOTER ---
 f_l, f_r = st.columns(2)
+
 with f_l: 
-    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+    # Questo sostituisce la tua riga "📄 Privacy Policy"
+    if st.button("📄 Privacy Policy", key="btn_footer_priv", use_container_width=True):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
+
 with f_r: 
-    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+    # Questo sostituisce la tua riga "⚖️ Termini e Condizioni"
+    if st.button("⚖️ Termini e Condizioni", key="btn_footer_term", use_container_width=True):
+        st.session_state.pagina = 'termini'
+        st.rerun()
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
