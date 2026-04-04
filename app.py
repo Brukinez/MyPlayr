@@ -1403,47 +1403,19 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- PAGINE DI TESTO LEGALE (Inseriscile prima del footer) ---
-if st.session_state.pagina == 'privacy':
-    st.title("🛡️ Privacy Policy")
-    st.markdown("""
-    ### Informativa sulla Privacy
-    Qui incolla il tuo testo. 
-    Usando le triple virgolette all'inizio e alla fine, 
-    puoi andare a capo liberamente senza errori.
-    """)
-    if st.button("🔙 Torna Indietro", key="back_priv"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
-elif st.session_state.pagina == 'termini':
-    st.title("⚖️ Termini e Condizioni")
-    st.markdown("""
-    ### Termini di Servizio
-    Qui incolla il tuo testo per i termini.
-    Ricorda di non cancellare le triple virgolette!
-    """)
-    if st.button("🔙 Torna Indietro", key="back_term"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
 # 2. FOOTER UNIVERSALE (Appare in fondo a TUTTE le pagine)
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# --- Modifica al tuo BLOCCO 2: FOOTER ---
+# Colonne per i link legali
 f_l, f_r = st.columns(2)
-
 with f_l: 
-    # Questo sostituisce la tua riga "📄 Privacy Policy"
-    if st.button("📄 Privacy Policy", key="btn_footer_priv", use_container_width=True):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
-
+    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
 with f_r: 
-    # Questo sostituisce la tua riga "⚖️ Termini e Condizioni"
-    if st.button("⚖️ Termini e Condizioni", key="btn_footer_term", use_container_width=True):
-        st.session_state.pagina = 'termini'
-        st.rerun()
+    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+
+# Copyright finale centrato
+st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
+
