@@ -511,7 +511,31 @@ if st.session_state.autenticato:
             
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
+# --- AGGIUNTA PAGINE LEGALI NELLA LOGICA DI NAVIGAZIONE ---
+elif st.session_state.pagina == 'privacy':
+    st.title("🛡️ Privacy Policy")
+    st.markdown("""
+    ### Informativa sulla Privacy di MyClipzo
+    Il presente documento descrive come trattiamo i tuoi dati e i tuoi video.
+    1. **Dati raccolti**: Email e registrazioni video dei match.
+    2. **Finalità**: Analisi tecnica e archivio sportivo.
+    3. **Sicurezza**: I dati sono salvati su database protetti (Supabase).
+    """)
+    if st.button("🔙 Torna alla Home", key="p_back"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
+elif st.session_state.pagina == 'termini':
+    st.title("⚖️ Termini e Condizioni")
+    st.markdown("""
+    ### Termini di Servizio MyClipzo
+    1. **Uso del servizio**: Il sistema registra i match pianificati.
+    2. **Responsabilità**: L'utente è responsabile dei contenuti caricati.
+    3. **Proprietà**: I video appartengono agli atleti e alla struttura.
+    """)
+    if st.button("🔙 Torna alla Home", key="t_back"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
@@ -595,28 +619,6 @@ if st.session_state.pagina == 'home':
             </div>
         """, unsafe_allow_html=True)
 
-# --- AGGIUNGI QUESTI DENTRO IL TUO ELENCO DI IF/ELIF PAGINE ---
-
-elif st.session_state.pagina == 'privacy':
-    st.title("🛡️ Privacy Policy")
-    st.markdown("""
-    ### Informativa Privacy MyClipzo
-    Qui incolla il tuo testo. Le triple virgolette permettono 
-    di scrivere su più righe senza errori.
-    """)
-    if st.button("🔙 Torna Indietro"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
-elif st.session_state.pagina == 'termini':
-    st.title("⚖️ Termini e Condizioni")
-    st.markdown("""
-    ### Termini di Servizio
-    Qui incolla il testo dei termini legali.
-    """)
-    if st.button("🔙 Torna Indietro"):
-        st.session_state.pagina = 'home'
-        st.rerun()
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
