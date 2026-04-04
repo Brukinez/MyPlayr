@@ -1394,6 +1394,8 @@ if st.session_state.pagina not in ['home', 'home_auth']:
             st.session_state.pagina = 'home'
         st.rerun()
 
+
+# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 # --- PAGINA PRIVACY POLICY ---
 if st.session_state.pagina == 'privacy':
     st.markdown("<h1 style='text-align: center;'>🛡️ Privacy Policy</h1>", unsafe_allow_html=True)
@@ -1430,8 +1432,6 @@ elif st.session_state.pagina == 'termini':
     if st.button("🔙 Torna alla Home", key="back_home_term"):
         st.session_state.pagina = 'home'
         st.rerun()
-
-# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
 # 1. GESTIONE PAGINE MINORI (Recupero Password)
 if st.session_state.pagina == 'recupero_password': 
