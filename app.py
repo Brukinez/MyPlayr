@@ -1205,34 +1205,33 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- NUOVO BLOCCO: PAGINA PARTITE (VERSIONE AUTOMATICA CON AUTO-FIX LINK) ---
+# =================================================================
+# PAGINA PARTITE: VERSIONE DEFINITIVA UNIFICATA (NO RIPETIZIONI)
+# =================================================================
 if st.session_state.pagina == 'partite':
     import re
     import streamlit.components.v1 as components
     
     st.title("🏟️ Archivio Partite MyPlayr")
 
-    # Funzione interna per pulire i link (vecchi e nuovi)
-    def pulisci_link_drive(link):
-        if not link: return None
-        # Se il link è già nel formato /preview, lo lasciamo così
-        if "/preview" in link: return link
-        # Se è un link standard, estraiamo l'ID e creiamo il formato /preview
-        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link)
+    # 1. FUNZIONE DI PULIZIA LINK (SISTEMA I VECCHI E I NUOVI LINK)
+    def prepara_link_video_completo(link_grezzo):
+        if not link_grezzo: return None, None
+        # Estraiamo l'ID del video con una Regex sicura
+        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link_grezzo)
         if match:
-            video_id = match.group(1) or match.group(2)
-            return f"https://drive.google.com/file/d/{video_id}/preview"
-        return link
+            v_id = match.group(1) or match.group(2)
+            # URL per l'iframe interno
+            url_emb = f"https://google.com{v_id}/preview"
+            # URL per l'apertura esterna (Tasto Emergenza)
+            url_est = f"https://google.com{v_id}/view"
+            return url_emb, url_est
+        return link_grezzo, link_grezzo
 
     try:
-        # 1. Prendiamo i match 'FATTO' dal calendario
-        match_resp = supabase.table("calendario")\
-            .select("*")\
-            .eq("stato", "FATTO")\
-            .order("id", desc=True)\
-            .execute()
-
-        match_list = match_resp.data or []
+        # 2. RECUPERO MATCH DAL CALENDARIO
+        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        match_list = res_cal.data or []
 
         if not match_list:
             st.info("📌 Nessuna partita terminata trovata nel calendario.")
@@ -1240,118 +1239,61 @@ if st.session_state.pagina == 'partite':
             for partita in match_list:
                 st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
 
-                # 2. Cerchiamo il video corrispondente nella tabella video
-                nome_cercato = f"match_{partita['id']}_"
-                video_resp = supabase.table("video")\
-                    .select("*")\
-                    .like("nome_file", f"%{nome_cercato}%")\
-                    .limit(1).execute()
-
-                video = video_resp.data[0] if video_resp.data else None
-
-                if video and video.get("url_video"):
-                    # TRUCCO: Puliamo il link "al volo" per attivare il player di Google
-                    url_embed = pulisci_link_drive(video["url_video"])
-                    
-                    st.write(f"🎬 Video: {video['nome_file']}")
-                    
-                    # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
-                    components.iframe(url_embed, height=480, scrolling=False)
-                    
-                    st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
-                else:
-                    st.warning("⏳ Video in fase di caricamento o non trovato.")
-                
-                st.divider()
-
-    except Exception as e:
-        st.error(f"⚠️ Errore nel caricamento: {e}")
-
-
-
-
-
-# --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
-if st.session_state.pagina == 'partite':
-    import re
-    import streamlit.components.v1 as components
-    
-    st.title("🏟️ Archivio Partite MyPlayr")
-
-    def prepara_link_video(link_grezzo):
-        if not link_grezzo: return None, None
-        # Estraiamo l'ID del video
-        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link_grezzo)
-        if match:
-            video_id = match.group(1) or match.group(2)
-            # Link per il riquadro interno (spesso bloccato dai cookie)
-            url_embed = f"https://google.com{video_id}/preview"
-            # Link per l'apertura esterna (FUNZIONA SEMPRE)
-            url_esterno = f"https://google.com{video_id}/view"
-            return url_embed, url_esterno
-        return link_grezzo, link_grezzo
-
-    try:
-        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
-        partite_concluse = res_cal.data if res_cal.data else []
-
-        if not partite_concluse:
-            st.info("📌 Nessuna partita terminata trovata.")
-        else:
-            for partita in partite_concluse:
-                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
-
+                # 3. CERCHIAMO IL VIDEO NELLA TABELLA VIDEO
                 id_cercato = f"match_{partita['id']}_"
                 res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
                 video_data = res_vid.data[0] if res_vid.data else None
 
+                # 4. SE IL VIDEO ESISTE, MOSTRIAMO PLAYER E MODULO TAGLIO
                 if video_data and video_data.get("url_video"):
-                    url_embed, url_esterno = prepara_link_video(video_data["url_video"])
-                                    # --- INIZIO MODULO TAGLIO CLIP ---
-                    with st.expander("✂️ CREA LA TUA CLIP (Massimo 60 secondi)"):
-                        st.write("Scegli il minuto di inizio e la durata della tua azione preferita.")
-                        
-                        c1, c2, c3 = st.columns(3)
-                        with c1:
-                            min_in = st.number_input("Minuto", 0, 120, key=f"min_{partita['id']}")
-                        with c2:
-                            sec_in = st.number_input("Secondo", 0, 59, key=f"sec_{partita['id']}")
-                        with c3:
-                            dur_clip = st.number_input("Durata (sec)", 5, 60, 15, key=f"dur_{partita['id']}")
+                    u_embed, u_esterno = prepara_link_video_completo(video_data["url_video"])
+                    
+                    # PLAYER INTERNO (IFRAME)
+                    components.iframe(u_embed, height=480, scrolling=False)
+                    
+                    # TASTO EMERGENZA (SOTTO IL VIDEO)
+                    st.link_button("▶️ GUARDA A TUTTO SCHERMO (Se sopra è nero)", u_esterno, use_container_width=True)
+                    st.caption("ℹ️ Se il video non carica, usa il tasto azzurro sopra.")
 
-                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_clip_{partita['id']}", use_container_width=True):
-                            inizio_totale = (min_in * 60) + sec_in
-                            email_u = st.session_state.get('user_email', 'ospite@myplayr.it')
+                    # --- INIZIO MODULO TAGLIO CLIP (ALLINEATO AL VIDEO) ---
+                    with st.expander("✂️ CREA LA TUA CLIP (Massimo 60 secondi)"):
+                        st.write("Scegli il momento dell'azione e clicca su Genera.")
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            m_in = st.number_input("Minuto", 0, 120, key=f"m_{partita['id']}")
+                        with col2:
+                            s_in = st.number_input("Secondo", 0, 59, key=f"s_{partita['id']}")
+                        with col3:
+                            d_cl = st.number_input("Durata (sec)", 5, 60, 15, key=f"d_{partita['id']}")
+
+                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_{partita['id']}", use_container_width=True):
+                            in_tot = (m_in * 60) + s_in
+                            mail = st.session_state.get('user_email', 'ospite@myplayr.it')
                             
                             with st.spinner("✂️ Taglio in corso... attendi qualche secondo."):
-                                # Usiamo 'video_data' se è così che hai chiamato la variabile nel tuo ciclo
-                                video_nome_file = video_data['nome_file'] if 'video_data' in locals() else partita.get('evento')
-                                
-                                nuovo_link = taglia_e_registra_clip(
-                                    video_nome=video_nome_file, 
-                                    inizio_sec=inizio_totale, 
-                                    durata_sec=dur_clip, 
-                                    utente_email=email_u,
-                                    id_partita=partita['id']
-                                )
-                                
-                                if nuovo_link:
-                                    st.success("✅ Clip creata con successo! La trovi nella sezione 'Le Mie Clip'.")
+                                # Verifichiamo che la funzione esista nel file
+                                if 'taglia_e_registra_clip' in globals():
+                                    nuovo = taglia_e_registra_clip(
+                                        video_nome=video_data['nome_file'], 
+                                        inizio_sec=in_tot, 
+                                        durata_sec=d_cl, 
+                                        utente_email=mail, 
+                                        id_partita=partita['id']
+                                    )
+                                    if nuovo:
+                                        st.success("✅ Clip creata! La trovi in 'Le Mie Clip'.")
+                                else:
+                                    st.error("❌ Errore: La funzione di taglio non è definita all'inizio del file app.py.")
                     # --- FINE MODULO TAGLIO CLIP ---
-    
-                    # 1. Tentativo di visualizzazione interna
-                    components.iframe(url_embed, height=480)
-                    
-                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
-                    st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
-                    st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
+
                 else:
                     st.warning("⏳ Video non ancora disponibile per questo match.")
                 
                 st.divider()
 
     except Exception as e:
-        st.error(f"⚠️ Errore: {e}")
+        st.error(f"⚠️ Errore nel caricamento delle partite: {e}")
+
 
 
 
