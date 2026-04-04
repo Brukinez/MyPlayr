@@ -1396,31 +1396,6 @@ if st.session_state.pagina not in ['home', 'home_auth']:
 
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
-# --- AGGIUNTA PAGINE LEGALI NELLA LOGICA DI NAVIGAZIONE ---
-elif st.session_state.pagina == 'privacy':
-    st.title("🛡️ Privacy Policy")
-    st.markdown("""
-    ### Informativa sulla Privacy di MyClipzo
-    Il presente documento descrive come trattiamo i tuoi dati e i tuoi video.
-    1. **Dati raccolti**: Email e registrazioni video dei match.
-    2. **Finalità**: Analisi tecnica e archivio sportivo.
-    3. **Sicurezza**: I dati sono salvati su database protetti (Supabase).
-    """)
-    if st.button("🔙 Torna alla Home", key="p_back"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
-elif st.session_state.pagina == 'termini':
-    st.title("⚖️ Termini e Condizioni")
-    st.markdown("""
-    ### Termini di Servizio MyClipzo
-    1. **Uso del servizio**: Il sistema registra i match pianificati.
-    2. **Responsabilità**: L'utente è responsabile dei contenuti caricati.
-    3. **Proprietà**: I video appartengono agli atleti e alla struttura.
-    """)
-    if st.button("🔙 Torna alla Home", key="t_back"):
-        st.session_state.pagina = 'home'
-        st.rerun()
 
 # 1. GESTIONE PAGINE MINORI (Recupero Password)
 if st.session_state.pagina == 'recupero_password': 
