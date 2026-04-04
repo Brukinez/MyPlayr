@@ -1307,14 +1307,7 @@ if st.session_state.pagina == 'partite':
 
                 if video_data and video_data.get("url_video"):
                     url_embed, url_esterno = prepara_link_video(video_data["url_video"])
-                    
-                    # 1. Tentativo di visualizzazione interna
-                    components.iframe(url_embed, height=480)
-                    
-                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
-                    st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
-                    st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
-                                        # --- INIZIO MODULO TAGLIO CLIP ---
+                                    # --- INIZIO MODULO TAGLIO CLIP ---
                     with st.expander("✂️ CREA LA TUA CLIP (Massimo 60 secondi)"):
                         st.write("Scegli il minuto di inizio e la durata della tua azione preferita.")
                         
@@ -1345,7 +1338,13 @@ if st.session_state.pagina == 'partite':
                                 if nuovo_link:
                                     st.success("✅ Clip creata con successo! La trovi nella sezione 'Le Mie Clip'.")
                     # --- FINE MODULO TAGLIO CLIP ---
-
+    
+                    # 1. Tentativo di visualizzazione interna
+                    components.iframe(url_embed, height=480)
+                    
+                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
+                    st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
+                    st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
                 else:
                     st.warning("⏳ Video non ancora disponibile per questo match.")
                 
