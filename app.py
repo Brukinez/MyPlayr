@@ -230,7 +230,7 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
         os.makedirs(cartella)
 
 # --- 3. COSTANTI ---
-GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyClipzo
+GRANDEZZA_LOGO = 350  # Dimensione standard del logo MyClipzo
 
 # --- BLOCCO 2: STILE E CSS ---
 st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
