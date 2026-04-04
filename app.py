@@ -1409,12 +1409,17 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali
+# Colonne per i link legali (Grafica identica, ora cliccabili)
 f_l, f_r = st.columns(2)
+
 with f_l: 
-    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+    # Cliccando qui, l'URL cambierà aggiungendo ?p=privacy
+    st.markdown("<a href='?p=privacy' target='_self' style='text-decoration: none; color: inherit;'><p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p></a>", unsafe_allow_html=True)
+
 with f_r: 
-    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+    # Cliccando qui, l'URL cambierà aggiungendo ?p=termini
+    st.markdown("<a href='?p=termini' target='_self' style='text-decoration: none; color: inherit;'><p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p></a>", unsafe_allow_html=True)
+
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
