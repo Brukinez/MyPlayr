@@ -1,129 +1,103 @@
 import os
-import subprocess
 import time
+import subprocess
 from datetime import datetime
-from database import supabase
-import re
+from database import supabase  # Assicurati che database.py sia nella stessa cartella
 
+# --- CONFIGURAZIONE PERCORSI ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
-RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe"  # Modifica con il tuo percorso
+RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe" # Il tuo percorso Rclone
 
 if not os.path.exists(VIDEO_DIR):
     os.makedirs(VIDEO_DIR)
 
-def estrai_id_video(link_drive):
-    """
-    Estrae l'ID file da un link Google Drive generico.
-    """
-    match = re.search(r"/file/d/([a-zA-Z0-9_-]+)", link_drive)
-    if match:
-        return match.group(1)
-    # Prova anche a cercare id nei parametri ?id=...
-    import urllib.parse
-    parsed = urllib.parse.urlparse(link_drive)
-    params = urllib.parse.parse_qs(parsed.query)
-    if "id" in params:
-        return params["id"][0]
-    return None
-
-
-def costruisci_link_preview(video_id):
-    """
-    Costruisce il link embed preview da ID video Google Drive.
-    """
-    return f"https://drive.google.com/file/d/{video_id}/preview"
-
-
-def registra_e_carica(id_partita):
+def registra_clip(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
-    path_locale = os.path.join(VIDEO_DIR, nome_file)
+    percorso_completo = os.path.join(VIDEO_DIR, nome_file)
+    
+    print(f"🔴 1. AVVIO REGISTRAZIONE FISICA: {nome_file}...")
 
-    print(f"Registrazione video... file: {nome_file}")
-
-    # COMANDO FFmpeg OTTIMIZZATO PER IL WEB (Velocizza l'elaborazione di Google Drive)
+    # COMANDO FFmpeg (30 secondi di test - verifica il nome della tua webcam!)
     command = [
-    'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-    '-t', '30', 
-    '-vcodec', 'libx264', # Forza il formato H.264 (il preferito dal web)
-    '-pix_fmt', 'yuv420p', 
-    '-movflags', '+faststart', # Sposta i metadati all'inizio per lo streaming immediato
-    percorso_completo
-]
-
-
+        'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
+        '-t', '30', '-pix_fmt', 'yuv420p', percorso_completo
+    ]
+    
     try:
-        subprocess.run(comando_ffmpeg, check=True)
+        # Step 1: Registrazione
+        subprocess.run(command, check=True)
+        print(f"✅ Registrazione completata localmente.")
 
-        print("Upload su Google Drive con Rclone...")
-        subprocess.run([RCLONE_EXE, "copy", path_locale, "remote:CLIP_MYPLAYR"], check=True)
+        # Step 2: Caricamento su Google Drive
+        print(f"🚀 2. CARICAMENTO SU CLOUD...")
+        # NOTA: Assicurati che "remote:CLIP_MYPLAYR" esista in Rclone
+        subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
+        
+        # Step 3: Generazione Link Pubblico
+        print(f"🔗 3. GENERAZIONE LINK PUBBLICO...")
+        res_link = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"], 
+                                  capture_output=True, text=True, check=True)
+        link_web = res_link.stdout.strip()
 
-        # Genera link Google Drive tramite Rclone
-        res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"],
-                             capture_output=True, text=True, check=True)
-        link_drive = res.stdout.strip()
-
-        video_id = estrai_id_video(link_drive)
-        if not video_id:
-            print("Errore: non ho potuto estrarre l'ID video da Google Drive.")
-            return False
-
-        link_embed = costruisci_link_preview(video_id)
-
-        # Salva nuovo record nella tabella video
-        supabase.table("video").insert({
-            "nome_file": nome_file,
-            "url_video": link_embed,
-            "descrizione": f"Video partita {id_partita}",
-            "created_at": datetime.now().isoformat()
-        }).execute()
-
-        # Aggiorna tabella calendario con link e stato FATTO
+                # Step 4: TRASFORMAZIONE LINK E AGGIORNAMENTO SUPABASE
+        # Puliamo il link di Drive per renderlo uno streaming diretto per l'app
+        link_diretto = link_web.replace('/view?usp=drivesdk', '').replace('/view', '').replace('file/d/', 'uc?export=download&id=')
+        
         supabase.table("calendario").update({
-            "link_video": link_embed,
-            "stato": "FATTO"
+            "evento": nome_file, 
+            "link_video": link_diretto, 
+            "stato": "FATTO" # Usiamo 'FATTO' così l'app lo riconosce subito
         }).eq("id", id_partita).execute()
-
-        print(f"Upload completato, link embed salvato: {link_embed}")
-
+        
+        print(f"🏁 PROCESSO FINITO: Match {id_partita} è online con link diretto!")
         return True
 
     except Exception as e:
-        print(f"Errore registrazione/upload: {e}")
+        print(f"❌ ERRORE CRITICO DURANTE REGISTRAZIONE/UPLOAD: {e}")
+        # Se fallisce, mettiamo lo stato a ERRORE per diagnostica
         supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
         return False
 
 
 def monitor():
-    print("Monitor in esecuzione...")
+    print("🚀 MOTORE MyPlayr LIVE ATTIVO. In ascolto su Supabase...")
     while True:
         try:
             now = datetime.now()
             data_oggi = now.strftime("%d-%m-%Y")
             ora_attuale = now.strftime("%H:%M")
-
-            resp = supabase.table("calendario").select("*")\
+            
+            # 🔎 CERCA MATCH DA INIZIARE ORA
+            response = supabase.table("calendario")\
+                .select("*")\
                 .eq("data", data_oggi)\
                 .eq("ora", ora_attuale)\
                 .eq("stato", "PROGRAMMATO")\
                 .execute()
-
-            match_list = resp.data
+            
+            match_list = response.data
 
             if match_list:
-                partita = match_list[0]
-                id_p = partita['id']
-                print(f"Trovato match da registrare: ID {id_p}")
+                match = match_list[0]
+                id_p = match['id']
+                print(f"🎬 MATCH TROVATO! ID: {id_p} - Ore: {ora_attuale}")
+                
+                # CAMBIAMO SUBITO LO STATO per evitare che il loop lo trovi di nuovo mentre registra
                 supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", id_p).execute()
-                registra_e_carica(id_p)
+                
+                # Avviamo il processo (Registra -> Carica -> Link -> Fatto)
+                registra_clip(id_p)
             else:
-                print(f"Nessun match da registrare alle {ora_attuale}")
-
-        except Exception as err:
-            print(f"Errore monitor: {err}")
-
-        time.sleep(30)
+                # Debug silenzioso ogni 30 secondi
+                print(f"😴 {ora_attuale} - Nessun match. Tutto tranquillo.")
+            
+        except Exception as e:
+            print(f"⚠️ Errore di connessione o Database: {e}")
+            
+        time.sleep(30) # Controllo ogni 30 secondi
 
 if __name__ == "__main__":
     monitor()
+
