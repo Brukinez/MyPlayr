@@ -512,6 +512,29 @@ if st.session_state.autenticato:
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
 
+# --- AGGIUNGI QUESTI DENTRO IL TUO ELENCO DI IF/ELIF PAGINE ---
+
+elif st.session_state.pagina == 'privacy':
+    st.title("🛡️ Privacy Policy")
+    st.markdown("""
+    ### Informativa Privacy MyClipzo
+    Qui incolla il tuo testo. Le triple virgolette permettono 
+    di scrivere su più righe senza errori.
+    """)
+    if st.button("🔙 Torna Indietro"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
+elif st.session_state.pagina == 'termini':
+    st.title("⚖️ Termini e Condizioni")
+    st.markdown("""
+    ### Termini di Servizio
+    Qui incolla il testo dei termini legali.
+    """)
+    if st.button("🔙 Torna Indietro"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
 if st.session_state.pagina == 'home':
@@ -1394,31 +1417,6 @@ if st.session_state.pagina not in ['home', 'home_auth']:
             st.session_state.pagina = 'home'
         st.rerun()
 
-# --- PAGINE LEGALI (Inserire prima del blocco Footer) ---
-if st.session_state.pagina == 'privacy':
-    st.markdown("<h2 style='text-align: center;'>🛡️ Privacy Policy</h2>", unsafe_allow_html=True)
-    st.markdown("""
-    **Informativa sul Trattamento dei Dati**
-    
-    Incolla qui il tuo testo della Privacy. 
-    Puoi andare a capo liberamente, usare il **grassetto** con i doppi asterischi 
-    e fare elenchi puntati. Le triple virgolette proteggono il codice da errori.
-    """)
-    if st.button("🔙 Torna alla Home", key="btn_back_priv"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
-elif st.session_state.pagina == 'termini':
-    st.markdown("<h2 style='text-align: center;'>⚖️ Termini e Condizioni</h2>", unsafe_allow_html=True)
-    st.markdown("""
-    **Contratto di Servizio MyClipzo**
-    
-    Incolla qui il tuo testo dei Termini e Condizioni.
-    Tutto quello che scrivi qui dentro verrà visualizzato correttamente sul sito.
-    """)
-    if st.button("🔙 Torna alla Home", key="btn_back_term"):
-        st.session_state.pagina = 'home'
-        st.rerun()
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
