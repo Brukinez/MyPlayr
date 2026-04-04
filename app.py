@@ -1403,19 +1403,39 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
+# --- PAGINA PRIVACY ---
+if st.session_state.pagina == 'privacy':
+    st.title("🛡️ Privacy Policy")
+    st.write("Qui va il testo della tua Privacy Policy...")
+    if st.button("🔙 Torna alla Home"):
+        st.session_state.pagina = 'home' # o la pagina che preferisci
+        st.rerun()
+
+# --- PAGINA TERMINI ---
+elif st.session_state.pagina == 'termini':
+    st.title("📜 Termini e Condizioni")
+    st.write("Qui va il testo dei tuoi Termini e Condizioni...")
+    if st.button("🔙 Torna alla Home"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
 # 2. FOOTER UNIVERSALE (Appare in fondo a TUTTE le pagine)
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali
+# Colonne per i link legali (Sostituisci questa parte nel tuo codice)
 f_l, f_r = st.columns(2)
+
 with f_l: 
-    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+    # Pulsante che sembra un link per la Privacy
+    if st.button("📄 Privacy Policy", key="footer_priv", use_container_width=True):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
+
 with f_r: 
-    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
-
-# Copyright finale centrato
-st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
-
+    # Pulsante che sembra un link per i Termini
+    if st.button("⚖️ Termini e Condizioni", key="footer_term", use_container_width=True):
+        st.session_state.pagina = 'termini'
+        st.rerun()
