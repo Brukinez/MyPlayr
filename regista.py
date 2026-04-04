@@ -38,27 +38,26 @@ def costruisci_link_preview(video_id):
 def registra_e_carica(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
-    # 1. Definiamo il percorso (usiamo un nome solo!)
-    percorso_completo = os.path.join(VIDEO_DIR, nome_file)
+    path_locale = os.path.join(VIDEO_DIR, nome_file)
 
-    print(f"🔴 Registrazione video avviata... file: {nome_file}")
+    print(f"Registrazione video... file: {nome_file}")
 
-    # 2. Creiamo la lista dei comandi (usiamo il nome comando_ffmpeg)
-    comando_ffmpeg = [
-        'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-        '-t', '30', 
-        '-vcodec', 'libx264', 
-        '-pix_fmt', 'yuv420p', 
-        '-movflags', '+faststart', 
-        percorso_completo  # <-- Ora questo nome esiste!
-    ]
+    # COMANDO FFmpeg OTTIMIZZATO PER IL WEB (Velocizza l'elaborazione di Google Drive)
+    command = [
+    'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
+    '-t', '30', 
+    '-vcodec', 'libx264', # Forza il formato H.264 (il preferito dal web)
+    '-pix_fmt', 'yuv420p', 
+    '-movflags', '+faststart', # Sposta i metadati all'inizio per lo streaming immediato
+    percorso_completo
+]
 
 
     try:
         subprocess.run(comando_ffmpeg, check=True)
 
         print("Upload su Google Drive con Rclone...")
-        subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
+        subprocess.run([RCLONE_EXE, "copy", path_locale, "remote:CLIP_MYPLAYR"], check=True)
 
         # Genera link Google Drive tramite Rclone
         res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"],

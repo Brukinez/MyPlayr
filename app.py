@@ -230,7 +230,7 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
         os.makedirs(cartella)
 
 # --- 3. COSTANTI ---
-GRANDEZZA_LOGO = 550  # Dimensione standard del logo MyClipzo
+GRANDEZZA_LOGO = 250  # Dimensione standard del logo MyClipzo
 
 # --- BLOCCO 2: STILE E CSS ---
 st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
@@ -329,7 +329,7 @@ def get_utente_per_email(email):
     email_clean = email.strip().lower()
     try:
         # Cerchiamo nella tabella 'utenti' l'email corrispondente
-        res = supabase.table("video").select("*").order("id", desc=True).execute()
+        res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
         
         # Se res.data ha qualcosa, restituiamo il primo (e unico) risultato
         return res.data[0] if res.data else None
@@ -387,7 +387,7 @@ def ottieni_dati_profilo(email):
         email_clean = email.strip().lower()
         
         # Interroga Supabase
-        res = supabase.table("video").select("*").order("id", desc=True).execute()
+        res = supabase.table("utenti").select("*").eq("email", email_clean).execute()
         
         # Se trova l'utente, restituisce il primo risultato della lista [0]
         if res.data:
@@ -1409,17 +1409,12 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 # Scritta principale del marchio
 st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Colonne per i link legali (Grafica identica, ora cliccabili)
+# Colonne per i link legali
 f_l, f_r = st.columns(2)
-
 with f_l: 
-    # Cliccando qui, l'URL cambierà aggiungendo ?p=privacy
-    st.markdown("<a href='?p=privacy' target='_self' style='text-decoration: none; color: inherit;'><p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p></a>", unsafe_allow_html=True)
-
+    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
 with f_r: 
-    # Cliccando qui, l'URL cambierà aggiungendo ?p=termini
-    st.markdown("<a href='?p=termini' target='_self' style='text-decoration: none; color: inherit;'><p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p></a>", unsafe_allow_html=True)
-
+    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
