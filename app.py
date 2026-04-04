@@ -1418,7 +1418,7 @@ with f_l:
 
 with f_r: 
     # Cliccando qui, l'URL cambierà aggiungendo ?p=termini
-    st.markdown("<a href='?p=termini' target='_self' style='text-decoration: none; color: inherit;'><p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p></a>", unsafe_allow_html=True)
+    st.markdown("<a href='?p=termini' target='_self' style='text-decoration: none; color:  #888;'><p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p></a>", unsafe_allow_html=True)
 
 
 # Copyright finale centrato
