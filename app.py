@@ -1205,67 +1205,6 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- NUOVO BLOCCO: PAGINA PARTITE (VERSIONE AUTOMATICA CON AUTO-FIX LINK) ---
-if st.session_state.pagina == 'partite':
-    import re
-    import streamlit.components.v1 as components
-    
-    st.title("🏟️ Archivio Partite MyPlayr")
-
-    # Funzione interna per pulire i link (vecchi e nuovi)
-    def pulisci_link_drive(link):
-        if not link: return None
-        # Se il link è già nel formato /preview, lo lasciamo così
-        if "/preview" in link: return link
-        # Se è un link standard, estraiamo l'ID e creiamo il formato /preview
-        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link)
-        if match:
-            video_id = match.group(1) or match.group(2)
-            return f"https://drive.google.com/file/d/{video_id}/preview"
-        return link
-
-    try:
-        # 1. Prendiamo i match 'FATTO' dal calendario
-        match_resp = supabase.table("calendario")\
-            .select("*")\
-            .eq("stato", "FATTO")\
-            .order("id", desc=True)\
-            .execute()
-
-        match_list = match_resp.data or []
-
-        if not match_list:
-            st.info("📌 Nessuna partita terminata trovata nel calendario.")
-        else:
-            for partita in match_list:
-                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
-
-                # 2. Cerchiamo il video corrispondente nella tabella video
-                nome_cercato = f"match_{partita['id']}_"
-                video_resp = supabase.table("video")\
-                    .select("*")\
-                    .like("nome_file", f"%{nome_cercato}%")\
-                    .limit(1).execute()
-
-                video = video_resp.data[0] if video_resp.data else None
-
-                if video and video.get("url_video"):
-                    # TRUCCO: Puliamo il link "al volo" per attivare il player di Google
-                    url_embed = pulisci_link_drive(video["url_video"])
-                    
-                    st.write(f"🎬 Video: {video['nome_file']}")
-                    
-                    # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
-                    components.iframe(url_embed, height=480, scrolling=False)
-                    
-                    st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
-                else:
-                    st.warning("⏳ Video in fase di caricamento o non trovato.")
-                
-                st.divider()
-
-    except Exception as e:
-        st.error(f"⚠️ Errore nel caricamento: {e}")
 
 
 
