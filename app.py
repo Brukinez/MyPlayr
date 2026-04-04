@@ -1394,44 +1394,44 @@ if st.session_state.pagina not in ['home', 'home_auth']:
             st.session_state.pagina = 'home'
         st.rerun()
 
+# --- CODICE PER IL FOOTER CLICCABILE (Senza riavvio login) ---
+st.markdown("""
+    <style>
+    .element-container:has(button.st-key-footer_priv), 
+    .element-container:has(button.st-key-footer_term) {
+        display: inline-block;
+        width: auto;
+    }
+    div.stButton > button[kind="secondary"] {
+        border: none;
+        background: transparent;
+        color: #888; /* Colore grigio come il tuo footer originale */
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+        text-decoration: underline; /* Opzionale: toglilo se non vuoi la sottolineatura */
+    }
+    div.stButton > button:hover {
+        color: white; /* Diventa bianco quando ci passi sopra */
+        background: transparent;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+f_l, f_r = st.columns(2)
+
+with f_l: 
+    if st.button("📄 Privacy Policy", key="footer_priv"):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
+
+with f_r: 
+    # Per allineare a destra usiamo un trucco di spazi o CSS, per ora lo teniamo semplice
+    if st.button("⚖️ Termini e Condizioni", key="footer_term"):
+        st.session_state.pagina = 'termini'
+        st.rerun()
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
-# --- PAGINA PRIVACY POLICY ---
-if st.session_state.pagina == 'privacy':
-    st.markdown("<h1 style='text-align: center;'>🛡️ Privacy Policy</h1>", unsafe_allow_html=True)
-    
-    # Incolla il tuo testo qui dentro, tra le tre virgolette
-    testo_privacy = """
-    INSERISCI QUI IL TUO TESTO DELLA PRIVACY
-    Puoi andare a capo liberamente.
-    Esempio:
-    1. Titolare del trattamento: MyClipzo
-    2. Dati raccolti: Email e Video...
-    3. Finalità: Analisi video sportiva...
-    """
-    
-    st.markdown(f"<div style='text-align: justify;'>{testo_privacy}</div>", unsafe_allow_html=True)
-    if st.button("🔙 Torna alla Home", key="back_home_priv"):
-        st.session_state.pagina = 'home'
-        st.rerun()
-
-# --- PAGINA TERMINI E CONDIZIONI ---
-elif st.session_state.pagina == 'termini':
-    st.markdown("<h1 style='text-align: center;'>⚖️ Termini e Condizioni</h1>", unsafe_allow_html=True)
-    
-    # Incolla il tuo testo qui dentro, tra le tre virgolette
-    testo_termini = """
-    INSERISCI QUI IL TUO TESTO DEI TERMINI
-    Esempio:
-    - L'utente dichiara di avere i diritti sui video caricati.
-    - Il servizio MyClipzo è fornito 'così com'è'.
-    - Uso della Hall of Fame subordinato al consenso...
-    """
-    
-    st.markdown(f"<div style='text-align: justify;'>{testo_termini}</div>", unsafe_allow_html=True)
-    if st.button("🔙 Torna alla Home", key="back_home_term"):
-        st.session_state.pagina = 'home'
-        st.rerun()
 
 # 1. GESTIONE PAGINE MINORI (Recupero Password)
 if st.session_state.pagina == 'recupero_password': 
