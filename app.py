@@ -1394,6 +1394,42 @@ if st.session_state.pagina not in ['home', 'home_auth']:
             st.session_state.pagina = 'home'
         st.rerun()
 
+# --- PAGINA PRIVACY POLICY ---
+if st.session_state.pagina == 'privacy':
+    st.markdown("<h1 style='text-align: center;'>🛡️ Privacy Policy</h1>", unsafe_allow_html=True)
+    
+    # Incolla il tuo testo qui dentro, tra le tre virgolette
+    testo_privacy = """
+    INSERISCI QUI IL TUO TESTO DELLA PRIVACY
+    Puoi andare a capo liberamente.
+    Esempio:
+    1. Titolare del trattamento: MyClipzo
+    2. Dati raccolti: Email e Video...
+    3. Finalità: Analisi video sportiva...
+    """
+    
+    st.markdown(f"<div style='text-align: justify;'>{testo_privacy}</div>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_home_priv"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
+# --- PAGINA TERMINI E CONDIZIONI ---
+elif st.session_state.pagina == 'termini':
+    st.markdown("<h1 style='text-align: center;'>⚖️ Termini e Condizioni</h1>", unsafe_allow_html=True)
+    
+    # Incolla il tuo testo qui dentro, tra le tre virgolette
+    testo_termini = """
+    INSERISCI QUI IL TUO TESTO DEI TERMINI
+    Esempio:
+    - L'utente dichiara di avere i diritti sui video caricati.
+    - Il servizio MyClipzo è fornito 'così com'è'.
+    - Uso della Hall of Fame subordinato al consenso...
+    """
+    
+    st.markdown(f"<div style='text-align: justify;'>{testo_termini}</div>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_home_term"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
 # --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
@@ -1418,7 +1454,7 @@ with f_l:
 
 with f_r: 
     # Cliccando qui, l'URL cambierà aggiungendo ?p=termini
-    st.markdown("<a href='?p=termini' target='_self' style='text-decoration: none; color:  #888;'><p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p></a>", unsafe_allow_html=True)
+    st.markdown("<a href='?p=termini' target='_self' style='text-decoration: none; color: inherit;'><p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p></a>", unsafe_allow_html=True)
 
 
 # Copyright finale centrato
