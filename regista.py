@@ -57,7 +57,7 @@ def registra_e_carica(id_partita):
         subprocess.run(comando_ffmpeg, check=True)
 
         print("Upload su Google Drive con Rclone...")
-        subprocess.run([RCLONE_EXE, "copy", path_locale, "remote:CLIP_MYPLAYR"], check=True)
+        subprocess.run([RCLONE_EXE, "copy", percorso_completo, "remote:CLIP_MYPLAYR"], check=True)
 
         # Genera link Google Drive tramite Rclone
         res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"],
