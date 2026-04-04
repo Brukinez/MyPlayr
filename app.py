@@ -1314,6 +1314,38 @@ if st.session_state.pagina == 'partite':
                     # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
                     st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
                     st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
+                                        # --- INIZIO MODULO TAGLIO CLIP ---
+                    with st.expander("✂️ CREA LA TUA CLIP (Massimo 60 secondi)"):
+                        st.write("Scegli il minuto di inizio e la durata della tua azione preferita.")
+                        
+                        c1, c2, c3 = st.columns(3)
+                        with c1:
+                            min_in = st.number_input("Minuto", 0, 120, key=f"min_{partita['id']}")
+                        with c2:
+                            sec_in = st.number_input("Secondo", 0, 59, key=f"sec_{partita['id']}")
+                        with c3:
+                            dur_clip = st.number_input("Durata (sec)", 5, 60, 15, key=f"dur_{partita['id']}")
+
+                        if st.button("🎬 GENERA CLIP ORA", key=f"btn_clip_{partita['id']}", use_container_width=True):
+                            inizio_totale = (min_in * 60) + sec_in
+                            email_u = st.session_state.get('user_email', 'ospite@myplayr.it')
+                            
+                            with st.spinner("✂️ Taglio in corso... attendi qualche secondo."):
+                                # Usiamo 'video_data' se è così che hai chiamato la variabile nel tuo ciclo
+                                video_nome_file = video_data['nome_file'] if 'video_data' in locals() else partita.get('evento')
+                                
+                                nuovo_link = taglia_e_registra_clip(
+                                    video_nome=video_nome_file, 
+                                    inizio_sec=inizio_totale, 
+                                    durata_sec=dur_clip, 
+                                    utente_email=email_u,
+                                    id_partita=partita['id']
+                                )
+                                
+                                if nuovo_link:
+                                    st.success("✅ Clip creata con successo! La trovi nella sezione 'Le Mie Clip'.")
+                    # --- FINE MODULO TAGLIO CLIP ---
+
                 else:
                     st.warning("⏳ Video non ancora disponibile per questo match.")
                 

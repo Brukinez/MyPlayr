@@ -94,6 +94,57 @@ def registra_e_carica(id_partita):
         supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
         return False
 
+def elabora_taglio_clip():
+    """Taglia porzioni di video dal file principale senza appesantire il sistema"""
+    try:
+        # 1. Controlla se c'è un ordine 'RICHIESTO' su Supabase
+        res = supabase.table("comandi_clip").select("*").eq("stato", "RICHIESTO").limit(1).execute()
+        richiesta = res.data[0] if res.data else None
+
+        if richiesta:
+            id_c = richiesta['id']
+            id_p = richiesta['id_partita']
+            inizio = richiesta['inizio_secondi']
+            durata = richiesta['durata_secondi']
+            
+            print(f"✂️ TAGLIO AVVIATO: Match {id_p} | Inizio {inizio}s | Durata {durata}s")
+
+            # 2. CERCA IL FILE ORIGINALE SUL DISCO FISSO (VIDEO_DIR è già configurata nel tuo file)
+            file_originale = None
+            for f in os.listdir(VIDEO_DIR):
+                if f.startswith(f"match_{id_p}_") and f.endswith(".mp4"):
+                    file_originale = os.path.join(VIDEO_DIR, f)
+                    break
+            
+            if not file_originale:
+                print(f"❌ Errore: File originale per partita {id_p} non trovato.")
+                supabase.table("comandi_clip").update({"stato": "FILE_MANCANTE"}).eq("id", id_c).execute()
+                return
+
+            # 3. NOME CLIP E COMANDO FFMPEG (Istantaneo con -c copy)
+            nome_clip = f"clip_{id_c}_match_{id_p}.mp4"
+            percorso_clip = os.path.join(VIDEO_DIR, nome_clip)
+
+            cmd_cut = [
+                'ffmpeg', '-y', '-ss', str(inizio), '-t', str(durata),
+                '-i', file_originale, '-c', 'copy', '-movflags', '+faststart', percorso_clip
+            ]
+            subprocess.run(cmd_cut, check=True)
+
+            # 4. CARICAMENTO E LINK
+            print(f"🚀 Caricamento clip su Drive...")
+            subprocess.run([RCLONE_EXE, "copy", percorso_clip, "remote:CLIP_MYPLAYR"], check=True)
+
+            res_l = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_clip}"], capture_output=True, text=True, check=True)
+            link_web = res_l.stdout.strip()
+            link_embed = link_web.replace('open?id=', 'file/d/').replace('/view', '') + '/preview'
+
+            # 5. AGGIORNA SUPABASE
+            supabase.table("comandi_clip").update({"url_video": link_embed, "stato": "PRONTO"}).eq("id", id_c).execute()
+            print(f"✅ CLIP PRONTA: ID {id_c}")
+
+    except Exception as e:
+        print(f"⚠️ Errore nel taglio: {e}")
 
 def monitor():
     print("Monitor in esecuzione...")
