@@ -39,7 +39,7 @@ def registra_e_carica(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
     path_locale = os.path.join(VIDEO_DIR, nome_file)
-
+    percorso_completo = os.path.join(VIDEO_DIR, nome_file)
     print(f"Registrazione video... file: {nome_file}")
 
     # COMANDO FFmpeg OTTIMIZZATO PER IL WEB (Velocizza l'elaborazione di Google Drive)
