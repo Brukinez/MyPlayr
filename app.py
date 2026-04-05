@@ -1362,9 +1362,7 @@ elif st.session_state.pagina == 'diritti':
     
     st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
     
-    if st.button("🔙 Torna alla Home", key="back_diritti"):
-        st.session_state.pagina = 'home'
-        st.rerun()
+    
 
 
 # --- PAGINA TERMINI E CONDIZIONI ---
