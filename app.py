@@ -1317,6 +1317,39 @@ if st.session_state.pagina == 'partite':
         st.error(f"⚠️ Errore: {e}")
 
 
+# --- PAGINA PRIVACY POLICY ---
+elif st.session_state.pagina == 'privacy':
+    st.markdown("<h1 style='text-align: center; color: white;'>🛡️ Privacy Policy</h1>", unsafe_allow_html=True)
+    
+    # Incolla il tuo testo tra le triple virgolette
+    testo_privacy = """
+    INSERISCI QUI IL TUO TESTO DELLA PRIVACY
+    1. I dati raccolti sono...
+    2. I video vengono conservati su...
+    3. Puoi richiedere la cancellazione scrivendo a...
+    """
+    
+    st.markdown(f"<div style='text-align: justify; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_priv"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
+# --- PAGINA TERMINI E CONDIZIONI ---
+elif st.session_state.pagina == 'termini':
+    st.markdown("<h1 style='text-align: center; color: white;'>⚖️ Termini e Condizioni</h1>", unsafe_allow_html=True)
+    
+    # Incolla il tuo testo tra le triple virgolette
+    testo_termini = """
+    INSERISCI QUI IL TUO TESTO DEI TERMINI
+    - L'uso di MyClipzo è riservato a...
+    - Il caricamento dei video nella Hall of Fame richiede...
+    - Ci riserviamo il diritto di...
+    """
+    
+    st.markdown(f"<div style='text-align: justify; color: white;'>{testo_termini}</div>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_term"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
 
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
