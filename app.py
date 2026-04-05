@@ -1518,6 +1518,24 @@ with f_r:
         st.rerun()
 
 
-# Copyright finale centrato
-st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
+# --- COPYRIGHT CLICCABILE NEL FOOTER ---
+st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
+
+if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True):
+    st.session_state.pagina = 'diritti'
+    st.rerun()
+
+# CSS per far sembrare il bottone una semplice scritta bianca
+st.markdown("""
+    <style>
+    button.st-key-f_copy_btn {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        font-size: 13px !important;
+        margin-top: 15px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 
