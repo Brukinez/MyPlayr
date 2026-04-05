@@ -1490,6 +1490,7 @@ with f_l:
         st.rerun()
 
 with f_r: 
+    st.markdown("<style>div.row-widget.stButton {text-align: right;}</style>", unsafe_allow_html=True)
     # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
     if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
         st.session_state.pagina = 'termini'
