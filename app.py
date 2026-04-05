@@ -1238,7 +1238,7 @@ if st.session_state.pagina == 'partite':
             st.info("📌 Nessuna partita terminata trovata nel calendario.")
         else:
             for partita in match_list:
-                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
+                #st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
 
                 # 2. Cerchiamo il video corrispondente nella tabella video
                 nome_cercato = f"match_{partita['id']}_"
@@ -1256,13 +1256,13 @@ if st.session_state.pagina == 'partite':
                     st.write(f"🎬 Video: {video['nome_file']}")
                     
                     # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
-                    components.iframe(url_embed, height=480, scrolling=False)
+                    #components.iframe(url_embed, height=480, scrolling=False)
                     
                     st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
                 else:
                     st.warning("⏳ Video in fase di caricamento o non trovato.")
                 
-                st.divider()
+                #st.divider()
 
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
@@ -1285,7 +1285,7 @@ if st.session_state.pagina == 'partite':
         if match:
             video_id = match.group(1) or match.group(2)
             # Link per il riquadro interno (spesso bloccato dai cookie)
-            url_embed = f"https://google.com{video_id}/preview"
+            url_embed = f"https://google.com{video_id}/preview?authuser=0"
             # Link per l'apertura esterna (FUNZIONA SEMPRE)
             url_esterno = f"https://google.com{video_id}/view"
             return url_embed, url_esterno
