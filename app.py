@@ -1342,7 +1342,10 @@ Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flu
 
     """
     
-    
+    st.markdown(f"<div style='text-align: justify; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_priv"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
@@ -1375,7 +1378,10 @@ Per ogni controversia è competente il Foro di [Tua Città], Italia.
 
     """
     
-    
+    st.markdown(f"<div style='text-align: justify; color: white;'>{testo_termini}</div>", unsafe_allow_html=True)
+    if st.button("🔙 Torna alla Home", key="back_term"):
+        st.session_state.pagina = 'home'
+        st.rerun()
 
 
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
@@ -1485,14 +1491,12 @@ f_l, f_r = st.columns(2)
 with f_l: 
     # Pulsante camuffato da scritta bianca
     if st.button("📄 Privacy Policy", key="footer_privacy_link"):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
+        
 
 with f_r: 
     # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
     if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
-        st.session_state.pagina = 'termini'
-        st.rerun()
+        
 
 
 # Copyright finale centrato
