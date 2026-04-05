@@ -1299,7 +1299,7 @@ if st.session_state.pagina == 'partite':
             st.info("📌 Nessuna partita terminata trovata.")
         else:
             for partita in partite_concluse:
-                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
+                #st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
 
                 id_cercato = f"match_{partita['id']}_"
                 res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
@@ -1309,7 +1309,7 @@ if st.session_state.pagina == 'partite':
                     url_embed, url_esterno = prepara_link_video(video_data["url_video"])
                     
                     # 1. Tentativo di visualizzazione interna
-                    components.iframe(url_embed, height=480)
+                    #components.iframe(url_embed, height=480)
                     
                     # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
                     st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
@@ -1317,7 +1317,7 @@ if st.session_state.pagina == 'partite':
                 else:
                     st.warning("⏳ Video non ancora disponibile per questo match.")
                 
-                st.divider()
+                #st.divider()
 
     except Exception as e:
         st.error(f"⚠️ Errore: {e}")
