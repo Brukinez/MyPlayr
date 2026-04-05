@@ -45,15 +45,16 @@ def registra_e_carica(id_partita):
 
     # Definizione del comando FFmpeg
     command = [
-        'ffmpeg', '-y', 
-        '-f', 'dshow', 
-        '-i', 'video=USB2.0 VGA UVC WebCam',
-        '-t', '30', 
-        '-vcodec', 'libx264', 
-        '-pix_fmt', 'yuv420p', 
-        '-movflags', '+faststart', 
-        path_locale  # <--- Usiamo path_locale qui!
-    ]
+    'ffmpeg', '-y', 
+    '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
+    '-t', '30', 
+    '-vcodec', 'libx264',   # Formato standard universale
+    '-preset', 'veryfast',  # Velocizza la compressione
+    '-pix_fmt', 'yuv420p',  # Necessario per i player web
+    '-movflags', '+faststart', # Permette al video di partire prima di essere scaricato tutto
+    path_locale
+]
+
 
     try:
         # Eseguiamo il comando usando la variabile 'command'
