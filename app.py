@@ -1403,18 +1403,44 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# 2. FOOTER UNIVERSALE (Appare in fondo a TUTTE le pagine)
+# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
+st.markdown("""
+    <style>
+    /* Rende i bottoni del footer identici a scritte semplici bianche */
+    div.stButton > button[kind="secondary"] {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-weight: normal !important;
+        text-align: left !important;
+        box-shadow: none !important;
+    }
+    div.stButton > button:hover {
+        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
+        text-decoration: underline !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Scritta principale del marchio
-st.markdown("<p class='footer-main' style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
-
-# Colonne per i link legali
 f_l, f_r = st.columns(2)
+
 with f_l: 
-    st.markdown("<p class='footer-sub' style='cursor: pointer;'>📄 Privacy Policy</p>", unsafe_allow_html=True)
+    # Pulsante camuffato da scritta bianca
+    if st.button("📄 Privacy Policy", key="footer_privacy_link"):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
+
 with f_r: 
-    st.markdown("<p class='footer-sub' style='text-align:right; cursor: pointer;'>⚖️ Termini e Condizioni</p>", unsafe_allow_html=True)
+    # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
+    if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
+        st.session_state.pagina = 'termini'
+        st.rerun()
+
 
 # Copyright finale centrato
 st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
