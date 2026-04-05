@@ -1491,12 +1491,14 @@ f_l, f_r = st.columns(2)
 with f_l: 
     # Pulsante camuffato da scritta bianca
     if st.button("📄 Privacy Policy", key="footer_privacy_link"):
+        st.session_state.pagina = 'privacy'
         
 
 with f_r: 
     # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
     if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
-        
+        st.session_state.pagina = 'termini'
+       
 
 
 # Copyright finale centrato
