@@ -38,42 +38,43 @@ def costruisci_link_preview(video_id):
 def registra_e_carica(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
-    path_completo = os.path.join(VIDEO_DIR, nome_file)
+    # Questa è la variabile corretta che useremo
+    path_locale = os.path.join(VIDEO_DIR, nome_file)
 
-    print(f"Inizio registrazione video... file: {nome_file}")
+    print(f"Registrazione video... file: {nome_file}")
 
-    # COMANDO FFmpeg CORRETTO
+    # Definizione del comando FFmpeg
     command = [
         'ffmpeg', '-y', 
-        '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
+        '-f', 'dshow', 
+        '-i', 'video=USB2.0 VGA UVC WebCam',
         '-t', '30', 
         '-vcodec', 'libx264', 
         '-pix_fmt', 'yuv420p', 
         '-movflags', '+faststart', 
-        path_locale  # <--- Usata la variabile corretta
+        path_locale  # <--- Usiamo path_locale qui!
     ]
 
     try:
-        # Esegue FFmpeg usando 'command'
+        # Eseguiamo il comando usando la variabile 'command'
         subprocess.run(command, check=True)
 
         print("Upload su Google Drive con Rclone...")
-        # Nota: assicurati che 'remote:CLIP_MYPLAYR' sia configurato in rclone
         subprocess.run([RCLONE_EXE, "copy", path_locale, "remote:CLIP_MYPLAYR"], check=True)
 
-        # Genera link Google Drive
+        # Otteniamo il link
         res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"],
                              capture_output=True, text=True, check=True)
         link_drive = res.stdout.strip()
 
         video_id = estrai_id_video(link_drive)
         if not video_id:
-            print("Errore ID video.")
+            print("Errore: ID video non estratto.")
             return False
 
         link_embed = costruisci_link_preview(video_id)
 
-        # Salva in Supabase
+        # Salvataggio su Supabase
         supabase.table("video").insert({
             "nome_file": nome_file,
             "url_video": link_embed,
@@ -85,16 +86,17 @@ def registra_e_carica(id_partita):
             "stato": "FATTO"
         }).eq("id", id_partita).execute()
 
-        print(f"Completato! Link: {link_embed}")
+        print(f"Upload completato: {link_embed}")
         return True
 
     except Exception as e:
-        print(f"Errore: {e}")
-        # Tenta di segnare l'errore nel DB
+        print(f"Errore registrazione/upload: {e}")
         try:
             supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
-        except: pass
+        except:
+            pass
         return False
+
 
 
 
