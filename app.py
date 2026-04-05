@@ -1353,7 +1353,7 @@ elif st.session_state.pagina == 'termini':
     
     # Incolla il tuo testo tra le triple virgolette
     testo_termini = """
-   TERMINI E CONDIZIONI – MYCLIPZO
+   
 
 1. Descrizione del servizio
 Piattaforma digitale per la fruizione di clip video generate in strutture partner. Il servizio è fornito "così com'è" per scopi di intrattenimento.
