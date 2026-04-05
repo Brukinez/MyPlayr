@@ -1323,9 +1323,9 @@ elif st.session_state.pagina == 'privacy':
     
     # Incolla il tuo testo tra le triple virgolette
     testo_privacy = """ 1. Titolare del Trattamento
--   Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
+Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
 
--   2. Tipologia di dati raccolti
+2. Tipologia di dati raccolti
 Nome, cognome, email, username, dati tecnici di navigazione e contenuti video/immagini generati durante l'attività sportiva.
 3. Finalità del trattamento
 Registrazione, accesso all'area personale, generazione/download delle clip e condivisione volontaria sui social. I video sono trattati esclusivamente per scopi sportivi e ricreativi.
@@ -1353,10 +1353,29 @@ elif st.session_state.pagina == 'termini':
     
     # Incolla il tuo testo tra le triple virgolette
     testo_termini = """
-    INSERISCI QUI IL TUO TESTO DEI TERMINI
-    - L'uso di MyClipzo è riservato a...
-    - Il caricamento dei video nella Hall of Fame richiede...
-    - Ci riserviamo il diritto di...
+   TERMINI E CONDIZIONI – MYCLIPZO
+
+1. Descrizione del servizio
+Piattaforma digitale per la fruizione di clip video generate in strutture partner. Il servizio è fornito "così com'è" per scopi di intrattenimento.
+
+2. Registrazione
+L'utente dichiara di avere almeno 18 anni o di possedere il consenso dei genitori.
+
+3. Utilizzo delle clip
+Le clip sono per uso personale. La condivisione sui social è una scelta libera e consapevole dell'utente.
+
+4. Responsabilità dell’utente
+È vietato l'uso delle clip per scopi diffamatori, illegali o per ledere la dignità altrui. L'utente è l'unico responsabile dei contenuti pubblicati.
+
+5. Limitazione di responsabilità
+MyClipzo non garantisce la continuità del servizio in caso di guasti tecnici o mancanza di rete nel centro sportivo. Le riprese non hanno valore legale o arbitrale e non possono essere usate in procedimenti disciplinari o civili.
+
+6. Sospensione
+Ci riserviamo di chiudere account che violano le regole di community o caricano contenuti impropri.
+
+7. Foro competente
+Per ogni controversia è competente il Foro di [Tua Città], Italia.
+
     """
     
     st.markdown(f"<div style='text-align: justify; color: white;'>{testo_termini}</div>", unsafe_allow_html=True)
