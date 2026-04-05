@@ -11,6 +11,26 @@ import re
 from urllib.parse import urlparse, parse_qs
 from supabase import create_client, Client
 
+import os
+from PIL import Image
+
+# --- CONFIGURAZIONE LOGO ---
+# Assicurati che il file si chiami 'logo.png' e sia nella cartella C:\MyPlayr
+LOGO_PATH = "logo.png" 
+
+def mostra_logo():
+    if os.path.exists(LOGO_PATH):
+        logo_img = Image.open(LOGO_PATH)
+        # Mostriamo il logo con una larghezza fissa (es. 200px) per non farlo giganteggiare
+        st.image(logo_img, width=200)
+    else:
+        # Se il file non esiste, mostra una scritta di emergenza
+        st.markdown(f"<h2 style='color: #4CAF50;'>⚽ FaceSoccer</h2>", unsafe_allow_html=True)
+
+# --- POSIZIONAMENTO LOGO ---
+# Richiamiamo la funzione all'inizio di ogni pagina
+mostra_logo()
+st.divider() # Una linea sottile per separare il logo dal contenuto
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
