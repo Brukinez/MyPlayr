@@ -49,7 +49,7 @@ def registra_e_carica(id_partita):
     '-vcodec', 'libx264', # Forza il formato H.264 (il preferito dal web)
     '-pix_fmt', 'yuv420p', 
     '-movflags', '+faststart', # Sposta i metadati all'inizio per lo streaming immediato
-    percorso_completo
+    path_completo
 ]
 
 
