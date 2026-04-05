@@ -1344,7 +1344,7 @@ Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flu
     
     st.markdown(f"<div style='text-align: justify; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
     if st.button("🔙 Torna alla Home", key="back_priv"):
-        st.session_state.pagina = 'home'
+        
        
 
 # --- PAGINA TERMINI E CONDIZIONI ---
