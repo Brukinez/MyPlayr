@@ -38,61 +38,64 @@ def costruisci_link_preview(video_id):
 def registra_e_carica(id_partita):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     nome_file = f"match_{id_partita}_{timestamp}.mp4"
-    path_locale = os.path.join(VIDEO_DIR, nome_file)
+    path_completo = os.path.join(VIDEO_DIR, nome_file)
 
-    print(f"Registrazione video... file: {nome_file}")
+    print(f"Inizio registrazione video... file: {nome_file}")
 
-    # COMANDO FFmpeg OTTIMIZZATO PER IL WEB (Velocizza l'elaborazione di Google Drive)
+    # COMANDO FFmpeg CORRETTO
     command = [
-    'ffmpeg', '-y', '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
-    '-t', '30', 
-    '-vcodec', 'libx264', # Forza il formato H.264 (il preferito dal web)
-    '-pix_fmt', 'yuv420p', 
-    '-movflags', '+faststart', # Sposta i metadati all'inizio per lo streaming immediato
-    path_completo
-]
-
+        'ffmpeg', '-y', 
+        '-f', 'dshow', '-i', 'video=USB2.0 VGA UVC WebCam',
+        '-t', '30', 
+        '-vcodec', 'libx264', 
+        '-pix_fmt', 'yuv420p', 
+        '-movflags', '+faststart', 
+        path_locale  # <--- Usata la variabile corretta
+    ]
 
     try:
-        subprocess.run(comando_ffmpeg, check=True)
+        # Esegue FFmpeg usando 'command'
+        subprocess.run(command, check=True)
 
         print("Upload su Google Drive con Rclone...")
+        # Nota: assicurati che 'remote:CLIP_MYPLAYR' sia configurato in rclone
         subprocess.run([RCLONE_EXE, "copy", path_locale, "remote:CLIP_MYPLAYR"], check=True)
 
-        # Genera link Google Drive tramite Rclone
+        # Genera link Google Drive
         res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{nome_file}"],
                              capture_output=True, text=True, check=True)
         link_drive = res.stdout.strip()
 
         video_id = estrai_id_video(link_drive)
         if not video_id:
-            print("Errore: non ho potuto estrarre l'ID video da Google Drive.")
+            print("Errore ID video.")
             return False
 
         link_embed = costruisci_link_preview(video_id)
 
-        # Salva nuovo record nella tabella video
+        # Salva in Supabase
         supabase.table("video").insert({
             "nome_file": nome_file,
             "url_video": link_embed,
-            "descrizione": f"Video partita {id_partita}",
-            "created_at": datetime.now().isoformat()
+            "descrizione": f"Video partita {id_partita}"
         }).execute()
 
-        # Aggiorna tabella calendario con link e stato FATTO
         supabase.table("calendario").update({
             "link_video": link_embed,
             "stato": "FATTO"
         }).eq("id", id_partita).execute()
 
-        print(f"Upload completato, link embed salvato: {link_embed}")
-
+        print(f"Completato! Link: {link_embed}")
         return True
 
     except Exception as e:
-        print(f"Errore registrazione/upload: {e}")
-        supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
+        print(f"Errore: {e}")
+        # Tenta di segnare l'errore nel DB
+        try:
+            supabase.table("calendario").update({"stato": "ERRORE"}).eq("id", id_partita).execute()
+        except: pass
         return False
+
 
 
 def monitor():
