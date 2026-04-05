@@ -1299,57 +1299,18 @@ if st.session_state.pagina == 'partite':
                 res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
                 video_data = res_vid.data[0] if res_vid.data else None
 
-        if video_data and video_data.get("url_video"):
-                    url_embed, url_esterno = prepara_link_video_completo(video_data["url_video"])
+                if video_data and video_data.get("url_video"):
+                    url_embed, url_esterno = prepara_link_video(video_data["url_video"])
+                   
+                    # 1. Tentativo di visualizzazione interna
+                    #components.iframe(url_embed, height=480)
                     
-                    # 1. DEFINIAMO LE COLONNE (2 parti al video, 1 al form)
-                    col_v, col_f = st.columns([2, 1.2], gap="large")
+                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
+                    #st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
+                    #st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
                     
-                    with col_v:
-                        # Video a sinistra con altezza ridotta per non distorcere
-                        # Usiamo 350-400 invece di 480 per evitare l'effetto "gigante"
-                        components.iframe(url_embed, height=380, scrolling=False)
-                        
-                        # Info Partita (Box Bianco come nello screenshot)
-                        st.markdown(f"""
-                            <div style='background-color: white; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-top: -10px;'>
-                                <h4 style='margin:0; color: #333;'>🏟️ {partita.get('evento', 'Campo Centrale')}</h4>
-                                <p style='font-size: 13px; color: #666; margin: 5px 0 0 0;'>
-                                    📅 {partita.get('data')} | 🕒 Durata: 1:30:00 | ⏱️ Tempo: 0:00
-                                </p>
-                            </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Tasto emergenza più piccolo sotto il box
-                        st.link_button("▶️ Apri in nuova finestra (se nero)", url_esterno, use_container_width=True)
-
-                    with col_f:
-                        # 2. MODULO RICHIESTA A DESTRA (Stile FaceSoccer)
-                        st.markdown("### Richiedi la tua clip")
-                        
-                        # Campi di input con etichette chiare
-                        m_in = st.text_input("Minuto esatto (MM:SS) *", placeholder="es. 12:34", key=f"fs_m_{partita['id']}")
-                        t_az = st.text_input("Tipo Azione *", placeholder="es. Goal, Parata", key=f"fs_a_{partita['id']}")
-                        m_cl = st.text_input("Email ricezione *", value=st.session_state.get('user_email', ''), key=f"fs_e_{partita['id']}")
-                        
-                        st.write("") # Spazio tattico
-                        
-                        # Bottone Verde FaceSoccer
-                        if st.button("Vai alla generazione", key=f"fs_btn_{partita['id']}", use_container_width=True):
-                            if m_in and t_az and m_cl:
-                                try:
-                                    m_s, s_s = map(int, m_in.split(':'))
-                                    in_tot = (m_s * 60) + s_s
-                                    supabase.table("comandi_clip").insert({
-                                        "id_partita": partita['id'], "inizio_secondi": in_tot, "durata_secondi": 20,
-                                        "email_utente": m_cl, "stato": "RICHIESTO", "descrizione": t_az
-                                    }).execute()
-                                    st.success("✅ Richiesta inviata!")
-                                except:
-                                    st.error("❌ Formato MM:SS errato")
-                            else:
-                                st.warning("⚠️ Compila i campi")
-
+                else:
+                    st.warning("⏳ Video non ancora disponibile per questo match.")
                 
                 #st.divider()
 
