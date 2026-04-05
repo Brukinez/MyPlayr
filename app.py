@@ -1397,57 +1397,45 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- 2. SUPER FOOTER UNIFICATO (TUTTO BIANCO + CLICK FUNZIONANTE) ---
+# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
 st.markdown("""
     <style>
-    /* Forza il colore BIANCO su tutti i bottoni del footer e toglie i bordi */
-    div.stButton > button {
+    /* Rende i bottoni del footer identici a scritte semplici bianche */
+    div.stButton > button[kind="secondary"] {
         border: none !important;
         background: transparent !important;
-        color: white !important; 
+        color: white !important;
         padding: 0 !important;
         margin: 0 !important;
         font-weight: normal !important;
+        text-align: left !important;
         box-shadow: none !important;
-        font-size: 14px !important;
     }
     div.stButton > button:hover {
-        color: #cccccc !important; /* Grigio chiaro al passaggio del mouse */
+        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
         text-decoration: underline !important;
-        background: transparent !important;
-    }
-    /* Forza il bianco su tutti i testi markdown del footer */
-    .footer-white {
-        color: white !important;
-        text-align: center;
     }
     </style>
 """, unsafe_allow_html=True)
 
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-# Parte 1: Scritte speciali recuperate dalla Home (Tutte Bianche)
-st.markdown("""
-    <div class='footer-white'>
-        <p style='font-weight: bold; margin-bottom: 0;'>MyClipzo © 2026 - Video Analysis for Future Champions</p>
-        <p style='font-size: 13px; margin-top: 2px;'>Sviluppato con Passione per lo Sport</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# Parte 2: Link Legali Bianchi e Cliccabili
 f_l, f_r = st.columns(2)
 
 with f_l: 
+    # Pulsante camuffato da scritta bianca
     if st.button("📄 Privacy Policy", key="footer_privacy_link"):
         st.session_state.pagina = 'privacy'
         st.rerun()
 
 with f_r: 
+    # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
     if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
         st.session_state.pagina = 'termini'
         st.rerun()
 
-# Parte 3: Copyright finale (Forzato in Bianco)
-st.markdown("<p style='text-align:center; color: white; font-size: 12px; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
 
+# Copyright finale centrato
+st.markdown("<p class='footer-sub' style='text-align:center; color: #888; margin-top: 20px;'>© 2026 MyClipzo - Tutti i diritti riservati</p>", unsafe_allow_html=True)
 
