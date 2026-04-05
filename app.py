@@ -1308,56 +1308,7 @@ if st.session_state.pagina == 'partite':
                     # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
                     #st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
                     #st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
-                                        # --- AGGIUNTA MODULO RICHIESTA STILE FACESOCCER (NON SOSTITUISCE NULLA) ---
-                    st.markdown("---") # Una linea di separazione pulita
                     
-                    # Creiamo due colonne piccole solo per il modulo
-                    col_info, col_form = st.columns([1, 1], gap="medium")
-                    
-                    with col_info:
-                        # Parte sinistra: Info Match (come nello screenshot)
-                        st.markdown(f"""
-                            <div style='background-color: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #ddd; color: #333;'>
-                                <h4 style='margin:0;'>🏟️ {partita.get('evento', 'Campo Centrale')}</h4>
-                                <p style='font-size: 13px; color: #666; margin-top: 5px;'>
-                                    📅 Data: {partita.get('data')}<br>
-                                    🕒 Durata: 1:30:00
-                                </p>
-                            </div>
-                        """, unsafe_allow_html=True)
-
-                    with col_form:
-                        # Parte destra: Il Form di richiesta
-                        st.write("**✂️ Richiedi la tua clip**")
-                        
-                        m_input = st.text_input("Minuto esatto (MM:SS) *", placeholder="es. 12:34", key=f"fs_m_{partita['id']}")
-                        t_azione = st.text_input("Tipo Azione *", placeholder="es. Goal, Parata", key=f"fs_a_{partita['id']}")
-                        e_mail = st.text_input("Email per ricezione *", value=st.session_state.get('user_email', ''), key=f"fs_e_{partita['id']}")
-                        
-                        # Bottone stile FaceSoccer (Verde pastello)
-                        if st.button("Vai alla generazione", key=f"fs_btn_{partita['id']}", use_container_width=True):
-                            if m_input and t_azione and e_mail:
-                                try:
-                                    # Trasformiamo MM:SS in secondi per il robot FFmpeg
-                                    m_split, s_split = map(int, m_input.split(':'))
-                                    inizio_s = (m_split * 60) + s_split
-                                    
-                                    # Invio ordine a Supabase
-                                    supabase.table("comandi_clip").insert({
-                                        "id_partita": partita['id'],
-                                        "inizio_secondi": inizio_s,
-                                        "durata_secondi": 20,
-                                        "email_utente": e_mail,
-                                        "stato": "RICHIESTO",
-                                        "descrizione": t_azione
-                                    }).execute()
-                                    st.success("✅ Richiesta inviata! Controlla 'Le Mie Clip' tra poco.")
-                                except:
-                                    st.error("❌ Formato errore. Usa MM:SS (es. 10:20)")
-                            else:
-                                st.warning("⚠️ Compila tutti i campi.")
-                    # --- FINE AGGIUNTA ---
-
                 else:
                     st.warning("⏳ Video non ancora disponibile per questo match.")
                 
