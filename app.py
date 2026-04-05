@@ -1343,7 +1343,29 @@ Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flu
     """
     
     st.markdown(f"<div style='text-align: justify; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
+
+# --- PAGINA DIRITTI RISERVATI ---
+elif st.session_state.pagina == 'diritti':
+    st.markdown("<h2 style='text-align: center; color: white;'>© Diritti Riservati</h2>", unsafe_allow_html=True)
     
+    testo_diritti = """
+    ### Proprietà e Copyright
+    Tutti i contenuti di **MyClipzo**, inclusi i video registrati, le clip generate, i loghi e il software, 
+    sono protetti dalle leggi internazionali sul diritto d'autore.
+    
+    **© 2026 MyClipzo - Tutti i diritti riservati.**
+    
+    Le riprese effettuate durante gli eventi sportivi hanno finalità di analisi tecnica e documentazione amatoriale. 
+    È vietata la riproduzione, la vendita o l'uso commerciale dei video senza autorizzazione scritta.
+    L'utente può scaricare le proprie clip esclusivamente per uso personale e condivisione privata sui social.
+    """
+    
+    st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
+    
+    if st.button("🔙 Torna alla Home", key="back_diritti"):
+        st.session_state.pagina = 'home'
+        st.rerun()
+
 
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
@@ -1491,7 +1513,6 @@ with f_l:
 
 with f_r: 
     # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
-    st.markdown("<style>div.row-widget.stButton {text-align: right;}</style>", unsafe_allow_html=True)
     if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
         st.session_state.pagina = 'termini'
         st.rerun()
