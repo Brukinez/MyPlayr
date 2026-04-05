@@ -1325,6 +1325,7 @@ elif st.session_state.pagina == 'privacy':
     testo_privacy = """
     1. Titolare del Trattamento
 Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
+
 2. Tipologia di dati raccolti
 Nome, cognome, email, username, dati tecnici di navigazione e contenuti video/immagini generati durante l'attività sportiva.
 3. Finalità del trattamento
