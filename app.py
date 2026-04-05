@@ -1204,7 +1204,7 @@ if st.session_state.pagina == 'partite':
     import re
     import streamlit.components.v1 as components
     
-    st.title("🏟️ Archivio Partite MyPlayr")
+    st.title("🏟️ PARTITE DISPONIBILI")
 
     # Funzione interna per pulire i link (vecchi e nuovi)
     def pulisci_link_drive(link):
