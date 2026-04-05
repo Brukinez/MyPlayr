@@ -1276,7 +1276,7 @@ if st.session_state.pagina == 'partite':
     import re
     import streamlit.components.v1 as components
     
-    st.title("🏟️ Archivio Partite MyPlayr")
+    #st.title("🏟️ Archivio Partite MyPlayr")
 
     def prepara_link_video(link_grezzo):
         if not link_grezzo: return None, None
