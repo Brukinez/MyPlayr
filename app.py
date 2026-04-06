@@ -14,6 +14,54 @@ from supabase import create_client, Client
 import os
 from PIL import Image
 
+# --- 1. PULIZIA TOTALE (NASCONDE I 3 PUNTINI E LA BARRA GRIGIA) ---
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;} /* Nasconde i 3 puntini */
+    header {visibility: hidden;}    /* Nasconde la barra di sistema in alto */
+    footer {visibility: hidden;}    /* Nasconde la scritta 'Made with Streamlit' in basso */
+    
+    /* Riduce lo spazio vuoto che si crea in alto dopo aver nascosto l'header */
+    .block-container {
+        padding-top: 1rem !important;
+    }
+    
+    /* Stile per il tasto ACCEDI (Verde FaceSoccer) */
+    div.stButton > button[kind="primary"] {
+        background-color: #2ecc71 !important;
+        color: white !important;
+        border: none !important;
+        height: 40px !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- 2. TUA NAVBAR PERSONALIZZATA (LOGO SX | TASTO DX) ---
+def mostra_header_clean():
+    # Usiamo le proporzioni per spingere gli elementi ai lati (justify-between)
+    col_logo, col_centro, col_accedi = st.columns([1.5, 3, 1.2])
+
+    with col_logo:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", width=150)
+        else:
+            st.markdown("<h3 style='color: #2ecc71; margin:0;'>⚽ MyPlayr</h3>", unsafe_allow_html=True)
+
+    with col_accedi:
+        # Il tasto ACCEDI appare solo se non sei loggato
+        if st.session_state.get('pagina') in ['home', 'login', None]:
+            st.write("") # Spostamento minimo per centratura verticale
+            if st.button("ACCEDI", key="btn_header_final", type="primary", use_container_width=True):
+                st.session_state.pagina = 'login'
+                st.rerun()
+
+    st.markdown("<hr style='margin: 0; opacity: 0.1;'>", unsafe_allow_html=True)
+
+# Richiamo dell'Header
+mostra_header_clean()
+
 # --- CONFIGURAZIONE LOGO ---
 # Assicurati che il file si chiami 'logo.png' e sia nella cartella C:\MyPlayr
 LOGO_PATH = "logo.png" 
