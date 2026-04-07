@@ -17,105 +17,120 @@ from datetime import datetime
 
 import streamlit as st
 
-# --- 1. CSS AGGIORNATO (STILE MYPLAYR) ---
+# --- 1. CSS CORRETTO E ISOLATO ---
 st.markdown("""
     <style>
     @import url('https://googleapis.com');
 
+    /* 1. Reset per non rompere il resto del sito */
     header[data-testid="stHeader"] {
         display: none !important;
     }
 
+    /* Assicuriamoci che il contenuto principale parta dopo la navbar */
     .main .block-container {
-        padding-top: 64px !important; /* Esattamente l'altezza del riferimento */
+        padding-top: 100px !important;
+        max-width: 1200px;
     }
 
-    /* BARRA FISSA (STICKY) - REPLICATA DA MYPLAYR */
-    .sticky-navbar {
+    /* 2. NAVBAR FISSA - ISOLATA CON ID SPECIFICO */
+    #custom-nav {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 64px; /* Come da tuo F12 */
-        background-color: rgba(11, 15, 19, 0.95); /* Dark mode con trasparenza */
-        backdrop-filter: blur(10px); /* Effetto vetro moderno */
+        height: 64px;
+        background-color: rgba(11, 15, 19, 0.98);
+        backdrop-filter: blur(10px);
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 5%;
         z-index: 999999;
-        border-bottom: 1px solid rgb(76, 84, 93); /* Il grigio esatto del riferimento */
+        border-bottom: 1px solid rgb(76, 84, 93);
         font-family: 'Inter', sans-serif;
     }
 
-    .logo-container {
+    .nav-left {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
-    /* BOX MC PIÙ SQUADRATO E MINIMAL */
-    .mc-box {
+    .mc-logo-box {
         background-color: #2ecc71; 
         color: #000;
         font-weight: 900;
         padding: 2px 8px;
-        border-radius: 4px; /* Meno arrotondato, più tecnico */
+        border-radius: 4px;
         font-size: 16px;
     }
 
-    .brand-name {
+    .nav-title {
         color: white; 
         font-size: 18px;
         font-weight: 700;
-        letter-spacing: -0.5px;
-        text-transform: uppercase; /* Stile gaming */
+        text-transform: uppercase;
     }
 
-    /* POSIZIONAMENTO DEL BOTTONE STREAMLIT */
-    /* Questo sposta il bottone Streamlit "Accedi" esattamente sopra la navbar */
+    /* 3. SISTEMAZIONE BOTTONI E FOOTER (I "COLPEVOLI") */
+    /* Impediamo che il flex della navbar influenzi i bottoni della pagina */
     .stButton {
-        position: fixed;
-        top: 13px; /* Centrato verticalmente nella barra da 64px */
-        right: 5%;
-        z-index: 1000000;
-    }
-    
-    /* STILE TASTO ACCEDI (REPLICA VERDE MYPLAYR) */
-    div.stButton > button {
-        background-color: #2ecc71 !important;
-        color: black !important; /* Scritta nera su verde per contrasto */
-        border: none !important;
-        height: 38px !important;
-        padding: 0 25px !important;
-        font-weight: 800 !important;
-        border-radius: 4px !important;
-        text-transform: uppercase !important;
-        font-size: 13px !important;
-        transition: 0.3s;
+        display: block !important; 
     }
 
-    div.stButton > button:hover {
-        background-color: #27ae60 !important;
-        transform: scale(1.02);
+    /* Stile specifico per il tasto ACCEDI in alto a destra */
+    /* Usiamo una chiave specifica se possibile, o lo posizioniamo con precisione */
+    div.stButton > button[kind="primary"] {
+        position: fixed;
+        top: 13px;
+        right: 5%;
+        z-index: 1000001;
+        background-color: #2ecc71 !important;
+        color: black !important;
+        border-radius: 4px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+    }
+
+    /* 4. FOOTER (Sistemiamo le scritte in basso) */
+    .custom-footer {
+        margin-top: 100px;
+        padding: 40px 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
+        text-align: center;
+        color: #94a3b8;
     }
     </style>
 """, unsafe_allow_html=True)
 
 # --- 2. HTML DELLA NAVBAR ---
 st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+    <div id='custom-nav'>
+        <div class='nav-left'>
+            <div class='mc-logo-box'>MC</div>
+            <div class='nav-title'>MyClipzo</div>
         </div>
-        <div></div> <!-- Spazio occupato dal bottone Streamlit -->
+        <div></div> <!-- Spazio vuoto per il bottone che si sovrappone -->
     </div>
 """, unsafe_allow_html=True)
 
-# --- 3. BOTTONE DI ACCESSO (SPOSTATO DAL CSS) ---
-if st.button("ACCEDI"):
-    st.write("Logica di login")
+# --- 3. CONTENUTO DELLA PAGINA ---
+st.title("Benvenuto su MyClipzo")
+st.write("Ora il testo dovrebbe essere di nuovo al suo posto sotto la navbar.")
+
+# Bottone Accedi (che il CSS sposterà in alto a destra)
+st.button("Accedi al Portale", kind="primary")
+
+# --- 4. FOOTER (Per evitare che le scritte si ammucchino) ---
+st.markdown("""
+    <div class='custom-footer'>
+        <p>Privacy Policy | Termini e Condizioni</p>
+        <p>© 2026 MyClipzo</p>
+    </div>
+""", unsafe_allow_html=True)
+
 
 
 
