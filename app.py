@@ -17,22 +17,33 @@ from datetime import datetime
 
 import streamlit as st
 
-# --- 1. CSS PER NAVBAR FISSA E STILE GRAFICO ---
+# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
 st.markdown("""
     <style>
-    /* Nascondi la barra di sistema (Fork/Github) */
+    /* Nasconde la barra grigia originale di Streamlit */
     header[data-testid="stHeader"] {
         display: none !important;
     }
 
-    /* CREAZIONE DELLA NAVBAR FISSA IN ALTO */
-    .stApp > header {
-        display: none;
-    }
-    
-    /* Spazio forzato in alto per non far finire il sito SOTTO la barra fissa */
+    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
     .main .block-container {
-        padding-top: 100px !important;
+        padding-top: 80px !important;
+    }
+
+    /* BARRA FISSA (STICKY) */
+    .sticky-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background-color: #0E1117; /* Colore scuro tipico di Streamlit */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        z-index: 999999; /* Sta sopra a tutto */
+        border-bottom: 1px solid rgba(46, 204, 113, 0.3); /* Linea verde sottile */
     }
 
     /* STILE LOGO MC + MyClipzo */
@@ -40,25 +51,29 @@ st.markdown("""
         display: flex;
         align-items: center;
         gap: 12px;
-        margin-top: 5px;
     }
     .mc-box {
         background-color: #2ecc71; 
         color: black;
         font-weight: bold;
-        padding: 4px 12px;
+        padding: 4px 10px;
         border-radius: 6px; 
-        font-family: 'Inter', sans-serif;
         font-size: 18px;
     }
     .brand-name {
         color: white; 
         font-size: 20px;
         font-weight: bold;
-        font-family: 'Inter', sans-serif;
-        letter-spacing: 1px;
     }
 
+    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
+    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
+        position: fixed;
+        top: 15px;
+        right: 5%;
+        z-index: 1000000;
+    }
+    
     /* STILE TASTO ACCEDI VERDE */
     div.stButton > button[kind="primary"] {
         background-color: #2ecc71 !important;
@@ -71,31 +86,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. POSIZIONAMENTO NAVBAR (LOGO SX | TASTO DX) ---
-# Usiamo un container per raggruppare logo e tasto in una riga orizzontale
-header_placeholder = st.empty() # Crea uno spazio dedicato in alto
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
+        </div>
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+    </div>
+""", unsafe_allow_html=True)
 
-with st.container():
-    col_logo, col_spazio, col_tasto = st.columns([2.5, 4, 1.2])
+# --- 3. IL TASTO ACCEDI (Sincronizzato con Streamlit) ---
+# Lo mettiamo in una colonna a destra, il CSS sopra lo "forzerà" in posizione fissa
+_, col_btn = st.columns([4, 1])
+with col_btn:
+    if st.session_state.get('pagina') in ['home', 'login', None]:
+        if st.button("ACCEDI", key="nav_login_fixed", type="primary"):
+            st.session_state.pagina = 'login'
+            st.rerun()
 
-    with col_logo:
-        # Logo MC verde + scritta MyClipzo bianca
-        st.markdown("""
-            <div class='logo-container'>
-                <div class='mc-box'>MC</div>
-                <div class='brand-name'>MyClipzo</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col_tasto:
-        # Tasto ACCEDI (Solo se non loggato)
-        if st.session_state.get('pagina') in ['home', 'login', None]:
-            if st.button("ACCEDI", key="nav_login_fixed", type="primary", use_container_width=True):
-                st.session_state.pagina = 'login'
-                st.rerun()
-
-# Linea verde sottile di chiusura (stile FaceSoccer) sotto la barra
-st.markdown("<hr style='margin-top: 10px; margin-bottom: 20px; border: 1px solid #2ecc71; opacity: 0.3;'>", unsafe_allow_html=True)
 
 
 
