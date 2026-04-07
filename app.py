@@ -22,88 +22,43 @@ st.markdown("""
     <style>
     @import url('https://googleapis.com');
 
-    /* 1. Reset per non rompere il resto del sito */
-    header[data-testid="stHeader"] {
-        display: none !important;
-    }
+    header[data-testid="stHeader"] { display: none !important; }
+    .main .block-container { padding-top: 80px !important; }
 
-    /* Assicuriamoci che il contenuto principale parta dopo la navbar */
-    .main .block-container {
-        padding-top: 100px !important;
-        max-width: 1200px;
-    }
-
-    /* 2. NAVBAR FISSA - ISOLATA CON ID SPECIFICO */
-    #custom-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 64px;
+    /* NAVBAR UNIFICATA */
+    .custom-nav {
+        position: fixed; top: 0; left: 0; width: 100%; height: 64px;
         background-color: rgba(11, 15, 19, 0.98);
         backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5%;
-        z-index: 999999;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 5%; z-index: 9999;
         border-bottom: 1px solid rgb(76, 84, 93);
         font-family: 'Inter', sans-serif;
     }
 
-    .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .mc-logo-box { background-color: #2ecc71; color: #000; font-weight: 900; padding: 4px 10px; border-radius: 4px; }
+    .nav-title { color: white; font-weight: 700; text-transform: uppercase; }
 
-    .mc-logo-box {
-        background-color: #2ecc71; 
-        color: #000;
-        font-weight: 900;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 16px;
+    /* LINK DI NAVIGAZIONE */
+    .nav-center { display: flex; gap: 20px; }
+    
+    /* Stile per i finti link che in realtà sono bottoni invisibili */
+    .stButton > button.nav-btn-style {
+        background: transparent !important;
+        border: none !important;
+        color: #94a3b8 !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        text-transform: none !important;
+        padding: 0 !important;
     }
-
-    .nav-title {
-        color: white; 
-        font-size: 18px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    /* 3. SISTEMAZIONE BOTTONI E FOOTER (I "COLPEVOLI") */
-    /* Impediamo che il flex della navbar influenzi i bottoni della pagina */
-    .stButton {
-        display: block !important; 
-    }
-
-    /* Stile specifico per il tasto ACCEDI in alto a destra */
-    /* Usiamo una chiave specifica se possibile, o lo posizioniamo con precisione */
-    div.stButton > button[kind="primary"] {
-        position: fixed;
-        top: 13px;
-        right: 5%;
-        z-index: 1000001;
-        background-color: #2ecc71 !important;
-        color: black !important;
-        border-radius: 4px !important;
-        font-weight: 800 !important;
-        text-transform: uppercase !important;
-    }
-
-    /* 4. FOOTER (Sistemiamo le scritte in basso) */
-    .custom-footer {
-        margin-top: 100px;
-        padding: 40px 0;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        width: 100%;
-        text-align: center;
-        color: #94a3b8;
+    .stButton > button.nav-btn-style:hover {
+        color: #2ecc71 !important;
     }
     </style>
 """, unsafe_allow_html=True)
+
 
 # --- 2. HTML DELLA NAVBAR ---
 st.markdown("""
@@ -598,41 +553,51 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
-
-# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
+# --- NAVBAR DINAMICA UNIFICATA ---
 if st.session_state.autenticato:
-    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
-    # Usiamo col_nav per indicare le colonne della barra
-    col_nav = st.columns(7 if is_admin else 6)
+    # Creiamo la struttura della barra
+    st.markdown(f"""
+        <div class='custom-nav'>
+            <div class='nav-left'>
+                <div class='mc-logo-box'>MC</div>
+                <div class='nav-title'>MyClipzo</div>
+            </div>
+            <div id='nav-placeholder' style='display:flex; gap:20px;'></div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Posizioniamo i bottoni di Streamlit sopra la navbar usando container e colonne "nascoste"
+    # Per semplicità e stabilità, usiamo i bottoni standard ma stilizzati via CSS
+    col_nav = st.columns([2, 1, 1, 1, 1, 1, 1, 1.5]) 
     
-    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
-    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+    with col_nav[1]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), key="nav_home")
+    with col_nav[2]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), key="nav_prof")
+    with col_nav[3]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="nav_part")
+    with col_nav[4]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), key="nav_hall")
+    with col_nav[5]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), key="nav_clip")
     
-    # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
-        with col_nav[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+        with col_nav[6]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), key="nav_admin")
     
-    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
-    with col_nav[-1]: 
-        if st.button("🚪 Esci", type="secondary", use_container_width=True):
-            # Azioni di pulizia totale quando l'utente se ne va
+    with col_nav[7]:
+        if st.button("🚪 Esci", type="secondary"):
             st.session_state.autenticato = False
-            st.session_state.user_email = ""
-            st.session_state.user_role = "user"
-            st.session_state.user_nick = ""
-            st.session_state.pagina = 'home' # Torna alla pagina pubblica
-            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
-            
-    # Linea verde di separazione definita nel tuo CSS (hr)
-    st.divider() 
+            st.session_state.pagina = 'home'
+            st.rerun()
+else:
+    # NAVBAR PER UTENTI NON LOGGATI (Come MyPlayr)
+    st.markdown("""
+        <div class='custom-nav'>
+            <div class='nav-left'>
+                <div class='mc-logo-box'>MC</div>
+                <div class='nav-title'>MyClipzo</div>
+            </div>
+            <div style='color: white; font-weight: bold;'>BENVENUTO</div>
+        </div>
+    """, unsafe_allow_html=True)
+
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
