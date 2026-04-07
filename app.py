@@ -14,23 +14,76 @@ from supabase import create_client, Client
 import os
 from PIL import Image
 
-# --- CONFIGURAZIONE LOGO ---
-# Assicurati che il file si chiami 'logo.png' e sia nella cartella C:\MyPlayr
-LOGO_PATH = "logo.png" 
+import streamlit as st
 
-def mostra_logo():
-    if os.path.exists(LOGO_PATH):
-        logo_img = Image.open(LOGO_PATH)
-        # Mostriamo il logo con una larghezza fissa (es. 200px) per non farlo giganteggiare
-        st.image(logo_img, width=200)
-    else:
-        # Se il file non esiste, mostra una scritta di emergenza
-        st.markdown(f"<h2 style='color: #4CAF50;'>⚽ FaceSoccer</h2>", unsafe_allow_html=True)
+# --- 1. PULIZIA BARRA DI SISTEMA E STILE LOGO ---
+st.markdown("""
+    <style>
+    /* Nascondi la barra nera di sistema (Fork/Github) */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+    
+    /* Spazio per non coprire il contenuto sotto l'header */
+    .main .block-container {
+        padding-top: 40px !important;
+    }
 
-# --- POSIZIONAMENTO LOGO ---
-# Richiamiamo la funzione all'inizio di ogni pagina
-mostra_logo()
-st.divider() # Una linea sottile per separare il logo dal contenuto
+    /* STILE LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .mc-box {
+        background-color: #2ecc71; /* Verde brillante */
+        color: black;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 8px; /* Bordi smussati */
+        font-family: sans-serif;
+        font-size: 20px;
+    }
+    .brand-name {
+        color: white; /* Scritta MyClipzo Bianca */
+        font-size: 22px;
+        font-weight: bold;
+        font-family: sans-serif;
+    }
+
+    /* STILE TASTO ACCEDI VERDE */
+    div.stButton > button[kind="primary"] {
+        background-color: #2ecc71 !important;
+        color: white !important;
+        border: none !important;
+        font-weight: bold !important;
+        border-radius: 6px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- 2. NAVBAR FISSA (LOGO SX | TASTO DX) ---
+col_logo, col_spazio, col_tasto = st.columns([2.5, 3, 1.2])
+
+with col_logo:
+    # Creiamo il logo MC verde + scritta MyClipzo bianca
+    st.markdown("""
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col_tasto:
+    # Il tasto ACCEDI appare solo nella Home o nel Login
+    if st.session_state.get('pagina') in ['home', 'login', None]:
+        if st.button("ACCEDI", key="nav_login_top", type="primary", use_container_width=True):
+            st.session_state.pagina = 'login'
+            st.rerun()
+
+# Linea verde sottile di chiusura (stile FaceSoccer)
+st.markdown("<hr style='margin: 10px 0; border: 1px solid #2ecc71; opacity: 0.3;'>", unsafe_allow_html=True)
+
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
