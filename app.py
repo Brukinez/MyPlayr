@@ -649,24 +649,24 @@ if st.session_state.pagina == 'home':
         with col1:
             st.markdown("""
                 <div class="mcp-card">
-                    <h3 style="color: #2ecc71;">🏟️ PARTITE</h3>
-                    <p>Guarda le registrazioni integrali dei tuoi match in alta definizione.</p>
+                    <h3 style="color: #2ecc71;">🏟️ REGISTRAZIONE AUTOMATICA</h3>
+                    <p>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>
                 </div>
             """, unsafe_allow_html=True)
 
         with col2:
             st.markdown("""
                 <div class="mcp-card">
-                    <h3 style="color: #2ecc71;">🎞️ CLIP</h3>
-                    <p>Crea i tuoi highlight migliori con un semplice click e scaricali.</p>
+                    <h3 style="color: #2ecc71;">🎞️ TAGLIO CLIP ISTANTANEO</h3>
+                    <p>Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.</p>
                 </div>
             """, unsafe_allow_html=True)
 
         with col3:
             st.markdown("""
                 <div class="mcp-card">
-                    <h3 style="color: #2ecc71;">🏆 HALL</h3>
-                    <p>Scopri chi sono i campioni della settimana e scala la classifica.</p>
+                    <h3 style="color: #2ecc71;">📥 CONDIVISIONE SOCIAL</h3>
+                    <p>Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.</p>
                 </div>
             """, unsafe_allow_html=True)
 
