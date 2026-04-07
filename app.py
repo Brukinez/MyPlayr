@@ -15,8 +15,26 @@ import streamlit as st
 import os
 from datetime import datetime
 
-# --- 2. DISEGNO DELLA BARRA FISSA (Solo Logo) ---
-st.markdown(f"""
+# --- 1. CSS PER NAVBAR FISSA E PULIZIA ---
+st.markdown("""
+    <style>
+    header[data-testid="stHeader"] { display: none !important; }
+    .main .block-container { padding-top: 60px !important; }
+
+    /* CONTENITORE NAVBAR NERA FISSA (SOLO LOGO) */
+    .myplayr-nav-fix {
+        position: fixed; top: 0; left: 0; width: 100%; height: 75px;
+        background-color: #0E1117; display: flex; align-items: center;
+        padding: 0 5%; z-index: 99999;
+        border-bottom: 1px solid rgba(46, 204, 113, 0.4);
+    }
+    .logo-box { background-color: #2ecc71; color: black; font-weight: bold; padding: 4px 10px; border-radius: 6px; font-size: 18px; }
+    .logo-txt { color: white; font-size: 18px; font-weight: bold; margin-left: 8px; }
+    </style>
+""", unsafe_allow_html=True)
+
+# --- 2. DISEGNO LOGO (L'unica cosa che rimarrà nella barra) ---
+st.markdown("""
     <div class='myplayr-nav-fix'>
         <div style='display: flex; align-items: center;'>
             <div class='logo-box'>MC</div>
@@ -25,96 +43,16 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# --- 3. LOGICA PULSANTI DINAMICI ---
-# Se l'utente non è loggato, mostriamo solo il tasto ACCEDI a destra
-if not st.session_state.autenticato:
-    # Usiamo 3 colonne: Logo (occupato), Spazio vuoto, Tasto Accedi
-    col_l, col_s, col_t = st.columns([2, 3.5, 1.2]) 
-    with col_t:
-        if st.button("ACCEDI", key="nav_login_verde", use_container_width=True):
-            st.session_state.pagina = 'login'
-            st.rerun()
-
-# Se l'utente è loggato, mostriamo il menu completo che avevi prima
-else:
-    # (Qui rimane il tuo codice con le colonne per Home, Profilo, Partite, etc.)
+# --- 3. LOGICA PULSANTI DINAMICI (TUTTI SOTTO LA BARRA O NASCOSTI) ---
+# Se vuoi che i tasti di navigazione (Home, Profilo, etc.) appaiano 
+# sotto la barra nera quando sei loggato:
+if st.session_state.autenticato:
     is_admin = st.session_state.get('user_role') == "admin"
     col_nav = st.columns([2, 1, 1, 1, 1, 1, 1.5] if is_admin else [2, 1, 1, 1, 1, 1.5])
     
+    # Iniziamo dalla colonna 1 per lasciare spazio sotto il logo
     with col_nav[1]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[2]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[3]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[4]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[5]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
-    # ... e così via per admin e logout
-
-
-# --- 1. CSS PER NAVBAR FISSA E TASTO ANCORATO ---
-st.markdown("""
-    <style>
-    /* Nasconde la barra grigia di sistema */
-    header[data-testid="stHeader"] {
-        display: none !important;
-    }
-
-    /* Spazio per il contenuto del sito */
-    .main .block-container {
-        padding-top: 80px !important;
-    }
-
-    /* BARRA FISSA (HEADER) */
-    .sticky-navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background-color: #0E1117; /* Sfondo scuro */
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5%;
-        z-index: 999999;
-        border-bottom: 1px solid rgba(46, 204, 113, 0.3);
-    }
-
-    /* LOGO MC + MyClipzo */
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .mc-box {
-        background-color: #2ecc71; 
-        color: black;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px; 
-        font-size: 18px;
-    }
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    /* TASTO ACCEDI (STILE LINK) */
-    .btn-accedi {
-        background-color: #2ecc71;
-        color: white !important;
-        padding: 8px 20px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-    .btn-accedi:hover {
-        background-color: #27ae60;
-        color: white !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+    # ... procedi con gli altri tasti ...
 
 # --- 2. LOGICA DI NAVIGAZIONE E HEADER ---
 # Controlliamo se siamo in una pagina che richiede il tasto Accedi
