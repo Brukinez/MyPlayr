@@ -47,72 +47,58 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# --- 1. CSS PER NAVBAR FISSA E TASTO ANCORATO ---
+# --- 1. CSS PER IL TELETRASPORTO DEL TASTO ---
 st.markdown("""
     <style>
-    /* Nasconde la barra grigia di sistema */
-    header[data-testid="stHeader"] {
-        display: none !important;
-    }
-
+    /* Nasconde la barra di sistema Streamlit */
+    header[data-testid="stHeader"] { display: none !important; }
+    
     /* Spazio per il contenuto del sito */
-    .main .block-container {
-        padding-top: 80px !important;
-    }
+    .main .block-container { padding-top: 80px !important; }
 
-    /* BARRA FISSA (HEADER) */
+    /* LA BARRA NERA FISSA */
     .sticky-navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 70px;
-        background-color: #0E1117; /* Sfondo scuro */
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 5%;
-        z-index: 999999;
+        position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+        background-color: #0E1117; display: flex; align-items: center;
+        padding: 0 5%; z-index: 999998;
         border-bottom: 1px solid rgba(46, 204, 113, 0.3);
     }
 
-    /* LOGO MC + MyClipzo */
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .mc-box {
-        background-color: #2ecc71; 
-        color: black;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px; 
-        font-size: 18px;
-    }
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    /* TASTO ACCEDI (STILE LINK) */
-    .btn-accedi {
-        background-color: #2ecc71;
+    /* IL TASTO STREAMLIT (TELETRASPORTATO NELLA BARRA) */
+    /* Usiamo la chiave specifica per non muovere altri bottoni del sito */
+    div.stButton > button.st-key-btn_nav_fisso {
+        position: fixed;
+        top: 15px;      /* Distanza dal soffitto */
+        right: 5%;      /* Distanza dal bordo destro */
+        z-index: 999999; /* Sta sopra alla barra nera */
+        background-color: #2ecc71 !important;
         color: white !important;
-        padding: 8px 20px;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-    .btn-accedi:hover {
-        background-color: #27ae60;
-        color: white !important;
+        border: none !important;
+        font-weight: bold !important;
+        border-radius: 6px !important;
+        height: 40px !important;
+        padding: 0 25px !important;
     }
     </style>
 """, unsafe_allow_html=True)
+
+# --- 2. DISEGNO DELLA BARRA (Solo Logo, il tasto è gestito dal CSS sopra) ---
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div style='display: flex; align-items: center; gap: 12px;'>
+            <div style='background-color: #2ecc71; color: black; font-weight: bold; padding: 4px 10px; border-radius: 6px; font-size: 18px;'>MC</div>
+            <div style='color: white; font-size: 20px; font-weight: bold;'>MyClipzo</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# --- 3. IL TASTO REALE (Senza link HTML, così non si riavvia il sito) ---
+# Mostriamo il tasto solo se siamo in Home o Login
+if st.session_state.get('pagina') in ['home', 'login', None]:
+    if st.button("ACCEDI", key="btn_nav_fisso"):
+        st.session_state.pagina = 'login'
+        st.rerun() # Questo cambia pagina INTERNAMENTE senza riavviare il browser
+
 
 # --- 2. LOGICA DI NAVIGAZIONE E HEADER ---
 # Controlliamo se siamo in una pagina che richiede il tasto Accedi
