@@ -601,16 +601,7 @@ if st.session_state.autenticato:
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
 if st.session_state.pagina == 'home':
-    # 1. LOGO CENTRATO (Gestione sicura: se non c'è il file, il sito non crasha)
-    try:
-        if os.path.exists("logo.png"):
-            _, col_logo, _ = st.columns([1, 1.5, 1]) # Proporzioni centrate
-            with col_logo:
-                st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("<h1 style='text-align: center; color: #28a745;'>MyClipzo</h1>", unsafe_allow_html=True)
     
-    st.write(" ") # Spaziatura estetica
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
     if not st.session_state.autenticato:
