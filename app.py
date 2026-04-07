@@ -765,7 +765,7 @@ if st.session_state.pagina == 'home':
 
 
         with col2:
-    st.markdown("""
+            st.markdown("""
         <div class="mcp-card">
             <div class="icon-box">
                 <!-- COPIA E INCOLLA QUESTO PEZZO QUI SOTTO -->
