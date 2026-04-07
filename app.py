@@ -199,7 +199,7 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         font-size: 15px;
         box-shadow:
-            0 0 0 1px rgba(36, 225, 112, 0.25),
+            0 0 0 24px rgba(36, 225, 112, 0.25),
             0 8px 24px rgba(36, 225, 112, 0.28);
         transition: all 0.2s ease;
     }
@@ -616,7 +616,7 @@ if st.session_state.pagina == 'home':
     if not st.session_state.autenticato:
         st.markdown("<h2 style='text-align: center;'>Gioca. Rivediti. Condividi.</h2>", unsafe_allow_html=True)
         st.markdown("""
-            <p style='text-align: center; font-size: 20px;'>
+            <p style='text-align: center; font-size: 16px;'>
             Ogni partita merita di essere ricordata!<br>
             MyClipzo registra automaticamente le tue azioni e ti permette di creare highlight
             professionali</p>
@@ -642,7 +642,7 @@ if st.session_state.pagina == 'home':
             
         st.write("<br>", unsafe_allow_html=True)
         st.divider()
-
+        
         # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
         st.markdown("<h3 style='text-align: center;'>Resta aggiornato</h3>", unsafe_allow_html=True)
         _, col_news, _ = st.columns([1, 2, 1])
