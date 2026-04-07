@@ -322,6 +322,18 @@ EMERGENT_CSS = """
         margin-bottom: 32px; /* Spazio sotto per non toccare il titolo */
         text-align: center;
     }
+    /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
+    .hero-description {
+        color: #94a3b8; /* Un grigio azzurrino molto elegante */
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;      /* Grandezza del testo */
+        line-height: 1.6;     /* Spazio tra le righe per leggere meglio */
+        max-width: 600px;     /* Impedisce alla scritta di diventare troppo larga */
+        margin: 0 auto;       /* La centra perfettamente */
+        margin-top: 24px;     /* Spazio staccato dal titolo sopra */
+        margin-bottom: 40px;  /* Spazio prima dei bottoni o delle card sotto */
+        text-align: center;
+    }
 
 </style>
 """
@@ -642,7 +654,15 @@ if st.session_state.pagina == 'home':
         
         # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
         st.markdown("<h1 style='text-align: center; font-size: 60px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-   
+                # Questa è la descrizione che abbiamo appena creato
+        st.markdown("""
+            <p class='hero-description'>
+                Ogni partita merita di essere ricordata! <br>
+                MyClipzo registra automaticamente le tue azioni e ti permette di <br>
+                creare highlight professionali.
+            </p>
+        """, unsafe_allow_html=True)
+
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
     if not st.session_state.autenticato:
