@@ -15,6 +15,37 @@ import streamlit as st
 import os
 from datetime import datetime
 
+# --- 1. LOGICA DI NAVIGAZIONE DALL'HEADER ---
+# Controlla se hai cliccato ACCEDI nella barra fissa
+if st.query_params.get("nav") == "login":
+    st.session_state.pagina = 'login'
+    st.query_params.clear() # Pulisce l'URL
+    st.rerun()
+
+# --- 2. HTML DELLA BARRA FISSA ---
+# (Assicurati che il link nel tasto sia questo)
+accedi_html = """
+<a href='/?nav=login' target='_self' style='
+    background-color: #2ecc71;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+'>ACCEDI</a>
+"""
+
+st.markdown(f"""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
+        </div>
+        {accedi_html}
+    </div>
+""", unsafe_allow_html=True)
+
 # --- 1. CSS PER NAVBAR FISSA E TASTO ANCORATO ---
 st.markdown("""
     <style>
