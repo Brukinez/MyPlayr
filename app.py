@@ -291,6 +291,23 @@ EMERGENT_CSS = """
         font-size: 12px;
         color: #8aa0b5;
     }
+        /* --- NUOVO STILE DELLE SCHEDE (CARD) --- */
+    .mcp-card {
+        background-color: rgb(55, 62, 70); /* Il grigio che hai trovato tu */
+        border: 1px solid rgb(73, 80, 87); /* Il bordino sottile */
+        border-radius: 12px;               /* Angoli arrotondati */
+        padding: 24px;                     /* Spazio interno per il testo */
+        color: white;
+        font-family: 'Inter', sans-serif;
+        margin-bottom: 20px;               /* Spazio tra una scheda e l'altra */
+        transition: 0.3s;                  /* Rende i movimenti fluidi */
+    }
+
+    .mcp-card:hover {
+        transform: translateY(-5px);       /* La scheda si alza quando ci passi sopra */
+        border-color: #2ecc71;             /* Il bordo diventa verde */
+    }
+
 </style>
 """
 
@@ -626,21 +643,33 @@ if st.session_state.pagina == 'home':
 
         # --- SEZIONE: COME FUNZIONA (LAYOUT A 3 COLONNE) ---
         st.markdown("<h2 style='text-align: center;'>Come Funziona</h2>", unsafe_allow_html=True)
-        c1, c2, c3 = st.columns(3)
-        
-        with c1:
-            st.success("📹 **REGISTRAZIONE AUTOMATICA**")
-            st.markdown("<p style='font-size: 18px; text-align: center;'>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>", unsafe_allow_html=True)
-        
-        with c2:
-            st.success("🔍 **TAGLIO CLIP ISTANTANEO**")
-            st.markdown("<p style='font-size: 18px; text-align: center;'>Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.</p>", unsafe_allow_html=True)
-        
-        with c3:
-            st.success("📥 **CONDIVISIONE SOCIAL**")
-            st.markdown("<p style='font-size: 18px; text-align: center;'>Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.</p>", unsafe_allow_html=True)
-            
-        st.write("<br>", unsafe_allow_html=True)
+                # Creiamo tre colonne per mettere le schede una di fianco all'altra
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            st.markdown("""
+                <div class="mcp-card">
+                    <h3 style="color: #2ecc71;">🏟️ PARTITE</h3>
+                    <p>Guarda le registrazioni integrali dei tuoi match in alta definizione.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        with col2:
+            st.markdown("""
+                <div class="mcp-card">
+                    <h3 style="color: #2ecc71;">🎞️ CLIP</h3>
+                    <p>Crea i tuoi highlight migliori con un semplice click e scaricali.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        with col3:
+            st.markdown("""
+                <div class="mcp-card">
+                    <h3 style="color: #2ecc71;">🏆 HALL</h3>
+                    <p>Scopri chi sono i campioni della settimana e scala la classifica.</p>
+                </div>
+            """, unsafe_allow_html=True)
+
         st.divider()
         
         # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
