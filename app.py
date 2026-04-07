@@ -12,37 +12,39 @@ from urllib.parse import urlparse, parse_qs
 from supabase import create_client, Client
 
 import streamlit as st
+import os
+from datetime import datetime
 
-# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
+# --- 1. CSS PER NAVBAR FISSA E TASTO ANCORATO ---
 st.markdown("""
     <style>
-    /* Nasconde la barra grigia originale di Streamlit */
+    /* Nasconde la barra grigia di sistema */
     header[data-testid="stHeader"] {
         display: none !important;
     }
 
-    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
+    /* Spazio per il contenuto del sito */
     .main .block-container {
         padding-top: 80px !important;
     }
 
-    /* BARRA FISSA (STICKY) */
+    /* BARRA FISSA (HEADER) */
     .sticky-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 70px;
-        background-color: #0E1117; /* Colore scuro tipico di Streamlit */
+        background-color: #0E1117; /* Sfondo scuro */
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 5%;
-        z-index: 999999; /* Sta sopra a tutto */
-        border-bottom: 1px solid rgba(46, 204, 113, 0.3); /* Linea verde sottile */
+        z-index: 999999;
+        border-bottom: 1px solid rgba(46, 204, 113, 0.3);
     }
 
-    /* STILE LOGO MC + MyClipzo */
+    /* LOGO MC + MyClipzo */
     .logo-container {
         display: flex;
         align-items: center;
@@ -62,45 +64,48 @@ st.markdown("""
         font-weight: bold;
     }
 
-    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
-        position: fixed;
-        top: 15px;
-        right: 5%;
-        z-index: 1000000;
-    }
-    
-    /* STILE TASTO ACCEDI VERDE */
-    div.stButton > button[kind="primary"] {
-        background-color: #2ecc71 !important;
+    /* TASTO ACCEDI (STILE LINK) */
+    .btn-accedi {
+        background-color: #2ecc71;
         color: white !important;
-        border: none !important;
-        height: 38px !important;
-        font-weight: bold !important;
+        padding: 8px 20px;
         border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .btn-accedi:hover {
+        background-color: #27ae60;
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
-st.markdown("""
+# --- 2. LOGICA DI NAVIGAZIONE E HEADER ---
+# Controlliamo se siamo in una pagina che richiede il tasto Accedi
+mostra_accedi = st.session_state.get('pagina') in ['home', 'login', None]
+
+# Creiamo l'HTML della barra con il tasto inserito dentro
+accedi_html = f"<a href='/?p=login' target='_self' class='btn-accedi'>ACCEDI</a>" if mostra_accedi else ""
+
+st.markdown(f"""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+        {accedi_html}
     </div>
 """, unsafe_allow_html=True)
 
-# --- 3. IL TASTO ACCEDI (Sincronizzato con Streamlit) ---
-# Lo mettiamo in una colonna a destra, il CSS sopra lo "forzerà" in posizione fissa
-_, col_btn = st.columns([4, 1])
-with col_btn:
-    if st.session_state.get('pagina') in ['home', 'login', None]:
-        if st.button("ACCEDI", key="nav_login_fixed", type="primary"):
-            st.session_state.pagina = 'login'
-            st.rerun()
+# --- 3. CERVELLO PER IL CLICK SUL TASTO HTML ---
+# Questo serve per far capire a Streamlit che hai cliccato il tasto nell'header
+query_params = st.query_params
+if query_params.get("p") == "login":
+    st.session_state.pagina = 'login'
+    # Puliamo l'URL per evitare loop
+    st.query_params.clear()
 
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
