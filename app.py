@@ -314,7 +314,7 @@ EMERGENT_CSS = """
         background-color: rgba(41, 168, 71, 0.2); /* Verde trasparente */
         border: 0.88px solid rgba(41, 168, 71, 0.3); /* Bordo verde sottile */
         border-radius: 9999px; /* Lo rende completamente tondo ai lati */
-        color: green;
+        color: white;
         font-family: 'Inter', sans-serif;
         font-weight: 500;
         font-size: 14px;
@@ -646,21 +646,18 @@ if st.session_state.autenticato:
 
 if st.session_state.pagina == 'home':
     # Centriamo tutto con delle colonne, mettendo il contenuto in quella centrale
-    _, col_centro, _ = st.columns([1, 4, 1])
+    _, col_centro, _ = st.columns([1, 4, 1]) # Usiamo una colonna centrale più larga
     
     with col_centro:
-        # Questo è il piccolo badge che abbiamo appena creato
+        # Il Badge con il testo verde
         st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
         
-        # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
-        st.markdown("<h1 style='text-align: center; font-size: 60px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-                # Questa è la descrizione che abbiamo appena creato
+        # Il Titolo con "CONDIVIDI" verde
         st.markdown("""
-            <p class='hero-description'>
-                Ogni partita merita di essere ricordata! <br>
-                MyClipzo registra automaticamente le tue azioni e ti permette di <br>
-                creare highlight professionali.
-            </p>
+            <h1 style='text-align: center; font-size: 60px; font-weight: 900; line-height: 1; color: white;'>
+                GIOCA. RIVEDITI.<br>
+                <span class='verde-clipzo'>CONDIVIDI.</span>
+            </h1>
         """, unsafe_allow_html=True)
 
 
