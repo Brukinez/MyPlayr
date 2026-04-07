@@ -604,83 +604,41 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-# --- 1. CSS PER NAVBAR FISSA E STILE TASTI (LOGO + MENU) ---
-st.markdown("""
-    <style>
-    header[data-testid="stHeader"] { display: none !important; }
-    .main .block-container { padding-top: 60px !important; }
+# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
 
-    /* CONTENITORE NAVBAR NERA FISSA */
-    .myplayr-nav-fix {
-        position: fixed; top: 0; left: 0; width: 100%; height: 75px;
-        background-color: #0E1117; display: flex; align-items: center;
-        padding: 0 2%; z-index: 99999;
-        border-bottom: 1px solid rgba(46, 204, 113, 0.4);
-    }
-    .logo-box { background-color: #2ecc71; color: black; font-weight: bold; padding: 4px 10px; border-radius: 6px; font-size: 18px; }
-    .logo-txt { color: white; font-size: 18px; font-weight: bold; margin-left: 8px; margin-right: 20px; }
-
-    /* TRUCCO PER RENDERE I TASTI TRASPARENTI E BIANCHI NELLA NAV */
-    div.stButton > button {
-        background-color: transparent !important;
-        border: none !important;
-        color: white !important;
-        font-size: 14px !important;
-    }
-    div.stButton > button:hover {
-        color: #2ecc71 !important;
-        background: transparent !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# --- 2. DISEGNO LOGO (Sempre presente a sinistra) ---
-st.markdown("""
-    <div class='myplayr-nav-fix'>
-        <div style='display: flex; align-items: center;'>
-            <div class='logo-box'>MC</div>
-            <div class='logo-txt'>MyClipzo</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# --- 3. LOGICA PULSANTI DINAMICI (Teletrasportati sopra la barra) ---
+# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
 if st.session_state.autenticato:
+    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # Creiamo le colonne: lasciamo uno spazio iniziale (index 0) per il logo
-    # Il logo occupa circa 1.5 colonne di spazio
-    spazi = [2, 1, 1, 1, 1, 1, 1, 1] if is_admin else [2, 1, 1, 1, 1, 1, 1]
-    col_nav = st.columns(spazi)
+    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
+    # Usiamo col_nav per indicare le colonne della barra
+    col_nav = st.columns(7 if is_admin else 6)
     
-    # Iniziamo dal col_nav[1] perché lo 0 è occupato dal logo MC
-    with col_nav[1]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[2]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[3]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[4]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[5]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
+    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
     
+    # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
-        with col_nav[6]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+        with col_nav[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
     
+    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
     with col_nav[-1]: 
-        if st.button("🚪 Esci", key="nav_logout_btn", use_container_width=True):
+        if st.button("🚪 Esci", type="secondary", use_container_width=True):
+            # Azioni di pulizia totale quando l'utente se ne va
             st.session_state.autenticato = False
-            st.session_state.pagina = 'home'
-            st.rerun()
-
-# --- 4. CASO UTENTE NON LOGGATO (Header Pubblico) ---
-else:
-    # Colonna 0 logo, Colonna -1 Tasto Accedi
-    col_pub = st.columns([2, 4, 1.5])
-    with col_pub[-1]:
-        if st.button("ACCEDI", key="nav_login_verde", type="primary", use_container_width=True):
-            st.session_state.pagina = 'login'
-            st.rerun()
-
-# CSS Extra per il tasto ACCEDI verde
-st.markdown("<style>button.st-key-nav_login_verde {background-color: #2ecc71 !important; color: white !important;}</style>", unsafe_allow_html=True)
- 
+            st.session_state.user_email = ""
+            st.session_state.user_role = "user"
+            st.session_state.user_nick = ""
+            st.session_state.pagina = 'home' # Torna alla pagina pubblica
+            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
+            
+    # Linea verde di separazione definita nel tuo CSS (hr)
+    st.divider() 
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
