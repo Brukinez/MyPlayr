@@ -15,32 +15,39 @@ import streamlit as st
 import os
 from datetime import datetime
 
-
-
-
-# --- 2. HTML DELLA BARRA FISSA ---
-# (Assicurati che il link nel tasto sia questo)
-accedi_html = """
-<a href='/?nav=login' target='_self' style='
-    background-color: #2ecc71;
-    color: white;
-    padding: 8px 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 14px;
-'>ACCEDI</a>
-"""
-
+# --- 2. DISEGNO DELLA BARRA FISSA (Solo Logo) ---
 st.markdown(f"""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+    <div class='myplayr-nav-fix'>
+        <div style='display: flex; align-items: center;'>
+            <div class='logo-box'>MC</div>
+            <div class='logo-txt'>MyClipzo</div>
         </div>
-        {accedi_html}
     </div>
 """, unsafe_allow_html=True)
+
+# --- 3. LOGICA PULSANTI DINAMICI ---
+# Se l'utente non è loggato, mostriamo solo il tasto ACCEDI a destra
+if not st.session_state.autenticato:
+    # Usiamo 3 colonne: Logo (occupato), Spazio vuoto, Tasto Accedi
+    col_l, col_s, col_t = st.columns([2, 3.5, 1.2]) 
+    with col_t:
+        if st.button("ACCEDI", key="nav_login_verde", use_container_width=True):
+            st.session_state.pagina = 'login'
+            st.rerun()
+
+# Se l'utente è loggato, mostriamo il menu completo che avevi prima
+else:
+    # (Qui rimane il tuo codice con le colonne per Home, Profilo, Partite, etc.)
+    is_admin = st.session_state.get('user_role') == "admin"
+    col_nav = st.columns([2, 1, 1, 1, 1, 1, 1.5] if is_admin else [2, 1, 1, 1, 1, 1.5])
+    
+    with col_nav[1]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[2]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[3]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[4]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[5]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+    # ... e così via per admin e logout
+
 
 # --- 1. CSS PER NAVBAR FISSA E TASTO ANCORATO ---
 st.markdown("""
