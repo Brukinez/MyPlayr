@@ -216,7 +216,7 @@ EMERGENT_CSS = """
     div[data-testid="stButton"] > button[kind="secondary"] {
         background-color: transparent !important;
         color: var(--text-soft) !important;
-        border: 20px solid rgba(196, 208, 220, 0.30) !important;
+        border: 1px solid rgba(196, 208, 220, 0.30) !important;
         border-radius: 10px;
         font-size: 13px !important;
         text-transform: none !important;
