@@ -788,13 +788,24 @@ if st.session_state.pagina == 'home':
 
         with col3:
             st.markdown("""
-                <div class="mcp-card">
-                    <h3 style="color: #2ecc71;">📥 CONDIVISIONE SOCIAL</h3>
-                    <p>Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.</p>
-                </div>
-            """, unsafe_allow_html=True)
+        <div class="mcp-card">
+            <div class="icon-box">
+                <!-- Icona Share (Lucide Share-2) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(41, 168, 71)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+            </div>
+            <h3 style="color: white; margin-top: 0;">CONDIVIDI</h3>
+            <p style="color: #94a3b8; font-size: 14px;">
+                Scarica i tuoi momenti migliori o condividili istantaneamente con i tuoi amici sui social.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
-        st.divider()
         
         # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
         st.markdown("<h3 style='text-align: center;'>Resta aggiornato</h3>", unsafe_allow_html=True)
