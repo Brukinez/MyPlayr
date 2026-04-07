@@ -750,13 +750,19 @@ if st.session_state.pagina == 'home':
                 # Creiamo tre colonne per mettere le schede una di fianco all'altra
         col1, col2, col3 = st.columns(3)
 
+                # Esempio per la Colonna 1 (fai lo stesso per le altre)
         with col1:
             st.markdown("""
                 <div class="mcp-card">
-                    <h3 style="color: #2ecc71;">🏟️ REGISTRAZIONE AUTOMATICA</h3>
-                    <p>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>
+                    <!-- Ecco la nuova scatola dell'icona -->
+                    <div class="icon-box">
+                        <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
+                    </div>
+                    <h3 style="color: white; margin-top: 0;">REGISTRAZIONE AUTOMATICA</h3>
+                    <p style="color: #94a3b8; font-size: 14px;">Il nostro sistema registra ogni partita in alta definizione senza che tu debba fare nulla.</p>
                 </div>
             """, unsafe_allow_html=True)
+
 
         with col2:
             st.markdown("""
