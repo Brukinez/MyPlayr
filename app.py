@@ -661,13 +661,22 @@ if st.session_state.pagina == 'home':
         
         # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
         st.markdown("<h1 style='text-align: center; font-size: 60px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-                # Questa è la descrizione che abbiamo appena creato
+                # --- DESCRIZIONE CENTRATA ---
         st.markdown("""
-            <p class='hero-description'>
-                Ogni partita merita di essere ricordata! <br>
-                MyClipzo registra automaticamente le tue azioni e ti permette di <br>
-                creare highlight professionali.
-            </p>
+            <div style='text-align: center; width: 100%;'>
+                <p style='
+                    color: #94a3b8; 
+                    font-family: "Inter", sans-serif; 
+                    font-size: 18px; 
+                    line-height: 1.6; 
+                    max-width: 600px; 
+                    margin: 24px auto 40px auto;
+                '>
+                    Ogni partita merita di essere ricordata! <br>
+                    MyClipzo registra automaticamente le tue azioni e ti permette di <br>
+                    creare highlight professionali.
+                </p>
+            </div>
         """, unsafe_allow_html=True)
 
 
