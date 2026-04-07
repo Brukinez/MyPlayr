@@ -17,8 +17,6 @@ from datetime import datetime
 
 import streamlit as st
 
-import streamlit as st
-
 # --- 1. CSS PER NAVBAR FISSA E STILE GRAFICO ---
 st.markdown("""
     <style>
@@ -99,33 +97,6 @@ with st.container():
 # Linea verde sottile di chiusura (stile FaceSoccer) sotto la barra
 st.markdown("<hr style='margin-top: 10px; margin-bottom: 20px; border: 1px solid #2ecc71; opacity: 0.3;'>", unsafe_allow_html=True)
 
-
-
-
-# --- 2. LOGICA DI NAVIGAZIONE E HEADER ---
-# Controlliamo se siamo in una pagina che richiede il tasto Accedi
-mostra_accedi = st.session_state.get('pagina') in ['home', 'login', None]
-
-# Creiamo l'HTML della barra con il tasto inserito dentro
-accedi_html = f"<a href='/?p=login' target='_self' class='btn-accedi'>ACCEDI</a>" if mostra_accedi else ""
-
-st.markdown(f"""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
-        </div>
-        {accedi_html}
-    </div>
-""", unsafe_allow_html=True)
-
-# --- 3. CERVELLO PER IL CLICK SUL TASTO HTML ---
-# Questo serve per far capire a Streamlit che hai cliccato il tasto nell'header
-query_params = st.query_params
-if query_params.get("p") == "login":
-    st.session_state.pagina = 'login'
-    # Puliamo l'URL per evitare loop
-    st.query_params.clear()
 
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
