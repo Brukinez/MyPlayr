@@ -47,63 +47,72 @@ st.markdown(f"""
     </div>
 """, unsafe_allow_html=True)
 
-# --- 1. CSS RIGIDO PER POSIZIONAMENTO ---
+# --- 1. CSS PER NAVBAR FISSA E TASTO ANCORATO ---
 st.markdown("""
     <style>
-    header[data-testid="stHeader"] { display: none !important; }
-    .main .block-container { padding-top: 80px !important; }
+    /* Nasconde la barra grigia di sistema */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
 
-    /* LA BARRA FISSA NERA */
-    .myplayr-nav {
-        position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-        background-color: #0E1117; display: flex; align-items: center;
-        padding: 0 5%; z-index: 99999;
+    /* Spazio per il contenuto del sito */
+    .main .block-container {
+        padding-top: 80px !important;
+    }
+
+    /* BARRA FISSA (HEADER) */
+    .sticky-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background-color: #0E1117; /* Sfondo scuro */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        z-index: 999999;
         border-bottom: 1px solid rgba(46, 204, 113, 0.3);
     }
 
-    /* LOGO E SCRITTA */
-    .nav-content { display: flex; align-items: center; gap: 12px; }
-    .mc-logo { 
-        background-color: #2ecc71; color: black; font-weight: bold; 
-        padding: 4px 10px; border-radius: 6px; font-size: 18px; 
+    /* LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
-    .brand-txt { color: white; font-size: 20px; font-weight: bold; }
+    .mc-box {
+        background-color: #2ecc71; 
+        color: black;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px; 
+        font-size: 18px;
+    }
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: bold;
+    }
 
-    /* TASTO ACCEDI POSIZIONATO A DESTRA */
-    div.stButton > button.st-key-nav_accedi {
-        position: fixed;
-        top: 15px; 
-        right: 5%;
-        z-index: 100000;
-        background-color: #2ecc71 !important;
+    /* TASTO ACCEDI (STILE LINK) */
+    .btn-accedi {
+        background-color: #2ecc71;
         color: white !important;
-        border: none !important;
-        font-weight: bold !important;
-        border-radius: 6px !important;
-        height: 40px !important;
+        padding: 8px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    .btn-accedi:hover {
+        background-color: #27ae60;
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
-
-# --- 2. DISEGNO DELLA BARRA ---
-st.markdown("""
-    <div class='myplayr-nav'>
-        <div class='nav-content'>
-            <div class='mc-logo'>MC</div>
-            <div class='brand-txt'>MyClipzo</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# --- 3. IL TASTO REALE (Senza link HTML per evitare il riavvio) ---
-if st.session_state.get('pagina') in ['home', 'login', None]:
-    # Usiamo una colonna vuota solo per "appoggiare" il codice del tasto
-    _, col_btn = st.columns([5, 1]) 
-    with col_btn:
-        if st.button("ACCEDI", key="nav_accedi"):
-            st.session_state.pagina = 'login'
-            st.rerun()
-
 
 # --- 2. LOGICA DI NAVIGAZIONE E HEADER ---
 # Controlliamo se siamo in una pagina che richiede il tasto Accedi
