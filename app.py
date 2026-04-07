@@ -324,7 +324,7 @@ EMERGENT_CSS = """
     }
     /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
     .hero-description {
-        color: #94a3b8; /* Un grigio azzurrino molto elegante */
+        color: #29AB847; /* Un grigio azzurrino molto elegante */
         font-family: 'Inter', sans-serif;
         font-size: 18px;      /* Grandezza del testo */
         line-height: 1.6;     /* Spazio tra le righe per leggere meglio */
