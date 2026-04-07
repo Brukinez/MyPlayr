@@ -653,37 +653,22 @@ if st.session_state.autenticato:
 
 if st.session_state.pagina == 'home':
     # Centriamo tutto con delle colonne, mettendo il contenuto in quella centrale
-    _, col_centro, _ = st.columns([1, 4, 1]) # Usiamo una colonna centrale più larga
+    _, col_centro, _ = st.columns([1, 4, 1])
     
-    # --- TROVA QUESTO PUNTO NELLA TUA HOME ---
     with col_centro:
-    # 1. Badge con il verde forzato
-        st.markdown(f"""
-        <div style='text-align: center;'>
-            <span style='
-                display: inline-flex;
-                align-items: center;
-                background-color: rgba(41, 168, 71, 0.2);
-                border: 0.88px solid rgba(41, 168, 71, 0.3);
-                border-radius: 9999px;
-                color: rgb(41, 168, 71) !important; 
-                font-family: "Inter", sans-serif;
-                font-weight: 500;
-                font-size: 14px;
-                padding: 8px 16px;
-                margin-bottom: 32px;
-            '>✦ La rivoluzione dello sport amatoriale</span>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    # 2. Titolo con il verde forzato su CONDIVIDI
-    st.markdown(f"""
-        <h1 style='text-align: center; font-size: 60px; font-weight: 900; line-height: 1; color: white; font-family: "Inter", sans-serif;'>
-            GIOCA. RIVEDITI.<br>
-            <span style='color: rgb(41, 168, 71) !important;'>CONDIVIDI.</span>
-        </h1>
-    """, unsafe_allow_html=True)
-
+        # Questo è il piccolo badge che abbiamo appena creato
+        st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
+        
+        # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
+        st.markdown("<h1 style='text-align: center; font-size: 60px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
+                # Questa è la descrizione che abbiamo appena creato
+        st.markdown("""
+            <p class='hero-description'>
+                Ogni partita merita di essere ricordata! <br>
+                MyClipzo registra automaticamente le tue azioni e ti permette di <br>
+                creare highlight professionali.
+            </p>
+        """, unsafe_allow_html=True)
 
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
