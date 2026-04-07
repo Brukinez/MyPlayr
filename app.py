@@ -765,12 +765,23 @@ if st.session_state.pagina == 'home':
 
 
         with col2:
-            st.markdown("""
-                <div class="mcp-card">
-                    <h3 style="color: #2ecc71;">🎞️ TAGLIO CLIP ISTANTANEO</h3>
-                    <p>Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.</p>
-                </div>
-            """, unsafe_allow_html=True)
+    st.markdown("""
+        <div class="mcp-card">
+            <div class="icon-box">
+                <!-- COPIA E INCOLLA QUESTO PEZZO QUI SOTTO -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="6" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <line x1="20" x2="8.12" y1="4" y2="15.88"></line>
+                    <line x1="14.47" x2="20" y1="14.48" y2="20"></line>
+                    <line x1="8.12" x2="12" y1="8.12" y2="12"></line>
+                </svg>
+            </div>
+            <h3 style="color: white; margin-top: 0;">CLIP</h3>
+            <p style="color: #94a3b8; font-size: 14px;">Crea i tuoi highlight migliori con un semplice click e scaricali.</p>
+        </div>
+    """, unsafe_allow_html=True)
+
 
         with col3:
             st.markdown("""
