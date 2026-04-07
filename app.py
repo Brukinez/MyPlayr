@@ -630,15 +630,15 @@ if st.session_state.pagina == 'home':
         
         with c1:
             st.success("📹 **REGISTRAZIONE AUTOMATICA**")
-            st.markdown("<p style='font-size: 14px; text-align: center;'>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 20px; text-align: center;'>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>", unsafe_allow_html=True)
         
         with c2:
             st.success("🔍 **TAGLIO CLIP ISTANTANEO**")
-            st.markdown("<p style='font-size: 14px; text-align: center;'>Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 20px; text-align: center;'>Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.</p>", unsafe_allow_html=True)
         
         with c3:
             st.success("📥 **CONDIVISIONE SOCIAL**")
-            st.markdown("<p style='font-size: 14px; text-align: center;'>Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 20px; text-align: center;'>Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.</p>", unsafe_allow_html=True)
             
         st.write("<br>", unsafe_allow_html=True)
 
