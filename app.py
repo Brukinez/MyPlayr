@@ -314,7 +314,7 @@ EMERGENT_CSS = """
         background-color: rgba(41, 168, 71, 0.2); /* Verde trasparente */
         border: 0.88px solid rgba(41, 168, 71, 0.3); /* Bordo verde sottile */
         border-radius: 9999px; /* Lo rende completamente tondo ai lati */
-        color: white;
+        color: green;
         font-family: 'Inter', sans-serif;
         font-weight: 500;
         font-size: 14px;
@@ -324,7 +324,7 @@ EMERGENT_CSS = """
     }
     /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
     .hero-description {
-        color: #29AB847; /* Un grigio azzurrino molto elegante */
+        color: #94a3b8; /* Un grigio azzurrino molto elegante */
         font-family: 'Inter', sans-serif;
         font-size: 18px;      /* Grandezza del testo */
         line-height: 1.6;     /* Spazio tra le righe per leggere meglio */
