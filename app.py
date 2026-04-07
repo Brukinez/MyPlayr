@@ -17,85 +17,106 @@ from datetime import datetime
 
 import streamlit as st
 
-# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
+# --- 1. CSS AGGIORNATO (STILE MYPLAYR) ---
 st.markdown("""
     <style>
-    /* Nasconde la barra grigia originale di Streamlit */
+    @import url('https://googleapis.com');
+
     header[data-testid="stHeader"] {
         display: none !important;
     }
 
-    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
     .main .block-container {
-        padding-top: 80px !important;
+        padding-top: 64px !important; /* Esattamente l'altezza del riferimento */
     }
 
-    /* BARRA FISSA (STICKY) */
+    /* BARRA FISSA (STICKY) - REPLICATA DA MYPLAYR */
     .sticky-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 70px;
-        background-color: #0E1117; /* Colore scuro tipico di Streamlit */
+        height: 64px; /* Come da tuo F12 */
+        background-color: rgba(11, 15, 19, 0.95); /* Dark mode con trasparenza */
+        backdrop-filter: blur(10px); /* Effetto vetro moderno */
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 5%;
-        z-index: 999999; /* Sta sopra a tutto */
-        border-bottom: 1px solid rgba(46, 204, 113, 0.3); /* Linea verde sottile */
+        z-index: 999999;
+        border-bottom: 1px solid rgb(76, 84, 93); /* Il grigio esatto del riferimento */
+        font-family: 'Inter', sans-serif;
     }
 
-    /* STILE LOGO MC + MyClipzo */
     .logo-container {
         display: flex;
         align-items: center;
-        gap: 12px;
-    }
-    .mc-box {
-        background-color: #2ecc71; 
-        color: black;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px; 
-        font-size: 18px;
-    }
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
+        gap: 10px;
     }
 
-    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
+    /* BOX MC PIÙ SQUADRATO E MINIMAL */
+    .mc-box {
+        background-color: #2ecc71; 
+        color: #000;
+        font-weight: 900;
+        padding: 2px 8px;
+        border-radius: 4px; /* Meno arrotondato, più tecnico */
+        font-size: 16px;
+    }
+
+    .brand-name {
+        color: white; 
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        text-transform: uppercase; /* Stile gaming */
+    }
+
+    /* POSIZIONAMENTO DEL BOTTONE STREAMLIT */
+    /* Questo sposta il bottone Streamlit "Accedi" esattamente sopra la navbar */
+    .stButton {
         position: fixed;
-        top: 15px;
+        top: 13px; /* Centrato verticalmente nella barra da 64px */
         right: 5%;
         z-index: 1000000;
     }
     
-    /* STILE TASTO ACCEDI VERDE */
-    div.stButton > button[kind="primary"] {
+    /* STILE TASTO ACCEDI (REPLICA VERDE MYPLAYR) */
+    div.stButton > button {
         background-color: #2ecc71 !important;
-        color: white !important;
+        color: black !important; /* Scritta nera su verde per contrasto */
         border: none !important;
         height: 38px !important;
-        font-weight: bold !important;
-        border-radius: 6px;
+        padding: 0 25px !important;
+        font-weight: 800 !important;
+        border-radius: 4px !important;
+        text-transform: uppercase !important;
+        font-size: 13px !important;
+        transition: 0.3s;
+    }
+
+    div.stButton > button:hover {
+        background-color: #27ae60 !important;
+        transform: scale(1.02);
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
+# --- 2. HTML DELLA NAVBAR ---
 st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+        <div></div> <!-- Spazio occupato dal bottone Streamlit -->
     </div>
 """, unsafe_allow_html=True)
+
+# --- 3. BOTTONE DI ACCESSO (SPOSTATO DAL CSS) ---
+if st.button("ACCEDI"):
+    st.write("Logica di login")
+
 
 
 
