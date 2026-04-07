@@ -768,8 +768,8 @@ if st.session_state.pagina == 'home':
             st.markdown("""
         <div class="mcp-card">
             <div class="icon-box">
-                <!-- COPIA E INCOLLA QUESTO PEZZO QUI SOTTO -->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Disegno delle Forbici (Lucide Scissors) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(41, 168, 71)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="6" cy="6" r="3"></circle>
                     <circle cx="6" cy="18" r="3"></circle>
                     <line x1="20" x2="8.12" y1="4" y2="15.88"></line>
@@ -778,9 +778,12 @@ if st.session_state.pagina == 'home':
                 </svg>
             </div>
             <h3 style="color: white; margin-top: 0;">CLIP</h3>
-            <p style="color: #94a3b8; font-size: 14px;">Crea i tuoi highlight migliori con un semplice click e scaricali.</p>
+            <p style="color: #94a3b8; font-size: 14px;">
+                Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.
+            </p>
         </div>
     """, unsafe_allow_html=True)
+
 
 
         with col3:
