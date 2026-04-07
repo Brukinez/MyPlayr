@@ -15,12 +15,13 @@ import streamlit as st
 import os
 from datetime import datetime
 
-# --- 1. LOGICA DI NAVIGAZIONE DALL'HEADER ---
-# Controlla se hai cliccato ACCEDI nella barra fissa
-if st.query_params.get("nav") == "login":
-    st.session_state.pagina = 'login'
-    st.query_params.clear() # Pulisce l'URL
-    st.rerun()
+# --- IL TASTO NELL'HEADER (SICURO E SENZA RIAVVIO) ---
+if st.session_state.get('pagina') in ['home', 'login', None]:
+    # Questo tasto ti porta alla tua pagina login esistente
+    if st.button("ACCEDI", key="btn_header_accedi"):
+        st.session_state.pagina = 'login'
+        st.rerun() 
+
 
 # --- 2. HTML DELLA BARRA FISSA ---
 # (Assicurati che il link nel tasto sia questo)
