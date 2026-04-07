@@ -341,6 +341,67 @@ EMERGENT_CSS = """
         margin-bottom: 40px;  /* Spazio prima dei bottoni o delle card sotto */
         text-align: center;
     }
+    /* --- STILE BOTTONI HERO --- */
+    .hero-btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .btn-pro-green {
+        background-color: rgb(41, 168, 71); /* Il tuo verde */
+        color: white !important;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .btn-pro-outline {
+        background-color: transparent;
+        color: white !important;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: 0.3s;
+    }
+
+    .btn-pro-green:hover, .btn-pro-outline:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
+    /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
+    .icon-box {
+        width: 56px;               /* Dimensione fissa (w-14 dello screen) */
+        height: 56px;              /* h-14 dello screen */
+        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
+        border-radius: 12px;       /* Angoli arrotondati (rounded-lg) */
+        display: flex;             /* Centra l'icona all'interno */
+        items-center: center;
+        justify-content: center;
+        margin-bottom: 16px;       /* Spazio tra icona e titolo (mb-4) */
+        transition: background-color 0.3s; /* Effetto al passaggio del mouse */
+    }
+
+    /* Effetto quando passi il mouse sulla scheda intera */
+    .mcp-card:hover .icon-box {
+        background-color: rgba(41, 168, 71, 0.3); /* Diventa leggermente più scuro */
+    }
 
 </style>
 """
@@ -678,6 +739,7 @@ if st.session_state.pagina == 'home':
                 </p>
             </div>
         """, unsafe_allow_html=True)
+
 
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
