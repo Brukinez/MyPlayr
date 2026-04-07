@@ -385,17 +385,19 @@ EMERGENT_CSS = """
         transform: scale(1.05);
         filter: brightness(1.1);
     }
-    /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
+        /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
-        width: 56px;               /* Dimensione fissa (w-14 dello screen) */
-        height: 56px;              /* h-14 dello screen */
+        width: 56px;               /* Dimensione fissa */
+        height: 56px;              /* Altezza fissa */
         background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
-        border-radius: 12px;       /* Angoli arrotondati (rounded-lg) */
-        display: flex;             /* Centra l'icona all'interno */
-        items-center: center;
-        justify-content: center;
-        margin-bottom: 16px;       /* Spazio tra icona e titolo (mb-4) */
-        transition: background-color 0.3s; /* Effetto al passaggio del mouse */
+        border-radius: 12px;       /* Angoli arrotondati */
+        display: flex;             /* Attiva la modalità "calamita" */
+        align-items: center;       /* CENTRA VERTICALMENTE (corretto!) */
+        justify-content: center;   /* CENTRA ORIZZONTALMENTE */
+        margin-bottom: 16px;       /* Spazio sotto l'icona */
+        transition: background-color 0.3s; /* Effetto fluido al passaggio mouse */
+    } /* <-- Non dimenticare questa parentesi di chiusura! */
+/
     }
 
     /* Effetto quando passi il mouse sulla scheda intera */
