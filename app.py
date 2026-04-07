@@ -218,7 +218,7 @@ EMERGENT_CSS = """
         color: var(--text-soft) !important;
         border: 1px solid rgba(196, 208, 220, 0.30) !important;
         border-radius: 10px;
-        font-size: 13px !important;
+        font-size: 52px !important;
         text-transform: none !important;
     }
 
@@ -630,7 +630,7 @@ if st.session_state.pagina == 'home':
         
         with c1:
             st.success("📹 **REGISTRAZIONE AUTOMATICA**")
-            st.markdown("<p style='font-size: 28px; text-align: center;'>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 14px; text-align: center;'>Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>", unsafe_allow_html=True)
         
         with c2:
             st.success("🔍 **TAGLIO CLIP ISTANTANEO**")
