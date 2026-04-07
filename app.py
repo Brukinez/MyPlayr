@@ -97,14 +97,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# --- 3. IL TASTO ACCEDI (Sincronizzato con Streamlit) ---
-# Lo mettiamo in una colonna a destra, il CSS sopra lo "forzerà" in posizione fissa
-_, col_btn = st.columns([4, 1])
-with col_btn:
-    if st.session_state.get('pagina') in ['home', 'login', None]:
-        if st.button("ACCEDI", key="nav_login_fixed", type="primary"):
-            st.session_state.pagina = 'login'
-            st.rerun()
+
 
 
 
