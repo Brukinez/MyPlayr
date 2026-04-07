@@ -15,40 +15,97 @@ import streamlit as st
 import os
 from datetime import datetime
 
-# 1. IL "CERVELLO" (Non scrive nulla a video, cambia solo la pagina internamente)
-if st.query_params.get("nav") == "login":
-    st.session_state.pagina = 'login'
-    st.query_params.clear()
-    st.rerun()
+import streamlit as st
 
-# 2. LA GRAFICA (Questa NON crea scritte esterne perché è tutto CSS)
+# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
 st.markdown("""
     <style>
-    header[data-testid="stHeader"] { display: none !important; }
-    .main .block-container { padding-top: 80px !important; }
-    .sticky-navbar {
-        position: fixed; top: 0; left: 0; width: 100%; height: 70px;
-        background-color: #0E1117; display: flex; align-items: center;
-        justify-content: space-between; padding: 0 5%; z-index: 999999;
-        border-bottom: 1px solid rgba(46, 204, 113, 0.4);
+    /* Nasconde la barra grigia originale di Streamlit */
+    header[data-testid="stHeader"] {
+        display: none !important;
     }
-    .mc-box { background-color: #2ecc71; color: black; font-weight: bold; padding: 4px 10px; border-radius: 6px; }
-    .brand-name { color: white; font-weight: bold; font-size: 20px; }
-    .btn-accedi { background-color: #2ecc71; color: white !important; padding: 8px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+
+    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
+    .main .block-container {
+        padding-top: 80px !important;
+    }
+
+    /* BARRA FISSA (STICKY) */
+    .sticky-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background-color: #0E1117; /* Colore scuro tipico di Streamlit */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        z-index: 999999; /* Sta sopra a tutto */
+        border-bottom: 1px solid rgba(46, 204, 113, 0.3); /* Linea verde sottile */
+    }
+
+    /* STILE LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .mc-box {
+        background-color: #2ecc71; 
+        color: black;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px; 
+        font-size: 18px;
+    }
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
+    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
+        position: fixed;
+        top: 15px;
+        right: 5%;
+        z-index: 1000000;
+    }
+    
+    /* STILE TASTO ACCEDI VERDE */
+    div.stButton > button[kind="primary"] {
+        background-color: #2ecc71 !important;
+        color: white !important;
+        border: none !important;
+        height: 38px !important;
+        font-weight: bold !important;
+        border-radius: 6px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. L'UNICO COMANDO CHE DEVE ESSERCI (Disegna TUTTO dentro la barra nera)
-# Assicurati di NON avere altri st.write o st.markdown con "MC" o "ACCEDI" fuori da qui
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
     <div class='sticky-navbar'>
-        <div style='display: flex; align-items: center; gap: 12px;'>
+        <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <a href='/?nav=login' target='_self' class='btn-accedi'>ACCEDI</a>
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
+
+# --- 3. IL TASTO ACCEDI (Sincronizzato con Streamlit) ---
+# Lo mettiamo in una colonna a destra, il CSS sopra lo "forzerà" in posizione fissa
+_, col_btn = st.columns([4, 1])
+with col_btn:
+    if st.session_state.get('pagina') in ['home', 'login', None]:
+        if st.button("ACCEDI", key="nav_login_fixed", type="primary"):
+            st.session_state.pagina = 'login'
+            st.rerun()
+
 
 
 # --- 2. LOGICA DI NAVIGAZIONE E HEADER ---
