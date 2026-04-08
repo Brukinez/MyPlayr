@@ -2012,13 +2012,7 @@ st.markdown("""
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-f_l, f_r = st.columns(2)
 
-with f_l: 
-    # Pulsante camuffato da scritta bianca
-    if st.button("📄 Privacy Policy", key="footer_privacy_link"):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
 
 
 
