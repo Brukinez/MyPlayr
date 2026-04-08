@@ -516,45 +516,60 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-        /* --- STILE FORM NEWSLETTER (STREAMLIT NATIVO) --- */
-    /* Rende il box del form grigio scuro come le card */
-    div[data-testid="stForm"] {
-        background-color: #2d343c !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px !important;
-        padding: 30px !important;
+      /* --- NEWSLETTER PREMIUM --- */
+    .newsletter-container {
+        text-align: center;
+        padding: 100px 0;
+        width: 100%;
     }
 
-    /* Rende l'input dell'email scuro ed elegante */
-    div[data-testid="stForm"] input {
-        background-color: #1e2329 !important;
+    .newsletter-card {
+        background-color: #2d343c !important; /* Grigio MyPlayr */
+        max-width: 550px;
+        margin: 0 auto;
+        padding: 40px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* Ombra profonda */
+    }
+
+    .newsletter-card h2 {
         color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        font-weight: 900 !important;
+        font-size: 32px !important;
+        margin-bottom: 8px !important;
+        letter-spacing: -1px;
     }
 
-    /* Rende il bottone "ISCRIVITI" verde e potente */
-    div[data-testid="stForm"] button {
+    .newsletter-card p {
+        color: #94a3b8 !important;
+        font-size: 16px !important;
+        margin-bottom: 30px !important;
+    }
+
+    /* Stile per l'input di Streamlit dentro la card */
+    .stTextInput input {
+        background-color: #1e2329 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        padding: 12px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Tasto ISCRIVITI - Largo e Potente */
+    .btn-iscriviti button {
+        width: 100% !important;
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
         font-weight: 800 !important;
-        width: 100% !important;
-        border: none !important;
+        padding: 15px !important;
+        border-radius: 8px !important;
         text-transform: uppercase !important;
-    }
-
-    /* Rende il bottone "ACCEDI AL PORTALE" (quello in basso) differente */
-    div.stButton > button {
-        background-color: transparent !important;
-        border: 1px solid rgb(41, 168, 71) !important;
-        color: white !important;
-        font-weight: 700 !important;
+        border: none !important;
+        margin-top: 10px !important;
         transition: 0.3s !important;
     }
-    
-    div.stButton > button:hover {
-        background-color: rgb(41, 168, 71) !important;
-        color: black !important;
-    }
+
 
 
 </style>
@@ -979,32 +994,36 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-# --- SEZIONE: NEWSLETTER (VERSIONE PULITA) ---
-# --- COPIA DA QUI ---
-        st.markdown("<h2 style='text-align: center; color: white; font-weight: 900;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 16px; margin-bottom: 20px;'>Iscriviti alla newsletter per ricevere novità e aggiornamenti sul mondo MyClipzo.</p>", unsafe_allow_html=True)
-
-        _, col_news, _ = st.columns([1, 2, 1])
-        with col_news:
+        # --- SEZIONE NEWSLETTER PREMIUM ---
+        st.markdown("<div class='newsletter-container'>", unsafe_allow_html=True)
+        
+        # Usiamo le colonne per centrare la card
+        _, col_premium, _ = st.columns([1, 2, 1])
+        
+        with col_premium:
+            st.markdown("""
+                <div class='newsletter-card'>
+                    <h2>RESTA AGGIORNATO</h2>
+                    <p>Iscriviti per ricevere novità e aggiornamenti sul mondo MyClipzo.</p>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            # Il form "nudo" che verrà vestito dal CSS sopra
             with st.form("newsletter_form", clear_on_submit=True):
                 email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com").strip().lower()
+                st.markdown("<div class='btn-iscriviti'>", unsafe_allow_html=True)
                 submit_news = st.form_submit_button("ISCRIVITI ALLA NEWSLETTER")
+                st.markdown("</div>", unsafe_allow_html=True)
                 
                 if submit_news:
                     if "@" in email_input and "." in email_input:
                         invio_ok = invia_conferma_e_salva(email_input)
-                        if invio_ok:
-                            st.success("✅ Benvenuto a bordo! Controlla la tua email.")
-                        else:
-                            st.info("ℹ️ Registrato nel database. Email in arrivo.")
+                        if invio_ok: st.success("✅ Benvenuto!")
                     else:
-                        st.error("❌ Inserisci un indirizzo email valido.")
+                        st.error("❌ Email non valida.")
+        
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        _, col_btn_home, _ = st.columns([1, 1, 1])
-        with col_btn_home:
-            st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), use_container_width=True)
-# --- FINO A QUI ---
 
 
 
