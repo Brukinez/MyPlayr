@@ -516,61 +516,50 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    /* --- WRAPPER PER CENTRARE TUTTA LA SEZIONE --- */
-    .premium-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        padding: 80px 0;
-    }
-
-    /* LA CARD GRIGIA (COME NEI SITI PRO) */
-    .newsletter-card {
-        background-color: #2d343c !important;
-        max-width: 850px; /* Impedisce che si allunghi troppo */
-        width: 90%;
-        padding: 50px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        text-align: center;
-    }
-
-    /* Rimuove i bordi del form di Streamlit che creano casino */
+    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
-        border: none !important;
-        padding: 0 !important;
-        background-color: transparent !important;
+        background-color: #2d343c !important; /* Il grigio delle tue card */
+        max-width: 800px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
     }
 
-    /* Input Email elegante */
-    .stTextInput input {
+    /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
+        gap: 15px !important;
+    }
+
+    /* L'INPUT EMAIL */
+    div[data-testid="stForm"] input {
         background-color: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
-        height: 52px !important;
+        height: 50px !important;
         border-radius: 8px !important;
     }
 
-    /* Bottone ISCRIVITI (Verde a destra) */
+    /* IL TASTO ISCRIVITI */
     div[data-testid="stForm"] button {
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
-        height: 52px !important;
+        height: 50px !important;
         width: 100% !important;
         font-weight: 800 !important;
         border-radius: 8px !important;
-        border: none !important;
         text-transform: uppercase !important;
+        border: none !important;
     }
 
-    /* Contenitore per il tasto ACCEDI AL PORTALE (Sotto) */
-    .login-wrapper {
-        margin-top: 40px;
-        width: 100%;
+    /* IL TASTO ACCEDI (Sotto la scatola) */
+    .login-container {
         display: flex;
         justify-content: center;
+        margin-top: 30px;
     }
 
 
@@ -997,39 +986,33 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE PREMIUM NEWSLETTER ---
-        st.markdown("<div class='premium-section'>", unsafe_allow_html=True)
-        
-        # Inizio Card
-        st.markdown("""
-            <div class='newsletter-card'>
-                <h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 10px;'>RESTA AGGIORNATO</h2>
-                <p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>
-        """, unsafe_allow_html=True)
-
-        # Form interno alla card
+                # --- SEZIONE NEWSLETTER UNIFICATA ---
         with st.form("news_form", clear_on_submit=True):
-            col_mail, col_btn = st.columns([4, 1.2]) # Email larga, bottone stretto
+            # Titolo e Descrizione (Ora sono dentro la scatola!)
+            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+
+            # RIGA CON EMAIL E BOTTONE
+            col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
+            
             with col_mail:
-                email_input = st.text_input("", placeholder="La tua email migliore...", label_visibility="collapsed").strip().lower()
+                email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com", label_visibility="collapsed").strip().lower()
+            
             with col_btn:
                 submit_news = st.form_submit_button("ISCRIVITI")
 
+            # Logica Supabase
             if submit_news:
                 if "@" in email_input and "." in email_input:
                     invio_ok = invia_conferma_e_salva(email_input)
                     if invio_ok: st.success("✅ Benvenuto!")
                 else:
                     st.error("❌ Email non valida.")
-        
-        st.markdown("</div>", unsafe_allow_html=True) # Fine Card
 
-        # Bottone Accedi al Portale (Sotto la card)
-        st.markdown("<div class='login-wrapper'>", unsafe_allow_html=True)
+        # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
+        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
         st.markdown("</div>", unsafe_allow_html=True)
-
-        st.markdown("</div>", unsafe_allow_html=True) # Fine Sezione Premium
 
 
 
