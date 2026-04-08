@@ -1083,7 +1083,22 @@ if st.session_state.pagina == 'home':
             st.markdown("</div>", unsafe_allow_html=True)
 
 
-       
+           # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
+        st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
+        
+        f_col1, f_col2, f_col3 = st.columns(3)
+        with f_col1:
+            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 14px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
+        
+        with f_col2:
+            st.markdown("<h4 style='color: white; font-size: 14px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
+            st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
+            st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
+        
+        with f_col3:
+            st.markdown("<h4 style='color: white; font-size: 14px;'>LEGALE</h4>", unsafe_allow_html=True)
+            st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
+            st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
 
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
