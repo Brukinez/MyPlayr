@@ -30,21 +30,48 @@ st.markdown("""
         padding-top: 80px !important;
     }
 
-        /* BARRA FISSA (STICKY) - STILE MYPLAYR */
+            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
     .sticky-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 64px; /* Altezza precisa dello screen */
-        background-color: rgba(30, 35, 41, 0.95) !important; /* Grigio simile alle card */
-        backdrop-filter: blur(10px); /* Effetto vetro sfocato */
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        height: 64px;
+        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
+        backdrop-filter: blur(10px);
+        display: flex !important;           /* Mette logo e spazio in riga */
+        align-items: center !important;     /* Centra tutto verticalmente */
+        justify-content: space-between !important;
         padding: 0 5%;
         z-index: 999999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Bordo sottile chiaro */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    .logo-container {
+        display: flex !important;           /* FORZA LA RIGA */
+        flex-direction: row !important;     /* Impedisce che vadano uno sopra l'altro */
+        align-items: center !important;     /* Li allinea perfettamente al centro */
+        gap: 12px !important;               /* Spazio tra il quadratino verde e il nome */
+    }
+
+    .mc-box {
+        background-color: rgb(41, 168, 71); 
+        color: black;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        line-height: 1; /* Evita che il box si allunghi troppo */
+    }
+
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+    }
+
     }
 /
     }
