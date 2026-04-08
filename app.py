@@ -1001,12 +1001,20 @@ if st.session_state.pagina == 'home':
 
 
 
-        _, col_news, _ = st.columns([1, 2, 1])
-        with col_news:
-            # Usiamo un form per pulire i campi dopo l'invio
-            with st.form("newsletter_form", clear_on_submit=True):
-                email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com").strip().lower()
-                submit_news = st.form_submit_button("ISCRIVITI ALLA NEWSLETTER")
+            # --- SEZIONE NEWSLETTER ---
+    st.markdown("""
+        <div class='newsletter-wrapper'>
+            <h2 style='color: white; font-weight: 900; font-size: 32px; margin-bottom: 10px;'>RESTA AGGIORNATO</h2>
+            <p style='color: #94a3b8; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo.</p>
+            
+            <div class='newsletter-box'>
+                <div style='color: white; text-align: left; font-size: 14px; font-weight: 600;'>La tua migliore Email</div>
+                <input type='email' class='newsletter-input' placeholder='esempio@mail.com'>
+                <button class='btn-newsletter'>ISCRIVITI ALLA NEWSLETTER</button>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+)
                 
                 if submit_news:
                     if "@" in email_input and "." in email_input:
