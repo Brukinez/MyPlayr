@@ -964,7 +964,7 @@ if st.session_state.pagina == 'home':
                         <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
                     </div>
                     <h3 style="color: white; margin-top: 0;">REGISTRAZIONE AUTOMATICA</h3>
-                    <p style="color: #94a3b8; font-size: 18x;">Il nostro sistema registra ogni partita in alta definizione senza che tu debba fare nulla.</p>
+                    <p style="color: #94a3b8; font-size: 18x;">Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -1003,7 +1003,7 @@ if st.session_state.pagina == 'home':
             </div>
             <h3 style="color: white; margin-top: 0;">CONDIVIDI</h3>
             <p style="color: #94a3b8; font-size: 18px;">
-                Scarica i tuoi momenti migliori o condividili istantaneamente con i tuoi amici sui social.
+               Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.
             </p>
         </div>      
     """, unsafe_allow_html=True)
