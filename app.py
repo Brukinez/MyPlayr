@@ -516,51 +516,46 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    /* --- STILE NEWSLETTER PROFESSIONALE --- */
-    .newsletter-section {
-        text-align: center;
-        padding: 80px 5%;
-        background-color: transparent; /* Lascia vedere lo sfondo del sito */
-    }
-
-    .newsletter-box {
-        background-color: #2d343c; /* Lo stesso grigio delle tue card */
-        max-width: 500px;
-        margin: 0 auto;
-        padding: 40px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    }
-
-    .newsletter-input {
-        width: 100%;
-        background-color: #1e2329 !important; /* Più scuro della card */
+        /* --- STILE FORM NEWSLETTER (STREAMLIT NATIVO) --- */
+    /* Rende il box del form grigio scuro come le card */
+    div[data-testid="stForm"] {
+        background-color: #2d343c !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 6px !important;
-        padding: 12px !important;
+        border-radius: 12px !important;
+        padding: 30px !important;
+    }
+
+    /* Rende l'input dell'email scuro ed elegante */
+    div[data-testid="stForm"] input {
+        background-color: #1e2329 !important;
         color: white !important;
-        margin-bottom: 20px;
-        font-family: 'Inter', sans-serif;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
 
-    .btn-newsletter {
-        width: 100%;
-        background-color: rgb(41, 168, 71) !important; /* Il tuo verde */
-        color: black !important; /* Scritta nera su verde per massima leggibilità */
-        border: none !important;
-        padding: 14px !important;
-        border-radius: 6px !important;
+    /* Rende il bottone "ISCRIVITI" verde e potente */
+    div[data-testid="stForm"] button {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
         font-weight: 800 !important;
+        width: 100% !important;
+        border: none !important;
         text-transform: uppercase !important;
-        cursor: pointer;
-        transition: 0.3s;
     }
 
-    .btn-newsletter:hover {
-        transform: scale(1.02);
-        filter: brightness(1.1);
+    /* Rende il bottone "ACCEDI AL PORTALE" (quello in basso) differente */
+    div.stButton > button {
+        background-color: transparent !important;
+        border: 1px solid rgb(41, 168, 71) !important;
+        color: white !important;
+        font-weight: 700 !important;
+        transition: 0.3s !important;
     }
+    
+    div.stButton > button:hover {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
+    }
+
 
 </style>
 """
@@ -984,35 +979,34 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
-        st.markdown("<h3 style='text-align: center;'>RESTA AGGIORNATO</h3>", unsafe_allow_html=True)
-        _, col_news, _ = st.columns([1, 2, 1])
-        st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo.</p>", unsafe_allow_html=True)
+# --- SEZIONE: NEWSLETTER (VERSIONE PULITA) ---
+# --- COPIA DA QUI ---
+        st.markdown("<h2 style='text-align: center; color: white; font-weight: 900;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 16px; margin-bottom: 20px;'>Iscriviti alla newsletter per ricevere novità e aggiornamenti sul mondo MyClipzo.</p>", unsafe_allow_html=True)
 
         _, col_news, _ = st.columns([1, 2, 1])
         with col_news:
-            # Usiamo un form per pulire i campi dopo l'invio
             with st.form("newsletter_form", clear_on_submit=True):
                 email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com").strip().lower()
                 submit_news = st.form_submit_button("ISCRIVITI ALLA NEWSLETTER")
                 
                 if submit_news:
                     if "@" in email_input and "." in email_input:
-                        # Funzione definita nel Blocco 3 (Salva su Supabase e invia Mail)
                         invio_ok = invia_conferma_e_salva(email_input)
                         if invio_ok:
                             st.success("✅ Benvenuto a bordo! Controlla la tua email.")
                         else:
-                            st.info("ℹ️ Ti abbiamo registrato nel database, ma l'email di conferma arriverà a breve.")
+                            st.info("ℹ️ Registrato nel database. Email in arrivo.")
                     else:
-                        st.error("❌ Per favore, inserisci un indirizzo email valido.")
+                        st.error("❌ Inserisci un indirizzo email valido.")
 
-        # --- PULSANTE DI ACCESSO PRINCIPALE ---
-        st.write("<br><br>", unsafe_allow_html=True)
+        st.markdown("<br>", unsafe_allow_html=True)
         _, col_btn_home, _ = st.columns([1, 1, 1])
         with col_btn_home:
-            # Reindirizza alla pagina di Login
             st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), use_container_width=True)
+# --- FINO A QUI ---
+
+
 
        
 
