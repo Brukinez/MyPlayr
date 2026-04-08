@@ -516,76 +516,63 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-        /* --- STILE FORM NEWSLETTER (STREAMLIT NATIVO) --- */
-    /* Rende il box del form grigio scuro come le card */
-    div[data-testid="stForm"] {
-        background-color: #2d343c !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px !important;
-        padding: 30px !important;
+    /* --- WRAPPER PER CENTRARE TUTTA LA SEZIONE --- */
+    .premium-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 80px 0;
     }
 
-    /* Rende l'input dell'email scuro ed elegante */
-    div[data-testid="stForm"] input {
-        background-color: #1e2329 !important;
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    }
-
-    /* Allarga il tasto della newsletter a tutta la larghezza del box grigio */
-    div[data-testid="stForm"] button {
-        width: 100% !important;
-        background-color: rgb(41, 168, 71) !important;
-        color: black !important;
-    }
-
-    }
-
-    /* --- NUOVO STILE NEWSLETTER ORIZZONTALE --- */
+    /* LA CARD GRIGIA (COME NEI SITI PRO) */
     .newsletter-card {
-        background-color: #2d343c !important; 
-        max-width: 850px;
-        margin: 50px auto;
-        padding: 40px;
-        border-radius: 16px;
-        text-align: center;
+        background-color: #2d343c !important;
+        max-width: 850px; /* Impedisce che si allunghi troppo */
+        width: 90%;
+        padding: 50px;
+        border-radius: 20px;
         border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        text-align: center;
     }
 
-    /* Rimuove i bordi del form originale di Streamlit */
+    /* Rimuove i bordi del form di Streamlit che creano casino */
     div[data-testid="stForm"] {
         border: none !important;
         padding: 0 !important;
         background-color: transparent !important;
     }
 
-    /* Stile per l'input email */
+    /* Input Email elegante */
     .stTextInput input {
         background-color: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
-        height: 48px !important;
+        height: 52px !important;
+        border-radius: 8px !important;
     }
 
-    /* Stile per il tasto ISCRIVITI a destra */
+    /* Bottone ISCRIVITI (Verde a destra) */
     div[data-testid="stForm"] button {
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
-        height: 48px !important;
-        width: 100% !important; /* Qui riempie la sua colonna, non tutta la pagina */
+        height: 52px !important;
+        width: 100% !important;
         font-weight: 800 !important;
+        border-radius: 8px !important;
         border: none !important;
+        text-transform: uppercase !important;
     }
 
-    /* --- BOTTONE ACCEDI AL PORTALE (SOTTO LA CARD) --- */
-    .btn-portale button {
-        background-color: transparent !important;
-        border: 1px solid rgb(41, 168, 71) !important;
-        color: white !important;
-        margin: 0 auto !important;
-        display: block !important;
-        padding: 10px 40px !important;
+    /* Contenitore per il tasto ACCEDI AL PORTALE (Sotto) */
+    .login-wrapper {
+        margin-top: 40px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
+
 
 
 </style>
@@ -1010,18 +997,21 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE NEWSLETTER PREMIUM ---
-        st.markdown("<div class='newsletter-card'>", unsafe_allow_html=True)
-        st.markdown("<h2 style='color: white; font-weight: 900; margin-bottom: 0;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='color: #94a3b8; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+        # --- SEZIONE PREMIUM NEWSLETTER ---
+        st.markdown("<div class='premium-section'>", unsafe_allow_html=True)
+        
+        # Inizio Card
+        st.markdown("""
+            <div class='newsletter-card'>
+                <h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 10px;'>RESTA AGGIORNATO</h2>
+                <p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>
+        """, unsafe_allow_html=True)
 
-        with st.form("newsletter_form", clear_on_submit=True):
-            # Proporzioni [3, 1]: 3 parti all'email, 1 parte al bottone
-            col_email, col_btn = st.columns([3, 1])
-            
-            with col_email:
+        # Form interno alla card
+        with st.form("news_form", clear_on_submit=True):
+            col_mail, col_btn = st.columns([4, 1.2]) # Email larga, bottone stretto
+            with col_mail:
                 email_input = st.text_input("", placeholder="La tua email migliore...", label_visibility="collapsed").strip().lower()
-            
             with col_btn:
                 submit_news = st.form_submit_button("ISCRIVITI")
 
@@ -1031,12 +1021,15 @@ if st.session_state.pagina == 'home':
                     if invio_ok: st.success("✅ Benvenuto!")
                 else:
                     st.error("❌ Email non valida.")
-        st.markdown("</div>", unsafe_allow_html=True)
+        
+        st.markdown("</div>", unsafe_allow_html=True) # Fine Card
 
-        # Bottone Accedi al Portale centrato sotto la card
-        st.markdown("<div class='btn-portale'>", unsafe_allow_html=True)
+        # Bottone Accedi al Portale (Sotto la card)
+        st.markdown("<div class='login-wrapper'>", unsafe_allow_html=True)
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
         st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown("</div>", unsafe_allow_html=True) # Fine Sezione Premium
 
 
 
