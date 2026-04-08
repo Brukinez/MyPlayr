@@ -316,16 +316,43 @@ EMERGENT_CSS = """
         font-size: 60px;
     }
 
-    .footer-main {
-        text-align: center;
-        font-size: 16px;
-        margin-top: 50px;
+     /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
+    .footer-card {
+        background-color: #2d343c !important; /* Stesso grigio delle card sopra */
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px 20px 0 0;        /* Arrotondato solo in alto */
+        padding: 60px 5% 40px 5% !important;
+        margin-top: 80px !important;
+        width: 100%;
     }
 
-    .footer-sub {
-        font-size: 12px;
-        color: #8aa0b5;
+    /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
+    div.stButton > button[key^="f_"] {
+        background-color: transparent !important;
+        color: #94a3b8 !important; /* Lo stesso grigio che hai nelle card */
+        border: none !important;
+        text-align: left !important;
+        padding: 4px 0 !important;
+        font-weight: 500 !important;
+        text-transform: none !important;
+        font-size: 15px !important;
+        width: auto !important;
+        display: block !important;
     }
+
+    div.stButton > button[key^="f_"]:hover {
+        color: #2ecc71 !important; /* Diventa verde solo la scritta al passaggio */
+    }
+
+    .footer-title {
+        color: white !important;
+        font-weight: 900 !important;
+        text-transform: uppercase;
+        font-size: 13px !important;
+        letter-spacing: 1px;
+        margin-bottom: 20px !important;
+    }
+
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
         background-color: #2d343c !important; /* Il grigio esatto della tua foto */
@@ -603,10 +630,6 @@ EMERGENT_CSS = """
         border: none !important;
         transition: 0.3s !important;
     }
-
-
-
-
 
 </style>
 """
