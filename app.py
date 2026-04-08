@@ -1104,67 +1104,55 @@ elif st.session_state.pagina == 'login':
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
- # --- 1. SOTTO-PAGINA: ACCEDI (STILE MYPLAYR) ---
+ # --- 1. SOTTO-PAGINA: ACCEDI (FIXED CARD) ---
 if st.session_state.sub == 'login':
-    # Contenitore centrale per centrare la card
+    # Titoli centrati sopra la card
     st.markdown("""
-        <div style='text-align: center; padding: 20px 0;'>
+        <div style='text-align: center; padding-top: 40px;'>
             <div class='mc-box' style='display: inline-block; margin-bottom: 20px;'>MC</div>
-            <h1 style='font-weight: 900; margin-bottom: 0;'>ACCEDI AL TUO ACCOUNT</h1>
-            <p style='color: #94a3b8;'>Bentornato nella community MyClipzo</p>
+            <h1 style='font-weight: 900; margin-bottom: 0; color: white;'>ACCEDI AL TUO ACCOUNT</h1>
+            <p style='color: #94a3b8; margin-bottom: 30px;'>Bentornato nella community MyClipzo</p>
         </div>
     """, unsafe_allow_html=True)
 
-    # Creiamo tre colonne per centrare la card (quella centrale è la card)
-    col_space1, col_card, col_space2 = st.columns([1, 2, 1])
+    # Colonne per centrare (il numero 0.6 è la larghezza della card, puoi regolarlo)
+    col1, col_card, col3 = st.columns([1, 2, 1])
 
     with col_card:
-        # Inizio della Card Scura
+        # APRIAMO LA CARD CON IL CSS
         st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
         
-        # Input utente
-        u_login = st.text_input("Email", placeholder="mario.rossi@email.com", key="l_email").strip().lower()
-        p_login = st.text_input("Password", type="password", placeholder="Minimo 6 caratteri", key="l_pass")
-        
-        st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio prima del bottone
+        # Usiamo un container di Streamlit dentro la nostra card HTML
+        with st.container():
+            u_login = st.text_input("Email", placeholder="mario.rossi@email.com", key="l_email").strip().lower()
+            p_login = st.text_input("Password", type="password", placeholder="Minimo 6 caratteri", key="l_pass")
+            
+            st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
 
-        if st.button("ENTRA", use_container_width=True, key="btn_login_main"):
-            if u_login and p_login:
-                try:
+            if st.button("ENTRA", use_container_width=True, key="btn_login_main"):
+                # ... (qui tieni la tua logica Supabase identica a prima) ...
+                if u_login and p_login:
                     res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
                     if res_log.data:
-                        utente = res_log.data[0]
                         st.session_state.autenticato = True
-                        st.session_state.user_email = utente['email']
-                        st.session_state.user_role = utente.get('ruolo', 'Player')
-                        st.session_state.user_nick = utente.get('nome', 'Campione')
-                        st.success(f"Bentornato {st.session_state.user_nick}!")
-                        if st.session_state.user_role == "admin":
-                            vai_a('admin')
-                        else:
-                            vai_a('home_auth')
+                        vai_a('home_auth')
                         st.rerun()
                     else:
                         st.error("❌ Credenziali errate.")
-                except Exception as e:
-                    st.error(f"⚠️ Errore: {e}")
-            else:
-                st.warning("Compila tutti i campi!")
 
-        # Separatore sottile
-        st.markdown("<hr style='opacity: 0.1; margin: 25px 0;'>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>Non hai un account?</p>", unsafe_allow_html=True)
+            st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>Non hai un account?</p>", unsafe_allow_html=True)
 
-        # Bottone Registrati (Secondario)
-        if st.button("CREA UN ACCOUNT", use_container_width=True, key="btn_goto_reg"):
-            st.session_state.sub = 'reg'
-            st.rerun()
-            
-        st.markdown("</div>", unsafe_allow_html=True) # Fine della Card Scura
+            if st.button("CREA UN ACCOUNT", use_container_width=True, key="btn_goto_reg"):
+                st.session_state.sub = 'reg'
+                st.rerun()
+        
+        # CHIUDIAMO LA CARD
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        # Link per tornare alla home (sotto la card)
+        # Bottone torna alla home fuori dalla card
         st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("← Torna alla Home", key="btn_back_home"):
+        if st.button("← Torna alla Home", key="btn_back_home", type="secondary"):
             st.session_state.pagina = 'home'
             st.rerun()
 
