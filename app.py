@@ -184,8 +184,20 @@ EMERGENT_CSS = """
         --neon-strong: #17c95f;
     }
 
+        /* --- SFONDO GENERALE SCHIARITO --- */
     .stApp {
-    background-color: #1e2329 !important; /* Il colore bluastro dello screen */
+        /* Questo colore è una via di mezzo perfetta: meno nero, più grigio moderno */
+        background-color: #252b32 !important; 
+        
+        /* Se hai la foto del campo, schiariamo il "velo" che c'è sopra */
+        background: 
+            linear-gradient(rgba(37, 43, 50, 0.7), rgba(37, 43, 50, 0.7)), 
+            url('https://unsplash.com') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+    }
+
 }
 
     }
