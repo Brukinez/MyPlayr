@@ -184,28 +184,20 @@ EMERGENT_CSS = """
         --neon-strong: #17c95f;
     }
 
-        /* --- SFONDO GENERALE SCHIARITO --- */
+         /* --- SFONDO UNIFICATO CON IMMAGINE --- */
     .stApp {
-        /* Questo colore è una via di mezzo perfetta: meno nero, più grigio moderno */
+        /* Colore di base se l'immagine non carica */
         background-color: #252b32 !important; 
-        
-            /* --- SFONDO CON TUA IMMAGINE --- */
-    .stApp {
+
         background: 
-            /* Il velo nero (0.8 significa 80% di buio) */
+            /* Il velo nero per far risaltare le scritte */
             linear-gradient(rgba(11, 15, 19, 0.8), rgba(11, 15, 19, 0.85)), 
-            /* Qui usiamo il nome del tuo file */
-            url("sfondo.jpg"); 
+            /* Nome del tuo file (assicurati che sia nella stessa cartella di app.py) */
+            url("sfondo.jpg") !important; 
             
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
-    }
-
-    }
-
-}
-
     }
 
     [data-testid="stHeader"] {
