@@ -516,48 +516,49 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-        /* --- NEWSLETTER DEFINITIVA E ALLINEATA --- */
+    /* --- NEWSLETTER DEFINITIVA (REPLICA PERFETTA) --- */
+    
+    /* 1. Il cofanetto grigio che contiene tutto */
     div[data-testid="stForm"] {
         background-color: #2d343c !important;
-        max-width: 850px !important;
+        max-width: 800px !important;
         margin: 50px auto !important;
         padding: 50px !important;
         border-radius: 20px !important;
         border: 1px solid rgba(255, 255, 255, 0.05) !important;
         box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
-        text-align: center !important;
     }
 
-    /* ALLINEAMENTO ORIZZONTALE PERFETTO */
-    div[data-testid="stForm"] .stHorizontalBlock {
-        align-items: center !important; /* Allinea i centri di input e bottone */
-        gap: 10px !important;
+    /* 2. Forza l'allineamento in riga per l'email e il bottone */
+    [data-testid="stForm"] .stHorizontalBlock {
+        align-items: flex-end !important; /* Allinea le basi dei due rettangoli */
+        gap: 12px !important;
     }
 
-    /* INPUT EMAIL - ALTEZZA FISSA */
-    div[data-testid="stForm"] input {
+    /* 3. L'input dell'email (altezza bloccata a 48px) */
+    [data-testid="stForm"] input {
         background-color: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
-        height: 48px !important; /* Altezza bloccata */
+        height: 48px !important; 
         border-radius: 8px !important;
-        margin-top: 0px !important;
+        padding: 10px 15px !important;
     }
 
-    /* TASTO ISCRIVITI - ALTEZZA FISSA IDENTICA */
-    div[data-testid="stForm"] button {
+    /* 4. Il bottone ISCRIVITI (altezza bloccata a 48px) */
+    [data-testid="stForm"] button {
         background-color: rgb(41, 168, 71) !important;
-        color: white !important;
-        height: 48px !important; /* Altezza bloccata identica all'input */
+        color: black !important;
+        height: 48px !important;
+        line-height: 48px !important; /* Centra il testo nel tasto */
         width: 100% !important;
         font-weight: 800 !important;
         border-radius: 8px !important;
-        border: none !important;
         text-transform: uppercase !important;
-        margin-top: 0px !important;
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;
+        border: none !important;
+        padding: 0 !important;
     }
+
 
 
 
@@ -984,12 +985,13 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE NEWSLETTER FINALE ---
+        # --- SEZIONE NEWSLETTER PREMIUM ---
         with st.form("news_form", clear_on_submit=True):
-            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+            # Titolo e Descrizione DENTRO la card
+            st.markdown("<h2 style='text-align: center; color: white; font-weight: 900; font-size: 35px; margin-bottom: 5px;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 17px; margin-bottom: 35px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
 
-            # Proporzioni 3 a 1 (Email lunga, Bottone corto)
+            # Proporzioni 3 a 1
             col_mail, col_btn = st.columns([3, 1]) 
             
             with col_mail:
@@ -999,8 +1001,9 @@ if st.session_state.pagina == 'home':
                 submit_news = st.form_submit_button("ISCRIVITI")
 
             if submit_news:
-                # La tua logica Supabase qui sotto...
+                # Inserisci qui la tua logica invia_conferma_e_salva(email_input)
                 pass
+
 
 
         # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
