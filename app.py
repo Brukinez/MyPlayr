@@ -569,9 +569,10 @@ EMERGENT_CSS = """
         text-align: center;
         border-top: 1px solid rgba(41, 168, 71, 0.2);
         margin-top: 50px;
-    }
-.hero-title span {
+        .hero-title span {
         color: rgb(41, 168, 71) !important; /* Rende 'CONDIVIDI' verde */
+    }
+
     .cta-final-section h2 {
         color: white !important;
         font-size: 45px !important;
