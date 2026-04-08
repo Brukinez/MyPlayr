@@ -981,7 +981,7 @@ if st.session_state.pagina == 'home':
                     <line x1="8.12" x2="12" y1="8.12" y2="12"></line>
                 </svg>
             </div>
-            <h3 style="color: white; margin-top: 0;">CLIP</h3>
+            <h3 style="color: white; margin-top: 0;">TAGLIO CLIP ISTANTANEO</h3>
             <p style="color: #94a3b8; font-size: 18px;">
                 Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.
             </p>
@@ -1001,7 +1001,7 @@ if st.session_state.pagina == 'home':
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                 </svg>
             </div>
-            <h3 style="color: white; margin-top: 0;">CONDIVIDI</h3>
+            <h3 style="color: white; margin-top: 0;">CONDIVISIONE SOCIAL</h3>
             <p style="color: #94a3b8; font-size: 18px;">
                Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.
             </p>
