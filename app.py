@@ -189,13 +189,19 @@ EMERGENT_CSS = """
         /* Questo colore è una via di mezzo perfetta: meno nero, più grigio moderno */
         background-color: #252b32 !important; 
         
-        /* Se hai la foto del campo, schiariamo il "velo" che c'è sopra */
+            /* --- SFONDO CON TUA IMMAGINE --- */
+    .stApp {
         background: 
-            linear-gradient(rgba(37, 43, 50, 0.7), rgba(37, 43, 50, 0.7)), 
-            url('https://unsplash.com') !important;
+            /* Il velo nero (0.8 significa 80% di buio) */
+            linear-gradient(rgba(11, 15, 19, 0.8), rgba(11, 15, 19, 0.85)), 
+            /* Qui usiamo il nome del tuo file */
+            url("app/static/sfondo.jpg"); 
+            
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
+    }
+
     }
 
 }
