@@ -171,12 +171,95 @@ def make_direct_link(url):
 # Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
 EMERGENT_CSS = """
 <style>
-    :root {
-        --bg-main: #0f141a;
-        --bg-panel: #19212b;
-        --bg-soft: #24303d;
-        --text-main: #f5f7fb;
-        --text-soft: #c4d0dc;
+    <style>
+    /* 1. SFONDO CON IMMAGINE E VELO SCURO */
+    .stApp {
+        background: 
+            linear-gradient(rgba(15, 20, 26, 0.85), rgba(15, 20, 26, 0.95)), 
+            url("https://unsplash.com") !important; 
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    /* 2. TITOLI E TESTI */
+    h1, h2, h3, p {
+        font-family: 'Inter', sans-serif !important;
+        text-align: center !important;
+    }
+
+    /* 3. HERO SECTION (TITOLO GIGANTE) */
+    .hero-title {
+        font-size: 72px !important;
+        font-weight: 900 !important;
+        color: white !important;
+        line-height: 1 !important;
+        margin-top: 40px !important;
+        letter-spacing: -2px !important;
+    }
+
+    .verde-clipzo {
+        color: rgb(41, 168, 71) !important;
+    }
+
+    /* 4. BOTTONI PROFESSIONALI */
+    .hero-btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 40px;
+        margin-bottom: 60px;
+    }
+
+    /* Bottone Verde "INIZIA ORA" */
+    .btn-green {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        padding: 16px 32px !important;
+        border-radius: 8px !important;
+        font-weight: 800 !important;
+        text-decoration: none !important;
+        font-size: 14px !important;
+        text-transform: uppercase !important;
+        transition: 0.3s !important;
+        border: none !important;
+    }
+
+    /* Bottone con bordo "HALL OF FAME" */
+    .btn-outline {
+        background-color: transparent !important;
+        color: white !important;
+        padding: 16px 32px !important;
+        border-radius: 8px !important;
+        font-weight: 800 !important;
+        text-decoration: none !important;
+        font-size: 14px !important;
+        text-transform: uppercase !important;
+        border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        transition: 0.3s !important;
+    }
+
+    .btn-green:hover, .btn-outline:hover {
+        transform: translateY(-3px) !important;
+        opacity: 0.9 !important;
+    }
+
+    /* 5. CARD (COME FUNZIONA) */
+    .mcp-card {
+        background-color: #2d343c !important;
+        border-radius: 16px !important;
+        padding: 30px !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        transition: 0.3s !important;
+    }
+
+    .mcp-card:hover {
+        border-color: rgb(41, 168, 71) !important;
+        transform: translateY(-5px) !important;
+    }
+</style>
+
         --neon: #24e170;
         --neon-strong: #17c95f;
     }
@@ -569,8 +652,6 @@ EMERGENT_CSS = """
         text-align: center;
         border-top: 1px solid rgba(41, 168, 71, 0.2);
         margin-top: 50px;
-        .hero-title span {
-        color: rgb(41, 168, 71) !important; /* Rende 'CONDIVIDI' verde */
     }
 
     .cta-final-section h2 {
