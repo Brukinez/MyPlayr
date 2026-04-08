@@ -195,7 +195,7 @@ EMERGENT_CSS = """
             /* Il velo nero (0.8 significa 80% di buio) */
             linear-gradient(rgba(11, 15, 19, 0.8), rgba(11, 15, 19, 0.85)), 
             /* Qui usiamo il nome del tuo file */
-            url("app/static/sfondo.jpg"); 
+            url("sfondo.jpg"); 
             
         background-size: cover !important;
         background-position: center !important;
