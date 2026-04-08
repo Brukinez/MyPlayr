@@ -516,47 +516,43 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    /* --- NEWSLETTER DEFINITIVA (REPLICA PERFETTA) --- */
+    /* --- FIX FINALE NEWSLETTER --- */
     
-    /* 1. Il cofanetto grigio che contiene tutto */
-    div[data-testid="stForm"] {
-        background-color: #2d343c !important;
-        max-width: 800px !important;
-        margin: 50px auto !important;
-        padding: 50px !important;
-        border-radius: 20px !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
-    }
-
-    /* 2. Forza l'allineamento in riga per l'email e il bottone */
+    /* 1. Forza la riga e allinea i centri */
     [data-testid="stForm"] .stHorizontalBlock {
-        align-items: flex-end !important; /* Allinea le basi dei due rettangoli */
+        align-items: center !important;
         gap: 12px !important;
     }
 
-    /* 3. L'input dell'email (altezza bloccata a 48px) */
+    /* 2. L'input dell'email (Altezza fissa 48px) */
     [data-testid="stForm"] input {
+        height: 48px !important;
         background-color: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
-        height: 48px !important; 
         border-radius: 8px !important;
-        padding: 10px 15px !important;
     }
 
-    /* 4. Il bottone ISCRIVITI (altezza bloccata a 48px) */
+    /* 3. IL TASTO ISCRIVITI (Forziamo la larghezza e l'altezza) */
     [data-testid="stForm"] button {
+        width: 100% !important;        /* Forza a occupare tutta la sua colonna */
+        min-width: 120px !important;    /* Gli diamo una larghezza minima perché non sia un quadratino */
+        height: 48px !important;       /* Altezza IDENTICA all'input */
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
-        height: 48px !important;
-        line-height: 48px !important; /* Centra il testo nel tasto */
-        width: 100% !important;
         font-weight: 800 !important;
-        border-radius: 8px !important;
         text-transform: uppercase !important;
         border: none !important;
-        padding: 0 !important;
+        border-radius: 8px !important;
+        padding: 0 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Rimuove lo spazio extra che Streamlit mette a volte sotto i bottoni */
+    [data-testid="stForm"] .stButton {
+        margin-top: 0px !important;
     }
 
 
@@ -985,13 +981,12 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE NEWSLETTER PREMIUM ---
+        # --- SEZIONE NEWSLETTER CORRETTA ---
         with st.form("news_form", clear_on_submit=True):
-            # Titolo e Descrizione DENTRO la card
-            st.markdown("<h2 style='text-align: center; color: white; font-weight: 900; font-size: 35px; margin-bottom: 5px;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 17px; margin-bottom: 35px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center; color: white; font-weight: 900; font-size: 32px; margin-bottom: 5px;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 16px; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità e aggiornamenti</p>", unsafe_allow_html=True)
 
-            # Proporzioni 3 a 1
+            # IL SEGRETO: Usiamo [3, 1] per dare la forma corretta
             col_mail, col_btn = st.columns([3, 1]) 
             
             with col_mail:
@@ -1001,7 +996,7 @@ if st.session_state.pagina == 'home':
                 submit_news = st.form_submit_button("ISCRIVITI")
 
             if submit_news:
-                # Inserisci qui la tua logica invia_conferma_e_salva(email_input)
+                # Logica Supabase...
                 pass
 
 
