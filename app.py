@@ -1021,10 +1021,7 @@ if st.session_state.pagina == 'home':
 
 
 
-        # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
-        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
-        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
-        st.markdown("</div>", unsafe_allow_html=True)
+        
 
 
 
