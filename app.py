@@ -19,98 +19,88 @@ import streamlit as st
 
 # --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
 st.markdown("""
-    <style>
-    /* Nasconde la barra grigia originale di Streamlit */
+   <style>
+    /* 1. CARICAMENTO FONT INTER */
+    @import url('https://googleapis.com');
+
+    /* 2. SFONDO GENERALE DELLA PAGINA */
+    /* Applichiamo il grigio-blu scuro #252b32 a tutto il sito */
+    .stApp {
+        background-color: #252b32 !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    /* 3. PULIZIA INTERFACCIA STREAMLIT */
     header[data-testid="stHeader"] {
         display: none !important;
     }
 
-    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
+    /* Spazio in alto per non far finire il testo sotto la navbar */
     .main .block-container {
-        padding-top: 80px !important;
+        padding-top: 100px !important;
     }
 
-            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
+    /* 4. NAVBAR FISSA (STICKY) */
     .sticky-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 64px;
-        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
+        background-color: #2d343c !important; /* Grigio card leggermente più chiaro */
         backdrop-filter: blur(10px);
-        display: flex !important;           /* Mette logo e spazio in riga */
-        align-items: center !important;     /* Centra tutto verticalmente */
+        display: flex !important;
+        align-items: center !important;
         justify-content: space-between !important;
-        padding: 0 5%;
+        padding: 0 5% !important;
         z-index: 999999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    /* 5. LOGO 'MC' + NOME 'MyClipzo' */
     .logo-container {
         display: flex !important;
-        flex-direction: row !important;
         align-items: center !important;
         gap: 12px !important;
     }
 
     .mc-box {
-        background-color: rgb(41, 168, 71); 
-        color: black;
-        font-weight: 900;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 16px;
-        line-height: 1;
+        background-color: rgb(41, 168, 71) !important; /* Il tuo verde ufficiale */
+        color: white !important;
+        font-weight: 900 !important;
+        padding: 6px 10px !important;
+        border-radius: 4px !important;
+        font-size: 16px !important;
+        line-height: 1 !important;
     }
 
     .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: 700;
-        font-family: 'Inter', sans-serif;
-    }
-    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
-
-    /* STILE LOGO MC + MyClipzo */
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .mc-box {
-        background-color: #2ecc71; 
-        color: black;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px; 
-        font-size: 18px;
-    }
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
+        color: white !important;
+        font-size: 22px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.5px !important;
     }
 
-    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
+    /* 6. BOTTONE ACCEDI (STILE LOGIN) */
+    /* Posizioniamo il bottone Streamlit in alto a destra nella navbar */
+    div[data-testid="stVerticalBlock"] > div:has(button) {
         position: fixed;
-        top: 15px;
+        top: 13px;
         right: 5%;
         z-index: 1000000;
     }
-    
-    /* STILE TASTO ACCEDI VERDE */
-    div.stButton > button[kind="primary"] {
-        background-color: #2ecc71 !important;
+
+    /* Rendiamo il bottone Streamlit coerente con lo stile */
+    .stButton > button {
+        background-color: rgb(41, 168, 71) !important;
         color: white !important;
         border: none !important;
-        height: 38px !important;
-        font-weight: bold !important;
-        border-radius: 6px;
+        border-radius: 6px !important;
+        font-weight: 700 !important;
+        padding: 0.5rem 1.5rem !important;
     }
-    </style>
+</style>
+
 """, unsafe_allow_html=True)
 
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
