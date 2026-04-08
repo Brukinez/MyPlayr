@@ -978,7 +978,7 @@ if st.session_state.pagina == 'home':
                 </svg>
             </div>
             <h3 style="color: white; margin-top: 0;">TAGLIO CLIP ISTANTANEO</h3>
-            <p style="color: #94a3b8; font-size: 20px;">
+            <p style="color: #94a3b8; font-size: 18px;">
                 Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.
             </p>
         </div>
