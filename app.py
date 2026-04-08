@@ -155,11 +155,9 @@ EMERGENT_CSS = """
     }
 
     .stApp {
-        background:
-            radial-gradient(circle at 15% -10%, rgba(36, 225, 112, 0.18), transparent 35%),
-            radial-gradient(circle at 90% 0%, rgba(36, 225, 112, 0.10), transparent 28%),
-            linear-gradient(180deg, #111821 0%, var(--bg-main) 100%);
-        color: var(--text-main);
+    background-color: #1e2329 !important; /* Il colore bluastro dello screen */
+}
+
     }
 
     [data-testid="stHeader"] {
@@ -291,36 +289,34 @@ EMERGENT_CSS = """
         font-size: 12px;
         color: #8aa0b5;
     }
-            /* --- NUOVO STILE DELLE SCHEDE (CARD) --- */
+          /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
-        background-color: rgb(55, 62, 70); /* Il grigio che hai trovato tu */
-        border: 1px solid rgb(73, 80, 87); /* Il bordino sottile */
-        border-radius: 12px;               /* Angoli arrotondati */
-        padding: 24px;                     /* Spazio interno per il testo */
+        background-color: #2d343c !important; /* Il grigio esatto della tua foto */
+        border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
+        border-radius: 12px;               /* Angoli arrotondati perfetti */
+        padding: 24px;                     /* Spazio interno */
         color: white;
         font-family: 'Inter', sans-serif;
-        margin-bottom: 20px;               /* Spazio tra una scheda e l'altra */
-        transition: 0.3s;                  /* Rende i movimenti fluidi */
-        height: 100%;                      /* Fa sì che le schede siano alte uguali */
+        margin-bottom: 20px;
+        transition: 0.3s ease;             /* Movimento fluido */
+        height: 100%;                      /* Altezza uguale per tutte */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
     }
 
     .mcp-card:hover {
-        transform: translateY(-5px);       /* La scheda si alza al passaggio del mouse */
+        transform: translateY(-5px);       /* La scheda si alza leggermente */
         border-color: rgb(41, 168, 71);    /* Il bordo diventa del tuo verde */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* L'ombra aumenta al passaggio del mouse */
     }
 
-    /* ISTRUZIONE PER IL TESTO A 18PX (Sistemazione per la prima scheda) */
+    /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
-        font-size: 18px !important;        /* Forza la grandezza a 18 pixel */
-        color: #94a3b8;                    /* Grigio chiaro elegante */
-        line-height: 1.6;                  /* Spazio tra le righe */
+        font-size: 18px !important;
+        color: #94a3b8;                    /* Grigio chiaro leggibile */
+        line-height: 1.6;
+        margin-top: 10px;
     }
 
-    }
-
-    .mcp-card:hover {
-        transform: translateY(-5px);       /* La scheda si alza quando ci passi sopra */
-        border-color: #2ecc71;             /* Il bordo diventa verde */
     }
     /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
         /* --- STILE DEL BADGE (ETICHETTA) --- */
