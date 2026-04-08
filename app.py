@@ -291,7 +291,7 @@ EMERGENT_CSS = """
         font-size: 12px;
         color: #8aa0b5;
     }
-        /* --- NUOVO STILE DELLE SCHEDE (CARD) --- */
+            /* --- NUOVO STILE DELLE SCHEDE (CARD) --- */
     .mcp-card {
         background-color: rgb(55, 62, 70); /* Il grigio che hai trovato tu */
         border: 1px solid rgb(73, 80, 87); /* Il bordino sottile */
@@ -301,6 +301,21 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
         margin-bottom: 20px;               /* Spazio tra una scheda e l'altra */
         transition: 0.3s;                  /* Rende i movimenti fluidi */
+        height: 100%;                      /* Fa sì che le schede siano alte uguali */
+    }
+
+    .mcp-card:hover {
+        transform: translateY(-5px);       /* La scheda si alza al passaggio del mouse */
+        border-color: rgb(41, 168, 71);    /* Il bordo diventa del tuo verde */
+    }
+
+    /* ISTRUZIONE PER IL TESTO A 18PX (Sistemazione per la prima scheda) */
+    .mcp-card p {
+        font-size: 18px !important;        /* Forza la grandezza a 18 pixel */
+        color: #94a3b8;                    /* Grigio chiaro elegante */
+        line-height: 1.6;                  /* Spazio tra le righe */
+    }
+
     }
 
     .mcp-card:hover {
@@ -761,7 +776,7 @@ if st.session_state.pagina == 'home':
                         <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
                     </div>
                     <h3 style="color: white; margin-top: 0;">REGISTRAZIONE AUTOMATICA</h3>
-                    <p style="color: #94a3b8; font-size: 20x;">Il nostro sistema registra ogni partita in alta definizione senza che tu debba fare nulla.</p>
+                    <p style="color: #94a3b8; font-size: 18x;">Il nostro sistema registra ogni partita in alta definizione senza che tu debba fare nulla.</p>
                 </div>
             """, unsafe_allow_html=True)
 
