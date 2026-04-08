@@ -516,6 +516,51 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    /* --- STILE NEWSLETTER PROFESSIONALE --- */
+    .newsletter-section {
+        text-align: center;
+        padding: 80px 5%;
+        background-color: transparent; /* Lascia vedere lo sfondo del sito */
+    }
+
+    .newsletter-box {
+        background-color: #2d343c; /* Lo stesso grigio delle tue card */
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 40px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .newsletter-input {
+        width: 100%;
+        background-color: #1e2329 !important; /* Più scuro della card */
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 6px !important;
+        padding: 12px !important;
+        color: white !important;
+        margin-bottom: 20px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .btn-newsletter {
+        width: 100%;
+        background-color: rgb(41, 168, 71) !important; /* Il tuo verde */
+        color: black !important; /* Scritta nera su verde per massima leggibilità */
+        border: none !important;
+        padding: 14px !important;
+        border-radius: 6px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn-newsletter:hover {
+        transform: scale(1.02);
+        filter: brightness(1.1);
+    }
 
 </style>
 """
@@ -939,10 +984,20 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
-        st.markdown("<h3 style='text-align: center;'>RESTA AGGIORNATO</h3>", unsafe_allow_html=True)
-        _, col_news, _ = st.columns([1, 2, 1])
-        st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo.</p>", unsafe_allow_html=True)
+           # --- SEZIONE RESTA AGGIORNATO ---
+        st.markdown("""
+        <div class='newsletter-section'>
+            <h2 style='color: white; font-weight: 900; margin-bottom: 10px;'>RESTA AGGIORNATO</h2>
+            <p style='color: #94a3b8; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo.</p>
+            
+            <div class='newsletter-box'>
+                <p style='color: white; text-align: left; font-size: 14px; margin-bottom: 8px;'>La tua migliore Email</p>
+                <input type='email' class='newsletter-input' placeholder='esempio@mail.com'>
+                <button class='btn-newsletter'>ISCRIVITI ALLA NEWSLETTER</button>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
 
         _, col_news, _ = st.columns([1, 2, 1])
         with col_news:
