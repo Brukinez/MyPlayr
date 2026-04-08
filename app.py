@@ -532,28 +532,35 @@ EMERGENT_CSS = """
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
 
-    /* Rende il bottone "ISCRIVITI" verde e potente */
+    /* Allarga il tasto della newsletter a tutta la larghezza del box grigio */
     div[data-testid="stForm"] button {
+        width: 100% !important;
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
-        font-weight: 800 !important;
-        width: 100% !important;
-        border: none !important;
-        text-transform: uppercase !important;
     }
 
-    /* Rende il bottone "ACCEDI AL PORTALE" (quello in basso) differente */
-    div.stButton > button {
-        background-color: transparent !important;
-        border: 1px solid rgb(41, 168, 71) !important;
-        color: white !important;
-        font-weight: 700 !important;
-        transition: 0.3s !important;
     }
-    
+
+    /* --- BOTTONE ACCEDI AL PORTALE (VERDE PIENO) --- */
+    div.stButton > button {
+        background-color: rgb(41, 168, 71) !important; /* Il tuo verde */
+        color: black !important;                      /* Scritta nera per risaltare */
+        border: none !important;
+        padding: 12px 30px !important;
+        border-radius: 8px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        width: auto !important;                       /* Non lo facciamo largo quanto tutto il sito */
+        margin: 0 auto !important;                    /* Lo centratamo */
+        display: block !important;
+        transition: 0.3s !important;
+        box-shadow: 0 4px 15px rgba(41, 168, 71, 0.3) !important; /* Un leggero bagliore */
+    }
+
     div.stButton > button:hover {
-        background-color: rgb(41, 168, 71) !important;
-        color: black !important;
+        transform: scale(1.05) !important;
+        background-color: #2ecc71 !important; /* Verde un po' più chiaro al passaggio */
+        box-shadow: 0 6px 20px rgba(41, 168, 71, 0.5) !important;
     }
 
 
