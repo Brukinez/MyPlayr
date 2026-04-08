@@ -591,35 +591,23 @@ EMERGENT_CSS = """
         font-size: 18px !important;
     }
 
-    /* Il tastone verde grande */
-    .btn-create-account button {
-        background-color: rgb(41, 168, 71) !important;
-        color: white !important;
-        padding: 15px 40px !important;
-        border-radius: 6px !important;
-        font-weight: 900 !important;
-        font-size: 18px !important;
-        text-transform: uppercase !important;
-        border: none !important;
-        transition: 0.3s !important;
-    }
-
-    /* --- 1. I TASTI GRANDI E VERDI (HOME) --- */
-    /* Questo colpisce i tasti Accedi e Crea Account */
+    /* 1. TASTI PRINCIPALI (Verde corretto, come ISCRIVITI) */
+    /* Colpisce i tasti "Accedi al Portale" e "Crea Account" */
     div.stButton > button {
         background-color: rgb(41, 168, 71) !important;
-        color: black !important;
+        color: white !important;
+        border: none !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         transition: 0.3s !important;
     }
 
-    /* --- 2. I TASTI DEL FOOTER (GRIGI E SEMPLICI) --- */
-    /* Usiamo il trucco della "f_" per non farli diventare verdi */
+    /* 2. TASTI DEL FOOTER (Grigi, come le scritte della newsletter) */
+    /* Usiamo la chiave "f_" per differenziarli */
     div.stButton > button[key^="f_"] {
         background-color: transparent !important;
-        color: #94a3b8 !important;
+        color: #94a3b8 !important; /* Grigio azzurrino come richiesto */
         border: none !important;
         text-align: left !important;
         padding: 0 !important;
@@ -630,15 +618,17 @@ EMERGENT_CSS = """
     }
 
     div.stButton > button[key^="f_"]:hover {
-        color: #2ecc71 !important;
+        color: rgb(41, 168, 71) !important; /* Diventa verde solo al passaggio */
     }
 
-    /* CONTENITORE FOOTER */
-    .footer-box {
-        background-color: #1e2329 !important;
-        padding: 60px 5% 30px 5% !important;
-        margin-top: 100px !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    /* 3. IL RIQUADRO SCURO DELLA CTA FINALE */
+    .cta-premium-box {
+        background-color: #2d343c !important; /* Stesso grigio delle card */
+        padding: 60px 40px !important;
+        border-radius: 16px;
+        text-align: center;
+        margin-top: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
 
@@ -1100,23 +1090,25 @@ if st.session_state.pagina == 'home':
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-        # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
+        # --- SEZIONE FINALE: TUTTO DENTRO IL RIQUADRO ---
         st.markdown("""
-            <div class='cta-final-section'>
-                <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
-                <p>Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance e condividere le loro migliori azioni.</p>
-            </div>
+            <div class='cta-premium-box'>
+                <h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 10px;'>
+                    PRONTO A DIVENTARE <br>
+                    <span style='color: rgb(41, 168, 71);'>UN CAMPIONE?</span>
+                </h2>
+                <p style='color: #94a3b8; font-size: 16px; max-width: 600px; margin: 0 auto 30px auto;'>
+                    Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance.
+                </p>
         """, unsafe_allow_html=True)
 
-        # Usiamo il tuo bottone Streamlit con la chiave unica per non avere errori
-        _, col_cta_btn, _ = st.columns([1, 1.5, 1])
-        with col_cta_btn:
-            st.markdown("<div class='btn-create-account'>", unsafe_allow_html=True)
-            st.button("CREA IL TUO ACCOUNT GRATIS", 
-                      on_click=lambda: vai_a('login'), 
-                      key="btn_cta_finale", 
-                      use_container_width=True)
-            st.markdown("</div>", unsafe_allow_html=True)
+        # Il bottone ora nasce DENTRO il div scuro
+        _, col_btn_fix, _ = st.columns([1, 1.5, 1])
+        with col_btn_fix:
+            st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="btn_cta_finale")
+
+        st.markdown("</div>", unsafe_allow_html=True) # Fine del riquadro scuro
+
 
 
        
