@@ -541,26 +541,50 @@ EMERGENT_CSS = """
 
     }
 
-    /* --- BOTTONE ACCEDI AL PORTALE (VERDE PIENO) --- */
-    div.stButton > button {
-        background-color: rgb(41, 168, 71) !important; /* Il tuo verde */
-        color: black !important;                      /* Scritta nera per risaltare */
-        border: none !important;
-        padding: 12px 30px !important;
-        border-radius: 8px !important;
-        font-weight: 800 !important;
-        text-transform: uppercase !important;
-        width: auto !important;                       /* Non lo facciamo largo quanto tutto il sito */
-        margin: 0 auto !important;                    /* Lo centratamo */
-        display: block !important;
-        transition: 0.3s !important;
-        box-shadow: 0 4px 15px rgba(41, 168, 71, 0.3) !important; /* Un leggero bagliore */
+    /* --- NUOVO STILE NEWSLETTER ORIZZONTALE --- */
+    .newsletter-card {
+        background-color: #2d343c !important; 
+        max-width: 850px;
+        margin: 50px auto;
+        padding: 40px;
+        border-radius: 16px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    div.stButton > button:hover {
-        transform: scale(1.05) !important;
-        background-color: #2ecc71 !important; /* Verde un po' più chiaro al passaggio */
-        box-shadow: 0 6px 20px rgba(41, 168, 71, 0.5) !important;
+    /* Rimuove i bordi del form originale di Streamlit */
+    div[data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+        background-color: transparent !important;
+    }
+
+    /* Stile per l'input email */
+    .stTextInput input {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        height: 48px !important;
+    }
+
+    /* Stile per il tasto ISCRIVITI a destra */
+    div[data-testid="stForm"] button {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
+        height: 48px !important;
+        width: 100% !important; /* Qui riempie la sua colonna, non tutta la pagina */
+        font-weight: 800 !important;
+        border: none !important;
+    }
+
+    /* --- BOTTONE ACCEDI AL PORTALE (SOTTO LA CARD) --- */
+    .btn-portale button {
+        background-color: transparent !important;
+        border: 1px solid rgb(41, 168, 71) !important;
+        color: white !important;
+        margin: 0 auto !important;
+        display: block !important;
+        padding: 10px 40px !important;
     }
 
 
@@ -986,32 +1010,34 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-# --- SEZIONE: NEWSLETTER (VERSIONE PULITA) ---
-# --- COPIA DA QUI ---
-        st.markdown("<h2 style='text-align: center; color: white; font-weight: 900;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 16px; margin-bottom: 20px;'>Iscriviti alla newsletter per ricevere novità e aggiornamenti sul mondo MyClipzo.</p>", unsafe_allow_html=True)
+        # --- SEZIONE NEWSLETTER PREMIUM ---
+        st.markdown("<div class='newsletter-card'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='color: white; font-weight: 900; margin-bottom: 0;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94a3b8; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
 
-        _, col_news, _ = st.columns([1, 2, 1])
-        with col_news:
-            with st.form("newsletter_form", clear_on_submit=True):
-                email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com").strip().lower()
-                submit_news = st.form_submit_button("ISCRIVITI ALLA NEWSLETTER")
-                
-                if submit_news:
-                    if "@" in email_input and "." in email_input:
-                        invio_ok = invia_conferma_e_salva(email_input)
-                        if invio_ok:
-                            st.success("✅ Benvenuto a bordo! Controlla la tua email.")
-                        else:
-                            st.info("ℹ️ Registrato nel database. Email in arrivo.")
-                    else:
-                        st.error("❌ Inserisci un indirizzo email valido.")
+        with st.form("newsletter_form", clear_on_submit=True):
+            # Proporzioni [3, 1]: 3 parti all'email, 1 parte al bottone
+            col_email, col_btn = st.columns([3, 1])
+            
+            with col_email:
+                email_input = st.text_input("", placeholder="La tua email migliore...", label_visibility="collapsed").strip().lower()
+            
+            with col_btn:
+                submit_news = st.form_submit_button("ISCRIVITI")
 
-        st.markdown("<br>", unsafe_allow_html=True)
-        _, col_btn_home, _ = st.columns([1, 1, 1])
-        with col_btn_home:
-            st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), use_container_width=True)
-# --- FINO A QUI ---
+            if submit_news:
+                if "@" in email_input and "." in email_input:
+                    invio_ok = invia_conferma_e_salva(email_input)
+                    if invio_ok: st.success("✅ Benvenuto!")
+                else:
+                    st.error("❌ Email non valida.")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # Bottone Accedi al Portale centrato sotto la card
+        st.markdown("<div class='btn-portale'>", unsafe_allow_html=True)
+        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
+        st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
