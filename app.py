@@ -30,20 +30,23 @@ st.markdown("""
         padding-top: 80px !important;
     }
 
-    /* BARRA FISSA (STICKY) */
+        /* BARRA FISSA (STICKY) - STILE MYPLAYR */
     .sticky-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 70px;
-        background-color: #0E1117; /* Colore scuro tipico di Streamlit */
+        height: 64px; /* Altezza precisa dello screen */
+        background-color: rgba(30, 35, 41, 0.95) !important; /* Grigio simile alle card */
+        backdrop-filter: blur(10px); /* Effetto vetro sfocato */
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 5%;
-        z-index: 999999; /* Sta sopra a tutto */
-        border-bottom: 1px solid rgba(46, 204, 113, 0.3); /* Linea verde sottile */
+        z-index: 999999;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Bordo sottile chiaro */
+    }
+/
     }
 
     /* STILE LOGO MC + MyClipzo */
