@@ -109,7 +109,7 @@ st.markdown("""
         height: 38px !important;
         font-weight: bold !important;
         border-radius: 6px;
-    }Accedi a MyClipzo
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -1104,58 +1104,54 @@ elif st.session_state.pagina == 'login':
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
- # --- 1. SOTTO-PAGINA: ACCEDI (FIXED CARD) ---
-if st.session_state.sub == 'login':
-    # Titoli centrati sopra la card
-    st.markdown("""
-        <div style='text-align: center; padding-top: 40px;'>
-            <div class='mc-box' style='display: inline-block; margin-bottom: 20px;'>MC</div>
-            <h1 style='font-weight: 900; margin-bottom: 0; color: white;'>ACCEDI AL TUO ACCOUNT</h1>
-            <p style='color: #94a3b8; margin-bottom: 30px;'>Bentornato nella community MyClipzo</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Colonne per centrare (il numero 0.6 è la larghezza della card, puoi regolarlo)
-    col1, col_card, col3 = st.columns([1, 2, 1])
-
-    with col_card:
-        # APRIAMO LA CARD CON IL CSS
-        st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
-        
-        # Usiamo un container di Streamlit dentro la nostra card HTML
-        with st.container():
-            u_login = st.text_input("Email", placeholder="mario.rossi@email.com", key="l_email").strip().lower()
-            p_login = st.text_input("Password", type="password", placeholder="Minimo 6 caratteri", key="l_pass")
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
+        if st.session_state.sub == 'login':
+            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
             
-            st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
-
-            if st.button("ENTRA", use_container_width=True, key="btn_login_main"):
-                # ... (qui tieni la tua logica Supabase identica a prima) ...
+            # Input utente
+            u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
+            p_login = st.text_input("Password", type="password", placeholder="******")
+            
+            if st.button("ENTRA", use_container_width=True):
                 if u_login and p_login:
-                    res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
-                    if res_log.data:
-                        st.session_state.autenticato = True
-                        vai_a('home_auth')
-                        st.rerun()
-                    else:
-                        st.error("❌ Credenziali errate.")
+                    try:
+                        # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
+                        res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
+                        
+                        if res_log.data:
+                            # UTENTE TROVATO: Salviamo i dati nella sessione
+                            utente = res_log.data[0]
+                            st.session_state.autenticato = True
+                            st.session_state.user_email = utente['email']
+                            st.session_state.user_role = utente.get('ruolo', 'Player')
+                            st.session_state.user_nick = utente.get('nome', 'Campione')
+                            
+                            st.success(f"Bentornato {st.session_state.user_nick}!")
+                            
+                            # Controllo automatico: se sei admin vai in dashboard, altrimenti in home_auth
+                            if st.session_state.user_role == "admin":
+                                vai_a('admin')
+                            else:
+                                vai_a('home_auth')
+                                
+                            st.rerun()
+                        else:
+                            st.error("❌ Credenziali errate o account inesistente.")
+                    except Exception as e:
+                        st.error(f"⚠️ Errore di connessione: {e}")
+                else:
+                    st.warning("Compila tutti i campi!")
 
-            st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>Non hai un account?</p>", unsafe_allow_html=True)
-
-            if st.button("CREA UN ACCOUNT", use_container_width=True, key="btn_goto_reg"):
-                st.session_state.sub = 'reg'
-                st.rerun()
-        
-        # CHIUDIAMO LA CARD
-        st.markdown("</div>", unsafe_allow_html=True)
-
-        # Bottone torna alla home fuori dalla card
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("← Torna alla Home", key="btn_back_home", type="secondary"):
-            st.session_state.pagina = 'home'
-            st.rerun()
-
+            # Opzioni secondarie
+            col_l1, col_l2 = st.columns(2)
+            with col_l1:
+                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
+                    st.session_state.sub = 'recupero'
+                    st.rerun()
+            with col_l2:
+                if st.button("Registrati ora", type="secondary", use_container_width=True):
+                    st.session_state.sub = 'reg'
+                    st.rerun()
             
             
 
@@ -1768,6 +1764,7 @@ if st.session_state.pagina == 'partite':
 
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
+
 
 
 # --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
