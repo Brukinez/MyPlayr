@@ -96,12 +96,39 @@ st.markdown("""
         font-weight: bold;
     }
 
-    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
-        position: fixed;
-        top: 15px;
-        right: 5%;
-        z-index: 1000000;
+        /* --- PULIZIA INTERFACCIA E POSIZIONAMENTO TASTI STREAMLIT --- */
+    
+    /* Nasconde la barra superiore grigia di Streamlit */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+
+    /* Prende il bottone di login di Streamlit e lo "parcheggia" dentro la Navbar a destra */
+    .stButton {
+        position: fixed !important;
+        top: 14px !important; /* Lo centra verticalmente nella barra da 64px */
+        right: 5% !important; /* Lo allinea al bordo destro della navbar */
+        z-index: 1000000 !important; /* Lo mette sopra a tutto */
+    }
+
+    /* Rende il bottone di Streamlit bello come quelli del sito di riferimento */
+    div.stButton > button {
+        background-color: rgb(41, 168, 71) !important; /* Il tuo verde */
+        color: white !important;
+        border: none !important;
+        border-radius: 6px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        height: 36px !important;
+        padding: 0 20px !important;
+        transition: 0.3s !important;
+    }
+
+    div.stButton > button:hover {
+        transform: scale(1.05) !important;
+        filter: brightness(1.1) !important;
+    }
+
     }
     
     /* STILE TASTO ACCEDI VERDE */
