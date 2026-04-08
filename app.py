@@ -47,12 +47,12 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
     .logo-container {
-        display: flex !important;           /* FORZA LA RIGA */
-        flex-direction: row !important;     /* Impedisce che vadano uno sopra l'altro */
-        align-items: center !important;     /* Li allinea perfettamente al centro */
-        gap: 12px !important;               /* Spazio tra il quadratino verde e il nome */
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
     }
 
     .mc-box {
@@ -62,7 +62,7 @@ st.markdown("""
         padding: 4px 10px;
         border-radius: 4px;
         font-size: 16px;
-        line-height: 1; /* Evita che il box si allunghi troppo */
+        line-height: 1;
     }
 
     .brand-name {
@@ -71,10 +71,7 @@ st.markdown("""
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
-
-    }
-/
-    }
+    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
 
     /* STILE LOGO MC + MyClipzo */
     .logo-container {
@@ -357,7 +354,6 @@ EMERGENT_CSS = """
         margin-top: 10px;
     }
 
-    }
     /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
         /* --- STILE DEL BADGE (ETICHETTA) --- */
     .hero-badge {
@@ -379,7 +375,6 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71); /* IL VERDE IDENTICO AL BADGE */
     }
 
-    }
     /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
     .hero-description {
         color: #94a3b8; /* Un grigio azzurrino molto elegante */
@@ -392,6 +387,7 @@ EMERGENT_CSS = """
         margin-bottom: 40px;  /* Spazio prima dei bottoni o delle card sotto */
         text-align: center;
     }
+
     /* --- STILE BOTTONI HERO --- */
     .hero-btn-container {
         display: flex;
@@ -438,23 +434,23 @@ EMERGENT_CSS = """
     }
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
-        width: 56px;               /* Dimensione fissa */
-        height: 56px;              /* Altezza fissa */
-        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
-        border-radius: 12px;       /* Angoli arrotondati */
-        display: flex;             /* Attiva la modalità "calamita" */
-        align-items: center;       /* CENTRA VERTICALMENTE (corretto!) */
-        justify-content: center;   /* CENTRA ORIZZONTALMENTE */
-        margin-bottom: 16px;       /* Spazio sotto l'icona */
-        transition: background-color 0.3s; /* Effetto fluido al passaggio mouse */
-    } /* <-- Non dimenticare questa parentesi di chiusura! */
-/
+        width: 56px;
+        height: 56px;
+        background-color: rgba(41, 168, 71, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        transition: background-color 0.3s;
     }
+
 
     /* Effetto quando passi il mouse sulla scheda intera */
     .mcp-card:hover .icon-box {
         background-color: rgba(41, 168, 71, 0.3); /* Diventa leggermente più scuro */
     }
+
     /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
     .hero-badge {
         display: inline-flex !important;
@@ -470,6 +466,7 @@ EMERGENT_CSS = """
         margin-bottom: 32px !important;
         text-align: center !important;
     }
+
     /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
     .custom-nav {
         background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
@@ -486,6 +483,7 @@ EMERGENT_CSS = """
         background-position: center !important;
         background-attachment: fixed !important;
     }
+
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
         background-color: #2d343c; /* Lo stesso grigio delle tue card */
