@@ -316,43 +316,16 @@ EMERGENT_CSS = """
         font-size: 60px;
     }
 
-     /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
-    .footer-card {
-        background-color: #2d343c !important; /* Stesso grigio delle card sopra */
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px 20px 0 0;        /* Arrotondato solo in alto */
-        padding: 60px 5% 40px 5% !important;
-        margin-top: 80px !important;
-        width: 100%;
+    .footer-main {
+        text-align: center;
+        font-size: 16px;
+        margin-top: 50px;
     }
 
-    /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
-    div.stButton > button[key^="f_"] {
-        background-color: transparent !important;
-        color: #94a3b8 !important; /* Lo stesso grigio che hai nelle card */
-        border: none !important;
-        text-align: left !important;
-        padding: 4px 0 !important;
-        font-weight: 500 !important;
-        text-transform: none !important;
-        font-size: 15px !important;
-        width: auto !important;
-        display: block !important;
+    .footer-sub {
+        font-size: 12px;
+        color: #8aa0b5;
     }
-
-    div.stButton > button[key^="f_"]:hover {
-        color: #2ecc71 !important; /* Diventa verde solo la scritta al passaggio */
-    }
-
-    .footer-title {
-        color: white !important;
-        font-weight: 900 !important;
-        text-transform: uppercase;
-        font-size: 13px !important;
-        letter-spacing: 1px;
-        margin-bottom: 20px !important;
-    }
-
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
         background-color: #2d343c !important; /* Il grigio esatto della tua foto */
@@ -2011,35 +1984,26 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- INSERISCI QUESTO ALLA FINE DEL FILE ---
-st.markdown("<div class='footer-card'>", unsafe_allow_html=True)
-
-f_col1, f_col2, f_col3 = st.columns([1.5, 1, 1])
-
-with f_col1:
-    st.markdown("<b style='color: white; font-size: 20px;'>MyClipzo</b>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8; font-size: 14px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
-
-with f_col2:
-    st.markdown("<div class='footer-title'>NAVIGAZIONE</div>", unsafe_allow_html=True)
-    st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
-    st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
-    st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'), key="f_hall")
-
-with f_col3:
-    st.markdown("<div class='footer-title'>LEGALE</div>", unsafe_allow_html=True)
-    st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-    st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")
-    st.button("🍪 Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_cook")
-    st.button("⚖️ Diritti Riservati", on_click=lambda: vai_a('diritti'), key="f_rights")
-
+# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
 st.markdown("""
-    <div style='margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 12px;'>
-        © 2026 MyClipzo — Tutti i diritti riservati
-    </div>
-</div>
+    <style>
+    /* Rende i bottoni del footer identici a scritte semplici bianche */
+    div.stButton > button[kind="secondary"] {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-weight: normal !important;
+        text-align: left !important;
+        box-shadow: none !important;
+    }
+    div.stButton > button:hover {
+        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
+        text-decoration: underline !important;
+    }
+    </style>
 """, unsafe_allow_html=True)
-
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
