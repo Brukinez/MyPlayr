@@ -562,6 +562,47 @@ EMERGENT_CSS = """
         margin-top: 30px;
     }
 
+    /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
+    .cta-final-section {
+        background-color: #212b27; /* Verde scurissimo quasi nero */
+        padding: 100px 5%;
+        text-align: center;
+        border-top: 1px solid rgba(41, 168, 71, 0.2);
+        margin-top: 50px;
+    }
+
+    .cta-final-section h2 {
+        color: white !important;
+        font-size: 45px !important;
+        font-weight: 900 !important;
+        line-height: 1.1 !important;
+        margin-bottom: 20px !important;
+        text-transform: uppercase;
+    }
+
+    .cta-final-section .highlight-green {
+        color: rgb(41, 168, 71) !important;
+    }
+
+    .cta-final-section p {
+        color: #94a3b8 !important;
+        max-width: 700px;
+        margin: 0 auto 40px auto !important;
+        font-size: 18px !important;
+    }
+
+    /* Il tastone verde grande */
+    .btn-create-account button {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        padding: 15px 40px !important;
+        border-radius: 6px !important;
+        font-weight: 900 !important;
+        font-size: 18px !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        transition: 0.3s !important;
+    }
 
 
 
@@ -1023,6 +1064,23 @@ if st.session_state.pagina == 'home':
         st.markdown("</div>", unsafe_allow_html=True)
 
 
+        # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
+        st.markdown("""
+            <div class='cta-final-section'>
+                <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
+                <p>Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance e condividere le loro migliori azioni.</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # Usiamo il tuo bottone Streamlit con la chiave unica per non avere errori
+        _, col_cta_btn, _ = st.columns([1, 1.5, 1])
+        with col_cta_btn:
+            st.markdown("<div class='btn-create-account'>", unsafe_allow_html=True)
+            st.button("CREA IL TUO ACCOUNT GRATIS", 
+                      on_click=lambda: vai_a('login'), 
+                      key="btn_cta_finale", 
+                      use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
 
        
