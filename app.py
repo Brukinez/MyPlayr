@@ -30,20 +30,25 @@ st.markdown("""
         padding-top: 80px !important;
     }
 
-    /* BARRA FISSA (STICKY) */
-    .sticky-navbar {
+        /* --- NAVBAR SEMI-CHIARA (Poco più scura delle card) --- */
+    .custom-nav {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
-        height: 70px;
-        background-color: #0E1117; /* Colore scuro tipico di Streamlit */
+        height: 64px;
+        /* Colore calibrato tra sfondo (#1e2329) e card (#2d343c) */
+        background-color: rgba(38, 44, 52, 0.9) !important; 
+        backdrop-filter: blur(12px); /* Effetto vetro più elegante */
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 5%;
-        z-index: 999999; /* Sta sopra a tutto */
-        border-bottom: 1px solid rgba(46, 204, 113, 0.3); /* Linea verde sottile */
+        z-index: 9999;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08); /* Bordino sottilissimo */
+        font-family: 'Inter', sans-serif;
+    }
+
     }
 
     /* STILE LOGO MC + MyClipzo */
