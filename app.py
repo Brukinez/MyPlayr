@@ -774,7 +774,7 @@ if st.session_state.pagina == 'home':
     if not st.session_state.autenticato:
        
         # --- SEZIONE: COME FUNZIONA (LAYOUT A 3 COLONNE) ---
-        st.markdown("<h2 style='text-align: center;'>Come Funziona</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align: center;'>COME FUNZIONA</h2>", unsafe_allow_html=True)
                 # Creiamo tre colonne per mettere le schede una di fianco all'altra
         col1, col2, col3 = st.columns(3)
 
@@ -836,7 +836,7 @@ if st.session_state.pagina == 'home':
 
         
         # --- SEZIONE: NEWSLETTER (INTEGRAZIONE SUPABASE + EMAIL) ---
-        st.markdown("<h3 style='text-align: center;'>Resta aggiornato</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align: center;'>RESTA AGGIORNATO</h3>", unsafe_allow_html=True)
         _, col_news, _ = st.columns([1, 2, 1])
         st.markdown("<p style='text-align: center; color: #888; font-size: 14px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo.</p>", unsafe_allow_html=True)
 
