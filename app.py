@@ -2011,26 +2011,35 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
+# --- INSERISCI QUESTO ALLA FINE DEL FILE ---
+st.markdown("<div class='footer-card'>", unsafe_allow_html=True)
+
+f_col1, f_col2, f_col3 = st.columns([1.5, 1, 1])
+
+with f_col1:
+    st.markdown("<b style='color: white; font-size: 20px;'>MyClipzo</b>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 14px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
+
+with f_col2:
+    st.markdown("<div class='footer-title'>NAVIGAZIONE</div>", unsafe_allow_html=True)
+    st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
+    st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
+    st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'), key="f_hall")
+
+with f_col3:
+    st.markdown("<div class='footer-title'>LEGALE</div>", unsafe_allow_html=True)
+    st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
+    st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")
+    st.button("🍪 Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_cook")
+    st.button("⚖️ Diritti Riservati", on_click=lambda: vai_a('diritti'), key="f_rights")
+
 st.markdown("""
-    <style>
-    /* Rende i bottoni del footer identici a scritte semplici bianche */
-    div.stButton > button[kind="secondary"] {
-        border: none !important;
-        background: transparent !important;
-        color: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        font-weight: normal !important;
-        text-align: left !important;
-        box-shadow: none !important;
-    }
-    div.stButton > button:hover {
-        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
-        text-decoration: underline !important;
-    }
-    </style>
+    <div style='margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 12px;'>
+        © 2026 MyClipzo — Tutti i diritti riservati
+    </div>
+</div>
 """, unsafe_allow_html=True)
+
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
