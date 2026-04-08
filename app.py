@@ -605,45 +605,54 @@ EMERGENT_CSS = """
     }
 
     /* --- STILE FOOTER PROFESSIONALE --- */
-    .footer-box {
-        background-color: #1e2329 !important; /* Grigio MyPlayr */
-        padding: 60px 5% 30px 5% !important;
-        margin-top: 100px !important;
+    .footer-wrapper {
+        background-color: #1e2329; /* Grigio scuro coordinato allo sfondo */
+        padding: 60px 5% 20px 5%;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 50px;
         font-family: 'Inter', sans-serif;
     }
 
-    .footer-grid {
+    .footer-columns {
         display: flex;
         justify-content: space-between;
-        gap: 50px;
         flex-wrap: wrap;
+        gap: 40px;
+        margin-bottom: 40px;
     }
 
-    .footer-col-main { flex: 2; min-width: 250px; }
-    .footer-col-link { flex: 1; min-width: 150px; }
+    .footer-col { flex: 1; min-width: 200px; }
 
-    .footer-h4 {
-        color: white !important;
-        font-weight: 900 !important;
-        font-size: 14px !important;
+    .footer-col h4 {
+        color: white;
+        font-weight: 900;
+        font-size: 14px;
         text-transform: uppercase;
-        margin-bottom: 25px !important;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
     }
 
-    .footer-text { color: #94a3b8; font-size: 14px; line-height: 1.6; }
+    .footer-col p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
 
-    /* Riga finale per Copyright e Luogo */
-    .footer-line-bottom {
-        margin-top: 50px;
-        padding-top: 20px;
+    /* Stile per i tuoi link esistenti */
+    .footer-link-box a {
+        display: block;
+        color: #94a3b8;
+        text-decoration: none;
+        margin-bottom: 12px;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .footer-link-box a:hover { color: rgb(41, 168, 71); }
+
+    .footer-bottom {
         border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 20px;
         display: flex;
         justify-content: space-between;
         color: #64748b;
         font-size: 12px;
-    }
-
     }
 
 
@@ -2006,44 +2015,71 @@ if st.session_state.pagina not in ['home', 'home_auth']:
         st.rerun()
 
 
-# --- INIZIO FOOTER ---
-st.markdown("<div class='footer-box'>", unsafe_allow_html=True)
+# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
-# 1. PARTE SUPERIORE A COLONNE
-col_f1, col_f2, col_f3 = st.columns([2, 1, 1])
+# 1. GESTIONE PAGINE MINORI (Recupero Password)
+if st.session_state.pagina == 'recupero_password': 
+    st.markdown("<h2 style='text-align: center;'>Recupero Password</h2>", unsafe_allow_html=True)
+    st.info("Abbiamo inviato le istruzioni alla tua email.")
+    st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-with col_f1:
-    st.markdown("""
-        <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 15px;'>
-            <div style='background: rgb(41, 168, 71); color: black; font-weight: 900; padding: 2px 8px; border-radius: 4px;'>MC</div>
-            <b style='color: white; font-size: 18px;'>MyClipzo</b>
-        </div>
-        <p class='footer-text'>La piattaforma per centri sportivi amatoriali. Registra, rivedi e condividi le tue migliori azioni in campo.</p>
-    """, unsafe_allow_html=True)
-    # Qui puoi aggiungere le icone social se le hai
-
-with col_f2:
-    st.markdown("<h4 class='footer-h4'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-    # Usiamo i tuoi comandi per cambiare pagina
-    st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), key="f_home")
-    st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
-    st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), key="f_hall")
-
-with col_f3:
-    st.markdown("<h4 class='footer-h4'>LEGALE</h4>", unsafe_allow_html=True)
-    # Questi attiveranno i tuoi blocchi 'elif' esistenti
-    st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-    st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")
-    st.button("🍪 Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_cook")
-
-# 2. RIGA FINALE
+# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
 st.markdown("""
-    <div class='footer-line-bottom'>
-        <div>© 2026 MyClipzo - Video Analysis for Future Champions</div>
-        <div>📍 Made with passion in Italy</div>
-    </div>
-</div>
+    <style>
+    /* Rende i bottoni del footer identici a scritte semplici bianche */
+    div.stButton > button[kind="secondary"] {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-weight: normal !important;
+        text-align: left !important;
+        box-shadow: none !important;
+    }
+    div.stButton > button:hover {
+        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
+        text-decoration: underline !important;
+    }
+    </style>
 """, unsafe_allow_html=True)
 
+st.markdown("<br><br><hr>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
+
+f_l, f_r = st.columns(2)
+
+with f_l: 
+    # Pulsante camuffato da scritta bianca
+    if st.button("📄 Privacy Policy", key="footer_privacy_link"):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
+
+with f_r: 
+    # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
+    if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
+        st.session_state.pagina = 'termini'
+        st.rerun()
+
+
+# --- COPYRIGHT CLICCABILE NEL FOOTER ---
+st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
+
+if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True):
+    st.session_state.pagina = 'diritti'
+    st.rerun()
+
+# CSS per far sembrare il bottone una semplice scritta bianca
+st.markdown("""
+    <style>
+    button.st-key-f_copy_btn {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        font-size: 13px !important;
+        margin-top: 15px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 
