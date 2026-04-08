@@ -604,55 +604,41 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
-    /* --- STILE FOOTER PROFESSIONALE --- */
-    .footer-wrapper {
-        background-color: #1e2329; /* Grigio scuro coordinato allo sfondo */
-        padding: 60px 5% 20px 5%;
+    /* --- 1. I TASTI GRANDI E VERDI (HOME) --- */
+    /* Questo colpisce i tasti Accedi e Crea Account */
+    div.stButton > button {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        border-radius: 8px !important;
+        transition: 0.3s !important;
+    }
+
+    /* --- 2. I TASTI DEL FOOTER (GRIGI E SEMPLICI) --- */
+    /* Usiamo il trucco della "f_" per non farli diventare verdi */
+    div.stButton > button[key^="f_"] {
+        background-color: transparent !important;
+        color: #94a3b8 !important;
+        border: none !important;
+        text-align: left !important;
+        padding: 0 !important;
+        font-weight: 500 !important;
+        text-transform: none !important;
+        width: auto !important;
+        box-shadow: none !important;
+    }
+
+    div.stButton > button[key^="f_"]:hover {
+        color: #2ecc71 !important;
+    }
+
+    /* CONTENITORE FOOTER */
+    .footer-box {
+        background-color: #1e2329 !important;
+        padding: 60px 5% 30px 5% !important;
+        margin-top: 100px !important;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
-        margin-top: 50px;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .footer-columns {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 40px;
-        margin-bottom: 40px;
-    }
-
-    .footer-col { flex: 1; min-width: 200px; }
-
-    .footer-col h4 {
-        color: white;
-        font-weight: 900;
-        font-size: 14px;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-        letter-spacing: 1px;
-    }
-
-    .footer-col p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
-
-    /* Stile per i tuoi link esistenti */
-    .footer-link-box a {
-        display: block;
-        color: #94a3b8;
-        text-decoration: none;
-        margin-bottom: 12px;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-
-    .footer-link-box a:hover { color: rgb(41, 168, 71); }
-
-    .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        padding-top: 20px;
-        display: flex;
-        justify-content: space-between;
-        color: #64748b;
-        font-size: 12px;
     }
 
 
@@ -2015,51 +2001,32 @@ if st.session_state.pagina not in ['home', 'home_auth']:
         st.rerun()
 
 
-# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
+# --- INIZIO FOOTER ---
+st.markdown("<div class='footer-box'>", unsafe_allow_html=True)
 
-# 1. GESTIONE PAGINE MINORI (Recupero Password)
-if st.session_state.pagina == 'recupero_password': 
-    st.markdown("<h2 style='text-align: center;'>Recupero Password</h2>", unsafe_allow_html=True)
-    st.info("Abbiamo inviato le istruzioni alla tua email.")
-    st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
+f_col1, f_col2, f_col3 = st.columns(3)
 
-# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
-st.markdown("""
-    <style>
-    /* Rende i bottoni del footer identici a scritte semplici bianche */
-    div.stButton > button[kind="secondary"] {
-        border: none !important;
-        background: transparent !important;
-        color: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        font-weight: normal !important;
-        text-align: left !important;
-        box-shadow: none !important;
-    }
-    div.stButton > button:hover {
-        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
-        text-decoration: underline !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+with f_col1:
+    st.markdown("<b style='color: white; font-size: 18px;'>MyClipzo</b>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 14px;'>Registra, rivedi e condividi le tue azioni.</p>", unsafe_allow_html=True)
 
-st.markdown("<br><br><hr>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
+with f_col2:
+    st.markdown("<h4 style='color: white; font-size: 14px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
+    # Assicurati che i nomi 'home', 'partite' ecc. siano quelli che usi nel tuo codice
+    st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
+    st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
+    st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'), key="f_hall")
 
-f_l, f_r = st.columns(2)
+with f_col3:
+    st.markdown("<h4 style='color: white; font-size: 14px;'>LEGALE</h4>", unsafe_allow_html=True)
+    # IMPORTANTE: Questi nomi devono essere IDENTICI ai tuoi elif
+    st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
+    st.button("📜 Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term")
+    st.button("🍪 Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_cook")
 
-with f_l: 
-    # Pulsante camuffato da scritta bianca
-    if st.button("📄 Privacy Policy", key="footer_privacy_link"):
-        st.session_state.pagina = 'privacy'
-        st.rerun()
+st.markdown("<p style='color: #64748b; font-size: 12px; margin-top: 40px; border-top: 1px solid #333; padding-top: 20px;'>© 2026 MyClipzo</p>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
-with f_r: 
-    # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
-    if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
-        st.session_state.pagina = 'termini'
-        st.rerun()
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
