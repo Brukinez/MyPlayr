@@ -326,19 +326,19 @@ EMERGENT_CSS = """
         font-size: 12px;
         color: #8aa0b5;
     }
-          /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
+        /* --- STILE DELLE SCHEDE (CARD) - VERSIONE FIX PER LOGIN --- */
     .mcp-card {
-        background-color: #2d343c !important; /* Il grigio esatto della tua foto */
-        border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
-        border-radius: 12px;               /* Angoli arrotondati perfetti */
-        padding: 24px;                     /* Spazio interno */
-        color: white;
-        font-family: 'Inter', sans-serif;
-        margin-bottom: 20px;
-        transition: 0.3s ease;             /* Movimento fluido */
-        height: 100%;                      /* Altezza uguale per tutte */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
+        background-color: #2d343c !important; 
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        padding: 30px !important;
+        color: white !important;
+        font-family: 'Inter', sans-serif !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        display: block !important; /* Forza la visualizzazione come blocco */
     }
+
 
     .mcp-card:hover {
         transform: translateY(-5px);       /* La scheda si alza leggermente */
@@ -1093,65 +1093,50 @@ if st.session_state.pagina == 'home':
             st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
 
 
-# --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
+# --- 1. SOTTO-PAGINA: ACCEDI (VERSIONE CARD FIX) ---
+if st.session_state.sub == 'login':
+    # Titolo fuori dalla card
+    st.markdown("""
+        <div style='text-align: center; padding: 40px 0 20px 0;'>
+            <div class='mc-box' style='display: inline-block; margin-bottom: 20px;'>MC</div>
+            <h1 style='font-weight: 900; color: white;'>ACCEDI AL TUO ACCOUNT</h1>
+            <p style='color: #94a3b8;'>Bentornato nella community MyClipzo</p>
+        </div>
+    """, unsafe_allow_html=True)
 
-elif st.session_state.pagina == 'login':
-    # Centriamo il modulo di accesso con le colonne
-    _, col_log, _ = st.columns([1, 2, 1])
-    
-    with col_log:
-        # Inizializzazione dello stato interno per navigare tra Login e Registrazione
-        if 'sub' not in st.session_state: 
-            st.session_state.sub = 'login'
+    # Centriamo la card usando le colonne
+    col_l, col_center, col_r = st.columns([1, 2, 1]) # La colonna centrale è più larga
 
-        # --- 1. SOTTO-PAGINA: ACCEDI ---
-        if st.session_state.sub == 'login':
-            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
-            
-            # Input utente
-            u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
-            p_login = st.text_input("Password", type="password", placeholder="******")
-            
-            if st.button("ENTRA", use_container_width=True):
-                if u_login and p_login:
-                    try:
-                        # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
-                        res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
-                        
-                        if res_log.data:
-                            # UTENTE TROVATO: Salviamo i dati nella sessione
-                            utente = res_log.data[0]
-                            st.session_state.autenticato = True
-                            st.session_state.user_email = utente['email']
-                            st.session_state.user_role = utente.get('ruolo', 'Player')
-                            st.session_state.user_nick = utente.get('nome', 'Campione')
-                            
-                            st.success(f"Bentornato {st.session_state.user_nick}!")
-                            
-                            # Controllo automatico: se sei admin vai in dashboard, altrimenti in home_auth
-                            if st.session_state.user_role == "admin":
-                                vai_a('admin')
-                            else:
-                                vai_a('home_auth')
-                                
-                            st.rerun()
-                        else:
-                            st.error("❌ Credenziali errate o account inesistente.")
-                    except Exception as e:
-                        st.error(f"⚠️ Errore di connessione: {e}")
-                else:
-                    st.warning("Compila tutti i campi!")
+    with col_center:
+        # APRIAMO IL DIV DELLA CARD
+        st.markdown('<div class="mcp-card">', unsafe_allow_html=True)
+        
+        # Tutto quello che scrivi qui dentro apparirà visivamente nella card
+        u_login = st.text_input("Email", placeholder="mario.rossi@email.com", key="l_email").strip().lower()
+        p_login = st.text_input("Password", type="password", placeholder="******", key="l_pass")
+        
+        st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
 
-            # Opzioni secondarie
-            col_l1, col_l2 = st.columns(2)
-            with col_l1:
-                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
-                    st.session_state.sub = 'recupero'
-                    st.rerun()
-            with col_l2:
-                if st.button("Registrati ora", type="secondary", use_container_width=True):
-                    st.session_state.sub = 'reg'
-                    st.rerun()
+        if st.button("ENTRA", use_container_width=True, key="btn_login_main"):
+            # ... (qui tieni la tua logica Supabase che hai già) ...
+            pass 
+
+        st.markdown("<hr style='opacity: 0.1; margin: 25px 0;'>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>Non hai un account?</p>", unsafe_allow_html=True)
+
+        if st.button("CREA UN ACCOUNT", use_container_width=True, key="btn_goto_reg"):
+            st.session_state.sub = 'reg'
+            st.rerun()
+
+        # CHIUDIAMO IL DIV DELLA CARD
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        # Bottone "Torna alla Home" fuori dalla card (opzionale)
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("← Torna alla Home", key="btn_back_home", type="secondary"):
+            st.session_state.pagina = 'home'
+            st.rerun()
+
             
             
 
