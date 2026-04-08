@@ -914,6 +914,27 @@ if st.session_state.pagina == 'home':
             <p style="color: #94a3b8; font-size: 18px;">
                 Scarica i tuoi momenti migliori o condividili istantaneamente con i tuoi amici sui social.
             </p>
+        </div>      
+    """, unsafe_allow_html=True)
+    # --- STRISCIA DELLE STATISTICHE ---
+        st.markdown("""
+        <div class='stats-container'>
+            <div class='stat-item'>
+                <div class='stat-number'>500+</div>
+                <div class='stat-label'>Partite Registrate</div>
+            </div>
+            <div class='stat-item'>
+                <div class='stat-number'>2K+</div>
+                <div class='stat-label'>Clip Generate</div>
+            </div>
+            <div class='stat-item'>
+                <div class='stat-number'>150+</div>
+                <div class='stat-label'>Giocatori Attivi</div>
+            </div>
+            <div class='stat-item'>
+                <div class='stat-number'>4K</div>
+                <div class='stat-label'>Qualità Video</div>
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
