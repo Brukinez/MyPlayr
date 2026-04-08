@@ -2020,11 +2020,7 @@ with f_l:
         st.session_state.pagina = 'privacy'
         st.rerun()
 
-with f_r: 
-    # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
-    if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
-        st.session_state.pagina = 'termini'
-        st.rerun()
+
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
