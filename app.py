@@ -985,19 +985,7 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-               # --- SEZIONE NEWSLETTER ---
-        st.markdown("""
-        <div class='newsletter-wrapper'>
-            <h2 style='color: white; font-weight: 900; font-size: 32px; margin-bottom: 10px;'>RESTA AGGIORNATO</h2>
-            <p style='color: #94a3b8; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo.</p>
-            
-            <div class='newsletter-box'>
-                <div style='color: white; text-align: left; font-size: 14px; font-weight: 600;'>La tua migliore Email</div>
-                <input type='email' class='newsletter-input' placeholder='esempio@mail.com'>
-                <button class='btn-newsletter'>ISCRIVITI ALLA NEWSLETTER</button>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+               
 
 
 
