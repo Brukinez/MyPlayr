@@ -591,44 +591,68 @@ EMERGENT_CSS = """
         font-size: 18px !important;
     }
 
-    /* 1. TASTI PRINCIPALI (Verde corretto, come ISCRIVITI) */
-    /* Colpisce i tasti "Accedi al Portale" e "Crea Account" */
-    div.stButton > button {
+    /* Il tastone verde grande */
+    .btn-create-account button {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
-        border: none !important;
-        font-weight: 800 !important;
-        text-transform: uppercase !important;
+        padding: 15px 40px !important;
         border-radius: 6px !important;
+        font-weight: 900 !important;
+        font-size: 18px !important;
+        text-transform: uppercase !important;
+        border: none !important;
         transition: 0.3s !important;
     }
 
-    /* 2. TASTI DEL FOOTER (Grigi, come le scritte della newsletter) */
-    /* Usiamo la chiave "f_" per differenziarli */
-    div.stButton > button[key^="f_"] {
-        background-color: transparent !important;
-        color: #94a3b8 !important; /* Grigio azzurrino come richiesto */
-        border: none !important;
-        text-align: left !important;
-        padding: 0 !important;
-        font-weight: 500 !important;
-        text-transform: none !important;
-        width: auto !important;
-        box-shadow: none !important;
-    }
-
-    div.stButton > button[key^="f_"]:hover {
-        color: rgb(41, 168, 71) !important; /* Diventa verde solo al passaggio */
-    }
-
-    /* 3. IL RIQUADRO SCURO DELLA CTA FINALE */
-    .cta-premium-box {
-        background-color: #2d343c !important; /* Stesso grigio delle card */
-        padding: 60px 40px !important;
-        border-radius: 16px;
-        text-align: center;
+    /* --- STILE FOOTER PROFESSIONALE --- */
+    .footer-wrapper {
+        background-color: #1e2329; /* Grigio scuro coordinato allo sfondo */
+        padding: 60px 5% 20px 5%;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
         margin-top: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .footer-columns {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .footer-col { flex: 1; min-width: 200px; }
+
+    .footer-col h4 {
+        color: white;
+        font-weight: 900;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .footer-col p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
+
+    /* Stile per i tuoi link esistenti */
+    .footer-link-box a {
+        display: block;
+        color: #94a3b8;
+        text-decoration: none;
+        margin-bottom: 12px;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .footer-link-box a:hover { color: rgb(41, 168, 71); }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        color: #64748b;
+        font-size: 12px;
     }
 
 
@@ -1090,25 +1114,23 @@ if st.session_state.pagina == 'home':
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-        # --- SEZIONE FINALE: TUTTO DENTRO IL RIQUADRO ---
+        # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
         st.markdown("""
-            <div class='cta-premium-box'>
-                <h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 10px;'>
-                    PRONTO A DIVENTARE <br>
-                    <span style='color: rgb(41, 168, 71);'>UN CAMPIONE?</span>
-                </h2>
-                <p style='color: #94a3b8; font-size: 16px; max-width: 600px; margin: 0 auto 30px auto;'>
-                    Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance.
-                </p>
+            <div class='cta-final-section'>
+                <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
+                <p>Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance e condividere le loro migliori azioni.</p>
+            </div>
         """, unsafe_allow_html=True)
 
-        # Il bottone ora nasce DENTRO il div scuro
-        _, col_btn_fix, _ = st.columns([1, 1.5, 1])
-        with col_btn_fix:
-            st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="btn_cta_finale")
-
-        st.markdown("</div>", unsafe_allow_html=True) # Fine del riquadro scuro
-
+        # Usiamo il tuo bottone Streamlit con la chiave unica per non avere errori
+        _, col_cta_btn, _ = st.columns([1, 1.5, 1])
+        with col_cta_btn:
+            st.markdown("<div class='btn-create-account'>", unsafe_allow_html=True)
+            st.button("CREA IL TUO ACCOUNT GRATIS", 
+                      on_click=lambda: vai_a('login'), 
+                      key="btn_cta_finale", 
+                      use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
 
        
@@ -1993,32 +2015,51 @@ if st.session_state.pagina not in ['home', 'home_auth']:
         st.rerun()
 
 
-# --- INIZIO FOOTER ---
-st.markdown("<div class='footer-box'>", unsafe_allow_html=True)
+# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
-f_col1, f_col2, f_col3 = st.columns(3)
+# 1. GESTIONE PAGINE MINORI (Recupero Password)
+if st.session_state.pagina == 'recupero_password': 
+    st.markdown("<h2 style='text-align: center;'>Recupero Password</h2>", unsafe_allow_html=True)
+    st.info("Abbiamo inviato le istruzioni alla tua email.")
+    st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-with f_col1:
-    st.markdown("<b style='color: white; font-size: 18px;'>MyClipzo</b>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8; font-size: 14px;'>Registra, rivedi e condividi le tue azioni.</p>", unsafe_allow_html=True)
+# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
+st.markdown("""
+    <style>
+    /* Rende i bottoni del footer identici a scritte semplici bianche */
+    div.stButton > button[kind="secondary"] {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-weight: normal !important;
+        text-align: left !important;
+        box-shadow: none !important;
+    }
+    div.stButton > button:hover {
+        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
+        text-decoration: underline !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-with f_col2:
-    st.markdown("<h4 style='color: white; font-size: 14px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-    # Assicurati che i nomi 'home', 'partite' ecc. siano quelli che usi nel tuo codice
-    st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
-    st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
-    st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'), key="f_hall")
+st.markdown("<br><br><hr>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-weight: bold;'>MyClipzo - Video Analysis Pro</p>", unsafe_allow_html=True)
 
-with f_col3:
-    st.markdown("<h4 style='color: white; font-size: 14px;'>LEGALE</h4>", unsafe_allow_html=True)
-    # IMPORTANTE: Questi nomi devono essere IDENTICI ai tuoi elif
-    st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-    st.button("📜 Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term")
-    st.button("🍪 Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_cook")
+f_l, f_r = st.columns(2)
 
-st.markdown("<p style='color: #64748b; font-size: 12px; margin-top: 40px; border-top: 1px solid #333; padding-top: 20px;'>© 2026 MyClipzo</p>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+with f_l: 
+    # Pulsante camuffato da scritta bianca
+    if st.button("📄 Privacy Policy", key="footer_privacy_link"):
+        st.session_state.pagina = 'privacy'
+        st.rerun()
 
+with f_r: 
+    # Allineamento a destra simulato con una colonna o spazi (Streamlit centra i bottoni di default)
+    if st.button("⚖️ Termini e Condizioni", key="footer_termini_link"):
+        st.session_state.pagina = 'termini'
+        st.rerun()
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
