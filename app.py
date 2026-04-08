@@ -978,7 +978,7 @@ if st.session_state.pagina == 'home':
                 </svg>
             </div>
             <h3 style="color: white; margin-top: 0;">TAGLIO CLIP ISTANTANEO</h3>
-            <p style="color: #94a3b8; font-size: 18px;">
+            <p style="color: #94a3b8; font-size: 20px;">
                 Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.
             </p>
         </div>
@@ -1048,10 +1048,6 @@ if st.session_state.pagina == 'home':
                     if invio_ok: st.success("✅ Benvenuto!")
                 else:
                     st.error("❌ Email non valida.")
-
-
-
-
 
 
         # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
@@ -1768,9 +1764,6 @@ if st.session_state.pagina == 'partite':
 
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
-
-
-
 
 
 # --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
