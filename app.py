@@ -518,14 +518,14 @@ EMERGENT_CSS = """
     }
     /* --- FIX FINALE NEWSLETTER --- */
     
-    /* 1. Forza la riga e allinea i centri */
-    [data-testid="stForm"] .stHorizontalBlock {
+    /* 1. Forza l'allineamento dei due pezzi sulla stessa linea di base */
+    div[data-testid="stForm"] .stHorizontalBlock {
         align-items: center !important;
-        gap: 12px !important;
+        gap: 10px !important; /* Spazio tra email e bottone */
     }
 
-    /* 2. L'input dell'email (Altezza fissa 48px) */
-    [data-testid="stForm"] input {
+    /* 2. L'input dell'email */
+    div[data-testid="stForm"] input {
         height: 48px !important;
         background-color: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -533,25 +533,21 @@ EMERGENT_CSS = """
         border-radius: 8px !important;
     }
 
-    /* 3. IL TASTO ISCRIVITI (Forziamo la larghezza e l'altezza) */
-    [data-testid="stForm"] button {
-        width: 100% !important;        /* Forza a occupare tutta la sua colonna */
-        min-width: 120px !important;    /* Gli diamo una larghezza minima perché non sia un quadratino */
-        height: 48px !important;       /* Altezza IDENTICA all'input */
+    /* 3. IL TASTO ISCRIVITI (Finalmente grande il giusto) */
+    div[data-testid="stForm"] button {
+        width: 100% !important;        /* Riempie la sua colonna da 1.2 */
+        height: 48px !important;       /* ALTEZZA IDENTICA ALL'EMAIL */
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
         font-weight: 800 !important;
-        text-transform: uppercase !important;
-        border: none !important;
         border-radius: 8px !important;
-        padding: 0 20px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        border: none !important;
+        text-transform: uppercase !important;
+        padding: 0 !important;
     }
 
-    /* Rimuove lo spazio extra che Streamlit mette a volte sotto i bottoni */
-    [data-testid="stForm"] .stButton {
+    /* Rimuove lo spazio vuoto sopra il bottone che Streamlit mette di default */
+    div[data-testid="stForm"] .stButton {
         margin-top: 0px !important;
     }
 
@@ -981,13 +977,13 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE NEWSLETTER CORRETTA ---
+        # --- SEZIONE NEWSLETTER DEFINITIVA ---
         with st.form("news_form", clear_on_submit=True):
             st.markdown("<h2 style='text-align: center; color: white; font-weight: 900; font-size: 32px; margin-bottom: 5px;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
             st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 16px; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità e aggiornamenti</p>", unsafe_allow_html=True)
 
-            # IL SEGRETO: Usiamo [3, 1] per dare la forma corretta
-            col_mail, col_btn = st.columns([3, 1]) 
+            # IL TRUCCO DEI NUMERI: [4, 1.2] definisce le larghezze esatte
+            col_mail, col_btn = st.columns([4, 1.2]) 
             
             with col_mail:
                 email_input = st.text_input("Email", placeholder="esempio@mail.com", label_visibility="collapsed").strip().lower()
@@ -996,8 +992,9 @@ if st.session_state.pagina == 'home':
                 submit_news = st.form_submit_button("ISCRIVITI")
 
             if submit_news:
-                # Logica Supabase...
+                # Tua logica Supabase qui...
                 pass
+
 
 
 
