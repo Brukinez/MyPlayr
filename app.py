@@ -604,56 +604,6 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
-    /* --- STILE FOOTER PROFESSIONALE --- */
-    .footer-wrapper {
-        background-color: #1e2329; /* Grigio scuro coordinato allo sfondo */
-        padding: 60px 5% 20px 5%;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        margin-top: 50px;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .footer-columns {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 40px;
-        margin-bottom: 40px;
-    }
-
-    .footer-col { flex: 1; min-width: 200px; }
-
-    .footer-col h4 {
-        color: white;
-        font-weight: 900;
-        font-size: 14px;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-        letter-spacing: 1px;
-    }
-
-    .footer-col p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
-
-    /* Stile per i tuoi link esistenti */
-    .footer-link-box a {
-        display: block;
-        color: #94a3b8;
-        text-decoration: none;
-        margin-bottom: 12px;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-
-    .footer-link-box a:hover { color: rgb(41, 168, 71); }
-
-    .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        padding-top: 20px;
-        display: flex;
-        justify-content: space-between;
-        color: #64748b;
-        font-size: 12px;
-    }
 
 
 
