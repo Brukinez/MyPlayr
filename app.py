@@ -516,40 +516,52 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    /* --- FIX FINALE NEWSLETTER --- */
-    
-    /* 1. Forza l'allineamento dei due pezzi sulla stessa linea di base */
-    div[data-testid="stForm"] .stHorizontalBlock {
-        align-items: center !important;
-        gap: 10px !important; /* Spazio tra email e bottone */
+    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
+    div[data-testid="stForm"] {
+        background-color: #2d343c !important; /* Il grigio delle tue card */
+        max-width: 800px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
     }
 
-    /* 2. L'input dell'email */
+    /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
+        gap: 15px !important;
+    }
+
+    /* L'INPUT EMAIL */
     div[data-testid="stForm"] input {
-        height: 48px !important;
         background-color: rgba(0, 0, 0, 0.3) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
+        height: 50px !important;
         border-radius: 8px !important;
     }
 
-    /* 3. IL TASTO ISCRIVITI (Finalmente grande il giusto) */
+    /* IL TASTO ISCRIVITI */
     div[data-testid="stForm"] button {
-        width: 100% !important;        /* Riempie la sua colonna da 1.2 */
-        height: 48px !important;       /* ALTEZZA IDENTICA ALL'EMAIL */
         background-color: rgb(41, 168, 71) !important;
         color: black !important;
+        height: 50px !important;
+        width: 100% !important;
         font-weight: 800 !important;
         border-radius: 8px !important;
-        border: none !important;
         text-transform: uppercase !important;
-        padding: 0 !important;
+        border: none !important;
     }
 
-    /* Rimuove lo spazio vuoto sopra il bottone che Streamlit mette di default */
-    div[data-testid="stForm"] .stButton {
-        margin-top: 0px !important;
+    /* IL TASTO ACCEDI (Sotto la scatola) */
+    .login-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
     }
+
 
 
 
@@ -977,23 +989,34 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE NEWSLETTER DEFINITIVA ---
+        # --- SEZIONE NEWSLETTER UNIFICATA ---
         with st.form("news_form", clear_on_submit=True):
-            st.markdown("<h2 style='text-align: center; color: white; font-weight: 900; font-size: 32px; margin-bottom: 5px;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 16px; margin-bottom: 30px;'>Iscriviti alla newsletter per ricevere novità e aggiornamenti</p>", unsafe_allow_html=True)
+            # Titolo e Descrizione (Ora sono dentro la scatola!)
+            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 35px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
 
-            # IL TRUCCO DEI NUMERI: [4, 1.2] definisce le larghezze esatte
-            col_mail, col_btn = st.columns([4, 1.2]) 
+            # RIGA CON EMAIL E BOTTONE
+            col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
             
             with col_mail:
-                email_input = st.text_input("Email", placeholder="esempio@mail.com", label_visibility="collapsed").strip().lower()
+                email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com", label_visibility="collapsed").strip().lower()
             
             with col_btn:
                 submit_news = st.form_submit_button("ISCRIVITI")
 
+            # Logica Supabase
             if submit_news:
-                # Tua logica Supabase qui...
-                pass
+                if "@" in email_input and "." in email_input:
+                    invio_ok = invia_conferma_e_salva(email_input)
+                    if invio_ok: st.success("✅ Benvenuto!")
+                else:
+                    st.error("❌ Email non valida.")
+
+        # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
+        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
+        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
+        st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
