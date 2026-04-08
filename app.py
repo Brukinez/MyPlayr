@@ -604,46 +604,55 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
-    /* --- RESET BOTTONI E LINK (STILE MINIMAL) --- */
-    
-    /* 1. Il tastone "CREA ACCOUNT" e "ACCEDI" (Grigio scuro con bordo sottile) */
-    div.stButton > button {
-        background-color: #2d343c !important; /* Colore delle card */
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        font-weight: 600 !important;
-        border-radius: 6px !important;
-        text-transform: uppercase !important;
-        transition: 0.3s !important;
-    }
-
-    div.stButton > button:hover {
-        border-color: rgb(41, 168, 71) !important; /* Solo il bordo diventa verde al passaggio */
-        background-color: #373e46 !important;
-    }
-
-    /* 2. Link del Footer (Grigio azzurrino come la newsletter) */
-    div.stButton > button[key^="f_"] {
-        background-color: transparent !important;
-        color: #94a3b8 !important; /* Il grigio che ti piaceva */
-        border: none !important;
-        text-align: left !important;
-        padding: 0 !important;
-        font-weight: 500 !important;
-        text-transform: none !important;
-        width: auto !important;
-    }
-
-    div.stButton > button[key^="f_"]:hover {
-        color: white !important; /* Diventa bianco quando ci passi sopra */
-    }
-
-    /* 3. Box della CTA Finale (Senza sfondo verde) */
-    .cta-clean-box {
-        padding: 60px 0;
-        text-align: center;
+    /* --- STILE FOOTER PROFESSIONALE --- */
+    .footer-wrapper {
+        background-color: #1e2329; /* Grigio scuro coordinato allo sfondo */
+        padding: 60px 5% 20px 5%;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
-        width: 100%;
+        margin-top: 50px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .footer-columns {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .footer-col { flex: 1; min-width: 200px; }
+
+    .footer-col h4 {
+        color: white;
+        font-weight: 900;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    .footer-col p { color: #94a3b8; font-size: 14px; line-height: 1.6; }
+
+    /* Stile per i tuoi link esistenti */
+    .footer-link-box a {
+        display: block;
+        color: #94a3b8;
+        text-decoration: none;
+        margin-bottom: 12px;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .footer-link-box a:hover { color: rgb(41, 168, 71); }
+
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        padding-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        color: #64748b;
+        font-size: 12px;
     }
 
 
@@ -1105,40 +1114,23 @@ if st.session_state.pagina == 'home':
         st.markdown("</div>", unsafe_allow_html=True)
 
 
-        # --- SEZIONE FINALE PULITA (SENZA VERDE) ---
+        # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
         st.markdown("""
-            <div class='cta-clean-box'>
-                <h2 style='color: white; font-weight: 900; font-size: 32px; margin-bottom: 10px;'>
-                    PRONTO A DIVENTARE UN CAMPIONE?
-                </h2>
-                <p style='color: #94a3b8; font-size: 16px; max-width: 600px; margin: 0 auto 30px auto;'>
-                    Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance.
-                </p>
+            <div class='cta-final-section'>
+                <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
+                <p>Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance e condividere le loro migliori azioni.</p>
             </div>
         """, unsafe_allow_html=True)
 
-        # Il bottone di registrazione
-        _, col_btn_clean, _ = st.columns([1, 1.5, 1])
-        with col_btn_clean:
-            st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="btn_cta_finale")
-
-        # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
-        st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
-        
-        f_col1, f_col2, f_col3 = st.columns(3)
-        with f_col1:
-            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 14px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
-        
-        with f_col2:
-            st.markdown("<h4 style='color: white; font-size: 14px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-            st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
-            st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
-        
-        with f_col3:
-            st.markdown("<h4 style='color: white; font-size: 14px;'>LEGALE</h4>", unsafe_allow_html=True)
-            st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-            st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")
-
+        # Usiamo il tuo bottone Streamlit con la chiave unica per non avere errori
+        _, col_cta_btn, _ = st.columns([1, 1.5, 1])
+        with col_cta_btn:
+            st.markdown("<div class='btn-create-account'>", unsafe_allow_html=True)
+            st.button("CREA IL TUO ACCOUNT GRATIS", 
+                      on_click=lambda: vai_a('login'), 
+                      key="btn_cta_finale", 
+                      use_container_width=True)
+            st.markdown("</div>", unsafe_allow_html=True)
 
 
        
