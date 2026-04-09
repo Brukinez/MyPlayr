@@ -79,7 +79,13 @@ st.markdown("""
         align-items: center;
         gap: 12px;
     }
-    
+    .mc-box {
+        background-color: #2ecc71; 
+        color: black;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px; 
+        font-size: 18px;
     }
     .brand-name {
         color: white; 
