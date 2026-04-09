@@ -15,103 +15,63 @@ import streamlit as st
 import os
 from datetime import datetime
 
-import streamlit as st
-
-# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
-st.markdown("""
-    <style>
-    /* Nasconde la barra grigia originale di Streamlit */
-    header[data-testid="stHeader"] {
-        display: none !important;
+# --- SCATOLA 1: LA BASE (Input, Sidebar, Root e Database Style) ---
+STILE_BASE = """
+<style>
+    /* 1.1 VARIABILI COLORI E FONT */
+    @import url('https://googleapis.com');
+    
+    :root {
+        --bg-main: #0f141a;
+        --bg-panel: #19212b;
+        --bg-soft: #24303d;
+        --text-main: #f5f7fb;
+        --text-soft: #c4d0dc;
+        --neon: #2ecc71; /* Il tuo verde professionale */
+        --neon-strong: #27ae60;
     }
 
-    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
-    .main .block-container {
-        padding-top: 80px !important;
-    }
-
-            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
-    .sticky-navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 64px;
-        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
-        backdrop-filter: blur(10px);
-        display: flex !important;           /* Mette logo e spazio in riga */
-        align-items: center !important;     /* Centra tutto verticalmente */
-        justify-content: space-between !important;
-        padding: 0 5%;
-        z-index: 999999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
-    .logo-container {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 12px !important;
-    }
-
-    .mc-box {
-        background-color: rgb(41, 168, 71); 
-        color: black;
-        font-weight: 900;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 16px;
-        line-height: 1;
-    }
-
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: 700;
-        font-family: 'Inter', sans-serif;
-    }
-    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
-
-    /* STILE LOGO MC + MyClipzo */
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    .mc-box {
-        background-color: #2ecc71; 
-        color: black;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px; 
-        font-size: 18px;
-    }
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
-        position: fixed;
-        top: 15px;
-        right: 5%;
-        z-index: 1000000;
+    /* 1.2 STILE SIDEBAR (IL MENU LATERALE DI SUPABASE) */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #121a23 0%, #0f141a 100%) !important;
+        border-right: 1px solid rgba(46, 204, 113, 0.16);
     }
     
-    /* STILE TASTO ACCEDI VERDE */
-    div.stButton > button[kind="primary"] {
-        background-color: #2ecc71 !important;
-        color: white !important;
-        border: none !important;
-        height: 38px !important;
-        font-weight: bold !important;
-        border-radius: 6px;
+    /* 1.3 TESTI GENERALI */
+    h1, h2, h3, h4, h5, p, span, label, li, .stMarkdown {
+        color: var(--text-main) !important;
+        font-family: 'Inter', sans-serif;
     }
-    </style>
-""", unsafe_allow_html=True)
+
+    /* 1.4 STILE INPUT (DOVE L'UTENTE SCRIVE O CARICA FILE) */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div,
+    .stTextArea textarea,
+    .stNumberInput input,
+    [data-testid="stFileUploaderDropzone"] {
+        background: var(--bg-panel) !important;
+        color: var(--text-main) !important;
+        border: 1px solid rgba(46, 204, 113, 0.30) !important;
+        border-radius: 10px !important;
+    }
+
+    .stFileUploader label {
+        color: var(--neon) !important;
+        font-weight: 700 !important;
+    }
+
+    /* 1.5 AVATAR E PROFILO (Dalle tue vecchie impostazioni) */
+    .avatar-img {
+        width: 120px; height: 120px;
+        border-radius: 50%; border: 3px solid var(--neon);
+        box-shadow: 0 0 28px rgba(46, 204, 113, 0.22);
+        object-fit: cover; margin: 0 auto;
+        background: var(--bg-soft); font-size: 60px;
+        display: flex; align-items: center; justify-content: center;
+    }
+</style>
+"""
+
 
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
