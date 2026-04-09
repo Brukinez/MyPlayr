@@ -47,7 +47,13 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    .logo-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
 
     .mc-box {
         background-color: rgb(41, 168, 71); 
@@ -74,7 +80,12 @@ st.markdown("""
         gap: 12px;
     }
     
-   
+    }
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: bold;
+    }
 
     /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
     div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
