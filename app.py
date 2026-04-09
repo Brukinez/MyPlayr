@@ -15,63 +15,103 @@ import streamlit as st
 import os
 from datetime import datetime
 
-# --- SCATOLA 1: LA BASE (Input, Sidebar, Root e Database Style) ---
-STILE_BASE = """
-<style>
-    /* 1.1 VARIABILI COLORI E FONT */
-    @import url('https://googleapis.com');
-    
-    :root {
-        --bg-main: #0f141a;
-        --bg-panel: #19212b;
-        --bg-soft: #24303d;
-        --text-main: #f5f7fb;
-        --text-soft: #c4d0dc;
-        --neon: #2ecc71; /* Il tuo verde professionale */
-        --neon-strong: #27ae60;
+import streamlit as st
+
+# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
+st.markdown("""
+    <style>
+    /* Nasconde la barra grigia originale di Streamlit */
+    header[data-testid="stHeader"] {
+        display: none !important;
     }
 
-    /* 1.2 STILE SIDEBAR (IL MENU LATERALE DI SUPABASE) */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #121a23 0%, #0f141a 100%) !important;
-        border-right: 1px solid rgba(46, 204, 113, 0.16);
+    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
+    .main .block-container {
+        padding-top: 80px !important;
     }
-    
-    /* 1.3 TESTI GENERALI */
-    h1, h2, h3, h4, h5, p, span, label, li, .stMarkdown {
-        color: var(--text-main) !important;
+
+            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
+    .sticky-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 64px;
+        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
+        backdrop-filter: blur(10px);
+        display: flex !important;           /* Mette logo e spazio in riga */
+        align-items: center !important;     /* Centra tutto verticalmente */
+        justify-content: space-between !important;
+        padding: 0 5%;
+        z-index: 999999;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    .logo-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
+    .mc-box {
+        background-color: rgb(41, 168, 71); 
+        color: black;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
+    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
 
-    /* 1.4 STILE INPUT (DOVE L'UTENTE SCRIVE O CARICA FILE) */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div,
-    .stTextArea textarea,
-    .stNumberInput input,
-    [data-testid="stFileUploaderDropzone"] {
-        background: var(--bg-panel) !important;
-        color: var(--text-main) !important;
-        border: 1px solid rgba(46, 204, 113, 0.30) !important;
-        border-radius: 10px !important;
+    /* STILE LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .mc-box {
+        background-color: #2ecc71; 
+        color: black;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px; 
+        font-size: 18px;
+    }
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: bold;
     }
 
-    .stFileUploader label {
-        color: var(--neon) !important;
-        font-weight: 700 !important;
+    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
+    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
+        position: fixed;
+        top: 15px;
+        right: 5%;
+        z-index: 1000000;
     }
-
-    /* 1.5 AVATAR E PROFILO (Dalle tue vecchie impostazioni) */
-    .avatar-img {
-        width: 120px; height: 120px;
-        border-radius: 50%; border: 3px solid var(--neon);
-        box-shadow: 0 0 28px rgba(46, 204, 113, 0.22);
-        object-fit: cover; margin: 0 auto;
-        background: var(--bg-soft); font-size: 60px;
-        display: flex; align-items: center; justify-content: center;
+    
+    /* STILE TASTO ACCEDI VERDE */
+    div.stButton > button[kind="primary"] {
+        background-color: #2ecc71 !important;
+        color: white !important;
+        border: none !important;
+        height: 38px !important;
+        font-weight: bold !important;
+        border-radius: 6px;
     }
-</style>
-"""
-
+    </style>
+""", unsafe_allow_html=True)
 
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
@@ -127,59 +167,445 @@ def make_direct_link(url):
     return f"https://drive.google.com/uc?export=download&id={file_id}"
 
 
-# --- IL NUOVO MOTORE GRAFICO UNIFICATO (SOSTITUISCE TUTTI I VECCHI CSS) ---
-STILE_UNIFICATO = STILE_BASE + STILE_CUORE + """
+# --- BLOCCO STILE GLOBALE (EMERGENT STYLE) ---
+# Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
+EMERGENT_CSS = """
 <style>
-    /* --- SCATOLA 3: IL TOCCO FINALE (Navbar e Sfondo) --- */
-    header[data-testid="stHeader"] { display: none !important; }
-    
+    :root {
+        --bg-main: #0f141a;
+        --bg-panel: #19212b;
+        --bg-soft: #24303d;
+        --text-main: #f5f7fb;
+        --text-soft: #c4d0dc;
+        --neon: #24e170;
+        --neon-strong: #17c95f;
+    }
+
+         /* --- SFONDO UNIFICATO CON IMMAGINE --- */
     .stApp {
+        /* Colore di base se l'immagine non carica */
         background-color: #252b32 !important; 
-        background: linear-gradient(rgba(11, 15, 19, 0.8), rgba(11, 15, 19, 0.85)), 
-                    url("sfondo.jpg") !important; 
+
+        background: 
+            /* Il velo nero per far risaltare le scritte */
+            linear-gradient(rgba(11, 15, 19, 0.8), rgba(11, 15, 19, 0.85)), 
+            /* Nome del tuo file (assicurati che sia nella stessa cartella di app.py) */
+            url("sfondo.jpg") !important; 
+            
         background-size: cover !important;
         background-position: center !important;
         background-attachment: fixed !important;
     }
 
-    /* NAVBAR STICKY */
-    .sticky-navbar {
-        position: fixed; top: 0; left: 0; width: 100%; height: 64px;
-        background-color: rgba(45, 52, 60, 0.98) !important;
-        backdrop-filter: blur(10px);
-        display: flex !important; align-items: center !important;
-        justify-content: space-between !important;
-        padding: 0 5%; z-index: 999999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    [data-testid="stHeader"] {
+        background: rgba(15, 20, 26, 0.75);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid rgba(36, 225, 112, 0.20);
     }
 
-    .logo-container { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 12px !important; }
-    .mc-box { background-color: rgb(41, 168, 71); color: black; font-weight: 900; padding: 4px 10px; border-radius: 4px; font-size: 16px; }
-    .brand-name { color: white; font-size: 20px; font-weight: 700; font-family: 'Inter', sans-serif; }
-
-    /* FOOTER CARD */
-    .footer-card {
-        background-color: #2d343c !important;
-        border-radius: 20px 20px 0 0; padding: 60px 5% 40px 5% !important;
-        margin-top: 80px !important; width: 100%;
+    h1, h2, h3, h4, h5, p, span, label, li, .stMarkdown {
+        color: var(--text-main) !important;
     }
+
+    .stApp a {
+        color: var(--neon) !important;
+    }
+
+    .stApp hr {
+        border: 1px solid rgba(36, 225, 112, 0.50) !important;
+        opacity: 1;
+    }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #121a23 0%, #0f141a 100%);
+        border-right: 1px solid rgba(36, 225, 112, 0.16);
+    }
+
+    /* Bottoni principali verde neon */
+    div.stButton > button:first-child {
+        background: linear-gradient(90deg, var(--neon) 0%, var(--neon-strong) 100%) !important;
+        color: #03160b !important;
+        border: 1px solid #2aff8b !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.4px;
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        font-size: 15px;
+        box-shadow:
+            0 0 0 1px rgba(36, 225, 112, 0.25),
+            0 8px 24px rgba(36, 225, 112, 0.28);
+        transition: all 0.2s ease;
+    }
+
+    div.stButton > button:first-child:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+        box-shadow:
+            0 0 0 1px rgba(42, 255, 139, 0.45),
+            0 10px 28px rgba(36, 225, 112, 0.38);
+    }
+
+    /* Bottoni secondari trasparenti */
+    div[data-testid="stButton"] > button[kind="secondary"] {
+        background-color: transparent !important;
+        color: var(--text-soft) !important;
+        border: 1px solid rgba(196, 208, 220, 0.30) !important;
+        border-radius: 10px;
+        font-size: 13px !important;
+        text-transform: none !important;
+    }
+
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {
+        color: var(--neon) !important;
+        border-color: rgba(36, 225, 112, 0.65) !important;
+        background-color: rgba(36, 225, 112, 0.08) !important;
+    }
+
+    /* Input e uploader con bordo neon */
+    .stTextInput > div > div > input,
+    .stSelectbox > div > div,
+    .stTextArea textarea,
+    .stNumberInput input,
+    [data-testid="stFileUploaderDropzone"] {
+        background: var(--bg-panel) !important;
+        color: var(--text-main) !important;
+        border: 1px solid rgba(36, 225, 112, 0.30) !important;
+        border-radius: 10px !important;
+    }
+
+    .stFileUploader label {
+        color: var(--neon) !important;
+        font-weight: 700 !important;
+    }
+
+    /* Card personalizzate */
+    .data-card, .stat-box {
+        background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
+        border: 1px solid rgba(36, 225, 112, 0.25);
+        border-left: 4px solid var(--neon);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+    }
+
+    .data-card {
+        padding: 15px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .avatar-container { text-align: center; margin-bottom: 20px; }
+    .avatar-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid var(--neon);
+        box-shadow: 0 0 28px rgba(36, 225, 112, 0.22);
+        object-fit: cover;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-soft);
+        font-size: 60px;
+    }
+
+    .footer-main {
+        text-align: center;
+        font-size: 16px;
+        margin-top: 50px;
+    }
+
+    .footer-sub {
+        font-size: 12px;
+        color: #8aa0b5;
+    }
+        /* --- STILE DELLE SCHEDE (CARD) - VERSIONE FIX PER LOGIN --- */
+    .mcp-card {
+        background-color: #2d343c !important; 
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        padding: 30px !important;
+        color: white !important;
+        font-family: 'Inter', sans-serif !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        display: block !important; /* Forza la visualizzazione come blocco */
+    }
+
+
+    .mcp-card:hover {
+        transform: translateY(-5px);       /* La scheda si alza leggermente */
+        border-color: rgb(41, 168, 71);    /* Il bordo diventa del tuo verde */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* L'ombra aumenta al passaggio del mouse */
+    }
+
+    /* ISTRUZIONE PER IL TESTO (18PX) */
+    .mcp-card p {
+        font-size: 18px !important;
+        color: #94a3b8;                    /* Grigio chiaro leggibile */
+        line-height: 1.6;
+        margin-top: 10px;
+    }
+
+    /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
+        /* --- STILE DEL BADGE (ETICHETTA) --- */
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
+        border: 0.88px solid rgba(41, 168, 71, 0.3);
+        border-radius: 9999px;
+        color: rgb(41, 168, 71); /* TESTO VERDE COME RICHIESTO */
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 8px 16px;
+        margin-bottom: 32px;
+    }
+
+    /* --- STILE PAROLA EVIDENZIATA --- */
+    .verde-clipzo {
+        color: rgb(41, 168, 71); /* IL VERDE IDENTICO AL BADGE */
+    }
+
+    /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
+    .hero-description {
+        color: #94a3b8; /* Un grigio azzurrino molto elegante */
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;      /* Grandezza del testo */
+        line-height: 1.6;     /* Spazio tra le righe per leggere meglio */
+        max-width: 600px;     /* Impedisce alla scritta di diventare troppo larga */
+        margin: 0 auto;       /* La centra perfettamente */
+        margin-top: 24px;     /* Spazio staccato dal titolo sopra */
+        margin-bottom: 40px;  /* Spazio prima dei bottoni o delle card sotto */
+        text-align: center;
+    }
+
+    /* --- STILE BOTTONI HERO --- */
+    .hero-btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .btn-pro-green {
+        background-color: rgb(41, 168, 71); /* Il tuo verde */
+        color: white !important;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        transition: 0.3s;
+        border: none;
+    }
+
+    .btn-pro-outline {
+        background-color: transparent;
+        color: white !important;
+        padding: 14px 28px;
+        border-radius: 8px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: 0.3s;
+    }
+
+    .btn-pro-green:hover, .btn-pro-outline:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
+        /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
+    .icon-box {
+        width: 56px;
+        height: 56px;
+        background-color: rgba(41, 168, 71, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        transition: background-color 0.3s;
+    }
+
+
+    /* Effetto quando passi il mouse sulla scheda intera */
+    .mcp-card:hover .icon-box {
+        background-color: rgba(41, 168, 71, 0.3); /* Diventa leggermente più scuro */
+    }
+
+    /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
+    .hero-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        background-color: rgba(41, 168, 71, 0.2) !important; /* Verde trasparente */
+        border: 0.88px solid rgba(41, 168, 71, 0.3) !important;
+        border-radius: 9999px !important;
+        color: rgb(41, 168, 71) !important; /* Testo verde */
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 14px !important;
+        padding: 8px 16px !important;
+        margin-bottom: 32px !important;
+        text-align: center !important;
+    }
+
+    /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
+    .custom-nav {
+        background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
+        backdrop-filter: blur(10px); /* Effetto vetro */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    /* --- SFONDO CON IMMAGINE E SFUMATURA SCURA --- */
+    .stApp {
+        background: 
+            linear-gradient(rgba(11, 15, 19, 0.85), rgba(11, 15, 19, 0.85)), 
+            url('https://unsplash.com'); /* Foto campo da calcio */
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+    }
+
+    /* --- SEZIONE STATISTICHE (STRISCIA) --- */
+    .stats-container {
+        background-color: #2d343c; /* Lo stesso grigio delle tue card */
+        padding: 40px 5%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin: 50px 0;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        color: rgb(41, 168, 71); /* Il tuo verde */
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .stat-label {
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
+    div[data-testid="stForm"] {
+        background-color: #2d343c !important; /* Il grigio delle tue card */
+        max-width: 800px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
+    }
+
+    /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
+        gap: 15px !important;
+    }
+
+    /* L'INPUT EMAIL */
+    div[data-testid="stForm"] input {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        height: 50px !important;
+        border-radius: 8px !important;
+    }
+
+    /* IL TASTO ISCRIVITI */
+    div[data-testid="stForm"] button {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
+        height: 50px !important;
+        width: 100% !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        text-transform: uppercase !important;
+        border: none !important;
+    }
+
+    /* IL TASTO ACCEDI (Sotto la scatola) */
+    .login-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
+    .cta-final-section {
+        background-color: #212b27; /* Verde scurissimo quasi nero */
+        padding: 100px 5%;
+        text-align: center;
+        border-top: 1px solid rgba(41, 168, 71, 0.2);
+        margin-top: 50px;
+    }
+
+    .cta-final-section h2 {
+        color: white !important;
+        font-size: 45px !important;
+        font-weight: 900 !important;
+        line-height: 1.1 !important;
+        margin-bottom: 20px !important;
+        text-transform: uppercase;
+    }
+
+    .cta-final-section .highlight-green {
+        color: rgb(41, 168, 71) !important;
+    }
+
+    .cta-final-section p {
+        color: #94a3b8 !important;
+        max-width: 700px;
+        margin: 0 auto 40px auto !important;
+        font-size: 18px !important;
+    }
+
+    /* Il tastone verde grande */
+    .btn-create-account button {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        padding: 15px 40px !important;
+        border-radius: 6px !important;
+        font-weight: 900 !important;
+        font-size: 18px !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        transition: 0.3s !important;
+    }
+
 </style>
 """
-
-# --- ACCENSIONE DELLA GRAFICA ---
-st.markdown(STILE_UNIFICATO, unsafe_allow_html=True)
-
-# --- HTML DELLA NAVBAR ---
-st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
-        </div>
-        <div></div> 
-    </div>
-""", unsafe_allow_html=True)
-
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
