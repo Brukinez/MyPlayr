@@ -78,21 +78,9 @@ st.markdown("""
         align-items: center;
         gap: 12px;
     }
-    .mc-box {
-        background-color: #2ecc71; 
-        color: black;
-        font-weight: bold;
-        padding: 4px 10px;
-        border-radius: 6px; 
-        font-size: 18px;
-    }
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
+   
+            
+       /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
     div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
         position: fixed;
         top: 15px;
@@ -100,15 +88,6 @@ st.markdown("""
         z-index: 1000000;
     }
     
-    /* STILE TASTO ACCEDI VERDE */
-    div.stButton > button[kind="primary"] {
-        background-color: #2ecc71 !important;
-        color: white !important;
-        border: none !important;
-        height: 38px !important;
-        font-weight: bold !important;
-        border-radius: 6px;
-    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -220,22 +199,7 @@ EMERGENT_CSS = """
         border-right: 1px solid rgba(36, 225, 112, 0.16);
     }
 
-    /* Bottoni principali verde neon */
-    div.stButton > button:first-child {
-        background: linear-gradient(90deg, var(--neon) 0%, var(--neon-strong) 100%) !important;
-        color: #03160b !important;
-        border: 1px solid #2aff8b !important;
-        font-weight: 800 !important;
-        letter-spacing: 0.4px;
-        width: 100%;
-        padding: 12px 16px;
-        border-radius: 12px;
-        text-transform: uppercase;
-        font-size: 15px;
-        box-shadow:
-            0 0 0 1px rgba(36, 225, 112, 0.25),
-            0 8px 24px rgba(36, 225, 112, 0.28);
-        transition: all 0.2s ease;
+ 
     }
 
     div.stButton > button:first-child:hover {
