@@ -90,14 +90,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
+# --- 2. HTML DELLA NAVBAR (IL CORPO FISICO) ---
+# Senza questo pezzo, il CSS sopra non ha nulla da colorare!
 st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+        <div></div> <!-- Spazio per bilanciare il tasto Accedi a destra -->
     </div>
 """, unsafe_allow_html=True)
 
