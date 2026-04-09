@@ -15,10 +15,8 @@ import streamlit as st
 import os
 from datetime import datetime
 
-# --- SCATOLA 1: LA BASE (Database, Sidebar, Input) ---
-# Qui incollerai la parte 1 dell'Emergent Style (quella con :root e sidebar)
-STILE_BASE = """
-<style>
+# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
+st.markdown("""
     <style>
     /* Nasconde la barra grigia originale di Streamlit */
     header[data-testid="stHeader"] {
@@ -90,33 +88,7 @@ STILE_BASE = """
         border-radius: 6px;
     }
     </style>
-</style>
-"""
-
-# --- SCATOLA 2: IL CUORE (Card Home, Newsletter, Statistiche) ---
-# Qui incollerai le parti 2 e 3 (quelle con .mcp-card e .icon-box)
-STILE_CUORE = """
-<style>
-/* INCOLLA QUI IL CODICE DELLE PARTI 2 E 3 */
-</style>
-"""
-
-# --- SCATOLA 3: IL TOCCO FINALE (Navbar e Sfondo) ---
-# Qui incollerai il codice della Navbar e dello sfondo (.stApp)
-STILE_FINALE = """
-<style>
-/* INCOLLA QUI IL CODICE DELLA NAVBAR E SFONDO */
-</style>
-"""
-
-# --- COMANDO DI ACCENSIONE ---
-# Questo unisce le tre scatole e le invia a Streamlit
-st.markdown(STILE_BASE + STILE_CUORE + STILE_FINALE, unsafe_allow_html=True)
-
-
-
-
-
+""", unsafe_allow_html=True)
 
 # --- 2. HTML DELLA NAVBAR (IL CORPO FISICO) ---
 # Senza questo pezzo, il CSS sopra non ha nulla da colorare!
@@ -129,6 +101,7 @@ st.markdown("""
         <div></div> <!-- Spazio per bilanciare il tasto Accedi a destra -->
     </div>
 """, unsafe_allow_html=True)
+
 
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
