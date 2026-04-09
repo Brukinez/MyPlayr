@@ -316,29 +316,56 @@ EMERGENT_CSS = """
         font-size: 60px;
     }
 
-    .footer-main {
-        text-align: center;
-        font-size: 16px;
-        margin-top: 50px;
+     /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
+    .footer-card {
+        background-color: #2d343c !important; /* Stesso grigio delle card sopra */
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px 20px 0 0;        /* Arrotondato solo in alto */
+        padding: 60px 5% 40px 5% !important;
+        margin-top: 80px !important;
+        width: 100%;
     }
 
-    .footer-sub {
-        font-size: 12px;
-        color: #8aa0b5;
+    /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
+    div.stButton > button[key^="f_"] {
+        background-color: transparent !important;
+        color: #94a3b8 !important; /* Lo stesso grigio che hai nelle card */
+        border: none !important;
+        text-align: left !important;
+        padding: 4px 0 !important;
+        font-weight: 500 !important;
+        text-transform: none !important;
+        font-size: 15px !important;
+        width: auto !important;
+        display: block !important;
     }
-        /* --- STILE DELLE SCHEDE (CARD) - VERSIONE FIX PER LOGIN --- */
-    .mcp-card {
-        background-color: #2d343c !important; 
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 16px !important;
-        padding: 30px !important;
+
+    div.stButton > button[key^="f_"]:hover {
+        color: #2ecc71 !important; /* Diventa verde solo la scritta al passaggio */
+    }
+
+    .footer-title {
         color: white !important;
-        font-family: 'Inter', sans-serif !important;
+        font-weight: 900 !important;
+        text-transform: uppercase;
+        font-size: 13px !important;
+        letter-spacing: 1px;
         margin-bottom: 20px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-        display: block !important; /* Forza la visualizzazione come blocco */
     }
 
+          /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
+    .mcp-card {
+        background-color: #2d343c !important; /* Il grigio esatto della tua foto */
+        border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
+        border-radius: 12px;               /* Angoli arrotondati perfetti */
+        padding: 24px;                     /* Spazio interno */
+        color: white;
+        font-family: 'Inter', sans-serif;
+        margin-bottom: 20px;
+        transition: 0.3s ease;             /* Movimento fluido */
+        height: 100%;                      /* Altezza uguale per tutte */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
+    }
 
     .mcp-card:hover {
         transform: translateY(-5px);       /* La scheda si alza leggermente */
@@ -1050,6 +1077,10 @@ if st.session_state.pagina == 'home':
                     st.error("❌ Email non valida.")
 
 
+
+
+
+
         # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
         st.markdown("<div class='login-container'>", unsafe_allow_html=True)
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
@@ -1091,6 +1122,7 @@ if st.session_state.pagina == 'home':
             st.markdown("<h4 style='color: white; font-size: 14px;'>LEGALE</h4>", unsafe_allow_html=True)
             st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
             st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
+
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
@@ -1151,50 +1183,6 @@ elif st.session_state.pagina == 'login':
                 if st.button("Registrati ora", type="secondary", use_container_width=True):
                     st.session_state.sub = 'reg'
                     st.rerun()
-# --- 1. SOTTO-PAGINA: ACCEDI (VERSIONE CARD FIX) ---
-if st.session_state.sub == 'login':
-    # Titolo fuori dalla card
-    st.markdown("""
-        <div style='text-align: center; padding: 40px 0 20px 0;'>
-            <div class='mc-box' style='display: inline-block; margin-bottom: 20px;'>MC</div>
-            <h1 style='font-weight: 900; color: white;'>ACCEDI AL TUO ACCOUNT</h1>
-            <p style='color: #94a3b8;'>Bentornato nella community MyClipzo</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Centriamo la card usando le colonne
-    col_l, col_center, col_r = st.columns([1, 2, 1]) # La colonna centrale è più larga
-
-    with col_center:
-        # APRIAMO IL DIV DELLA CARD
-        st.markdown('<div class="mcp-card">', unsafe_allow_html=True)
-        
-        # Tutto quello che scrivi qui dentro apparirà visivamente nella card
-        u_login = st.text_input("Email", placeholder="mario.rossi@email.com", key="l_email").strip().lower()
-        p_login = st.text_input("Password", type="password", placeholder="******", key="l_pass")
-        
-        st.markdown("<div style='margin: 20px 0;'></div>", unsafe_allow_html=True)
-
-        if st.button("ENTRA", use_container_width=True, key="btn_login_main"):
-            # ... (qui tieni la tua logica Supabase che hai già) ...
-            pass 
-
-        st.markdown("<hr style='opacity: 0.1; margin: 25px 0;'>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 14px;'>Non hai un account?</p>", unsafe_allow_html=True)
-
-        if st.button("CREA UN ACCOUNT", use_container_width=True, key="btn_goto_reg"):
-            st.session_state.sub = 'reg'
-            st.rerun()
-
-        # CHIUDIAMO IL DIV DELLA CARD
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # Bottone "Torna alla Home" fuori dalla card (opzionale)
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("← Torna alla Home", key="btn_back_home", type="secondary"):
-            st.session_state.pagina = 'home'
-            st.rerun()
-
             
             
 
@@ -1810,6 +1798,8 @@ if st.session_state.pagina == 'partite':
 
 
 
+
+
 # --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
 if st.session_state.pagina == 'partite':
     import re
@@ -2021,26 +2011,35 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
+# --- INSERISCI QUESTO ALLA FINE DEL FILE ---
+st.markdown("<div class='footer-card'>", unsafe_allow_html=True)
+
+f_col1, f_col2, f_col3 = st.columns([1.5, 1, 1])
+
+with f_col1:
+    st.markdown("<b style='color: white; font-size: 20px;'>MyClipzo</b>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 14px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
+
+with f_col2:
+    st.markdown("<div class='footer-title'>NAVIGAZIONE</div>", unsafe_allow_html=True)
+    st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
+    st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
+    st.button("🏆 Hall of Fame", on_click=lambda: vai_a('hall_of_fame'), key="f_hall")
+
+with f_col3:
+    st.markdown("<div class='footer-title'>LEGALE</div>", unsafe_allow_html=True)
+    st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
+    st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")
+    st.button("🍪 Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_cook")
+    st.button("⚖️ Diritti Riservati", on_click=lambda: vai_a('diritti'), key="f_rights")
+
 st.markdown("""
-    <style>
-    /* Rende i bottoni del footer identici a scritte semplici bianche */
-    div.stButton > button[kind="secondary"] {
-        border: none !important;
-        background: transparent !important;
-        color: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        font-weight: normal !important;
-        text-align: left !important;
-        box-shadow: none !important;
-    }
-    div.stButton > button:hover {
-        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
-        text-decoration: underline !important;
-    }
-    </style>
+    <div style='margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; font-size: 12px;'>
+        © 2026 MyClipzo — Tutti i diritti riservati
+    </div>
+</div>
 """, unsafe_allow_html=True)
+
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
