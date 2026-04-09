@@ -90,15 +90,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HTML DELLA NAVBAR (IL CORPO FISICO) ---
-# Senza questo pezzo, il CSS sopra non ha nulla da colorare!
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <div></div> <!-- Spazio per bilanciare il tasto Accedi a destra -->
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
 
@@ -1941,28 +1940,6 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
-# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
-st.markdown("""
-    <style>
-    /* Rende i bottoni del footer identici a scritte semplici bianche */
-    div.stButton > button[kind="secondary"] {
-        border: none !important;
-        background: transparent !important;
-        color: white !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        font-weight: normal !important;
-        text-align: left !important;
-        box-shadow: none !important;
-    }
-    div.stButton > button:hover {
-        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
-        text-decoration: underline !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
 st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
 
@@ -1970,17 +1947,6 @@ if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", 
     st.session_state.pagina = 'diritti'
     st.rerun()
 
-# CSS per far sembrare il bottone una semplice scritta bianca
-st.markdown("""
-    <style>
-    button.st-key-f_copy_btn {
-        border: none !important;
-        background: transparent !important;
-        color: white !important;
-        font-size: 13px !important;
-        margin-top: 15px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+
 
 
