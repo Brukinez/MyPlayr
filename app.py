@@ -12,8 +12,6 @@ from urllib.parse import urlparse, parse_qs
 from supabase import create_client, Client
 
 import streamlit as st
-import os
-from datetime import datetime
 
 
 # --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
@@ -200,7 +198,6 @@ EMERGENT_CSS = """
     }
 
  
-    }
 
     div.stButton > button:first-child:hover {
         transform: translateY(-1px);
