@@ -1092,7 +1092,65 @@ if st.session_state.pagina == 'home':
             st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
             st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
 
+# --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
+elif st.session_state.pagina == 'login':
+    # Centriamo il modulo di accesso con le colonne
+    _, col_log, _ = st.columns([1, 2, 1])
+    
+    with col_log:
+        # Inizializzazione dello stato interno per navigare tra Login e Registrazione
+        if 'sub' not in st.session_state: 
+            st.session_state.sub = 'login'
+
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
+        if st.session_state.sub == 'login':
+            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
+            
+            # Input utente
+            u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
+            p_login = st.text_input("Password", type="password", placeholder="******")
+            
+            if st.button("ENTRA", use_container_width=True):
+                if u_login and p_login:
+                    try:
+                        # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
+                        res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
+                        
+                        if res_log.data:
+                            # UTENTE TROVATO: Salviamo i dati nella sessione
+                            utente = res_log.data[0]
+                            st.session_state.autenticato = True
+                            st.session_state.user_email = utente['email']
+                            st.session_state.user_role = utente.get('ruolo', 'Player')
+                            st.session_state.user_nick = utente.get('nome', 'Campione')
+                            
+                            st.success(f"Bentornato {st.session_state.user_nick}!")
+                            
+                            # Controllo automatico: se sei admin vai in dashboard, altrimenti in home_auth
+                            if st.session_state.user_role == "admin":
+                                vai_a('admin')
+                            else:
+                                vai_a('home_auth')
+                                
+                            st.rerun()
+                        else:
+                            st.error("❌ Credenziali errate o account inesistente.")
+                    except Exception as e:
+                        st.error(f"⚠️ Errore di connessione: {e}")
+                else:
+                    st.warning("Compila tutti i campi!")
+
+            # Opzioni secondarie
+            col_l1, col_l2 = st.columns(2)
+            with col_l1:
+                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
+                    st.session_state.sub = 'recupero'
+                    st.rerun()
+            with col_l2:
+                if st.button("Registrati ora", type="secondary", use_container_width=True):
+                    st.session_state.sub = 'reg'
+                    st.rerun()
 # --- 1. SOTTO-PAGINA: ACCEDI (VERSIONE CARD FIX) ---
 if st.session_state.sub == 'login':
     # Titolo fuori dalla card
