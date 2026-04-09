@@ -47,13 +47,7 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
-    .logo-container {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 12px !important;
-    }
+    
 
     .mc-box {
         background-color: rgb(41, 168, 71); 
@@ -73,7 +67,12 @@ st.markdown("""
     }
     /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
 
-  
+    /* STILE LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
     
    
 
