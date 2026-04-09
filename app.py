@@ -80,11 +80,7 @@ st.markdown("""
         gap: 12px;
     }
    
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: bold;
-    }
+ 
 
     /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
     div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
