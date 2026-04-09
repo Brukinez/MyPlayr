@@ -80,7 +80,7 @@ st.markdown("""
     
     /* STILE TASTO ACCEDI VERDE */
     div.stButton > button[kind="primary"] {
-        background-color: #2ecc71 !important;
+        background-color: rgb(41, 168, 71) !important;
         color: white !important;
         border: none !important;
         height: 38px !important;
