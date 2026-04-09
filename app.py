@@ -15,7 +15,9 @@ import streamlit as st
 import os
 from datetime import datetime
 
-# --- 1. PULIZIA SISTEMA E NAVBAR (VERSIONE CORRETTA) ---
+import streamlit as st
+
+# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
 st.markdown("""
     <style>
     /* Nasconde la barra grigia originale di Streamlit */
@@ -28,24 +30,24 @@ st.markdown("""
         padding-top: 80px !important;
     }
 
-    /* BARRA FISSA (STICKY) */
+            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
     .sticky-navbar {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 64px;
-        background-color: rgba(45, 52, 60, 0.98) !important;
+        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
         backdrop-filter: blur(10px);
-        display: flex !important;
-        align-items: center !important;
+        display: flex !important;           /* Mette logo e spazio in riga */
+        align-items: center !important;     /* Centra tutto verticalmente */
         justify-content: space-between !important;
         padding: 0 5%;
         z-index: 999999;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* LOGO E NOME AFFIANCATI */
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
     .logo-container {
         display: flex !important;
         flex-direction: row !important;
@@ -69,18 +71,47 @@ st.markdown("""
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
+    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
 
-    /* POSIZIONAMENTO TASTO ACCEDI DI STREAMLIT NELLA NAVBAR */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed),
-    .stButton {
+    /* STILE LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .mc-box {
+        background-color: #2ecc71; 
+        color: black;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px; 
+        font-size: 18px;
+    }
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
+    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
         position: fixed;
         top: 15px;
         right: 5%;
         z-index: 1000000;
     }
+    
+    /* STILE TASTO ACCEDI VERDE */
+    div.stButton > button[kind="primary"] {
+        background-color: #2ecc71 !important;
+        color: white !important;
+        border: none !important;
+        height: 38px !important;
+        font-weight: bold !important;
+        border-radius: 6px;
+    }
     </style>
 """, unsafe_allow_html=True)
-
 
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
