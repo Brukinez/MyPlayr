@@ -433,24 +433,24 @@ EMERGENT_CSS = """
         transform: scale(1.05);
         filter: brightness(1.1);
     }
-    /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
+        /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
-        width: 56px;               /* Dimensione fissa (w-14 dello screen) */
-        height: 56px;              /* h-14 dello screen */
-        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
-        border-radius: 12px;       /* Angoli arrotondati (rounded-lg) */
-        display: flex;             /* Centra l'icona all'interno */
-        items-center: center;
+        width: 56px;
+        height: 56px;
+        background-color: rgba(41, 168, 71, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
         justify-content: center;
-        margin-bottom: 16px;       /* Spazio tra icona e titolo (mb-4) */
-        transition: background-color 0.3s; /* Effetto al passaggio del mouse */
+        margin-bottom: 16px;
+        transition: background-color 0.3s;
     }
+
 
     /* Effetto quando passi il mouse sulla scheda intera */
     .mcp-card:hover .icon-box {
         background-color: rgba(41, 168, 71, 0.3); /* Diventa leggermente più scuro */
     }
-
 
     /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
     .hero-badge {
@@ -517,7 +517,7 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-
+    
     /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
         background-color: #2d343c !important; /* Il grigio delle tue card */
