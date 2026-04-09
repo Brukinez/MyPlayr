@@ -15,6 +15,8 @@ import streamlit as st
 import os
 from datetime import datetime
 
+import streamlit as st
+
 # --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
 st.markdown("""
     <style>
@@ -69,8 +71,29 @@ st.markdown("""
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
-  
-     /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
+    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
+
+    /* STILE LOGO MC + MyClipzo */
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .mc-box {
+        background-color: #2ecc71; 
+        color: black;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 6px; 
+        font-size: 18px;
+    }
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
     div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
         position: fixed;
         top: 15px;
@@ -80,7 +103,7 @@ st.markdown("""
     
     /* STILE TASTO ACCEDI VERDE */
     div.stButton > button[kind="primary"] {
-        background-color: rgb(41, 168, 71) !important;
+        background-color: #2ecc71 !important;
         color: white !important;
         border: none !important;
         height: 38px !important;
@@ -1940,6 +1963,28 @@ if st.session_state.pagina == 'recupero_password':
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
+# --- 2. FOOTER UNIVERSALE (GRAFICA ORIGINALE + CLICK FUNZIONANTE) ---
+st.markdown("""
+    <style>
+    /* Rende i bottoni del footer identici a scritte semplici bianche */
+    div.stButton > button[kind="secondary"] {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-weight: normal !important;
+        text-align: left !important;
+        box-shadow: none !important;
+    }
+    div.stButton > button:hover {
+        color: #cccccc !important; /* Diventa grigio chiaro al passaggio del mouse */
+        text-decoration: underline !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
 st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
 
@@ -1947,6 +1992,17 @@ if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", 
     st.session_state.pagina = 'diritti'
     st.rerun()
 
-
+# CSS per far sembrare il bottone una semplice scritta bianca
+st.markdown("""
+    <style>
+    button.st-key-f_copy_btn {
+        border: none !important;
+        background: transparent !important;
+        color: white !important;
+        font-size: 13px !important;
+        margin-top: 15px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 
