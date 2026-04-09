@@ -326,7 +326,6 @@ EMERGENT_CSS = """
         font-size: 12px;
         color: #8aa0b5;
     }
-
         /* --- STILE DELLE SCHEDE (CARD) - VERSIONE FIX PER LOGIN --- */
     .mcp-card {
         background-color: #2d343c !important; 
@@ -517,7 +516,6 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
-    
     /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
         background-color: #2d343c !important; /* Il grigio delle tue card */
