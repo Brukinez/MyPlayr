@@ -80,6 +80,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
     <div class='sticky-navbar'>
@@ -90,7 +91,6 @@ st.markdown("""
         <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
-
 
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
@@ -187,16 +187,8 @@ EMERGENT_CSS = """
         background: linear-gradient(180deg, #121a23 0%, #0f141a 100%);
         border-right: 1px solid rgba(36, 225, 112, 0.16);
     }
-
  
 
-    div.stButton > button:first-child:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.05);
-        box-shadow:
-            0 0 0 1px rgba(42, 255, 139, 0.45),
-            0 10px 28px rgba(36, 225, 112, 0.38);
-    }
 
     /* Bottoni secondari trasparenti */
     div[data-testid="stButton"] > button[kind="secondary"] {
