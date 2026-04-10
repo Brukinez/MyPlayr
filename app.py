@@ -208,11 +208,6 @@ EMERGENT_CSS = """
    
    
 
-    .stFileUploader label {
-        color: var(--neon) !important;
-        font-weight: 700 !important;
-    }
-
     /* Card personalizzate */
     .data-card, .stat-box {
         background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
