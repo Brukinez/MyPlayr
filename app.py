@@ -205,17 +205,8 @@ EMERGENT_CSS = """
         background-color: rgba(36, 225, 112, 0.08) !important;
     }
 
-    /* Input e uploader con bordo neon */
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div,
-    .stTextArea textarea,
-    .stNumberInput input,
-    [data-testid="stFileUploaderDropzone"] {
-        background: var(--bg-panel) !important;
-        color: var(--text-main) !important;
-        border: 1px solid rgba(36, 225, 112, 0.30) !important;
-        border-radius: 10px !important;
-    }
+   
+   
 
     .stFileUploader label {
         color: var(--neon) !important;
