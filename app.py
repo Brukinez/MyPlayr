@@ -338,13 +338,7 @@ EMERGENT_CSS = """
         text-align: center;
     }
 
-    /* --- STILE BOTTONI HERO --- */
-    .hero-btn-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 30px;
-    }
+    
 
     .btn-pro-green {
         background-color: rgb(41, 168, 71); /* Il tuo verde */
