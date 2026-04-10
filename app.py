@@ -338,7 +338,6 @@ EMERGENT_CSS = """
         text-align: center;
     }
 
-    
 
     .btn-pro-green {
         background-color: rgb(41, 168, 71); /* Il tuo verde */
@@ -411,12 +410,7 @@ EMERGENT_CSS = """
         text-align: center !important;
     }
 
-    /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
-    .custom-nav {
-        background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
-        backdrop-filter: blur(10px); /* Effetto vetro */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-    }
+  
 
     /* --- SFONDO CON IMMAGINE E SFUMATURA SCURA --- */
     .stApp {
