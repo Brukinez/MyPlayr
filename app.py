@@ -197,15 +197,7 @@ EMERGENT_CSS = """
             0 10px 28px rgba(36, 225, 112, 0.38);
     }
 
-    /* Bottoni secondari trasparenti */
-    div[data-testid="stButton"] > button[kind="secondary"] {
-        background-color: transparent !important;
-        color: var(--text-soft) !important;
-        border: 1px solid rgba(196, 208, 220, 0.30) !important;
-        border-radius: 10px;
-        font-size: 13px !important;
-        text-transform: none !important;
-    }
+   
 
     div[data-testid="stButton"] > button[kind="secondary"]:hover {
         color: var(--neon) !important;
