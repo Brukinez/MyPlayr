@@ -68,16 +68,7 @@ st.markdown("""
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
-    /* QUI NON DEVE ESSERCI PIÙ NULLA, SOLO L'ULTIMA GRAFFA DI BRAND-NAME */
-
-    /* STILE LOGO MC + MyClipzo */
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-   
-            
+               
        /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
     div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
         position: fixed;
