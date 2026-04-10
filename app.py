@@ -206,8 +206,6 @@ EMERGENT_CSS = """
     }
 
    
-   
-
     /* Card personalizzate */
     .data-card, .stat-box {
         background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
@@ -268,10 +266,7 @@ EMERGENT_CSS = """
         display: block !important;
     }
 
-    div.stButton > button[key^="f_"]:hover {
-        color: #2ecc71 !important; /* Diventa verde solo la scritta al passaggio */
-    }
-
+ 
     .footer-title {
         color: white !important;
         font-weight: 900 !important;
