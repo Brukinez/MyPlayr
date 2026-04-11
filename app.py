@@ -152,6 +152,10 @@ EMERGENT_CSS = """
         transition: 0.3s ease;             /* Movimento fluido */
         height: 100%;                      /* Altezza uguale per tutte */
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
+
+        /* AGGIUNGI QUESTE DUE RIGHE */
+        max-width: 350px;       /* Riduce la larghezza massima di ogni singola card */
+        margin: 0 auto;         /* Le centra se lo spazio intorno aumenta */
     }
 
     .mcp-card:hover {
