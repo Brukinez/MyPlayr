@@ -237,6 +237,36 @@ EMERGENT_CSS = """
         padding-top: 100px !important;
     }
 
+        /* --- REGOLA D'ORO: SPOSTA SOLO I BOTTONI DELLA NAVBAR --- */
+    div[data-testid="stVerticalBlock"] > div:has(button[key^="nav_"]) {
+        position: fixed !important;
+        top: 20px !important;
+        z-index: 1000001 !important;
+        width: auto !important;
+    }
+
+    /* TRASFORMA I BOTTONI IN SCRITTE PULITE */
+    div.stButton > button[key^="nav_"] {
+        background: transparent !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        transition: 0.3s !important;
+    }
+
+    div.stButton > button[key^="nav_"]:hover {
+        color: rgb(41, 168, 71) !important;
+        background: transparent !important;
+    }
+
+    /* POSIZIONAMENTO DEI SINGOLI TASTI (DA DESTRA A SINISTRA) */
+    .st-key-nav_accedi, .st-key-nav_esci { right: 5% !important; }
+    .st-key-nav_clip { right: 15% !important; }
+    .st-key-nav_partite { right: 25% !important; }
+    .st-key-nav_profilo { right: 35% !important; }
+    .st-key-nav_home { right: 45% !important; }
+
             /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
     .sticky-navbar {
         position: fixed;
@@ -571,12 +601,37 @@ if st.session_state.autenticato:
     # Usiamo col_nav per indicare le colonne della barra
     col_nav = st.columns(7 if is_admin else 6)
     
-    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
-    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+ # --- NAVBAR PROFESSIONALE DINAMICA ---
+
+# 1. SFONDO GRIGIO FISSO
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# 2. LOGICA DEI TASTI (CAMBIANO SE SEI LOGGATO)
+if not st.session_state.autenticato:
+    # Se non sei loggato, vedi solo ACCEDI
+    if st.button("ACCEDI", key="nav_accedi"):
+        vai_a('login')
+else:
+    # Se sei loggato, vedi la navigazione (Allineata a destra tramite CSS)
+    if st.button("HOME", key="nav_home"): vai_a('home_auth')
+    if st.button("PROFILO", key="nav_profilo"): vai_a('profilo')
+    if st.button("PARTITE", key="nav_partite"): vai_a('partite')
+    if st.button("CLIP", key="nav_clip"): vai_a('mie_clip')
+    
+    # Tasto Esci (non cancella la password sviluppatore)
+    if st.button("ESCI", key="nav_esci"):
+        st.session_state.autenticato = False
+        st.session_state.user_email = ""
+        st.session_state.user_nick = ""
+        vai_a('home')
+
     
     # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
