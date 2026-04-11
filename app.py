@@ -289,6 +289,25 @@ EMERGENT_CSS = """
         z-index: 1000000 !important;
     }
 
+        /* Forza il posizionamento del tasto ACCEDI dentro la barra grigia */
+    div[data-testid="stVerticalBlock"] > div:has(button[key="nav_login_main"]) {
+        position: fixed !important;
+        top: 23px !important;    /* Lo centra verticalmente nella barra da 84px */
+        right: 5% !important;    /* Lo allinea a destra come il logo è a sinistra */
+        z-index: 1000000 !important;
+        width: auto !important;
+    }
+
+    /* Rende il bottone più simile allo stile MyPlayr */
+    button[key="nav_login_main"] {
+        background-color: transparent !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
+        padding: 6px 20px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+    }
+
 </style>
 """
 # --- 2. NAVBAR DINAMICA (LOGO + TASTI) ---
