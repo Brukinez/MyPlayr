@@ -176,10 +176,40 @@ EMERGENT_CSS = """
         margin-top: 10px;
     }
 
+   
 
-    
+    /* --- SEZIONE STATISTICHE (STRISCIA) --- */
+    .stats-container {
+        background-color: #2d343c; /* Lo stesso grigio delle tue card */
+        padding: 40px 5%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin: 50px 0;
+    }
 
+    .stat-item {
+        text-align: center;
+    }
 
+    .stat-number {
+        color: rgb(41, 168, 71); /* Il tuo verde */
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 8px;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .stat-label {
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
     /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
         background-color: #2d343c !important; /* Il grigio delle tue card */
