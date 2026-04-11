@@ -139,6 +139,47 @@ def make_direct_link(url):
 EMERGENT_CSS = """
 <style>
 
+    [data-testid="stHeader"] {
+        background: rgba(15, 20, 26, 0.75);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid rgba(36, 225, 112, 0.20);
+    }
+
+    h1, h2, h3, h4, h5, p, span, label, li, .stMarkdown {
+        color: var(--text-main) !important;
+    }
+
+    .stApp a {
+        color: var(--neon) !important;
+    }
+
+    .stApp hr {
+        border: 1px solid rgba(36, 225, 112, 0.50) !important;
+        opacity: 1;
+    }
+
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #121a23 0%, #0f141a 100%);
+        border-right: 1px solid rgba(36, 225, 112, 0.16);
+    }
+ 
+
+    div.stButton > button:first-child:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.05);
+        box-shadow:
+            0 0 0 1px rgba(42, 255, 139, 0.45),
+            0 10px 28px rgba(36, 225, 112, 0.38);
+    }
+
+   
+
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {
+        color: var(--neon) !important;
+        border-color: rgba(36, 225, 112, 0.65) !important;
+        background-color: rgba(36, 225, 112, 0.08) !important;
+    }
+
    
     /* Card personalizzate */
     .data-card, .stat-box {
