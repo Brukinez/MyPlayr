@@ -799,7 +799,7 @@ if st.session_state.pagina == 'home':
         
         f_col1, f_col2, f_col3 = st.columns(3)
         with f_col1:
-            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 20px;'>La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Il calcio amatoriale come quello vero.</p>", unsafe_allow_html=True)
+            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 20px;'>La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.</p>", unsafe_allow_html=True)
         
         with f_col2:
             st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
