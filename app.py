@@ -191,7 +191,7 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71) !important; /* Testo verde */
         font-family: 'Inter', sans-serif !important;
         font-weight: 500 !important;
-        font-size: 22px !important;
+        font-size: 18px !important;
         padding: 8px 16px !important;
         margin-bottom: 32px !important;
         text-align: center !important;
