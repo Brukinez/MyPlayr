@@ -178,6 +178,10 @@ EMERGENT_CSS = """
 
 
 
+    .btn-pro-green:hover, .btn-pro-outline:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
         width: 56px;
