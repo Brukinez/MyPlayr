@@ -163,7 +163,7 @@ EMERGENT_CSS = """
 
     /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
-        font-size: 18px !important;
+        font-size: 24px !important;
         color: #94a3b8;                    /* Grigio chiaro leggibile */
         line-height: 1.6;
         margin-top: 10px;
