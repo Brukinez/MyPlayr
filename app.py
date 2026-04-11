@@ -234,7 +234,7 @@ EMERGENT_CSS = """
 
     /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
     .main .block-container {
-        padding-top: 80px !important;
+        padding-top: 100px !important;
     }
 
             /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
