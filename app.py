@@ -148,19 +148,6 @@ EMERGENT_CSS = """
    
 
 
-  
-
-
- 
-    .footer-title {
-        color: white !important;
-        font-weight: 900 !important;
-        text-transform: uppercase;
-        font-size: 13px !important;
-        letter-spacing: 1px;
-        margin-bottom: 20px !important;
-    }
-
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
         background-color: #2d343c !important; /* Il grigio esatto della tua foto */
