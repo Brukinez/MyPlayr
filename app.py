@@ -148,15 +148,7 @@ EMERGENT_CSS = """
    
 
 
-     /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
-    .footer-card {
-        background-color: #2d343c !important; /* Stesso grigio delle card sopra */
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px 20px 0 0;        /* Arrotondato solo in alto */
-        padding: 60px 5% 40px 5% !important;
-        margin-top: 80px !important;
-        width: 100%;
-    }
+  
 
     /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
     div.stButton > button[key^="f_"] {
