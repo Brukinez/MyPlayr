@@ -289,48 +289,45 @@ EMERGENT_CSS = """
         z-index: 1000000 !important;
     }
 
-     /* 1. PORTA IL TASTO ACCEDI NELLA BARRA GRIGIA */
-    /* Colpiamo direttamente il contenitore del bottone usando la sua chiave unica */
-    div[data-testid="stVerticalBlock"] > div:has(button[key="nav_login_main"]) {
+    /* NUOVO COMANDO DI POSIZIONAMENTO (SUPER FORTE) */
+    div.stButton > button:has(div p:contains("ACCEDI")), 
+    div.stButton > button[key="nav_login_main"] {
         position: fixed !important;
-        top: 22px !important;    /* Altezza perfetta per la barra da 84px */
-        right: 5% !important;    /* Allineato a destra */
-        z-index: 1000001 !important;
-        width: auto !important;
-    }
-
-    /* 2. STILE DEL TASTO (SCRITTA PULITA SENZA BORDI) */
-    button[key="nav_login_main"] {
+        top: 24px !important;    /* Lo spinge dentro la barra da 84px */
+        right: 5% !important;    /* Lo mette a destra */
+        z-index: 1000000 !important;
+        width: 140px !important; /* Larghezza fissa per stabilità */
         background-color: transparent !important;
         border: 1px solid rgba(255, 255, 255, 0.3) !important;
         color: white !important;
-        border-radius: 6px !important;
-        padding: 5px 15px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        font-size: 14px !important;
     }
 
-    /* Effetto quando ci passi sopra col mouse */
-    button[key="nav_login_main"]:hover {
-        border-color: rgb(41, 168, 71) !important;
-        color: rgb(41, 168, 71) !important;
+    /* Questo serve a far sì che il bottone non venga coperto dalla barra */
+    .sticky-navbar {
+        pointer-events: none !important;
+    }
+    .logo-container {
+        pointer-events: auto !important;
     }
 
 </style>
 """
-# --- 2. NAVBAR DINAMICA (LOGO + TASTI) ---
-with st.container():
-    # Creiamo la struttura della barra
-    st.markdown(f"""
-        <div class='sticky-navbar'>
-            <div class='logo-container'>
-                <div class='mc-box'>MC</div>
-                <div class='brand-name'>MyClipzo</div>
-            </div>
-            <div id='nav-actions'></div> <!-- Segnaposto per i tasti -->
+# --- 2. NAVBAR E TASTO ---
+# Disegniamo la barra grigia
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
         </div>
-    """, unsafe_allow_html=True)
+    </div>
+""", unsafe_allow_html=True)
+
+# Se l'utente non è loggato, creiamo il bottone
+if not st.session_state.get('autenticato', False):
+    # NOTA: Lo scriviamo così, senza colonne o altro, ci pensa il CSS a spostarlo
+    st.button("ACCEDI", key="nav_login_main")
+
 
     # Inseriamo i tasti a destra nella Navbar usando le colonne di Streamlit
     # Creiamo due colonne: la prima larghissima (vuota), la seconda piccola per il tasto
