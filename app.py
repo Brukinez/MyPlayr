@@ -243,7 +243,11 @@ EMERGENT_CSS = """
         text-align: center !important;
     }
 
-
+    /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
+        gap: 15px !important;
+    }
 
     /* L'INPUT EMAIL */
     div[data-testid="stForm"] input {
@@ -254,6 +258,17 @@ EMERGENT_CSS = """
         border-radius: 8px !important;
     }
 
+    /* IL TASTO ISCRIVITI */
+    div[data-testid="stForm"] button {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
+        height: 50px !important;
+        width: 100% !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        text-transform: uppercase !important;
+        border: none !important;
+    }
 
     /* IL TASTO ACCEDI (Sotto la scatola) */
     .login-container {
