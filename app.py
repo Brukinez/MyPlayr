@@ -138,43 +138,15 @@ def make_direct_link(url):
 # Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
 EMERGENT_CSS = """
 <style>
+ 
 
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {
+        color: var(--neon) !important;
+        border-color: rgba(36, 225, 112, 0.65) !important;
+        background-color: rgba(36, 225, 112, 0.08) !important;
+    }
    
-    /* Card personalizzate */
-    .data-card, .stat-box {
-        background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
-        border: 1px solid rgba(36, 225, 112, 0.25);
-        border-left: 4px solid var(--neon);
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
-    }
 
-    .data-card {
-        padding: 15px;
-        margin-bottom: 10px;
-        font-size: 14px;
-    }
-
-    .stat-box {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .avatar-container { text-align: center; margin-bottom: 20px; }
-    .avatar-img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 3px solid var(--neon);
-        box-shadow: 0 0 28px rgba(36, 225, 112, 0.22);
-        object-fit: cover;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-soft);
-        font-size: 60px;
-    }
 
      /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
     .footer-card {
