@@ -190,15 +190,10 @@ EMERGENT_CSS = """
         margin: 50px 0;
     }
 
-   
-    .stat-number {
-        color: rgb(41, 168, 71); /* Il tuo verde */
-        font-size: 42px;
-        font-weight: 900;
-        line-height: 1;
-        margin-bottom: 8px;
-        font-family: 'Inter', sans-serif;
+    .stat-item {
+        text-align: center;
     }
+
 
     .stat-label {
         color: #94a3b8;
