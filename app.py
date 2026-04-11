@@ -298,11 +298,7 @@ EMERGENT_CSS = """
     .cta-final-section .highlight-green {
         color: rgb(41, 168, 71) !important;
     }
-
- 
-    
-
-    
+   
 </style>
 """
 
@@ -328,10 +324,9 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
     if not os.path.exists(cartella):
         os.makedirs(cartella)
 
-
-
 # --- BLOCCO 2: STILE E CSS ---
 st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
+
 
 # --- BLOCCO 3: CONNESSIONE CLOUD E LOGICA CLIP ---
 
@@ -702,6 +697,7 @@ if st.session_state.pagina == 'home':
             </p>
         </div>      
     """, unsafe_allow_html=True)
+            
     # --- STRISCIA DELLE STATISTICHE ---
         st.markdown("""
         <div class='stats-container'>
