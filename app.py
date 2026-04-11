@@ -176,21 +176,7 @@ EMERGENT_CSS = """
         margin-top: 10px;
     }
 
-    /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
-        /* --- STILE DEL BADGE (ETICHETTA) --- */
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
-        border: 0.88px solid rgba(41, 168, 71, 0.3);
-        border-radius: 9999px;
-        color: rgb(41, 168, 71); /* TESTO VERDE COME RICHIESTO */
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-        font-size: 14px;
-        padding: 8px 16px;
-        margin-bottom: 32px;
-    }
+
 
     /* --- STILE PAROLA EVIDENZIATA --- */
     .verde-clipzo {
