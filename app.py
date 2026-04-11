@@ -147,7 +147,7 @@ EMERGENT_CSS = """
         border-radius: 12px;               /* Angoli arrotondati perfetti */
         padding: 24px;                     /* Spazio interno */
         color: white;
-        font-family: 'bold';
+        font-family: 'Inter', sans-serif;
         margin-bottom: 30px;
         transition: 0.3s ease;             /* Movimento fluido */
         height: 100%;                      /* Altezza uguale per tutte */
@@ -196,6 +196,7 @@ EMERGENT_CSS = """
         margin-bottom: 32px !important;
         text-align: center !important;
     }
+
       
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
