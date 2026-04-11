@@ -61,8 +61,11 @@ EMERGENT_CSS = """
 <style>
  
 
-  
-   
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {
+        color: var(--neon) !important;
+        border-color: rgba(36, 225, 112, 0.65) !important;
+        background-color: rgba(36, 225, 112, 0.08) !important;
+    }
    
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
