@@ -14,78 +14,6 @@ from supabase import create_client, Client
 import streamlit as st
 
 
-# --- 1. PULIZIA SISTEMA E CSS POSIZIONE FISSA ---
-st.markdown("""
-    <style>
-    /* Nasconde la barra grigia originale di Streamlit */
-    header[data-testid="stHeader"] {
-        display: none !important;
-    }
-
-    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
-    .main .block-container {
-        padding-top: 80px !important;
-    }
-
-            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
-    .sticky-navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 84px;
-        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
-        backdrop-filter: blur(10px);
-        display: flex !important;           /* Mette logo e spazio in riga */
-        align-items: center !important;     /* Centra tutto verticalmente */
-        justify-content: space-between !important;
-        padding: 0 5%;
-        z-index: 999999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
-    .logo-container {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 12px !important;
-    }
-
-    .mc-box {
-        background-color: rgb(41, 168, 71); 
-        color: black;
-        font-weight: 900;
-        padding: 12px 12px;
-        border-radius: 4px;
-        font-size: 30px;
-        line-height: 1;
-    }
-
-    .brand-name {
-        color: white; 
-        font-size: 30px;
-        font-weight: 700;
-        font-family: 'Inter', sans-serif;
-    }
-               
-
-    </style>
-""", unsafe_allow_html=True)
-
-
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
-st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
-        </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
-    </div>
-""", unsafe_allow_html=True)
-
-
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
 # Incolla qui la Service Role Key tra le virgolette
@@ -299,8 +227,71 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71) !important;
     }
    
+ /* Nasconde la barra grigia originale di Streamlit */
+    header[data-testid="stHeader"] {
+        display: none !important;
+    }
+
+    /* Spazio per evitare che il contenuto finisca sotto la barra fissa */
+    .main .block-container {
+        padding-top: 80px !important;
+    }
+
+            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
+    .sticky-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 84px;
+        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
+        backdrop-filter: blur(10px);
+        display: flex !important;           /* Mette logo e spazio in riga */
+        align-items: center !important;     /* Centra tutto verticalmente */
+        justify-content: space-between !important;
+        padding: 0 5%;
+        z-index: 999999;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    .logo-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
+
+    .mc-box {
+        background-color: rgb(41, 168, 71); 
+        color: black;
+        font-weight: 900;
+        padding: 12px 12px;
+        border-radius: 4px;
+        font-size: 30px;
+        line-height: 1;
+    }
+
+    .brand-name {
+        color: white; 
+        font-size: 30px;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+    }
+               
+   
 </style>
 """
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
+        </div>
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+    </div>
+""", unsafe_allow_html=True)
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
