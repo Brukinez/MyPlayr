@@ -44,14 +44,7 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
-    .logo-container {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        gap: 12px !important;
-    }
-
+  
 
 
     </style>
