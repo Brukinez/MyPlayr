@@ -146,10 +146,65 @@ EMERGENT_CSS = """
         background-color: rgba(36, 225, 112, 0.08) !important;
     }
    
+    /* Card personalizzate */
+    .data-card, .stat-box {
+        background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
+        border: 1px solid rgba(36, 225, 112, 0.25);
+        border-left: 4px solid var(--neon);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+    }
 
+    .data-card {
+        padding: 15px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
 
-  
+    .stat-box {
+        text-align: center;
+        padding: 15px;
+    }
 
+    .avatar-container { text-align: center; margin-bottom: 20px; }
+    .avatar-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 3px solid var(--neon);
+        box-shadow: 0 0 28px rgba(36, 225, 112, 0.22);
+        object-fit: cover;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-soft);
+        font-size: 60px;
+    }
+
+     /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
+    .footer-card {
+        background-color: #2d343c !important; /* Stesso grigio delle card sopra */
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px 20px 0 0;        /* Arrotondato solo in alto */
+        padding: 60px 5% 40px 5% !important;
+        margin-top: 80px !important;
+        width: 100%;
+    }
+
+    /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
+    div.stButton > button[key^="f_"] {
+        background-color: transparent !important;
+        color: #94a3b8 !important; /* Lo stesso grigio che hai nelle card */
+        border: none !important;
+        text-align: left !important;
+        padding: 4px 0 !important;
+        font-weight: 500 !important;
+        text-transform: none !important;
+        font-size: 15px !important;
+        width: auto !important;
+        display: block !important;
+    }
 
  
     .footer-title {
