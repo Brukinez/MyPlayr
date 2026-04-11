@@ -255,7 +255,7 @@ EMERGENT_CSS = """
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
         height: 50px !important;
-        border-radius: 8px !important;
+        border-radius: 16px !important;
     }
 
     /* IL TASTO ISCRIVITI */
@@ -871,7 +871,6 @@ elif st.session_state.pagina == 'login':
                     st.rerun()
             
             
-
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
             st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
@@ -1580,8 +1579,6 @@ Limitazioni d'uso:
     st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
     
     
-
-
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
     st.markdown("<h1 style='text-align: center; color: white;'>TERMINI E CONDIZIONI</h1>", unsafe_allow_html=True)
