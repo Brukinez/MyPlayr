@@ -279,36 +279,33 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-       /* STILE LINK NAVBAR */
-    .nav-links {
-        display: flex !important;
-        gap: 20px !important;
-        align-items: center !important;
+    /* POSIZIONAMENTO BOTTONI STREAMLIT SOPRA LA NAVBAR */
+    .stElementContainer:has(button[kind="secondary"]) {
+        position: fixed !important;
+        top: 22px !important; /* Allineamento verticale nella barra da 84px */
+        z-index: 1000001 !important;
     }
 
-    .nav-link {
+    /* TRUCCO PER RENDERE I BOTTONI SOLO SCRITTE (NIENTE BORDI) */
+    div.stButton > button[kind="secondary"] {
+        background: transparent !important;
+        border: none !important;
         color: white !important;
-        text-decoration: none !important;
         font-weight: 700 !important;
         font-size: 16px !important;
-        transition: 0.3s !important;
-        cursor: pointer !important;
-        background: none !important;
-        border: none !important;
-        padding: 0 !important;
+        text-transform: uppercase !important;
     }
 
-    .nav-link:hover {
-        color: rgb(41, 168, 71) !important; /* Diventa verde al passaggio */
+    div.stButton > button[kind="secondary"]:hover {
+        color: rgb(41, 168, 71) !important;
+        background: transparent !important;
     }
 
-    /* OTTIMIZZAZIONE SMARTPHONE */
-    @media (max-width: 768px) {
-        .brand-name { display: none !important; } /* Nasconde 'MyClipzo' per far spazio */
-        .nav-links { gap: 10px !important; }
-        .nav-link { font-size: 13px !important; }
-        .mc-box { font-size: 20px !important; padding: 8px !important; }
-        .sticky-navbar { height: 70px !important; }
+    /* POSIZIONI ORIZZONTALI (A DESTRA) */
+    /* Se non loggato, l'unico tasto ACCEDI va a destra */
+    .st-key-nav_accedi {
+        right: 5% !important;
+        width: auto !important;
     }
 
 </style>
@@ -591,52 +588,46 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-# --- NAVBAR DINAMICA UNIFICATA (PUBBLICA + PRIVATA) ---
+# --- NAVBAR UNIFICATA: SCRITTE SOPRA LA BARRA ---
 
-# Creiamo il contenuto della Navbar in base al login
-if not st.session_state.autenticato:
-    # NAVBAR PER CHI NON È LOGGATO
-    links_html = """
-        <div class='nav-links'>
-            <button class='nav-link' onclick="window.location.href='#login'">ACCEDI</button>
-        </div>
-    """
-    # Se l'utente clicca Accedi, attiviamo la funzione vai_a tramite Streamlit
-    # Trucco: usiamo un bottone invisibile o il controllo della pagina
-    if st.button("ACCEDI", key="nav_accedi", help="Clicca per entrare"):
-        vai_a('login')
-else:
-    # NAVBAR PER CHI È LOGGATO (Home, Profilo, Clip, ecc.)
-    # Usiamo le colonne di Streamlit per i link così sono cliccabili
-    col_nav = st.columns([2, 1, 1, 1, 1, 1, 1]) # Spazio per Logo + 6 tasti
-    
-    with col_nav[1]: 
-        if st.button("🏠", key="n_h"): vai_a('home_auth')
-    with col_nav[2]: 
-        if st.button("👤", key="n_p"): vai_a('profilo')
-    with col_nav[3]: 
-        if st.button("🏟️", key="n_g"): vai_a('partite')
-    with col_nav[4]: 
-        if st.button("🎞️", key="n_c"): vai_a('mie_clip')
-    with col_nav[5]: 
-        if st.session_state.get('user_role') == "admin":
-            if st.button("🛡️", key="n_a"): vai_a('admin')
-    with col_nav[6]:
-        if st.button("🚪", key="n_out"):
-            st.session_state.autenticato = False
-            vai_a('home')
-
-# DISEGNIAMO LA BARRA FISSA (SFONDO)
-st.markdown(f"""
+# 1. DISEGNIAMO LO SFONDO FISSO (LA BARRA GRIGIA)
+st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <!-- I link o bottoni appariranno qui sopra grazie alle colonne di Streamlit -->
     </div>
 """, unsafe_allow_html=True)
 
+# 2. POSIZIONIAMO LE SCRITTE (BOTTONI TRASPARENTI)
+if not st.session_state.autenticato:
+    # Solo ACCEDI a destra
+    if st.button("ACCEDI", key="nav_accedi", type="secondary"):
+        vai_a('login')
+else:
+    # NAVIGAZIONE DOPO IL LOGIN (Scritte orizzontali)
+    # Creiamo una riga di colonne per distanziarli
+    c1, c2, c3, c4, c5, c_out = st.columns([1,1,1,1,1,1])
+    
+    with c1: 
+        if st.button("HOME", key="n_h", type="secondary"): vai_a('home_auth')
+    with c2: 
+        if st.button("PROFILO", key="n_p", type="secondary"): vai_a('profilo')
+    with c3: 
+        if st.button("PARTITE", key="n_g", type="secondary"): vai_a('partite')
+    with c4: 
+        if st.button("CLIP", key="n_c", type="secondary"): vai_a('mie_clip')
+    
+    if st.session_state.get('user_role') == "admin":
+        with c5: 
+            if st.button("ADMIN", key="n_a", type="secondary"): vai_a('admin')
+    
+    with c_out:
+        if st.button("ESCI", key="n_out", type="secondary"):
+            st.session_state.autenticato = False
+            vai_a('home')
+ 
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
