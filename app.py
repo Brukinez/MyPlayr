@@ -675,7 +675,7 @@ if st.session_state.pagina == 'home':
                 <div class="mcp-card">
                     <!-- Ecco la nuova scatola dell'icona -->
                     <div class="icon-box">
-                        <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
+                        <svg xmlns="http://w3.org" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
                     </div>
                     <h3 style="color: white; margin-top: 0;">REGISTRAZIONE AUTOMATICA</h3>
                     <p style="color: #94a3b8; font-size: 18x;">Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>
@@ -707,7 +707,7 @@ if st.session_state.pagina == 'home':
         <div class="mcp-card">
             <div class="icon-box">
                 <!-- Icona Share (Lucide Share-2) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="rgb(41, 168, 71)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(41, 168, 71)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="18" cy="5" r="3"></circle>
                     <circle cx="6" cy="12" r="3"></circle>
                     <circle cx="18" cy="19" r="3"></circle>
