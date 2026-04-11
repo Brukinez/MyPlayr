@@ -783,10 +783,7 @@ if st.session_state.pagina == 'home':
 
 
 
-        # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
-        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
-        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
-        st.markdown("</div>", unsafe_allow_html=True)
+  
 
 
         # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
@@ -837,9 +834,7 @@ elif st.session_state.pagina == 'login':
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
-        # --- 1. SOTTO-PAGINA: ACCEDI ---
-        if st.session_state.sub == 'login':
-            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
+       
             
             # Input utente
             u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
