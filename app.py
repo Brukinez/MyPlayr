@@ -69,28 +69,23 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- STILE TASTO ACCEDI NELLA NAVBAR (VERDE SERIO) --- */
+      /* --- FORZIAMO IL TASTO DENTRO LA NAVBAR --- */
     div.stButton > button[key="nav_login_btn"] {
-        background-color: #28a745 !important; /* Verde professionale, non fosforescente */
+        background-color: #28a745 !important; /* Verde serio */
         color: white !important;
         border: none !important;
         padding: 8px 24px !important;
         border-radius: 6px !important;
         font-weight: 700 !important;
-        font-size: 16px !important;
         text-transform: uppercase !important;
         
-        /* Posizionamento millimetrico dentro la barra da 84px */
+        /* POSIZIONAMENTO ASSOLUTO RISPETTO ALLO SCHERMO */
         position: fixed !important;
-        top: 22px !important;    /* Lo centra verticalmente */
-        right: 5% !important;   /* Lo allinea al bordo destro */
-        z-index: 1000001 !important; /* Lo mette sopra a tutto */
+        top: 18px !important;   /* Lo spinge dentro la barra alta 84px */
+        right: 5% !important;   /* Lo allinea a destra */
+        width: auto !important; /* Impedisce che diventi lungo quanto tutto il sito */
+        z-index: 1000002 !important; /* Sopra a tutto */
         transition: 0.3s ease !important;
-    }
-
-    div.stButton > button[key="nav_login_btn"]:hover {
-        background-color: #218838 !important; /* Si scurisce leggermente */
-        transform: translateY(-1px);
     }
 
     </style>
