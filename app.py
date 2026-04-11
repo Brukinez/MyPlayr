@@ -251,8 +251,6 @@ EMERGENT_CSS = """
         justify-content: space-between !important;
         padding: 0 5%;
         z-index: 999999;
-                pointer-events: none; /* Permette ai bottoni di Streamlit di essere cliccati sopra la barra */
-
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -281,66 +279,19 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-      /* 1. RIPRISTINO NAVBAR (Assicuriamoci che si veda) */
-    .sticky-navbar {
-        display: flex !important;
-        background-color: #2d343c !important; /* Grigio card */
-        position: fixed !important;
-        top: 0 !important;
-        z-index: 999999 !important;
-        height: 84px !important;
-    }
-
-    /* 2. SPOSTAMENTO TASTO ACCEDI (Usiamo la nuova chiave top_login) */
-    div[data-testid="stVerticalBlock"] > div:has(button[key="top_login"]) {
-        position: fixed !important;
-        top: 24px !important; 
-        right: 5% !important;
-        z-index: 1000000 !important;
-        width: auto !important;
-    }
-
-    /* Stile pulito per il tasto */
-    button[key="top_login"] {
-        background-color: transparent !important;
-        border: 1px solid rgba(255, 255, 255, 0.4) !important;
-        color: white !important;
-        font-weight: 700 !important;
-    }
-
-    /* Questo serve a far sì che il bottone non venga coperto dalla barra */
-    .sticky-navbar {
-        pointer-events: none !important;
-    }
-    .logo-container {
-        pointer-events: auto !important;
-    }
-
+   
 </style>
 """
-# --- 2. NAVBAR DINAMICA (LOGO + TASTI) ---
-with st.container():
-    # Creiamo la struttura della barra
-    st.markdown(f"""
-        <div class='sticky-navbar'>
-            <div class='logo-container'>
-                <div class='mc-box'>MC</div>
-                <div class='brand-name'>MyClipzo</div>
-            </div>
-            <div id='nav-actions'></div> <!-- Segnaposto per i tasti -->
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
         </div>
-    """, unsafe_allow_html=True)
-
-    # Inseriamo i tasti a destra nella Navbar usando le colonne di Streamlit
-    # Creiamo due colonne: la prima larghissima (vuota), la seconda piccola per il tasto
-    spacer, btn_col = st.columns([8, 2]) 
-    
-    with btn_col:
-        # Se l'utente NON è loggato, mostriamo il tasto ACCEDI
-        if not st.session_state.get('autenticato', False):
-            if st.button("ACCEDI", key="top_login"):
-                vai_a('login')
-
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+    </div>
+""", unsafe_allow_html=True)
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
