@@ -243,7 +243,17 @@ EMERGENT_CSS = """
         text-align: center !important;
     }
 
-   
+
+
+    /* L'INPUT EMAIL */
+    div[data-testid="stForm"] input {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        height: 50px !important;
+        border-radius: 8px !important;
+    }
+
 
     /* IL TASTO ACCEDI (Sotto la scatola) */
     .login-container {
