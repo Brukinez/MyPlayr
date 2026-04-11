@@ -200,7 +200,6 @@ EMERGENT_CSS = """
     }
 
       
-
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
         background-color: #2d343c; /* Lo stesso grigio delle tue card */
@@ -233,6 +232,7 @@ EMERGENT_CSS = """
         text-transform: uppercase;
         letter-spacing: 1px;
     }
+    
     /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
         background-color: #2d343c !important; /* Il grigio delle tue card */
@@ -640,7 +640,7 @@ if st.session_state.pagina == 'home':
         st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
         
         # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
-        st.markdown("<h1 style='text-align: center; font-size: 80px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
                 # --- DESCRIZIONE CENTRATA ---
         st.markdown("""
             <div style='text-align: center; width: 100%;'>
