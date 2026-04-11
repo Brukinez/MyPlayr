@@ -289,23 +289,32 @@ EMERGENT_CSS = """
         z-index: 1000000 !important;
     }
 
-        /* Forza il posizionamento del tasto ACCEDI dentro la barra grigia */
+     /* 1. PORTA IL TASTO ACCEDI NELLA BARRA GRIGIA */
+    /* Colpiamo direttamente il contenitore del bottone usando la sua chiave unica */
     div[data-testid="stVerticalBlock"] > div:has(button[key="nav_login_main"]) {
         position: fixed !important;
-        top: 23px !important;    /* Lo centra verticalmente nella barra da 84px */
-        right: 5% !important;    /* Lo allinea a destra come il logo è a sinistra */
-        z-index: 1000000 !important;
+        top: 22px !important;    /* Altezza perfetta per la barra da 84px */
+        right: 5% !important;    /* Allineato a destra */
+        z-index: 1000001 !important;
         width: auto !important;
     }
 
-    /* Rende il bottone più simile allo stile MyPlayr */
+    /* 2. STILE DEL TASTO (SCRITTA PULITA SENZA BORDI) */
     button[key="nav_login_main"] {
         background-color: transparent !important;
-        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
         color: white !important;
-        padding: 6px 20px !important;
+        border-radius: 6px !important;
+        padding: 5px 15px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
+        font-size: 14px !important;
+    }
+
+    /* Effetto quando ci passi sopra col mouse */
+    button[key="nav_login_main"]:hover {
+        border-color: rgb(41, 168, 71) !important;
+        color: rgb(41, 168, 71) !important;
     }
 
 </style>
