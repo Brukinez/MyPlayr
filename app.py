@@ -150,19 +150,6 @@ EMERGENT_CSS = """
 
   
 
-    /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
-    div.stButton > button[key^="f_"] {
-        background-color: transparent !important;
-        color: #94a3b8 !important; /* Lo stesso grigio che hai nelle card */
-        border: none !important;
-        text-align: left !important;
-        padding: 4px 0 !important;
-        font-weight: 500 !important;
-        text-transform: none !important;
-        font-size: 15px !important;
-        width: auto !important;
-        display: block !important;
-    }
 
  
     .footer-title {
