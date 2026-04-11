@@ -286,6 +286,38 @@ EMERGENT_CSS = """
         margin-top: 50px;
     }
 
+    .cta-final-section h2 {
+        color: white !important;
+        font-size: 45px !important;
+        font-weight: 900 !important;
+        line-height: 1.1 !important;
+        margin-bottom: 20px !important;
+        text-transform: uppercase;
+    }
+
+    .cta-final-section .highlight-green {
+        color: rgb(41, 168, 71) !important;
+    }
+
+    .cta-final-section p {
+        color: #94a3b8 !important;
+        max-width: 700px;
+        margin: 0 auto 40px auto !important;
+        font-size: 18px !important;
+    }
+
+    /* Il tastone verde grande */
+    .btn-create-account button {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        padding: 15px 40px !important;
+        border-radius: 6px !important;
+        font-weight: 900 !important;
+        font-size: 18px !important;
+        text-transform: uppercase !important;
+        border: none !important;
+        transition: 0.3s !important;
+    }
 
     
 </style>
