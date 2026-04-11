@@ -138,31 +138,6 @@ def make_direct_link(url):
 # Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
 EMERGENT_CSS = """
 <style>
-    :root {
-        --bg-main: #0f141a;
-        --bg-panel: #19212b;
-        --bg-soft: #24303d;
-        --text-main: #f5f7fb;
-        --text-soft: #c4d0dc;
-        --neon: #24e170;
-        --neon-strong: #17c95f;
-    }
-
-         /* --- SFONDO UNIFICATO CON IMMAGINE --- */
-    .stApp {
-        /* Colore di base se l'immagine non carica */
-        background-color: #252b32 !important; 
-
-        background: 
-            /* Il velo nero per far risaltare le scritte */
-            linear-gradient(rgba(11, 15, 19, 0.8), rgba(11, 15, 19, 0.85)), 
-            /* Nome del tuo file (assicurati che sia nella stessa cartella di app.py) */
-            url("sfondo.jpg") !important; 
-            
-        background-size: cover !important;
-        background-position: center !important;
-        background-attachment: fixed !important;
-    }
 
     [data-testid="stHeader"] {
         background: rgba(15, 20, 26, 0.75);
