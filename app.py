@@ -312,21 +312,18 @@ EMERGENT_CSS = """
 
 </style>
 """
-# --- 2. NAVBAR E TASTO ---
-# Disegniamo la barra grigia
-st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+# --- 2. NAVBAR DINAMICA (LOGO + TASTI) ---
+with st.container():
+    # Creiamo la struttura della barra
+    st.markdown(f"""
+        <div class='sticky-navbar'>
+            <div class='logo-container'>
+                <div class='mc-box'>MC</div>
+                <div class='brand-name'>MyClipzo</div>
+            </div>
+            <div id='nav-actions'></div> <!-- Segnaposto per i tasti -->
         </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# Se l'utente non è loggato, creiamo il bottone
-if not st.session_state.get('autenticato', False):
-    # NOTA: Lo scriviamo così, senza colonne o altro, ci pensa il CSS a spostarlo
-    
+    """, unsafe_allow_html=True)
 
     # Inseriamo i tasti a destra nella Navbar usando le colonne di Streamlit
     # Creiamo due colonne: la prima larghissima (vuota), la seconda piccola per il tasto
@@ -783,7 +780,10 @@ if st.session_state.pagina == 'home':
 
 
 
-  
+        # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
+        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
+        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
         # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
@@ -834,7 +834,9 @@ elif st.session_state.pagina == 'login':
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
-       
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
+        if st.session_state.sub == 'login':
+            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
             
             # Input utente
             u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
