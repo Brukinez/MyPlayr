@@ -148,6 +148,33 @@ EMERGENT_CSS = """
    
 
 
+          /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
+    .mcp-card {
+        background-color: #2d343c !important; /* Il grigio esatto della tua foto */
+        border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
+        border-radius: 12px;               /* Angoli arrotondati perfetti */
+        padding: 24px;                     /* Spazio interno */
+        color: white;
+        font-family: 'Inter', sans-serif;
+        margin-bottom: 20px;
+        transition: 0.3s ease;             /* Movimento fluido */
+        height: 100%;                      /* Altezza uguale per tutte */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
+    }
+
+    .mcp-card:hover {
+        transform: translateY(-5px);       /* La scheda si alza leggermente */
+        border-color: rgb(41, 168, 71);    /* Il bordo diventa del tuo verde */
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* L'ombra aumenta al passaggio del mouse */
+    }
+
+    /* ISTRUZIONE PER IL TESTO (18PX) */
+    .mcp-card p {
+        font-size: 18px !important;
+        color: #94a3b8;                    /* Grigio chiaro leggibile */
+        line-height: 1.6;
+        margin-top: 10px;
+    }
 
     /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
         /* --- STILE DEL BADGE (ETICHETTA) --- */
