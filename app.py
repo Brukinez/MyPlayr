@@ -33,7 +33,7 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100%;
-        height: 45px;
+        height: 84px;
         background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
         backdrop-filter: blur(10px);
         display: flex !important;           /* Mette logo e spazio in riga */
@@ -56,15 +56,15 @@ st.markdown("""
         background-color: rgb(41, 168, 71); 
         color: black;
         font-weight: 900;
-        padding: 8px 8px;
+        padding: 12px 12px;
         border-radius: 4px;
-        font-size: 20px;
+        font-size: 30px;
         line-height: 1;
     }
 
     .brand-name {
         color: white; 
-        font-size: 20px;
+        font-size: 30px;
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
@@ -162,7 +162,7 @@ EMERGENT_CSS = """
 
     /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
-        font-size: 20px !important;
+        font-size: 24px !important;
         color: #94a3b8;                    /* Grigio chiaro leggibile */
         line-height: 1.6;
         margin-top: 10px;
@@ -191,7 +191,7 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71) !important; /* Testo verde */
         font-family: 'Inter', sans-serif !important;
         font-weight: 500 !important;
-        font-size: 18px !important;
+        font-size: 22px !important;
         padding: 8px 16px !important;
         margin-bottom: 32px !important;
         text-align: center !important;
@@ -216,7 +216,7 @@ EMERGENT_CSS = """
 
     .stat-number {
         color: rgb(41, 168, 71); /* Il tuo verde */
-        font-size: 35px;
+        font-size: 52px;
         font-weight: 900;
         line-height: 1;
         margin-bottom: 8px;
@@ -616,14 +616,14 @@ if st.session_state.pagina == 'home':
         st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
         
         # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
-        st.markdown("<h1 style='text-align: center; font-size: 65px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
                 # --- DESCRIZIONE CENTRATA ---
         st.markdown("""
             <div style='text-align: center; width: 100%;'>
                 <p style='
                     color: #94a3b8; 
                     font-family: "Inter", sans-serif; 
-                    font-size: 20px; 
+                    font-size: 24px; 
                     line-height: 1.6; 
                     max-width: 600px; 
                     margin: 24px auto 40px auto;
