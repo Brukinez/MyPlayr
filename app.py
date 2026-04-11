@@ -141,13 +141,6 @@ EMERGENT_CSS = """
 
 
 
-    div.stButton > button:first-child:hover {
-        transform: translateY(-1px);
-        filter: brightness(1.05);
-        box-shadow:
-            0 0 0 1px rgba(42, 255, 139, 0.45),
-            0 10px 28px rgba(36, 225, 112, 0.38);
-    }
 
    
 
