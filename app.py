@@ -178,18 +178,6 @@ EMERGENT_CSS = """
 
 
 
-        /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
-    .icon-box {
-        width: 56px;
-        height: 56px;
-        background-color: rgba(41, 168, 71, 0.2);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 16px;
-        transition: background-color 0.3s;
-    }
 
 
     /* Effetto quando passi il mouse sulla scheda intera */
