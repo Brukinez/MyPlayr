@@ -192,6 +192,10 @@ EMERGENT_CSS = """
     }
 
 
+    /* Effetto quando passi il mouse sulla scheda intera */
+    .mcp-card:hover .icon-box {
+        background-color: rgba(41, 168, 71, 0.3); /* Diventa leggermente più scuro */
+    }
 
     /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
     .hero-badge {
