@@ -139,11 +139,6 @@ def make_direct_link(url):
 EMERGENT_CSS = """
 <style>
 
-    [data-testid="stHeader"] {
-        background: rgba(15, 20, 26, 0.75);
-        backdrop-filter: blur(6px);
-        border-bottom: 1px solid rgba(36, 225, 112, 0.20);
-    }
 
     h1, h2, h3, h4, h5, p, span, label, li, .stMarkdown {
         color: var(--text-main) !important;
