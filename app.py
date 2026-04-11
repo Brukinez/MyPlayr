@@ -319,6 +319,62 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
+    /* --- OTTIMIZZAZIONE RESPONSIVE PER SMARTPHONE --- */
+    @media (max-width: 768px) {
+        /* 1. Navbar: Riduciamo le dimensioni giganti su mobile */
+        .sticky-navbar {
+            height: 70px !important;
+            padding: 0 10px !important;
+        }
+        .mc-box {
+            font-size: 18px !important;
+            padding: 6px 8px !important;
+        }
+        .brand-name {
+            font-size: 18px !important;
+        }
+
+        /* 2. Titoli e Testi: Riduciamo i font esagerati */
+        h1 { font-size: 32px !important; }
+        .hero-badge { font-size: 14px !important; }
+        .mcp-card p { font-size: 16px !important; }
+        .stat-number { font-size: 36px !important; }
+        .cta-final-section h2 { font-size: 28px !important; }
+
+        /* 3. Layout: Le colonne devono mettersi una sotto l'altra */
+        [data-testid="stHorizontalBlock"] {
+            flex-direction: column !important;
+            gap: 20px !important;
+        }
+
+        /* 4. Contenitori: Allarghiamo al 100% dello schermo */
+        .mcp-card, .newsletter-card, div[data-testid="stForm"], .cta-final-section {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 20px !important;
+            margin: 10px 0 !important;
+        }
+
+        /* 5. Statistiche: Da riga a colonna */
+        .stats-container {
+            flex-direction: column !important;
+            gap: 30px !important;
+            padding: 30px 10px !important;
+        }
+
+        /* 6. Newsletter: Forza l'input e il bottone uno sopra l'altro */
+        div[data-testid="stForm"] .stHorizontalBlock {
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        /* 7. Spazio superiore: Riduciamo il buco in alto */
+        .main .block-container {
+            padding-top: 100px !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+    }
     
 </style>
 """
