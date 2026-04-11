@@ -156,7 +156,7 @@ EMERGENT_CSS = """
         padding: 24px;                     /* Spazio interno */
         color: white;
         font-family: 'Inter', sans-serif;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
         transition: 0.3s ease;             /* Movimento fluido */
         height: 100%;                      /* Altezza uguale per tutte */
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
@@ -238,7 +238,7 @@ EMERGENT_CSS = """
 
     .stat-label {
         color: #94a3b8;
-        font-size: 20x;
+        font-size: 25x;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
