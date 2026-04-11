@@ -281,25 +281,31 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-       .logo-container { pointer-events: auto !important; }
-    div[data-testid="stVerticalBlock"] > div:has(button[key="nav_login_main"]) {
+      /* 1. RIPRISTINO NAVBAR (Assicuriamoci che si veda) */
+    .sticky-navbar {
+        display: flex !important;
+        background-color: #2d343c !important; /* Grigio card */
         position: fixed !important;
-        top: 22px !important;
-        right: 5% !important;
-        z-index: 1000000 !important;
+        top: 0 !important;
+        z-index: 999999 !important;
+        height: 84px !important;
     }
 
-    /* NUOVO COMANDO DI POSIZIONAMENTO (SUPER FORTE) */
-    div.stButton > button:has(div p:contains("ACCEDI")), 
-    div.stButton > button[key="nav_login_main"] {
+    /* 2. SPOSTAMENTO TASTO ACCEDI (Usiamo la nuova chiave top_login) */
+    div[data-testid="stVerticalBlock"] > div:has(button[key="top_login"]) {
         position: fixed !important;
-        top: 24px !important;    /* Lo spinge dentro la barra da 84px */
-        right: 5% !important;    /* Lo mette a destra */
+        top: 24px !important; 
+        right: 5% !important;
         z-index: 1000000 !important;
-        width: 140px !important; /* Larghezza fissa per stabilità */
+        width: auto !important;
+    }
+
+    /* Stile pulito per il tasto */
+    button[key="top_login"] {
         background-color: transparent !important;
-        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
         color: white !important;
+        font-weight: 700 !important;
     }
 
     /* Questo serve a far sì che il bottone non venga coperto dalla barra */
