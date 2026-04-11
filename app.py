@@ -33,7 +33,7 @@ st.markdown("""
         top: 0;
         left: 0;
         width: 100%;
-        height: 84px;
+        height: 45px;
         background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
         backdrop-filter: blur(10px);
         display: flex !important;           /* Mette logo e spazio in riga */
