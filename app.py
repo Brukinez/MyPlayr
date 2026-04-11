@@ -286,14 +286,6 @@ EMERGENT_CSS = """
         margin-top: 50px;
     }
 
-    .cta-final-section h2 {
-        color: white !important;
-        font-size: 45px !important;
-        font-weight: 900 !important;
-        line-height: 1.1 !important;
-        margin-bottom: 20px !important;
-        text-transform: uppercase;
-    }
 
     .cta-final-section .highlight-green {
         color: rgb(41, 168, 71) !important;
