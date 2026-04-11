@@ -69,14 +69,7 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
                
-       /* NASCONDI BOTTONE STREAMLIT STANDARD DENTRO HEADER SE NECESSARIO */
-    div[data-testid="stVerticalBlock"] > div:has(button.st-key-nav_login_fixed) {
-        position: fixed;
-        top: 15px;
-        right: 5%;
-        z-index: 1000000;
-    }
-    
+
     </style>
 """, unsafe_allow_html=True)
 
