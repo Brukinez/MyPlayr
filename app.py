@@ -178,10 +178,6 @@ EMERGENT_CSS = """
 
 
 
-    /* --- STILE PAROLA EVIDENZIATA --- */
-    .verde-clipzo {
-        color: rgb(41, 168, 71); /* IL VERDE IDENTICO AL BADGE */
-    }
 
     /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
     .hero-description {
