@@ -56,7 +56,7 @@ st.markdown("""
         background-color: rgb(41, 168, 71); 
         color: black;
         font-weight: 900;
-        padding: 4px 10px;
+        padding: 10px 10px;
         border-radius: 4px;
         font-size: 16px;
         line-height: 1;
