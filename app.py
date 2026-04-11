@@ -148,6 +148,19 @@ EMERGENT_CSS = """
    
 
 
+  
+
+
+ 
+    .footer-title {
+        color: white !important;
+        font-weight: 900 !important;
+        text-transform: uppercase;
+        font-size: 13px !important;
+        letter-spacing: 1px;
+        margin-bottom: 20px !important;
+    }
+
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
         background-color: #2d343c !important; /* Il grigio esatto della tua foto */
@@ -176,8 +189,26 @@ EMERGENT_CSS = """
         margin-top: 10px;
     }
 
+    /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
+        /* --- STILE DEL BADGE (ETICHETTA) --- */
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
+        border: 0.88px solid rgba(41, 168, 71, 0.3);
+        border-radius: 9999px;
+        color: rgb(41, 168, 71); /* TESTO VERDE COME RICHIESTO */
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 14px;
+        padding: 8px 16px;
+        margin-bottom: 32px;
+    }
 
-
+    /* --- STILE PAROLA EVIDENZIATA --- */
+    .verde-clipzo {
+        color: rgb(41, 168, 71); /* IL VERDE IDENTICO AL BADGE */
+    }
 
     /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
     .hero-description {
