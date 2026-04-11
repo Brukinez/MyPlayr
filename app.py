@@ -539,44 +539,37 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
-        /* --- STILE PAGINA LOGIN/REGISTER --- */
-    .auth-container {
+    /* --- STILE AUTENTICAZIONE PREMIUM --- */
+    .auth-wrapper {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 40px 20px;
+        width: 100%;
+        padding-top: 50px;
     }
 
     .auth-card {
-        background-color: #2d343c !important; /* Grigio scuro della card */
+        background-color: #2d343c !important; /* Grigio delle card */
+        width: 100%;
+        max-width: 450px; /* DIMENSIONE PERFETTA */
         padding: 40px;
         border-radius: 12px;
-        width: 100%;
-        max-width: 450px; /* Larghezza perfetta come in foto */
         border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
     }
 
-    /* Input personalizzati per il login */
-    .stTextInput input {
-        background-color: #1e2329 !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        color: white !important;
-        height: 45px !important;
-    }
-
-    /* Il tasto CREA ACCOUNT verde */
-    .btn-auth-primary button {
+    /* Rende i bottoni "ENTRA" e "CONFERMA" verdi e centrati */
+    div.stButton > button[key^="btn_auth"] {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
-        width: 100% !important;
+        width: 100% !important; /* Occupa tutta la larghezza della card */
         height: 48px !important;
         font-weight: 800 !important;
-        text-transform: uppercase;
-        border: none !important;
-        margin-top: 20px !important;
+        border-radius: 6px !important;
+        margin-top: 10px !important;
     }
+
 
 </style>
 """
@@ -1024,10 +1017,6 @@ if st.session_state.pagina == 'home':
                     st.error("❌ Email non valida.")
 
 
-
-
-
-
         # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
         st.markdown("<div class='login-container'>", unsafe_allow_html=True)
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
@@ -1079,34 +1068,33 @@ elif st.session_state.pagina == 'login':
     if 'sub' not in st.session_state: 
         st.session_state.sub = 'login'
 
-    # --- 1. SOTTO-PAGINA: LOGIN (ACCEDI) ---
-    if st.session_state.sub == 'login':
-        st.markdown("<h1 style='text-align: center; color: white; font-weight: 900; margin-bottom: 5px;'>ACCEDI</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Bentornato su MyClipzo</p>", unsafe_allow_html=True)
-        
-        st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
-        u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
-        p_login = st.text_input("Password", type="password", placeholder="******")
-        
-        st.markdown("<div class='btn-auth-primary'>", unsafe_allow_html=True)
-        if st.button("ENTRA", key="btn_login_main"):
-            if u_login and p_login:
-                try:
-                    res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
-                    if res_log.data:
-                        utente = res_log.data[0]
-                        st.session_state.autenticato = True
-                        st.session_state.user_email = utente['email']
-                        st.session_state.user_role = utente.get('ruolo', 'Player')
-                        st.session_state.user_nick = utente.get('nome', 'Campione')
-                        st.success(f"Bentornato {st.session_state.user_nick}!")
-                        if st.session_state.user_role == "admin": vai_a('admin')
-                        else: vai_a('home_auth')
-                        st.rerun()
-                    else: st.error("❌ Credenziali errate.")
-                except Exception as e: st.error(f"⚠️ Errore: {e}")
-            else: st.warning("Compila tutti i campi!")
-        st.markdown("</div>", unsafe_allow_html=True)
+        # --- 1. SOTTO-PAGINA: ACCEDI (Sostituisci solo questa parte) ---
+        if st.session_state.sub == 'login':
+            st.markdown("<div class='auth-wrapper'>", unsafe_allow_html=True)
+            st.markdown("<h1 style='color: white; font-weight: 900; margin-bottom: 5px;'>ACCEDI</h1>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #94a3b8; margin-bottom: 30px;'>Bentornato su MyClipzo</p>", unsafe_allow_html=True)
+            
+            st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
+            u_login = st.text_input("Email", placeholder="la-tua@email.com")
+            p_login = st.text_input("Password", type="password", placeholder="******")
+            
+            # Bottone principale VERDE
+            if st.button("ENTRA", key="btn_auth_login"):
+                # Qui tieni la tua logica di Supabase...
+                pass
+
+            st.markdown("<hr style='border: 0.5px solid #444; margin: 25px 0;'>", unsafe_allow_html=True)
+            
+            # Bottoni secondari GRIGI
+            c1, c2 = st.columns(2)
+            with c1:
+                if st.button("Password persa?", key="f_lost", use_container_width=True):
+                    st.session_state.sub = 'recupero'; st.rerun()
+            with c2:
+                if st.button("Registrati", key="f_reg", use_container_width=True):
+                    st.session_state.sub = 'reg'; st.rerun()
+            
+            st.markdown("</div></div>", unsafe_allow_html=True) # Chiude Card e Wrapper
 
         # Opzioni secondarie stilizzate
         st.markdown("<hr style='border: 0.5px solid #444; margin: 20px 0;'>", unsafe_allow_html=True)
@@ -1827,9 +1815,7 @@ Limitazioni d'uso:
     
     st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
     
-    
-
-
+ 
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
     st.markdown("<h1 style='text-align: center; color: white;'>TERMINI E CONDIZIONI</h1>", unsafe_allow_html=True)
