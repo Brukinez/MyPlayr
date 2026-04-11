@@ -44,8 +44,31 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-  
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    .logo-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+    }
 
+    .mc-box {
+        background-color: rgb(41, 168, 71); 
+        color: black;
+        font-weight: 900;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 16px;
+        line-height: 1;
+    }
+
+    .brand-name {
+        color: white; 
+        font-size: 20px;
+        font-weight: 700;
+        font-family: 'Inter', sans-serif;
+    }
+               
 
     </style>
 """, unsafe_allow_html=True)
