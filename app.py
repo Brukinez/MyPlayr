@@ -336,7 +336,7 @@ if not st.session_state.get('autenticato', False):
     with btn_col:
         # Se l'utente NON è loggato, mostriamo il tasto ACCEDI
         if not st.session_state.get('autenticato', False):
-            if st.button("ACCEDI", key="nav_login_main"):
+            if st.button("ACCEDI", key="top_login"):
                 vai_a('login')
 
 
