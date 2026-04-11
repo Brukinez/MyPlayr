@@ -769,9 +769,6 @@ if st.session_state.pagina == 'home':
 
 
 
-
-
-
         # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
         st.markdown("<div class='login-container'>", unsafe_allow_html=True)
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
@@ -802,15 +799,15 @@ if st.session_state.pagina == 'home':
         
         f_col1, f_col2, f_col3 = st.columns(3)
         with f_col1:
-            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 14px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
+            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 20px;'>Video Analysis for Future Champions</p>", unsafe_allow_html=True)
         
         with f_col2:
-            st.markdown("<h4 style='color: white; font-size: 14px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color: white; font-size: 20px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
             st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
             st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
         
         with f_col3:
-            st.markdown("<h4 style='color: white; font-size: 14px;'>LEGALE</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='color: white; font-size: 20px;'>LEGALE</h4>", unsafe_allow_html=True)
             st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
             st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
 
