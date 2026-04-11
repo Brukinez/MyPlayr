@@ -303,7 +303,7 @@ EMERGENT_CSS = """
         color: #94a3b8 !important;
         max-width: 700px;
         margin: 0 auto 40px auto !important;
-        font-size: 22px !important;
+        font-size: 18px !important;
     }
 
     /* Il tastone verde grande */
@@ -313,7 +313,7 @@ EMERGENT_CSS = """
         padding: 15px 40px !important;
         border-radius: 6px !important;
         font-weight: 900 !important;
-        font-size: 18px !important;
+        font-size: 24x !important;
         text-transform: uppercase !important;
         border: none !important;
         transition: 0.3s !important;
