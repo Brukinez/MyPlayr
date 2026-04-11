@@ -64,7 +64,7 @@ st.markdown("""
 
     .brand-name {
         color: white; 
-        font-size: 30px;
+        font-size: 15px;
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
