@@ -196,7 +196,7 @@ EMERGENT_CSS = """
 
     .stat-number {
         color: rgb(41, 168, 71); /* Il tuo verde */
-        font-size: 84px;
+        font-size: 52px;
         font-weight: 900;
         line-height: 1;
         margin-bottom: 8px;
