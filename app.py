@@ -251,6 +251,8 @@ EMERGENT_CSS = """
         justify-content: space-between !important;
         padding: 0 5%;
         z-index: 999999;
+                pointer-events: none; /* Permette ai bottoni di Streamlit di essere cliccati sopra la barra */
+
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -279,19 +281,39 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+       .logo-container { pointer-events: auto !important; }
+    div[data-testid="stVerticalBlock"] > div:has(button[key="nav_login_main"]) {
+        position: fixed !important;
+        top: 22px !important;
+        right: 5% !important;
+        z-index: 1000000 !important;
+    }
+
 </style>
 """
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
-st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+# --- 2. NAVBAR DINAMICA (LOGO + TASTI) ---
+with st.container():
+    # Creiamo la struttura della barra
+    st.markdown(f"""
+        <div class='sticky-navbar'>
+            <div class='logo-container'>
+                <div class='mc-box'>MC</div>
+                <div class='brand-name'>MyClipzo</div>
+            </div>
+            <div id='nav-actions'></div> <!-- Segnaposto per i tasti -->
         </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
-    </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+    # Inseriamo i tasti a destra nella Navbar usando le colonne di Streamlit
+    # Creiamo due colonne: la prima larghissima (vuota), la seconda piccola per il tasto
+    spacer, btn_col = st.columns([8, 2]) 
+    
+    with btn_col:
+        # Se l'utente NON è loggato, mostriamo il tasto ACCEDI
+        if not st.session_state.get('autenticato', False):
+            if st.button("ACCEDI", key="nav_login_main"):
+                vai_a('login')
+
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
