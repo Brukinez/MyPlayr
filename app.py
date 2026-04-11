@@ -170,8 +170,8 @@ EMERGENT_CSS = """
 
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
-        width: 56px;
-        height: 56px;
+        width: 25px;
+        height: 25px;
         background-color: rgba(41, 168, 71, 0.2);
         border-radius: 12px;
         display: flex;
