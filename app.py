@@ -285,10 +285,13 @@ EMERGENT_CSS = """
         text-transform: uppercase;
     }
 
-    .cta-final-section .highlight-green {
-        color: rgb(41, 168, 71) !important;
-    }
 
+    .cta-final-section p {
+        color: #94a3b8 !important;
+        max-width: 700px;
+        margin: 0 auto 40px auto !important;
+        font-size: 18px !important;
+    }
 
     /* Il tastone verde grande */
     .btn-create-account button {
