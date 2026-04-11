@@ -232,6 +232,7 @@ EMERGENT_CSS = """
     }
     
    
+
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
         align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
@@ -288,12 +289,6 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71) !important;
     }
 
-    .cta-final-section p {
-        color: #94a3b8 !important;
-        max-width: 700px;
-        margin: 0 auto 40px auto !important;
-        font-size: 18px !important;
-    }
 
     /* Il tastone verde grande */
     .btn-create-account button {
