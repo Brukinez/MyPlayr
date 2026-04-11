@@ -209,7 +209,14 @@ EMERGENT_CSS = """
         text-align: center !important;
     }
 
-  
+    /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
+    .custom-nav {
+        background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
+        backdrop-filter: blur(50px); /* Effetto vetro */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    
 
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
