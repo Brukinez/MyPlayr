@@ -44,29 +44,6 @@ st.markdown("""
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-               /* --- STILE TASTO ACCEDI NELLA NAVBAR --- */
-    div.stButton > button[key="nav_login_btn"] {
-        background-color: rgb(41, 168, 71) !important; /* Verde come il logo */
-        color: black !important;
-        border: none !important;
-        padding: 8px 24px !important;
-        border-radius: 6px !important;
-        font-weight: 800 !important;
-        font-size: 18px !important; /* Leggermente più piccolo del brand name per gerarchia */
-        text-transform: uppercase !important;
-        
-        /* Posizionamento fisso dentro la barra da 84px */
-        position: fixed !important;
-        top: 20px !important; /* Lo centra verticalmente */
-        right: 5% !important; /* Lo allinea al bordo destro */
-        z-index: 1000001 !important; /* Un gradino sopra la barra */
-    }
-
-    div.stButton > button[key="nav_login_btn"]:hover {
-        background-color: #2ecc71 !important;
-        transform: scale(1.05);
-    }
- 
         /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
     .logo-container {
         display: flex !important;
@@ -97,28 +74,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- HTML DELLA NAVBAR ---
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <!-- Il lato destro rimane vuoto nell'HTML perché ci mettiamo il tasto Streamlit -->
-        <div></div> 
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
-
-# --- 3. IL TASTO FISICO ---
-# Appare solo se l'utente non è ancora loggato
-if not st.session_state.get('autenticato', False):
-    st.button("ACCEDI", on_click=lambda: vai_a('login'), key="nav_login_btn")
-
-
-# --- IL TASTO FISICO (Fallo apparire solo se l'utente non è loggato) ---
-if not st.session_state.get('autenticato', False):
-    st.button("ACCEDI", on_click=lambda: vai_a('login'), key="nav_login_btn")
-
 
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
@@ -382,7 +347,8 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
 
 
 
-
+# --- BLOCCO 2: STILE E CSS ---
+st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
 
 # --- BLOCCO 3: CONNESSIONE CLOUD E LOGICA CLIP ---
 
