@@ -69,57 +69,21 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- FORZATURA POSIZIONE TASTO ACCEDI --- */
-    
-    /* Colpiamo la scatola esterna del bottone */
-    div.stButton:has(button[key="nav_login_btn"]) {
-        position: fixed !important;
-        top: 22px !important;    /* Lo spinge nella barra da 84px */
-        right: 5% !important;   /* Lo allinea a destra */
-        z-index: 1000002 !important;
-        width: auto !important;
-    }
-
-    /* Colpiamo il bottone vero e proprio per il colore */
-    button[key="nav_login_btn"] {
-        background-color: #28a745 !important; /* Verde serio */
-        color: white !important;
-        border: none !important;
-        padding: 8px 20px !important;
-        border-radius: 6px !important;
-        font-weight: 700 !important;
-        text-transform: uppercase !important;
-        transition: 0.3s ease !important;
-        width: auto !important;
-    }
-
-    button[key="nav_login_btn"]:hover {
-        background-color: #218838 !important;
-        transform: scale(1.05) !important;
-    }
-
 
     </style>
 """, unsafe_allow_html=True)
 
 
-# --- 2. HTML DELLA NAVBAR ---
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <div class='nav-auth-area'>
-            <!-- Il tasto Streamlit si posizionerà qui sopra grazie al CSS -->
-        </div>
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
-
-# --- 3. IL TASTO FISICO ---
-# Appare solo se l'utente non è ancora loggato
-if not st.session_state.get('autenticato', False):
-    st.button("ACCEDI", on_click=lambda: vai_a('login'), key="nav_login_btn")
 
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
