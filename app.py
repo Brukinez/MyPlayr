@@ -539,37 +539,44 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
-    /* --- STILE AUTENTICAZIONE PREMIUM --- */
-    .auth-wrapper {
+        /* --- STILE PAGINA LOGIN/REGISTER --- */
+    .auth-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        padding-top: 50px;
+        padding: 40px 20px;
     }
 
     .auth-card {
-        background-color: #2d343c !important; /* Grigio delle card */
-        width: 100%;
-        max-width: 450px; /* DIMENSIONE PERFETTA */
+        background-color: #2d343c !important; /* Grigio scuro della card */
         padding: 40px;
         border-radius: 12px;
+        width: 100%;
+        max-width: 450px; /* Larghezza perfetta come in foto */
         border: 1px solid rgba(255, 255, 255, 0.05);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
-    /* Rende i bottoni "ENTRA" e "CONFERMA" verdi e centrati */
-    div.stButton > button[key^="btn_auth"] {
+    /* Input personalizzati per il login */
+    .stTextInput input {
+        background-color: #1e2329 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        height: 45px !important;
+    }
+
+    /* Il tasto CREA ACCOUNT verde */
+    .btn-auth-primary button {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
-        width: 100% !important; /* Occupa tutta la larghezza della card */
+        width: 100% !important;
         height: 48px !important;
         font-weight: 800 !important;
-        border-radius: 6px !important;
-        margin-top: 10px !important;
+        text-transform: uppercase;
+        border: none !important;
+        margin-top: 20px !important;
     }
-
 
 </style>
 """
@@ -1017,6 +1024,10 @@ if st.session_state.pagina == 'home':
                     st.error("❌ Email non valida.")
 
 
+
+
+
+
         # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
         st.markdown("<div class='login-container'>", unsafe_allow_html=True)
         st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
@@ -1060,102 +1071,115 @@ if st.session_state.pagina == 'home':
             st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
 
 
+# --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
+
 elif st.session_state.pagina == 'login':
-    # Container principale centrato
-    st.markdown("<div class='auth-container'>", unsafe_allow_html=True)
+    # Centriamo il modulo di accesso con le colonne
+    _, col_log, _ = st.columns([1, 2, 1])
     
-    # Inizializzazione dello stato interno
-    if 'sub' not in st.session_state: 
-        st.session_state.sub = 'login'
+    with col_log:
+        # Inizializzazione dello stato interno per navigare tra Login e Registrazione
+        if 'sub' not in st.session_state: 
+            st.session_state.sub = 'login'
 
-    # --- 1. SOTTO-PAGINA: LOGIN (ACCEDI) ---
-    if st.session_state.sub == 'login':
-        st.markdown("<h1 style='text-align: center; color: white; font-weight: 900; margin-bottom: 5px;'>ACCEDI</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Bentornato su MyClipzo</p>", unsafe_allow_html=True)
-        
-        st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
-        u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
-        p_login = st.text_input("Password", type="password", placeholder="******")
-        
-        st.markdown("<div class='btn-auth-primary'>", unsafe_allow_html=True)
-        if st.button("ENTRA", key="btn_login_main"):
-            if u_login and p_login:
-                try:
-                    res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
-                    if res_log.data:
-                        utente = res_log.data[0]
-                        st.session_state.autenticato = True
-                        st.session_state.user_email = utente['email']
-                        st.session_state.user_role = utente.get('ruolo', 'Player')
-                        st.session_state.user_nick = utente.get('nome', 'Campione')
-                        st.success(f"Bentornato {st.session_state.user_nick}!")
-                        if st.session_state.user_role == "admin": vai_a('admin')
-                        else: vai_a('home_auth')
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
+        if st.session_state.sub == 'login':
+            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo</h2>", unsafe_allow_html=True)
+            
+            # Input utente
+            u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
+            p_login = st.text_input("Password", type="password", placeholder="******")
+            
+            if st.button("ENTRA", use_container_width=True):
+                if u_login and p_login:
+                    try:
+                        # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
+                        res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
+                        
+                        if res_log.data:
+                            # UTENTE TROVATO: Salviamo i dati nella sessione
+                            utente = res_log.data[0]
+                            st.session_state.autenticato = True
+                            st.session_state.user_email = utente['email']
+                            st.session_state.user_role = utente.get('ruolo', 'Player')
+                            st.session_state.user_nick = utente.get('nome', 'Campione')
+                            
+                            st.success(f"Bentornato {st.session_state.user_nick}!")
+                            
+                            # Controllo automatico: se sei admin vai in dashboard, altrimenti in home_auth
+                            if st.session_state.user_role == "admin":
+                                vai_a('admin')
+                            else:
+                                vai_a('home_auth')
+                                
+                            st.rerun()
+                        else:
+                            st.error("❌ Credenziali errate o account inesistente.")
+                    except Exception as e:
+                        st.error(f"⚠️ Errore di connessione: {e}")
+                else:
+                    st.warning("Compila tutti i campi!")
+
+            # Opzioni secondarie
+            col_l1, col_l2 = st.columns(2)
+            with col_l1:
+                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
+                    st.session_state.sub = 'recupero'
+                    st.rerun()
+            with col_l2:
+                if st.button("Registrati ora", type="secondary", use_container_width=True):
+                    st.session_state.sub = 'reg'
+                    st.rerun()
+            
+            
+
+        # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
+        elif st.session_state.sub == 'reg':
+            st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
+            
+            r_n = st.text_input("Nome", placeholder="es. Mario")
+            r_c = st.text_input("Cognome", placeholder="es. Rossi")
+            r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
+            r_p = st.text_input("Scegli una Password", type="password")
+            
+            if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                if r_n and r_c and r_e and r_p:
+                    try:
+                        # Controlliamo prima se l'email esiste già (Uso della funzione creata nel Blocco 5)
+                        nuovo_utente = {
+                            "nome": r_n, 
+                            "cognome": r_c, 
+                            "email": r_e, 
+                            "password": r_p, 
+                            "ruolo": "Player"
+                        }
+                        supabase.table("utenti").insert(nuovo_utente).execute()
+                        st.success("✅ Account creato con successo! Ora puoi accedere.")
+                        st.session_state.sub = 'login'
                         st.rerun()
-                    else: st.error("❌ Credenziali errate.")
-                except Exception as e: st.error(f"⚠️ Errore: {e}")
-            else: st.warning("Compila tutti i campi!")
-        st.markdown("</div>", unsafe_allow_html=True)
+                    except Exception as e:
+                        st.error(f"Errore: Email già registrata o problema tecnico.")
+                else: 
+                    st.error("⚠️ Inserisci tutti i dati richiesti!")
+            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+                st.session_state.sub = 'login'
+                st.rerun()
 
-        # Opzioni secondarie stilizzate
-        st.markdown("<hr style='border: 0.5px solid #444; margin: 20px 0;'>", unsafe_allow_html=True)
-        col_l1, col_l2 = st.columns(2)
-        with col_l1:
-            if st.button("Password persa?", key="f_lost_pass", use_container_width=True): 
-                st.session_state.sub = 'recupero'; st.rerun()
-        with col_l2:
-            if st.button("Registrati", key="f_go_reg", use_container_width=True):
-                st.session_state.sub = 'reg'; st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # --- 2. SOTTO-PAGINA: REGISTRAZIONE (L'ESTETICA DELLO SCREENSHOT) ---
-    elif st.session_state.sub == 'reg':
-        st.markdown("<h1 style='text-align: center; color: white; font-weight: 900; margin-bottom: 5px;'>CREA IL TUO ACCOUNT</h1>", unsafe_allow_html=True)
-        st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Unisciti alla community MyClipzo</p>", unsafe_allow_html=True)
-        
-        st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
-        
-        # Nome e Cognome affiancati come nello screen
-        c1, c2 = st.columns(2)
-        with c1: r_n = st.text_input("Nome", placeholder="es. Mario")
-        with c2: r_c = st.text_input("Cognome", placeholder="es. Rossi")
-        
-        r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
-        r_p = st.text_input("Scegli una Password", type="password")
-        
-        st.markdown("<div class='btn-auth-primary'>", unsafe_allow_html=True)
-        if st.button("CONFERMA REGISTRAZIONE", key="btn_reg_main"):
-            if r_n and r_c and r_e and r_p:
-                try:
-                    nuovo_utente = {"nome": r_n, "cognome": r_c, "email": r_e, "password": r_p, "ruolo": "Player"}
-                    supabase.table("utenti").insert(nuovo_utente).execute()
-                    st.success("✅ Account creato!")
-                    st.session_state.sub = 'login'; st.rerun()
-                except Exception as e: st.error("Errore: Email già registrata.")
-            else: st.error("⚠️ Dati mancanti!")
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("🔙 TORNA AL LOGIN", key="f_back_log", use_container_width=True): 
-            st.session_state.sub = 'login'; st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # --- 3. SOTTO-PAGINA: RECUPERO ---
-    elif st.session_state.sub == 'recupero':
-        st.markdown("<h1 style='text-align: center; color: white; font-weight: 900;'>RECUPERO</h1>", unsafe_allow_html=True)
-        st.markdown("<div class='auth-card'>", unsafe_allow_html=True)
-        m_rec = st.text_input("Email di registrazione").strip().lower()
-        if st.button("INVIA ISTRUZIONI", key="btn_rec_main", use_container_width=True):
-            st.info(f"Istruzioni inviate a {m_rec}")
-        if st.button("🔙 TORNA", key="f_back_rec", use_container_width=True): 
-            st.session_state.sub = 'login'; st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    # Tasto finale per tornare alla Home
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.button("← Torna alla Home", on_click=lambda: vai_a('home'), key="f_back_home_abs")
-    st.markdown("</div>", unsafe_allow_html=True)
-
+        # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
+        elif st.session_state.sub == 'recupero':
+            st.markdown("<h2 style='text-align: center;'>Recupero Credenziali</h2>", unsafe_allow_html=True)
+            m_rec = st.text_input("La tua Email di registrazione").strip().lower()
+            
+            if st.button("INVIA ISTRUZIONI", use_container_width=True):
+                if m_rec:
+                    st.info(f"Se l'account esiste, riceverai una mail a {m_rec} (Funzione in test)")
+                else:
+                    st.warning("Inserisci un'email!")
+            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+                st.session_state.sub = 'login'
+                st.rerun()
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
@@ -1816,7 +1840,9 @@ Limitazioni d'uso:
     
     st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
     
- 
+    
+
+
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
     st.markdown("<h1 style='text-align: center; color: white;'>TERMINI E CONDIZIONI</h1>", unsafe_allow_html=True)
