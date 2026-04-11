@@ -152,11 +152,32 @@ EMERGENT_CSS = """
         transition: 0.3s ease;             /* Movimento fluido */
         height: 100%;                      /* Altezza uguale per tutte */
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
-
-        /* AGGIUNGI QUESTE DUE RIGHE */
-        max-width: 800px;       /* Riduce la larghezza massima di ogni singola card */
-        margin: 0 auto;         /* Le centra se lo spazio intorno aumenta */
+        
+            /* DIMENSIONI PERFETTE PER 3 COLONNE */
+        height: 250px;       /* Altezza fissa per simmetria */
+        width: 100%;         
+        max-width: 360px;    /* Impedisce che diventino troppo larghe su monitor grandi */
+        margin: 0 auto;      /* Centra la card nella sua colonna */
+        
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
+
+    /* Titoli dentro le card (Maiuscoli e Bold) */
+    .mcp-card h3 {
+        font-size: 18px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        margin-bottom: 15px !important;
+        color: white !important;
+    }
+
+    /* Testo descrittivo delle card (Più piccolo e leggibile) */
+    .mcp-card p {
+        font-size: 16px !important; /* Molto più vicino allo screenshot */
+        color: #94a3b8 !important;
+        line-height: 1.5 !important;
+    }
+
 
     .mcp-card:hover {
         transform: translateY(-5px);       /* La scheda si alza leggermente */
