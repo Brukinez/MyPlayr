@@ -178,25 +178,6 @@ EMERGENT_CSS = """
 
 
 
-
- 
-
-    .btn-pro-outline {
-        background-color: transparent;
-        color: white !important;
-        padding: 14px 28px;
-        border-radius: 8px;
-        font-weight: 800;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-family: 'Inter', sans-serif;
-        text-transform: uppercase;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: 0.3s;
-    }
-
     .btn-pro-green:hover, .btn-pro-outline:hover {
         transform: scale(1.05);
         filter: brightness(1.1);
