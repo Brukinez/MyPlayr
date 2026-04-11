@@ -198,36 +198,12 @@ EMERGENT_CSS = """
         border: none !important;
     }
 
-       /* CENTRA IL TASTO ACCEDI SOTTO LA NEWSLETTER */
+    /* IL TASTO ACCEDI (Sotto la scatola) */
     .login-container {
-        display: flex !important;
-        justify-content: center !important; /* Centra orizzontalmente */
-        align-items: center !important;
-        width: 100% !important;
-        margin-top: -20px !important; /* Lo avvicina alla scatola della newsletter */
-        margin-bottom: 50px !important;
-        padding: 20px !important;
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
     }
-
-    /* STILE DEL BOTTONE "ACCEDI AL PORTALE" */
-    div.login-container button {
-        background-color: #2d343c !important; /* Grigio come le card */
-        color: white !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 12px !important;
-        padding: 15px 40px !important;
-        font-weight: 700 !important;
-        font-size: 18px !important;
-        transition: 0.3s !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
-    }
-
-    div.login-container button:hover {
-        border-color: rgb(41, 168, 71) !important; /* Diventa verde al passaggio */
-        transform: translateY(-3px) !important;
-        color: rgb(41, 168, 71) !important;
-    }
-
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
