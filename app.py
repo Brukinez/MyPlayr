@@ -170,13 +170,53 @@ EMERGENT_CSS = """
 
     /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
-        font-size: 20px !important;
+        font-size: 18px !important;
         color: #94a3b8;                    /* Grigio chiaro leggibile */
         line-height: 1.6;
         margin-top: 10px;
     }
 
-   
+
+
+        /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
+    .icon-box {
+        width: 56px;
+        height: 56px;
+        background-color: rgba(41, 168, 71, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+        transition: background-color 0.3s;
+    }
+
+
+
+    /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
+    .hero-badge {
+        display: inline-flex !important;
+        align-items: center !important;
+        background-color: rgba(41, 168, 71, 0.2) !important; /* Verde trasparente */
+        border: 0.88px solid rgba(41, 168, 71, 0.3) !important;
+        border-radius: 9999px !important;
+        color: rgb(41, 168, 71) !important; /* Testo verde */
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 14px !important;
+        padding: 8px 16px !important;
+        margin-bottom: 32px !important;
+        text-align: center !important;
+    }
+
+    /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
+    .custom-nav {
+        background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
+        backdrop-filter: blur(10px); /* Effetto vetro */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    
 
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
@@ -196,7 +236,7 @@ EMERGENT_CSS = """
 
     .stat-number {
         color: rgb(41, 168, 71); /* Il tuo verde */
-        font-size: 52px;
+        font-size: 42px;
         font-weight: 900;
         line-height: 1;
         margin-bottom: 8px;
@@ -205,7 +245,7 @@ EMERGENT_CSS = """
 
     .stat-label {
         color: #94a3b8;
-        font-size: 22px;
+        font-size: 12px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
