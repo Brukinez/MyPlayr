@@ -258,14 +258,19 @@ EMERGENT_CSS = """
         border-radius: 8px !important;
     }
 
- 
-    /* IL TASTO ACCEDI (Sotto la scatola) */
-    .login-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
+    /* IL TASTO ISCRIVITI */
+    div[data-testid="stForm"] button {
+        background-color: rgb(41, 168, 71) !important;
+        color: black !important;
+        height: 50px !important;
+        width: 100% !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        text-transform: uppercase !important;
+        border: none !important;
     }
 
+ 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
         background-color: #212b27; /* Verde scurissimo quasi nero */
