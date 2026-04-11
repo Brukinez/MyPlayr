@@ -52,23 +52,7 @@ st.markdown("""
         gap: 12px !important;
     }
 
-    .mc-box {
-        background-color: rgb(41, 168, 71); 
-        color: black;
-        font-weight: 900;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 16px;
-        line-height: 1;
-    }
 
-    .brand-name {
-        color: white; 
-        font-size: 20px;
-        font-weight: 700;
-        font-family: 'Inter', sans-serif;
-    }
-               
 
     </style>
 """, unsafe_allow_html=True)
