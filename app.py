@@ -49,7 +49,7 @@ st.markdown("""
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        gap: 12px !important;
+        gap: 8px !important;
     }
 
     .mc-box {
