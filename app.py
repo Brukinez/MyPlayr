@@ -146,75 +146,7 @@ EMERGENT_CSS = """
         background-color: rgba(36, 225, 112, 0.08) !important;
     }
    
-    /* Card personalizzate */
-    .data-card, .stat-box {
-        background: linear-gradient(180deg, #202b37 0%, var(--bg-panel) 100%);
-        border: 1px solid rgba(36, 225, 112, 0.25);
-        border-left: 4px solid var(--neon);
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
-    }
 
-    .data-card {
-        padding: 15px;
-        margin-bottom: 10px;
-        font-size: 14px;
-    }
-
-    .stat-box {
-        text-align: center;
-        padding: 15px;
-    }
-
-    .avatar-container { text-align: center; margin-bottom: 20px; }
-    .avatar-img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 3px solid var(--neon);
-        box-shadow: 0 0 28px rgba(36, 225, 112, 0.22);
-        object-fit: cover;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg-soft);
-        font-size: 60px;
-    }
-
-     /* --- STILE SPECIFICO PER IL FOOTER (CARD STATICA) --- */
-    .footer-card {
-        background-color: #2d343c !important; /* Stesso grigio delle card sopra */
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px 20px 0 0;        /* Arrotondato solo in alto */
-        padding: 60px 5% 40px 5% !important;
-        margin-top: 80px !important;
-        width: 100%;
-    }
-
-    /* I link del footer: grigi come i testi delle card, ma senza box verde intorno */
-    div.stButton > button[key^="f_"] {
-        background-color: transparent !important;
-        color: #94a3b8 !important; /* Lo stesso grigio che hai nelle card */
-        border: none !important;
-        text-align: left !important;
-        padding: 4px 0 !important;
-        font-weight: 500 !important;
-        text-transform: none !important;
-        font-size: 15px !important;
-        width: auto !important;
-        display: block !important;
-    }
-
- 
-    .footer-title {
-        color: white !important;
-        font-weight: 900 !important;
-        text-transform: uppercase;
-        font-size: 13px !important;
-        letter-spacing: 1px;
-        margin-bottom: 20px !important;
-    }
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
@@ -244,77 +176,8 @@ EMERGENT_CSS = """
         margin-top: 10px;
     }
 
-    /* --- STILE DEL BADGE (ETICHETTA ARROTONDATA) --- */
-        /* --- STILE DEL BADGE (ETICHETTA) --- */
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        background-color: rgba(41, 168, 71, 0.2); /* Sfondo verde trasparente */
-        border: 0.88px solid rgba(41, 168, 71, 0.3);
-        border-radius: 9999px;
-        color: rgb(41, 168, 71); /* TESTO VERDE COME RICHIESTO */
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-        font-size: 14px;
-        padding: 8px 16px;
-        margin-bottom: 32px;
-    }
-
-    /* --- STILE PAROLA EVIDENZIATA --- */
-    .verde-clipzo {
-        color: rgb(41, 168, 71); /* IL VERDE IDENTICO AL BADGE */
-    }
-
-    /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
-    .hero-description {
-        color: #94a3b8; /* Un grigio azzurrino molto elegante */
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;      /* Grandezza del testo */
-        line-height: 1.6;     /* Spazio tra le righe per leggere meglio */
-        max-width: 600px;     /* Impedisce alla scritta di diventare troppo larga */
-        margin: 0 auto;       /* La centra perfettamente */
-        margin-top: 24px;     /* Spazio staccato dal titolo sopra */
-        margin-bottom: 40px;  /* Spazio prima dei bottoni o delle card sotto */
-        text-align: center;
-    }
 
 
-    .btn-pro-green {
-        background-color: rgb(41, 168, 71); /* Il tuo verde */
-        color: white !important;
-        padding: 14px 28px;
-        border-radius: 8px;
-        font-weight: 800;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-family: 'Inter', sans-serif;
-        text-transform: uppercase;
-        transition: 0.3s;
-        border: none;
-    }
-
-    .btn-pro-outline {
-        background-color: transparent;
-        color: white !important;
-        padding: 14px 28px;
-        border-radius: 8px;
-        font-weight: 800;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-family: 'Inter', sans-serif;
-        text-transform: uppercase;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: 0.3s;
-    }
-
-    .btn-pro-green:hover, .btn-pro-outline:hover {
-        transform: scale(1.05);
-        filter: brightness(1.1);
-    }
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
         width: 56px;
@@ -329,10 +192,6 @@ EMERGENT_CSS = """
     }
 
 
-    /* Effetto quando passi il mouse sulla scheda intera */
-    .mcp-card:hover .icon-box {
-        background-color: rgba(41, 168, 71, 0.3); /* Diventa leggermente più scuro */
-    }
 
     /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
     .hero-badge {
