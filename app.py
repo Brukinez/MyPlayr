@@ -652,9 +652,9 @@ if st.session_state.pagina == 'home':
                     max-width: 600px; 
                     margin: 24px auto 40px auto;
                 '>
-                    Ogni partita merita di essere ricordata! MyClipzo registra <br>
-                    automaticamente le tue azioni e ti  permette di creare highlight <br>
-                                           professionali.
+                    Ogni partita merita di essere ricordata! MyClipzo <br>
+                    automaticamente le tue azioni e ti <br>
+                    permette di creare highlight professionali.
                 </p>
             </div>
         """, unsafe_allow_html=True)
