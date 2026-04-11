@@ -179,6 +179,20 @@ EMERGENT_CSS = """
 
 
 
+    /* --- STILE DELLA DESCRIZIONE SOTTO IL TITOLO --- */
+    .hero-description {
+        color: #94a3b8; /* Un grigio azzurrino molto elegante */
+        font-family: 'Inter', sans-serif;
+        font-size: 18px;      /* Grandezza del testo */
+        line-height: 1.6;     /* Spazio tra le righe per leggere meglio */
+        max-width: 600px;     /* Impedisce alla scritta di diventare troppo larga */
+        margin: 0 auto;       /* La centra perfettamente */
+        margin-top: 24px;     /* Spazio staccato dal titolo sopra */
+        margin-bottom: 40px;  /* Spazio prima dei bottoni o delle card sotto */
+        text-align: center;
+    }
+
+
     .btn-pro-green {
         background-color: rgb(41, 168, 71); /* Il tuo verde */
         color: white !important;
