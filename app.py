@@ -286,7 +286,7 @@ EMERGENT_CSS = """
     .login-container {
         display: flex;
         justify-content: center;
-        margin-top: 30px;
+        margin-top: 0px;
     }
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
