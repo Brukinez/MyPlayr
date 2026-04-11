@@ -346,6 +346,10 @@ for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
         os.makedirs(cartella)
 
 
+
+# --- BLOCCO 2: STILE E CSS ---
+st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
+
 # --- BLOCCO 3: CONNESSIONE CLOUD E LOGICA CLIP ---
 
 # Importiamo la connessione dal tuo file database.py
