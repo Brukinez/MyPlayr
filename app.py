@@ -231,7 +231,17 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
-   
+    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
+    div[data-testid="stForm"] {
+        background-color: #2d343c !important; /* Il grigio delle tue card */
+        max-width: 800px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
+    }
 
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
@@ -285,6 +295,9 @@ EMERGENT_CSS = """
         text-transform: uppercase;
     }
 
+    .cta-final-section .highlight-green {
+        color: rgb(41, 168, 71) !important;
+    }
 
     .cta-final-section p {
         color: #94a3b8 !important;
