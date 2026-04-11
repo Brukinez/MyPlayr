@@ -238,7 +238,7 @@ EMERGENT_CSS = """
 
     .stat-label {
         color: #94a3b8;
-        font-size: 18x;
+        font-size: 20x;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
