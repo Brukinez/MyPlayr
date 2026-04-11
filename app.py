@@ -410,17 +410,14 @@ EMERGENT_CSS = """
         text-align: center !important;
     }
 
-  
-
-    /* --- SFONDO CON IMMAGINE E SFUMATURA SCURA --- */
-    .stApp {
-        background: 
-            linear-gradient(rgba(11, 15, 19, 0.85), rgba(11, 15, 19, 0.85)), 
-            url('https://unsplash.com'); /* Foto campo da calcio */
-        background-size: cover !important;
-        background-position: center !important;
-        background-attachment: fixed !important;
+    /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
+    .custom-nav {
+        background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
+        backdrop-filter: blur(10px); /* Effetto vetro */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
+
+    
 
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
@@ -535,7 +532,7 @@ EMERGENT_CSS = """
         color: white !important;
         padding: 15px 40px !important;
         border-radius: 6px !important;
-        font-weight: 900 !important;
+        font-weight: 450 !important;
         font-size: 18px !important;
         text-transform: uppercase !important;
         border: none !important;
