@@ -279,7 +279,38 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+       /* STILE LINK NAVBAR */
+    .nav-links {
+        display: flex !important;
+        gap: 20px !important;
+        align-items: center !important;
+    }
+
+    .nav-link {
+        color: white !important;
+        text-decoration: none !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        transition: 0.3s !important;
+        cursor: pointer !important;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    .nav-link:hover {
+        color: rgb(41, 168, 71) !important; /* Diventa verde al passaggio */
+    }
+
+    /* OTTIMIZZAZIONE SMARTPHONE */
+    @media (max-width: 768px) {
+        .brand-name { display: none !important; } /* Nasconde 'MyClipzo' per far spazio */
+        .nav-links { gap: 10px !important; }
+        .nav-link { font-size: 13px !important; }
+        .mc-box { font-size: 20px !important; padding: 8px !important; }
+        .sticky-navbar { height: 70px !important; }
+    }
+
 </style>
 """
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
@@ -560,41 +591,52 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
+# --- NAVBAR DINAMICA UNIFICATA (PUBBLICA + PRIVATA) ---
 
-# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
-if st.session_state.autenticato:
-    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
-    is_admin = st.session_state.get('user_role') == "admin"
+# Creiamo il contenuto della Navbar in base al login
+if not st.session_state.autenticato:
+    # NAVBAR PER CHI NON È LOGGATO
+    links_html = """
+        <div class='nav-links'>
+            <button class='nav-link' onclick="window.location.href='#login'">ACCEDI</button>
+        </div>
+    """
+    # Se l'utente clicca Accedi, attiviamo la funzione vai_a tramite Streamlit
+    # Trucco: usiamo un bottone invisibile o il controllo della pagina
+    if st.button("ACCEDI", key="nav_accedi", help="Clicca per entrare"):
+        vai_a('login')
+else:
+    # NAVBAR PER CHI È LOGGATO (Home, Profilo, Clip, ecc.)
+    # Usiamo le colonne di Streamlit per i link così sono cliccabili
+    col_nav = st.columns([2, 1, 1, 1, 1, 1, 1]) # Spazio per Logo + 6 tasti
     
-    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
-    # Usiamo col_nav per indicare le colonne della barra
-    col_nav = st.columns(7 if is_admin else 6)
-    
-    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
-    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
-    
-    # Tasto speciale per il Gestore del Centro (Admin)
-    if is_admin:
-        with col_nav[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
-    
-    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
-    with col_nav[-1]: 
-        if st.button("🚪 Esci", type="secondary", use_container_width=True):
-            # Azioni di pulizia totale quando l'utente se ne va
+    with col_nav[1]: 
+        if st.button("🏠", key="n_h"): vai_a('home_auth')
+    with col_nav[2]: 
+        if st.button("👤", key="n_p"): vai_a('profilo')
+    with col_nav[3]: 
+        if st.button("🏟️", key="n_g"): vai_a('partite')
+    with col_nav[4]: 
+        if st.button("🎞️", key="n_c"): vai_a('mie_clip')
+    with col_nav[5]: 
+        if st.session_state.get('user_role') == "admin":
+            if st.button("🛡️", key="n_a"): vai_a('admin')
+    with col_nav[6]:
+        if st.button("🚪", key="n_out"):
             st.session_state.autenticato = False
-            st.session_state.user_email = ""
-            st.session_state.user_role = "user"
-            st.session_state.user_nick = ""
-            st.session_state.pagina = 'home' # Torna alla pagina pubblica
-            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
-            
-    # Linea verde di separazione definita nel tuo CSS (hr)
-    st.divider() 
+            vai_a('home')
+
+# DISEGNIAMO LA BARRA FISSA (SFONDO)
+st.markdown(f"""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
+        </div>
+        <!-- I link o bottoni appariranno qui sopra grazie alle colonne di Streamlit -->
+    </div>
+""", unsafe_allow_html=True)
+
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
