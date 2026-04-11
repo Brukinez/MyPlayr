@@ -650,7 +650,7 @@ if st.session_state.pagina == 'home':
                 <p style='
                     color: #94a3b8; 
                     font-family: "Inter", sans-serif; 
-                    font-size: 18px; 
+                    font-size: 24px; 
                     line-height: 1.6; 
                     max-width: 600px; 
                     margin: 24px auto 40px auto;
