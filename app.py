@@ -237,35 +237,6 @@ EMERGENT_CSS = """
         padding-top: 100px !important;
     }
 
-        /* POSIZIONAMENTO BOTTONI STREAMLIT SOPRA LA NAVBAR */
-    .stElementContainer:has(button[kind="secondary"]) {
-        position: fixed !important;
-        top: 22px !important; /* Allineamento verticale nella barra da 84px */
-        z-index: 1000001 !important;
-    }
-
-    /* TRUCCO PER RENDERE I BOTTONI SOLO SCRITTE (NIENTE BORDI) */
-    div.stButton > button[kind="secondary"] {
-        background: transparent !important;
-        border: none !important;
-        color: white !important;
-        font-weight: 700 !important;
-        font-size: 16px !important;
-        text-transform: uppercase !important;
-    }
-
-    div.stButton > button[kind="secondary"]:hover {
-        color: rgb(41, 168, 71) !important;
-        background: transparent !important;
-    }
-
-    /* POSIZIONI ORIZZONTALI (A DESTRA) */
-    /* Se non loggato, l'unico tasto ACCEDI va a destra */
-    .st-key-nav_accedi {
-        right: 5% !important;
-        width: auto !important;
-    }
-
             /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
     .sticky-navbar {
         position: fixed;
@@ -589,46 +560,41 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-# --- NAVBAR UNIFICATA: SCRITTE SOPRA LA BARRA ---
+# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
 
-# 1. DISEGNIAMO LO SFONDO FISSO (LA BARRA GRIGIA)
-st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# 2. POSIZIONIAMO LE SCRITTE (BOTTONI TRASPARENTI)
-if not st.session_state.autenticato:
-    # Solo ACCEDI a destra
-    if st.button("ACCEDI", key="nav_accedi", type="secondary"):
-        vai_a('login')
-else:
-    # NAVIGAZIONE DOPO IL LOGIN (Scritte orizzontali)
-    # Creiamo una riga di colonne per distanziarli
-    c1, c2, c3, c4, c5, c_out = st.columns([1,1,1,1,1,1])
+# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
+if st.session_state.autenticato:
+    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
+    is_admin = st.session_state.get('user_role') == "admin"
     
-    with c1: 
-        if st.button("HOME", key="n_h", type="secondary"): vai_a('home_auth')
-    with c2: 
-        if st.button("PROFILO", key="n_p", type="secondary"): vai_a('profilo')
-    with c3: 
-        if st.button("PARTITE", key="n_g", type="secondary"): vai_a('partite')
-    with c4: 
-        if st.button("CLIP", key="n_c", type="secondary"): vai_a('mie_clip')
+    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
+    # Usiamo col_nav per indicare le colonne della barra
+    col_nav = st.columns(7 if is_admin else 6)
     
-    if st.session_state.get('user_role') == "admin":
-        with c5: 
-            if st.button("ADMIN", key="n_a", type="secondary"): vai_a('admin')
+    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
+    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
     
-    with c_out:
-        if st.button("ESCI", key="n_out", type="secondary"):
+    # Tasto speciale per il Gestore del Centro (Admin)
+    if is_admin:
+        with col_nav[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+    
+    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
+    with col_nav[-1]: 
+        if st.button("🚪 Esci", type="secondary", use_container_width=True):
+            # Azioni di pulizia totale quando l'utente se ne va
             st.session_state.autenticato = False
-            vai_a('home')
- 
+            st.session_state.user_email = ""
+            st.session_state.user_role = "user"
+            st.session_state.user_nick = ""
+            st.session_state.pagina = 'home' # Torna alla pagina pubblica
+            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
+            
+    # Linea verde di separazione definita nel tuo CSS (hr)
+    st.divider() 
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
