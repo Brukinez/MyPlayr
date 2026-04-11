@@ -207,7 +207,7 @@ EMERGENT_CSS = """
         align-items: center;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        margin: 50px 0;
+        margin: 80px 0;
     }
 
     .stat-item {
@@ -255,7 +255,7 @@ EMERGENT_CSS = """
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         color: white !important;
         height: 50px !important;
-        border-radius: 16px !important;
+        border-radius: 8px !important;
     }
 
     /* IL TASTO ISCRIVITI */
