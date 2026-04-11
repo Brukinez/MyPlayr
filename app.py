@@ -1763,7 +1763,7 @@ if st.session_state.pagina == 'partite':
 
 # --- PAGINA PRIVACY POLICY ---
 elif st.session_state.pagina == 'privacy':
-    st.markdown("<h1 style='text-align: center; color: white;'>🛡️ Privacy Policy</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
     
     # Incolla il tuo testo tra le triple virgolette
     testo_privacy = """ 1. Titolare del Trattamento
@@ -1793,8 +1793,8 @@ elif st.session_state.pagina == 'diritti':
     st.markdown("<h2 style='text-align: center; color: white;'>© Diritti Riservati</h2>", unsafe_allow_html=True)
     
     testo_diritti = """
-    Proprietà dei Contenuti e Diritti Riservati
-Tutti i contenuti presenti su questo sito, inclusi testi, grafica, loghi, icone, immagini e il software di gestione, sono di proprietà esclusiva di MyClipzo o dei suoi licenzianti e sono protetti dalle leggi internazionali sul diritto d'autore.
+    Proprietà dei Contenuti e Diritti Riservati:
+    Tutti i contenuti presenti su questo sito, inclusi testi, grafica, loghi, icone, immagini e il software di gestione, sono di proprietà esclusiva di MyClipzo o dei suoi licenzianti e sono protetti dalle leggi internazionali sul diritto d'autore.
 Riprese Video e Clip:
 Le riprese effettuate durante gli eventi sportivi hanno finalità di analisi tecnica e documentazione amatoriale. I diritti relativi alle immagini appartengono a MyClipzo, fermo restando il diritto all'immagine dei partecipanti.
 Limitazioni d'uso:
@@ -1809,7 +1809,7 @@ Limitazioni d'uso:
 
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
-    st.markdown("<h1 style='text-align: center; color: white;'>⚖️ Termini e Condizioni</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: white;'>TERMINI E CONDIZIONI</h1>", unsafe_allow_html=True)
     
     # Incolla il tuo testo tra le triple virgolette
     testo_termini = """
@@ -1844,7 +1844,7 @@ elif st.session_state.pagina == 'termini':
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
 
 if st.session_state.pagina == 'hall_of_fame':
-    st.markdown("<h1 style='text-align: center;'>🏆 MyClipzo Hall of Fame</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>HALL OF FAME</h1>", unsafe_allow_html=True)
     st.divider()
 
     try:
