@@ -207,7 +207,7 @@ EMERGENT_CSS = """
         align-items: center;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        margin: 80px 0;
+        margin: 50px 0;
     }
 
     .stat-item {
@@ -319,7 +319,45 @@ EMERGENT_CSS = """
         transition: 0.3s !important;
     }
 
-    
+      /* --- STILE PAGINA LOGIN/REGISTER --- */
+    .auth-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .auth-card {
+        background-color: #2d343c !important; /* Grigio scuro della card */
+        padding: 40px;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 450px; /* Larghezza perfetta come in foto */
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Input personalizzati per il login */
+    .stTextInput input {
+        background-color: #1e2329 !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        height: 45px !important;
+    }
+
+    /* Il tasto CREA ACCOUNT verde */
+    .btn-auth-primary button {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        width: 100% !important;
+        height: 48px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        border: none !important;
+        margin-top: 20px !important;
+    }
+  
 </style>
 """
 
