@@ -653,7 +653,7 @@ if st.session_state.pagina == 'home':
                     margin: 24px auto 40px auto;
                 '>
                     Ogni partita merita di essere ricordata! MyClipzo <br>
-                    automaticamente le tue azioni e ti <br>
+                    registra automaticamente le tue azioni e ti <br>
                     permette di creare highlight professionali.
                 </p>
             </div>
