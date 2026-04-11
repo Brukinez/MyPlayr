@@ -193,22 +193,6 @@ EMERGENT_CSS = """
 
 
 
-    /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
-    .hero-badge {
-        display: inline-flex !important;
-        align-items: center !important;
-        background-color: rgba(41, 168, 71, 0.2) !important; /* Verde trasparente */
-        border: 0.88px solid rgba(41, 168, 71, 0.3) !important;
-        border-radius: 9999px !important;
-        color: rgb(41, 168, 71) !important; /* Testo verde */
-        font-family: 'Inter', sans-serif !important;
-        font-weight: 500 !important;
-        font-size: 14px !important;
-        padding: 8px 16px !important;
-        margin-bottom: 32px !important;
-        text-align: center !important;
-    }
-
     /* --- NAVBAR GRIGIA CON EFFETTO SFOCATO --- */
     .custom-nav {
         background-color: rgba(30, 35, 41, 0.8) !important; /* Grigio come lo screen */
