@@ -140,7 +140,6 @@ EMERGENT_CSS = """
     }
    
 
-
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
         background-color: #2d343c !important; /* Il grigio esatto della tua foto */
@@ -182,7 +181,6 @@ EMERGENT_CSS = """
         transition: background-color 0.3s;
     }
 
-
     /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
     .hero-badge {
         display: inline-flex !important;
@@ -198,7 +196,6 @@ EMERGENT_CSS = """
         margin-bottom: 32px !important;
         text-align: center !important;
     }
-
       
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
@@ -637,7 +634,7 @@ if st.session_state.pagina == 'home':
     
     with col_centro:
         # Questo è il piccolo badge che abbiamo appena creato
-        st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
+        st.markdown("<div style='bold (grassetto): center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
         
         # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
         st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
