@@ -154,9 +154,9 @@ EMERGENT_CSS = """
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
         
             /* DIMENSIONI PERFETTE PER 3 COLONNE */
-        height: 500px;       /* Altezza fissa per simmetria */
+        height: 350px;       /* Altezza fissa per simmetria */
         width: 100%;         
-        max-width: 360px;    /* Impedisce che diventino troppo larghe su monitor grandi */
+        max-width: 560px;    /* Impedisce che diventino troppo larghe su monitor grandi */
         margin: 0 auto;      /* Centra la card nella sua colonna */
         
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
