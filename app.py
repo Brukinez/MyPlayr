@@ -306,18 +306,7 @@ EMERGENT_CSS = """
         font-size: 18px !important;
     }
 
-    /* Il tastone verde grande */
-    .btn-create-account button {
-        background-color: rgb(41, 168, 71) !important;
-        color: white !important;
-        padding: 15px 40px !important;
-        border-radius: 6px !important;
-        font-weight: 900 !important;
-        font-size: 24x !important;
-        text-transform: uppercase !important;
-        border: none !important;
-        transition: 0.3s !important;
-    }
+    
 
     
 </style>
