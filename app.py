@@ -326,7 +326,7 @@ st.markdown("""
 # Se l'utente non è loggato, creiamo il bottone
 if not st.session_state.get('autenticato', False):
     # NOTA: Lo scriviamo così, senza colonne o altro, ci pensa il CSS a spostarlo
-    st.button("ACCEDI", key="nav_login_main")
+    st.button("ACCEDI", key="top_login")
 
 
     # Inseriamo i tasti a destra nella Navbar usando le colonne di Streamlit
