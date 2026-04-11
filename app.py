@@ -169,8 +169,6 @@ EMERGENT_CSS = """
         margin-top: 10px;
     }
 
-
-
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
         width: 56px;
@@ -185,7 +183,6 @@ EMERGENT_CSS = """
     }
 
 
-
     /* --- RIPRISTINO BADGE VERDE (LA RIVOLUZIONE...) --- */
     .hero-badge {
         display: inline-flex !important;
@@ -196,7 +193,7 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71) !important; /* Testo verde */
         font-family: 'Inter', sans-serif !important;
         font-weight: 500 !important;
-        font-size: 14px !important;
+        font-size: 28px !important;
         padding: 8px 16px !important;
         margin-bottom: 32px !important;
         text-align: center !important;
