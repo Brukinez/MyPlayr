@@ -155,7 +155,7 @@ EMERGENT_CSS = """
 
         /* AGGIUNGI QUESTE DUE RIGHE */
         max-width: 400px;       /* Riduce la larghezza massima di ogni singola card */
-        margin: 0 auto;         /* Le centra se lo spazio intorno aumenta */
+        margin: 30px;         /* Le centra se lo spazio intorno aumenta */
     }
 
     .mcp-card:hover {
