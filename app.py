@@ -203,13 +203,7 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
 
-    .stat-label {
-        color: #94a3b8;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
+
     /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
         background-color: #2d343c !important; /* Il grigio delle tue card */
