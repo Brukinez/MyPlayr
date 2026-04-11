@@ -1815,26 +1815,26 @@ elif st.session_state.pagina == 'termini':
     testo_termini = """
    
 
-1. Descrizione del servizio
-Piattaforma digitale per la fruizione di clip video generate in strutture partner. Il servizio è fornito "così com'è" per scopi di intrattenimento.
+1. Descrizione del servizio -
+    Piattaforma digitale per la fruizione di clip video generate in strutture partner. Il servizio è fornito "così com'è" per scopi di intrattenimento.
 
-2. Registrazione
-L'utente dichiara di avere almeno 18 anni o di possedere il consenso dei genitori.
+2. Registrazione -
+    L'utente dichiara di avere almeno 18 anni o di possedere il consenso dei genitori.
 
-3. Utilizzo delle clip
-Le clip sono per uso personale. La condivisione sui social è una scelta libera e consapevole dell'utente.
+3. Utilizzo delle clip -
+    Le clip sono per uso personale. La condivisione sui social è una scelta libera e consapevole dell'utente.
 
-4. Responsabilità dell’utente
-È vietato l'uso delle clip per scopi diffamatori, illegali o per ledere la dignità altrui. L'utente è l'unico responsabile dei contenuti pubblicati.
+4. Responsabilità dell’utente -
+    È vietato l'uso delle clip per scopi diffamatori, illegali o per ledere la dignità altrui. L'utente è l'unico responsabile dei contenuti pubblicati.
 
-5. Limitazione di responsabilità
-MyClipzo non garantisce la continuità del servizio in caso di guasti tecnici o mancanza di rete nel centro sportivo. Le riprese non hanno valore legale o arbitrale e non possono essere usate in procedimenti disciplinari o civili.
+5. Limitazione di responsabilità -
+    MyClipzo non garantisce la continuità del servizio in caso di guasti tecnici o mancanza di rete nel centro sportivo. Le riprese non hanno valore legale o arbitrale e non possono essere usate in procedimenti disciplinari o civili.
 
-6. Sospensione
-Ci riserviamo di chiudere account che violano le regole di community o caricano contenuti impropri.
+6. Sospensione - 
+    Ci riserviamo di chiudere account che violano le regole di community o caricano contenuti impropri.
 
-7. Foro competente
-Per ogni controversia è competente il Foro di [Tua Città], Italia.
+7. Foro competente - 
+    Per ogni controversia è competente il Foro di [Tua Città], Italia.
 
     """
     
@@ -1918,8 +1918,6 @@ if st.session_state.pagina == 'recupero_password':
     st.markdown("<h2 style='text-align: center;'>Recupero Password</h2>", unsafe_allow_html=True)
     st.info("Abbiamo inviato le istruzioni alla tua email.")
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
-
-
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
