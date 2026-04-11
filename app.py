@@ -1579,6 +1579,7 @@ Limitazioni d'uso:
     st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
     
     
+
 # --- PAGINA TERMINI E CONDIZIONI ---
 elif st.session_state.pagina == 'termini':
     st.markdown("<h1 style='text-align: center; color: white;'>TERMINI E CONDIZIONI</h1>", unsafe_allow_html=True)
