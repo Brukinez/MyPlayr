@@ -532,7 +532,7 @@ EMERGENT_CSS = """
         color: white !important;
         padding: 15px 40px !important;
         border-radius: 6px !important;
-        font-weight: 450 !important;
+        font-weight: 900 !important;
         font-size: 18px !important;
         text-transform: uppercase !important;
         border: none !important;
