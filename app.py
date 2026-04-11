@@ -69,24 +69,35 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
                
-      /* --- FORZIAMO IL TASTO DENTRO LA NAVBAR --- */
-    div.stButton > button[key="nav_login_btn"] {
+    /* --- FORZATURA POSIZIONE TASTO ACCEDI --- */
+    
+    /* Colpiamo la scatola esterna del bottone */
+    div.stButton:has(button[key="nav_login_btn"]) {
+        position: fixed !important;
+        top: 22px !important;    /* Lo spinge nella barra da 84px */
+        right: 5% !important;   /* Lo allinea a destra */
+        z-index: 1000002 !important;
+        width: auto !important;
+    }
+
+    /* Colpiamo il bottone vero e proprio per il colore */
+    button[key="nav_login_btn"] {
         background-color: #28a745 !important; /* Verde serio */
         color: white !important;
         border: none !important;
-        padding: 8px 24px !important;
+        padding: 8px 20px !important;
         border-radius: 6px !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        
-        /* POSIZIONAMENTO ASSOLUTO RISPETTO ALLO SCHERMO */
-        position: fixed !important;
-        top: 18px !important;   /* Lo spinge dentro la barra alta 84px */
-        right: 5% !important;   /* Lo allinea a destra */
-        width: auto !important; /* Impedisce che diventi lungo quanto tutto il sito */
-        z-index: 1000002 !important; /* Sopra a tutto */
         transition: 0.3s ease !important;
+        width: auto !important;
     }
+
+    button[key="nav_login_btn"]:hover {
+        background-color: #218838 !important;
+        transform: scale(1.05) !important;
+    }
+
 
     </style>
 """, unsafe_allow_html=True)
