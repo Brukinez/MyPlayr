@@ -198,7 +198,7 @@ EMERGENT_CSS = """
         border: none !important;
     }
 
-    /* CENTRA IL TASTO ACCEDI SOTTO LA NEWSLETTER */
+       /* CENTRA IL TASTO ACCEDI SOTTO LA NEWSLETTER */
     .login-container {
         display: flex !important;
         justify-content: center !important; /* Centra orizzontalmente */
