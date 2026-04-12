@@ -218,31 +218,23 @@ EMERGENT_CSS = """
     }
 
 
-    /* 1. ALLARGHIAMO LA CARD PER FARE POSTO AL TASTO */
+    /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
-        background-color: #212b27 !important;
-        padding: 80px 5% 120px 5% !important; /* Aumentato il padding sotto (120px) */
+        background-color: #212b27; /* Verde scurissimo quasi nero */
+        padding: 100px 5%;
         text-align: center;
         border-top: 1px solid rgba(41, 168, 71, 0.2);
         margin-top: 50px;
     }
 
-    /* 2. INTEGRIAMO IL TASTO (LO TIRIAMO SU) */
-    div.stButton > button[key="home_reg_btn"] {
-        position: relative !important;
-        top: -80px !important; /* Sposta il tasto in alto dentro la card */
-        background-color: rgb(41, 168, 71) !important;
+    .cta-final-section h2 {
         color: white !important;
-        border: none !important;
-        border-radius: 8px !important;
-        font-size: 22px !important;
-        font-weight: 800 !important;
-        padding: 12px 30px !important;
-        z-index: 10 !important; /* Lo tiene sopra lo sfondo */
-        margin: 0 auto !important;
-        display: block !important;
+        font-size: 45px !important;
+        font-weight: 900 !important;
+        line-height: 1.1 !important;
+        margin-bottom: 20px !important;
+        text-transform: uppercase;
     }
-
 
     .cta-final-section .highlight-green {
         color: rgb(41, 168, 71) !important;
