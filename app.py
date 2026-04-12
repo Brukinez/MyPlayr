@@ -396,6 +396,56 @@ EMERGENT_CSS = """
         background-color: transparent !important;
     }
 
+    /* --- OTTIMIZZAZIONE PER SMARTPHONE E TABLET --- */
+    @media (max-width: 768px) {
+        
+        /* 1. IL TITOLO GIGANTE (Hero) */
+        /* Lo portiamo da 100px a 45px, altrimenti esce dallo schermo */
+        .stApp h1 {
+            font-size: 45px !important;
+            line-height: 1.1 !important;
+        }
+
+        /* 2. LE DESCRIZIONI (Sotto il titolo e nelle card) */
+        .stApp p {
+            font-size: 16px !important;
+            line-height: 1.4 !important;
+        }
+
+        /* 3. LE CARD (Più compatte) */
+        .mcp-card {
+            padding: 15px !important;
+            margin-bottom: 15px !important;
+        }
+        
+        .mcp-card p {
+            font-size: 16px !important; /* Riduciamo i 24px del PC a 16px */
+        }
+
+        /* 4. I BOTTONI VERDI (Meno ingombranti) */
+        button[key="home_login_btn"], 
+        button[key="home_reg_btn"] {
+            font-size: 18px !important;
+            padding: 10px 20px !important;
+            width: 100% !important; /* Su mobile è meglio averli a tutta larghezza */
+        }
+
+        /* 5. IL FOOTER (Scritte leggibili ma non giganti) */
+        button[key^="f_"] {
+            font-size: 16px !important;
+        }
+        
+        .footer-title {
+            font-size: 14px !important;
+            margin-top: 20px !important;
+        }
+
+        /* 6. NEWSLETTER (La card si adatta) */
+        div[data-testid="stForm"] {
+            padding: 20px !important;
+            margin: 10px !important;
+        }
+    }
 
 </style>
 """
