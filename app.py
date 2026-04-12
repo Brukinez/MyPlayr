@@ -144,17 +144,34 @@ EMERGENT_CSS = """
     }
 
       
-    /* --- SEZIONE STATISTICHE (STRISCIA) --- */
-    .stats-container {
-        background-color: #38404a; /* Lo stesso grigio delle tue card */
-        padding: 40px 5%;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        margin: 50px 0;
-    }
+        /* STATISTICHE SU SMARTPHONE (PIÙ SPAZIO E RESPIRO) */
+        .stats-container {
+            flex-direction: column !important; 
+            /* Aumentiamo il primo numero (80px) per dare aria sopra e sotto */
+            padding: 80px 20px !important; 
+            /* Aumentiamo lo spazio tra un numero e l'altro */
+            gap: 60px !important; 
+            height: auto !important;
+            width: 100% !important;
+            margin: 40px 0 !important;
+        }
+
+        .stat-item {
+            display: block !important;
+            width: 100% !important;
+            margin-bottom: 0 !important;
+        }
+
+        .stat-number {
+            font-size: 48px !important; /* Numeri belli grandi e leggibili */
+            margin-bottom: 5px !important;
+        }
+
+        .stat-label {
+            font-size: 16px !important; /* Scritta sotto più chiara */
+            letter-spacing: 2px !important;
+        }
+
 
     .stat-item {
         text-align: center;
