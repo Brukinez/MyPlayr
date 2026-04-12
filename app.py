@@ -279,16 +279,17 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- CONTENITORE LOGIN POTENZIATO --- */
+    /* --- CONTENITORE LOGIN --- */
     .mcp-auth-container {
         background-color: #2d343c !important; 
-        border: 2px solid rgba(255, 255, 255, 0.1) !important; /* Bordo più spesso per vederlo bene */
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 16px !important;
         padding: 40px !important;
-        width: 100% !important; /* Occupa tutto lo spazio della colonna centrale */
+        margin-top: 20px !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
         display: block !important;
     }
+
 
    
 </style>
@@ -853,34 +854,36 @@ elif st.session_state.pagina == 'login':
             
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
-        elif st.session_state.sub == 'reg':
-            # Creiamo 3 colonne con proporzioni: 1 parte vuota, 2 parti per la card, 1 parte vuota
+         elif st.session_state.sub == 'reg':
+            # Questo [1, 2, 1] costringe la colonna centrale a essere più stretta
             vuoto_sx, centro, vuoto_dx = st.columns([1, 2, 1])
             
             with centro:
-                # Questo pezzetto apre la scatola
-                st.markdown('<div class="mcp-auth-container">', unsafe_allow_html=True)
+                # CREIAMO UN CONTENITORE FISICO
+                con = st.container()
                 
-                st.markdown("<h2 style='text-align: center; color: white;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
+                # METTIAMO IL CSS DENTRO IL CONTENITORE
+                con.markdown('<div class="mcp-auth-container">', unsafe_allow_html=True)
                 
-                r_n = st.text_input("Nome", placeholder="es. Mario")
-                r_c = st.text_input("Cognome", placeholder="es. Rossi")
-                r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
-                r_p = st.text_input("Scegli una Password", type="password")
+                # TUTTI GLI INPUT DEVONO ESSERE DENTRO 'con'
+                con.markdown("<h2 style='text-align: center; color: white;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
+                r_n = con.text_input("Nome", placeholder="es. Mario")
+                r_c = con.text_input("Cognome", placeholder="es. Rossi")
+                r_e = con.text_input("Email", placeholder="mario.rossi@mail.com")
+                r_p = con.text_input("Scegli una Password", type="password")
                 
-                st.write("") # Spazio
-                
-                if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
-                    # Rimetti qui la tua logica Supabase (il pezzetto con try/except)
-                    pass 
+                if con.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                    # Qui la tua logica Supabase
+                    pass
 
-                # Questo pezzetto chiude la scatola
-                st.markdown('</div>', unsafe_allow_html=True)
+                # CHIUDIAMO IL DIV DENTRO IL CONTENITORE
+                con.markdown('</div>', unsafe_allow_html=True)
                 
-                # Bottone per tornare indietro fuori dalla scatola
+                # Tasto torna indietro (fuori dal contenitore grigio)
                 if st.button("🔙 TORNA AL LOGIN", use_container_width=True): 
                     st.session_state.sub = 'login'
                     st.rerun()
+
 
 
 
