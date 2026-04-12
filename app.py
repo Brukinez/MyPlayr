@@ -864,8 +864,9 @@ if st.session_state.pagina == 'home':
         st.markdown("""
             <div class='cta-final-section'>
                 <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
-                <p style='font-size: 22px; !important; color: #94a3b8;'>
-                    Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie performance e condividere le loro migliori azioni.</p>
+                <p style='font-size: 20px; !important; color: #94a3b8;'>
+                    Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie 
+                    performance e condividere le loro migliori azioni.</p>
                 <p>
             </div>
         """, unsafe_allow_html=True)
