@@ -193,7 +193,7 @@ EMERGENT_CSS = """
     /* IL TASTO ISCRIVITI */
     div[data-testid="stForm"] button {
         background-color: rgb(41, 168, 71) !important;
-        color: black !important;
+        color: white !important;
         height: 50px !important;
         width: 100% !important;
         font-weight: 800 !important;
