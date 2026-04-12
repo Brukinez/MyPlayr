@@ -60,10 +60,11 @@ def make_direct_link(url):
 EMERGENT_CSS = """
 <style>
  
-    /* SFONDO GENERALE DELLA PAGINA */
+    /* SFONDO GENERALE - Grigio chiaro per contrasto */
     .stApp {
         background-color: #2d343c !important; 
     }
+
 
     
 
