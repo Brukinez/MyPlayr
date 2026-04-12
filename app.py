@@ -866,7 +866,7 @@ if st.session_state.pagina == 'home':
                 <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
                 <p style='font-size: 20px; !important; color: #94a3b8;'>
                     Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie <p>
-                <p> performance e condividere le loro migliori azioni.</p>
+                 performance e condividere le loro migliori azioni.</p>
                 
             </div>
         """, unsafe_allow_html=True)
