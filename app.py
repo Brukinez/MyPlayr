@@ -279,15 +279,17 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- NUOVO CONTENITORE LOGIN/REGISTRAZIONE --- */
+    /* --- CONTENITORE LOGIN POTENZIATO --- */
     .mcp-auth-container {
         background-color: #2d343c !important; 
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 2px solid rgba(255, 255, 255, 0.1) !important; /* Bordo più spesso per vederlo bene */
         border-radius: 16px !important;
         padding: 40px !important;
-        margin-bottom: 20px !important;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+        width: 100% !important; /* Occupa tutto lo spazio della colonna centrale */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        display: block !important;
     }
+
    
 </style>
 """
@@ -852,11 +854,11 @@ elif st.session_state.pagina == 'login':
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
-            # Creiamo 3 colonne: le due laterali vuote servono a spingere il contenuto al centro
+            # Creiamo 3 colonne con proporzioni: 1 parte vuota, 2 parti per la card, 1 parte vuota
             vuoto_sx, centro, vuoto_dx = st.columns([1, 2, 1])
             
             with centro:
-                # Apriamo la scatola scura
+                # Questo pezzetto apre la scatola
                 st.markdown('<div class="mcp-auth-container">', unsafe_allow_html=True)
                 
                 st.markdown("<h2 style='text-align: center; color: white;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
@@ -866,19 +868,20 @@ elif st.session_state.pagina == 'login':
                 r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
                 r_p = st.text_input("Scegli una Password", type="password")
                 
-                st.write(" ") # Spazio vuoto tattico
+                st.write("") # Spazio
                 
                 if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
-                    # Qui incolla la tua logica Supabase che avevi prima (quella con l'if r_n and r_c...)
+                    # Rimetti qui la tua logica Supabase (il pezzetto con try/except)
                     pass 
 
-                # Chiudiamo la scatola scura
+                # Questo pezzetto chiude la scatola
                 st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Il tasto per tornare indietro lo mettiamo SOTTO la card, centrato
+                # Bottone per tornare indietro fuori dalla scatola
                 if st.button("🔙 TORNA AL LOGIN", use_container_width=True): 
                     st.session_state.sub = 'login'
                     st.rerun()
+
 
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
