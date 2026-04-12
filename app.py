@@ -337,25 +337,7 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* 2. Blocca i bottoni grigi (Secondary) e i link del footer */
-    div.stButton > button[kind="secondary"]:active,
-    div.stButton > button[kind="secondary"]:focus {
-        border-color: rgb(41, 168, 71) !important;
-        color: rgb(41, 168, 71) !important;
-        background-color: transparent !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-    /* 3. Sistema il riquadro della password sviluppatore */
-    .stTextInput div[data-baseweb="input"] {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-    }
-    .stTextInput div[data-baseweb="input"]:focus-within {
-        border-color: rgb(41, 168, 71) !important;
-    }
-
-        /* RENDE I BOTTONI DEL FOOTER SEMPLICI SCRITTE (SENZA RIQUADRO) */
+     /* RENDE I BOTTONI DEL FOOTER SEMPLICI SCRITTE (SENZA RIQUADRO) */
     div[data-testid="column"] button[kind="secondary"] {
         background-color: transparent !important; /* Toglie il riquadro scuro */
         border: none !important;                    /* Toglie il bordo */
@@ -376,6 +358,15 @@ EMERGENT_CSS = """
         background-color: transparent !important;   /* Resta senza sfondo */
     }
 
+    /* 3. Sistema il riquadro della password sviluppatore */
+    .stTextInput div[data-baseweb="input"] {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .stTextInput div[data-baseweb="input"]:focus-within {
+        border-color: rgb(41, 168, 71) !important;
+    }
+
+    
 </style>
 """
 
