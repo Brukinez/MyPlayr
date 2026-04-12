@@ -315,7 +315,14 @@ EMERGENT_CSS = """
         display: block !important;
         margin: 0 auto !important;   /* Lo centra */
     }
- 
+     /* ELIMINA IL BUG ROSSO SENZA CAMBIARE LE DIMENSIONI */
+    .stApp div.stButton > button[kind="primary"]:focus,
+    .stApp div.stButton > button[kind="primary"]:active {
+        background-color: rgb(41, 168, 71) !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
 </style>
 """
 
