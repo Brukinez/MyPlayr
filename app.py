@@ -60,11 +60,10 @@ def make_direct_link(url):
 EMERGENT_CSS = """
 <style>
  
-    /* SFONDO GENERALE - Grigio chiaro per contrasto */
+    /* 1. LO SFONDO (Più chiaro) */
     .stApp {
-        background-color: #2d343c !important; 
+        background-color: #252b32 !important; 
     }
-
 
     
 
@@ -75,19 +74,19 @@ EMERGENT_CSS = """
     }
    
 
-          /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
+    /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO PER RISALTARE --- */
     .mcp-card {
-        background-color: #2d343c !important; /* Il grigio esatto della tua foto */
-        border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
-        border-radius: 12px;               /* Angoli arrotondati perfetti */
-        padding: 24px;                     /* Spazio interno */
-        color: white;
-        font-family: 'Inter', sans-serif;
-        margin-bottom: 30px;
-        transition: 0.3s ease;             /* Movimento fluido */
-        height: 100%;                      /* Altezza uguale per tutte */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Ombra per l'effetto 3D */
+        background-color: #38404a !important; /* Grigio più chiaro dello sfondo */
+        border: 1px solid rgba(255, 255, 255, 0.1) !important; /* Bordino sottile per la profondità */
+        border-radius: 12px !important;
+        padding: 24px !important;
+        color: white !important;
+        font-family: 'Inter', sans-serif !important;
+        margin-bottom: 30px !important;
+        transition: 0.3s ease !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important; /* Ombra più marcata */
     }
+
 
     .mcp-card:hover {
         transform: translateY(-5px);       /* La scheda si alza leggermente */
