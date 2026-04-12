@@ -175,6 +175,7 @@ EMERGENT_CSS = """
         border: 1px solid rgba(255, 255, 255, 0.05) !important;
         box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
         text-align: center !important;
+        border-color: rgb(41, 168, 71);    /* Il bordo diventa del tuo verde */
     }
 
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
