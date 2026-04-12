@@ -355,6 +355,37 @@ EMERGENT_CSS = """
         border-color: rgb(41, 168, 71) !important;
     }
 
+        /* --- FOOTER MINIMALISTA (STILE MYPLAYR) --- */
+    
+    /* Titoli in maiuscolo e grassetto */
+    .footer-title {
+        color: white !important;
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        margin-bottom: 20px !important;
+        letter-spacing: 1px !important;
+    }
+
+    /* Rende i bottoni delle semplici scritte cliccabili a sinistra */
+    div[data-testid="column"] button {
+        background-color: transparent !important;
+        border: none !important;
+        color: #94a3b8 !important; /* Grigio MyPlayr */
+        padding: 0 !important;
+        margin: 5px 0 !important;
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        text-align: left !important; /* Allineamento a sinistra */
+        display: block !important;
+        height: auto !important;
+    }
+
+    div[data-testid="column"] button:hover {
+        color: white !important; /* Diventa bianco al passaggio, molto elegante */
+        background-color: transparent !important;
+    }
+
 </style>
 """
 
@@ -834,22 +865,45 @@ if st.session_state.pagina == 'home':
 
 
 
-           # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
-        st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
-        
-        f_col1, f_col2, f_col3 = st.columns(3)
-        with f_col1:
-            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 20px;'>La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.</p>", unsafe_allow_html=True)
-        
-        with f_col2:
-            st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-            st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
-            st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
-        
-        with f_col3:
-            st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
-            st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-            st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
+# --- FOOTER PROFESSIONALE (VERSIONE PULITA) ---
+st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
+
+f_col1, f_col2, f_col3 = st.columns([1.5, 1, 1]) # La prima colonna è più larga per la bio
+
+with f_col1:
+    # Logo MC + Bio (come hai detto, teniamo il logo stile navbar)
+    st.markdown("""
+        <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 15px;'>
+            <div class='mc-box' style='font-size: 16px; padding: 6px 10px;'>MC</div>
+            <b style='color: white; font-size: 20px;'>MyClipzo</b>
+        </div>
+        <p style='color: #94a3b8; font-size: 14px; line-height: 1.6; max-width: 300px;'>
+            La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Il calcio amatoriale come quello vero.
+        </p>
+    """, unsafe_allow_html=True)
+
+with f_col2:
+    st.markdown("<div class='footer-title'>NAVIGAZIONE</div>", unsafe_allow_html=True)
+    if st.button("Home", key="f_home"): vai_a('home')
+    if st.button("Hall of Fame", key="f_hall"): vai_a('hall_of_fame')
+    if st.button("Premium", key="f_prem"): pass
+    if st.button("Accedi", key="f_acc"): vai_a('login')
+
+with f_col3:
+    st.markdown("<div class='footer-title'>LEGALE</div>", unsafe_allow_html=True)
+    if st.button("Privacy Policy", key="f_priv"): pass
+    if st.button("Termini e Condizioni", key="f_term"): pass
+    if st.button("Cookie Policy", key="f_cook"): pass
+
+# Riga finale Copyright (molto sottile)
+st.markdown(f"""
+    <br><br>
+    <div style='display: flex; justify-content: space-between; color: #4a5568; font-size: 12px;'>
+        <div>© 2026 MyClipzo - Video Analysis for Future Champions</div>
+        <div>📍 Made with passion in Italy</div>
+    </div>
+""", unsafe_allow_html=True)
+  
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
 st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
