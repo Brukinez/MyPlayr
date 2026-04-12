@@ -304,7 +304,7 @@ EMERGENT_CSS = """
 
         /* 2. GRANDEZZA TESTO (Aumenta/Diminuisci qui) */
         font-size: 26px !important; 
-        font-weight: 800 !important;
+        font-weight: 600 !important;
         text-transform: uppercase !important;
 
         /* 3. DIMENSIONE RIQUADRO (Padding) */
@@ -335,11 +335,6 @@ EMERGENT_CSS = """
     .stApp div.stButton > button[kind="primary"] p {
         color: white !important;
     }
-
-
-
-
-
   
 </style>
 """
