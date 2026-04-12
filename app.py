@@ -294,48 +294,28 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- CENTRALE DI COMANDO BOTTONI (MODIFICA QUI) --- */
+        /* RIDUCIAMO IL RIQUADRO E INGRANDIAMO IL TESTO */
     .stApp div.stButton > button[kind="primary"] {
-        /* 1. COLORI E BORDI */
-        background-color: rgb(41, 168, 71) !important; 
+        background-color: rgb(41, 168, 71) !important;
         color: white !important;
         border: none !important;
         border-radius: 8px !important;
-
-        /* 2. GRANDEZZA TESTO (Aumenta/Diminuisci qui) */
-        font-size: 26px !important; 
-        font-weight: 600 !important;
-        text-transform: uppercase !important;
-
-        /* 3. DIMENSIONE RIQUADRO (Padding) */
-        /* Il primo numero (12px) è lo spazio sopra/sotto, il secondo (30px) è ai lati */
-        padding: 12px 30px !important; 
         
-        height: auto !important;
-        width: auto !important;
+        /* 1. GRANDEZZA SCRITTA: Cambia 22px per ingrandire/rimpicciolire */
+        font-size: 22px !important; 
+        font-weight: 800 !important;
+        
+        /* 2. ALTEZZA RIQUADRO: Riduciamo il padding (sopra e sotto) */
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        min-height: 10px !important; /* Toglie l'altezza minima di Streamlit */
+        height: auto !important;     /* Si adatta al testo */
+        
+        width: auto !important;      /* Lo rende largo quanto serve al testo */
         display: block !important;
-        margin: 0 auto !important;
-        transition: 0.2s !important;
+        margin: 0 auto !important;   /* Lo centra */
     }
-
-    /* --- RIPARAZIONE BUG (ELIMINA IL FLASH ROSSO) --- */
-    /* Queste righe dicono al bottone di restare VERDE in ogni istante del click */
-    .stApp div.stButton > button[kind="primary"]:focus,
-    .stApp div.stButton > button[kind="primary"]:active,
-    .stApp div.stButton > button[kind="primary"]:hover {
-        background-color: rgb(41, 168, 71) !important; /* Resta lo stesso verde */
-        color: white !important;
-        border: none !important;
-        outline: none !important;
-        box-shadow: none !important;
-        transform: scale(0.98) !important; /* Effetto pressione quasi invisibile */
-    }
-
-    /* Forza il testo bianco anche durante il caricamento */
-    .stApp div.stButton > button[kind="primary"] p {
-        color: white !important;
-    }
-  
+ 
 </style>
 """
 
