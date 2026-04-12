@@ -84,7 +84,12 @@ EMERGENT_CSS = """
         color: white !important;
         box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
     }
-
+    
+ /* CREIAMO LO STACCO E SISTEMIAMO IL TASTO ACCEDI SOTTO LA NEWSLETTER */
+    div[data-testid="stVerticalBlock"] > div:has(button[key="home_login_btn"]) {
+        margin-top: 60px !important; /* Questo crea lo spazio vuoto tra card e tasto */
+        text-align: center !important;
+    }
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
