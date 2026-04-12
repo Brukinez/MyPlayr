@@ -67,15 +67,27 @@ EMERGENT_CSS = """
         transition: 0.3s ease !important;
     }
 
-    /* COLPIAMO I TUOI DUE BOTTONI SPECIFICI */
+     /* SISTEMA BOTTONI VERDI: Più spazio e scritte grandi */
     button[key="home_login_btn"], 
     button[key="home_reg_btn"] {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
+        border-radius: 8px !important;
         border: none !important;
+        
+        /* 1. GRANDEZZA SCRITTA (Cambia questo numero per ingrandire) */
+        font-size: 24px !important; 
         font-weight: 800 !important;
-        height: 54px !important;
+
+        /* 2. SPAZIO INTERNO (Padding): il primo numero è sopra/sotto, il secondo è ai lati */
+        padding: 12px 30px !important; 
+        
+        height: auto !important;
+        width: auto !important;
+        display: block !important;
+        margin: 0 auto !important;
     }
+
 
     /* EFFETTO AL PASSAGGIO DEL MOUSE */
     button[key="home_login_btn"]:hover, 
