@@ -57,19 +57,34 @@ def make_direct_link(url):
 # Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
 EMERGENT_CSS = """
 <style>
- 
-    /* 1. LO SFONDO (Più chiaro) */
+    /* 1. LO SFONDO */
     .stApp {
         background-color: #252b32 !important; 
     }
 
-    
-
-    div[data-testid="stButton"] > button[kind="secondary"]:hover {
-        color: var(--neon) !important;
-        border-color: rgba(36, 225, 112, 0.65) !important;
-        background-color: rgba(36, 225, 112, 0.08) !important;
+    /* 2. FORZA IL VERDE SUGLI ACCENTI (SOVRASCRIVE IL SECONDARY) */
+    div.stButton > button {
+        transition: 0.3s ease !important;
     }
+
+    /* COLPIAMO I TUOI DUE BOTTONI SPECIFICI */
+    button[key="home_login_btn"], 
+    button[key="home_reg_btn"] {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        border: none !important;
+        font-weight: 800 !important;
+        height: 54px !important;
+    }
+
+    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    button[key="home_login_btn"]:hover, 
+    button[key="home_reg_btn"]:hover {
+        background-color: #24e170 !important;
+        color: white !important;
+        box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
+    }
+
    
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
