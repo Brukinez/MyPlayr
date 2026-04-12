@@ -11,20 +11,6 @@ import re
 from urllib.parse import urlparse, parse_qs
 from supabase import create_client, Client
 
-import base64
-
-def get_base64(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-# Carichiamo la tua immagine "sfondo.jpg"
-# Assicurati che il file si chiami esattamente così nella tua cartella!
-try:
-    img_base64 = get_base64("sfondo.jpg")
-except:
-    img_base64 = "" # Evita errori se il file manca
-
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
@@ -297,20 +283,7 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-       /* EFFETTO SFONDO CON IMMAGINE LOCALE */
-        .hero-section-bg {
-        background: 
-            linear-gradient(rgba(37, 43, 50, 0.4), rgba(37, 43, 50, 1)),
-            url("data:image/jpg;base64,""" + img_base64 + """) !important;
-            
-        background-size: cover !important;
-        background-position: center !important;
-        padding-top: 150px !important;
-        padding-bottom: 50px !important;
-        margin-top: -104px !important;
-    }
-
-
+   
 </style>
 """
 
@@ -628,31 +601,35 @@ if st.session_state.autenticato:
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
 
-# --- BLOCCO: PAGINA HOME (CON SFONDO IMMAGINE) ---
+# --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
+
 if st.session_state.pagina == 'home':
-    # Inizio della sezione con sfondo
-    st.markdown("<div class='hero-section-bg'>", unsafe_allow_html=True)
-    
-    # Usiamo le tue colonne originali
+    # Centriamo tutto con delle colonne, mettendo il contenuto in quella centrale
     _, col_centro, _ = st.columns([1, 4, 1])
     
     with col_centro:
+        # Questo è il piccolo badge che abbiamo appena creato
         st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
         
-        st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1; color: white;'>GIOCA. RIVEDITI.<br><span style='color: rgb(41, 168, 71);'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-        
+        # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
+        st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
+                # --- DESCRIZIONE CENTRATA ---
         st.markdown("""
             <div style='text-align: center; width: 100%;'>
-                <p style='color: #94a3b8; font-family: "Inter", sans-serif; font-size: 24px; line-height: 1.6; max-width: 600px; margin: 24px auto 40px auto;'>
+                <p style='
+                    color: #94a3b8; 
+                    font-family: "Inter", sans-serif; 
+                    font-size: 24px; 
+                    line-height: 1.6; 
+                    max-width: 600px; 
+                    margin: 24px auto 40px auto;
+                '>
                     Ogni partita merita di essere ricordata! MyClipzo <br>
                     registra automaticamente le tue azioni e ti <br>
                     permette di creare highlight professionali.
                 </p>
             </div>
         """, unsafe_allow_html=True)
-    
-    st.markdown("</div>", unsafe_allow_html=True) # Fine sezione sfondo
-
 
 
 
