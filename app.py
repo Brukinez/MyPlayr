@@ -467,6 +467,23 @@ EMERGENT_CSS = """
             padding-top: 85px !important; 
         }
 
+            /* 8. STATISTICHE SU SMARTPHONE (In colonna) */
+    @media (max-width: 768px) {
+        .stats-container {
+            flex-direction: column !important; /* Solo qui diventano verticali */
+            gap: 40px !important;
+            padding: 50px 10px !important;
+            text-align: center !important;
+        }
+
+        .stat-item {
+            width: 100% !important;
+        }
+
+        .stat-number {
+            font-size: 42px !important; /* Numeri leggibili su mobile */
+        }
+    }
 </style>
 """
 
