@@ -856,7 +856,7 @@ if st.session_state.pagina == 'home':
         <h2 style='color: white; font-weight: 900; text-transform: uppercase; margin-bottom: 10px;'>
             COME FUNZIONA
         </h2>
-        <p style='color: #94a3b8; font-size: 30px; max-width: 600px; margin: 0 auto;'>
+        <p style='color: #94a3b8; font-size: 22px; max-width: 600px; margin: 0 auto;'>
             Un ecosistema completo per trasformare ogni partita in contenuti da professionisti.
         </p>
     </div>
