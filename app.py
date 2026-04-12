@@ -790,15 +790,15 @@ if st.session_state.autenticato:
     col_nav = st.columns(7 if is_admin else 6)
     
     # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
-    with col_nav[0]: st.button("🏠 Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[1]: st.button("👤 Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[2]: st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[3]: st.button("🏆 Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[4]: st.button("🎞️ Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+    with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
     
     # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
-        with col_nav[5]: st.button("🛡️ Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+        with col_nav[5]: st.button("Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
     
     # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
     with col_nav[-1]: 
@@ -850,7 +850,19 @@ if st.session_state.pagina == 'home':
     if not st.session_state.autenticato:
        
         # --- SEZIONE: COME FUNZIONA (LAYOUT A 3 COLONNE) ---
-        st.markdown("<h2 style='text-align: center;'>COME FUNZIONA</h2>", unsafe_allow_html=True)
+        # --- TITOLO E DESCRIZIONE SEZIONE CARD ---
+        st.markdown("""
+    <div style='text-align: center; margin-bottom: 50px;'>
+        <h2 style='color: white; font-weight: 900; text-transform: uppercase; margin-bottom: 10px;'>
+            COME FUNZIONA
+        </h2>
+        <p style='color: #94a3b8; font-size: 18px; max-width: 600px; margin: 0 auto;'>
+            Tre semplici passaggi per trasformare la tua partita in un video professionale 
+            pronto per essere condiviso.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
+
                 # Creiamo tre colonne per mettere le schede una di fianco all'altra
         col1, col2, col3 = st.columns(3)
 
