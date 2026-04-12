@@ -853,10 +853,10 @@ if st.session_state.pagina == 'home':
         # --- TITOLO E DESCRIZIONE SEZIONE CARD ---
         st.markdown("""
     <div style='text-align: center; margin-bottom: 50px;'>
-        <h2 style='color: white; font-weight: 1000; text-transform: uppercase; margin-bottom: 10px;'>
+        <h2 style='color: white; font-weight: 900; text-transform: uppercase; margin-bottom: 10px;'>
             COME FUNZIONA
         </h2>
-        <p style='color: #94a3b8; font-size: 18px; max-width: 600px; margin: 0 auto;'>
+        <p style='color: #94a3b8; font-size: 22x; max-width: 600px; margin: 0 auto;'>
             Un ecosistema completo per trasformare ogni partita in contenuti da professionisti.
         </p>
     </div>
