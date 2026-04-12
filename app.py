@@ -279,26 +279,27 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* VESTIAMO ENTRAMBI I TASTI (ACCEDI E CREA ACCOUNT) IN VERDE PIENO */
-    div.stButton > button[key="home_login_btn"], 
-    div.stButton > button[key="home_reg_btn"] {
-        background-color: rgb(41, 168, 71) !important; /* Verde come ISCRIVITI */
-        color: white !important;                        /* Scritta bianca */
-        border: none !important;                        /* Rimuove bordi grigi */
-        border-radius: 8px !important;                 /* Angoli arrotondati */
-        font-weight: 800 !important;                    /* Testo in grassetto */
-        text-transform: uppercase !important;           /* Tutto maiuscolo */
-        height: 54px !important;                        /* Altezza professionale */
-        transition: 0.3s ease !important;
-        margin-top: 10px !important;
+    /* NUOVO TENTATIVO: PUNTA DIRETTAMENTE IL BOTTONE DENTRO IL SUO CONTENITORE */
+    .stApp div.stButton > button[key="home_login_btn"], 
+    .stApp div.stButton > button[key="home_reg_btn"] {
+        background-color: rgb(41, 168, 71) !important;
+        background: rgb(41, 168, 71) !important; /* Forza lo sfondo */
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 800 !important;
+        height: 54px !important;
+        width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
-    div.stButton > button[key="home_login_btn"]:hover, 
-    div.stButton > button[key="home_reg_btn"]:hover {
-        background-color: #24e170 !important;           /* Verde più chiaro al passaggio */
-        transform: translateY(-2px) !important;         /* Si alza leggermente */
-        box-shadow: 0 8px 20px rgba(41, 168, 71, 0.3) !important; /* Glow verde */
+    /* FORZA IL TESTO BIANCO ANCHE DENTRO IL BOTTONE */
+    .stApp div.stButton > button[key="home_login_btn"] p, 
+    .stApp div.stButton > button[key="home_reg_btn"] p {
+        color: white !important;
+        font-weight: 800 !important;
     }
 
   
