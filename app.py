@@ -1006,13 +1006,13 @@ if st.session_state.pagina == 'home':
         
         with f_col2:
             st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-            st.button("Home", on_click=lambda: vai_a('home'), key="f_home")
-            st.button("Partite", on_click=lambda: vai_a('partite'), key="f_part")
+            st.button("Home", on_click=lambda: vai_a('home'), key="f_home", type="secondary")
+            st.button("Partite", on_click=lambda: vai_a('partite'), key="f_part", type="secondary")
         
         with f_col3:
             st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
-            st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-            st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term")    
+            st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv", type="secondary")
+            st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term", type="secondary")   
 
 
 
