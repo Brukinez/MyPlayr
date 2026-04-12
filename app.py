@@ -366,7 +366,34 @@ EMERGENT_CSS = """
         border-color: rgb(41, 168, 71) !important;
     }
 
-    
+        /* PUNTA DIRETTAMENTE AI TASTI DEL FOOTER TRAMITE LE LORO CHIAVI */
+    button[key="f_priv"], 
+    button[key="f_term"], 
+    button[key="f_home"], 
+    button[key="f_part"],
+    button[key="f_copy_btn"] {
+        background-color: transparent !important; /* Toglie il rettangolo scuro */
+        border: none !important;                  /* Toglie il bordo */
+        box-shadow: none !important;              /* Toglie l'ombra */
+        color: #94a3b8 !important;                /* Grigio azzurrino */
+        padding: 0 !important;                    /* Rimuove lo spazio attorno */
+        height: auto !important;
+        min-height: 0px !important;
+        font-size: 16px !important;               /* Dimensione pulita */
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+
+    /* EFFETTO HOVER: Solo la scritta diventa verde */
+    button[key="f_priv"]:hover, 
+    button[key="f_term"]:hover, 
+    button[key="f_home"]:hover, 
+    button[key="f_part"]:hover,
+    button[key="f_copy_btn"]:hover {
+        color: rgb(41, 168, 71) !important;
+        background-color: transparent !important;
+    }
+
 </style>
 """
 
