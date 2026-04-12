@@ -447,12 +447,16 @@ EMERGENT_CSS = """
         }
     }
 
-            /* 7. STRISCIA STATISTICHE (Da orizzontale a verticale) */
-        .stats-container {
-            flex-direction: column !important; /* Mette i numeri uno sotto l'altro */
-            gap: 30px !important;
-            padding: 30px 10px !important;
-        }
+    /* STATISTICHE SU PC (In riga) */
+    .stats-container {
+        display: flex !important;
+        flex-direction: row !important; /* Forza la riga su PC */
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 40px 5% !important;
+        background-color: #2d343c !important;
+    }
+
         
         .stat-number {
             font-size: 38px !important; /* Rimpicciolisce i numeri giganti */
