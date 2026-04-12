@@ -171,7 +171,7 @@ EMERGENT_CSS = """
         padding: 50px !important;            /* Spazio interno per far respirare i testi */
         border-radius: 20px !important;
             /* Bordino verde sottile attorno alla card */
-    border: 1px solid rgba(41, 168, 71, 0.4) !important;
+    border: 1px solid rgba(41, 168, 71, 0.8) !important;
         box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
         text-align: center !important;
     }
