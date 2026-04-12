@@ -67,7 +67,7 @@ EMERGENT_CSS = """
         transition: 0.3s ease !important;
     }
 
-     /* SISTEMA BOTTONI VERDI: Più spazio e scritte grandi */
+    /* SISTEMA BOTTONI VERDI: Più spazio e scritte grandi */
     button[key="home_login_btn"], 
     button[key="home_reg_btn"] {
         background-color: rgb(41, 168, 71) !important;
@@ -86,15 +86,6 @@ EMERGENT_CSS = """
         width: auto !important;
         display: block !important;
         margin: 0 auto !important;
-    }
-
-
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
-    button[key="home_login_btn"]:hover, 
-    button[key="home_reg_btn"]:hover {
-        background-color: #24e170 !important;
-        color: white !important;
-        box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
     }
 
 
