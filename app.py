@@ -888,7 +888,7 @@ if st.session_state.pagina == 'home':
             <div class='mc-box' style='font-size: 16px; padding: 6px 10px;'>MC</div>
             <b style='color: white; font-size: 22px;'>MyClipzo</b>
         </div>
-        <p style='color: #94a3b8; font-size: 16px; line-height: 1.6;'>
+        <p style='color: #94a3b8; font-size: 18px; line-height: 1.6;'>
             La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo.
         </p>
         """, unsafe_allow_html=True)
