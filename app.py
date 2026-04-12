@@ -279,7 +279,15 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+      /* Colora di verde il tasto principale della registrazione */
+    div.stButton > button[key="btn_reg_main"] {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        border: none !important;
+        font-weight: 800 !important;
+        height: 50px !important;
+    }
+ 
 </style>
 """
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
@@ -874,20 +882,67 @@ elif st.session_state.pagina == 'login':
                 st.session_state.sub = 'login'
                 st.rerun()
 
-        # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
-        elif st.session_state.sub == 'recupero':
-            st.markdown("<h2 style='text-align: center;'>Recupero Credenziali</h2>", unsafe_allow_html=True)
-            m_rec = st.text_input("La tua Email di registrazione").strip().lower()
+        # --- 2. SOTTO-PAGINA: REGISTRAZIONE (STILE MYPLAYR) ---
+        elif st.session_state.sub == 'reg':
+            # Logo e Titolo sopra la card
+            st.markdown("""
+                <div style='text-align: center;'>
+                    <div class='mc-box' style='display: inline-block; margin-bottom: 20px;'>MC</div>
+                    <h1 style='font-weight: 900; margin-bottom: 0;'>CREA IL TUO ACCOUNT</h1>
+                    <p style='color: #94a3b8;'>Unisciti alla community MyClipzo</p>
+                </div>
+            """, unsafe_allow_html=True)
             
-            if st.button("INVIA ISTRUZIONI", use_container_width=True):
-                if m_rec:
-                    st.info(f"Se l'account esiste, riceverai una mail a {m_rec} (Funzione in test)")
-                else:
-                    st.warning("Inserisci un'email!")
+            # Apertura della Card
+            st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
             
-            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+            # Riga 1: Nome e Cognome affiancati
+            c1, c2 = st.columns(2)
+            with c1:
+                r_n = st.text_input("👤 Nome", placeholder="es. Mario")
+            with c2:
+                r_c = st.text_input("Cognome", placeholder="es. Rossi")
+            
+            # Riga 2: Email
+            r_e = st.text_input("📧 Email", placeholder="mario.rossi@mail.com").strip().lower()
+            
+            # Riga 3: Password
+            r_p = st.text_input("🔒 Password", type="password", placeholder="Minimo 6 caratteri")
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # Bottone Verde Principale
+            if st.button("CREA ACCOUNT", use_container_width=True, key="btn_reg_main"):
+                if r_n and r_c and r_e and r_p:
+                    try:
+                        nuovo_utente = {
+                            "nome": r_n, "cognome": r_c, "email": r_e, 
+                            "password": r_p, "ruolo": "Player"
+                        }
+                        supabase.table("utenti").insert(nuovo_utente).execute()
+                        st.success("✅ Account creato con successo!")
+                        st.session_state.sub = 'login'
+                        st.rerun()
+                    except:
+                        st.error("Errore: Email già presente.")
+                else: 
+                    st.error("⚠️ Compila tutti i campi!")
+            
+            # Separatore e opzione Login
+            st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'><p style='text-align: center; font-size: 14px; color: #94a3b8;'>Hai già un account?</p>", unsafe_allow_html=True)
+            
+            if st.button("ACCEDI", type="secondary", use_container_width=True, key="btn_back_to_login"): 
                 st.session_state.sub = 'login'
                 st.rerun()
+            
+            st.markdown("</div>", unsafe_allow_html=True) # Chiusura Card
+
+            # Link finale fuori dalla card
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("← Torna alla Home", key="back_home_reg"):
+                st.session_state.pagina = 'home'
+                st.rerun()
+
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
