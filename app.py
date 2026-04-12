@@ -348,61 +348,33 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* SCRITTE DEL FOOTER: Editabili e grandi */
-    button[key^="f_"] {
+    /* --- OPERAZIONE CHIRURGICA: RIMOZIONE TOTALE RIQUADRI FOOTER --- */
+    
+    /* 1. Colpiamo il bottone e ogni suo pezzetto interno */
+    button[key^="f_"], 
+    button[key^="f_"] > div, 
+    button[key^="f_"] div {
         background: none !important;
         background-color: transparent !important;
         border: none !important;
-        color: #94a3b8 !important;
+        box-shadow: none !important;
+        outline: none !important;
         padding: 0 !important;
-        text-align: left !important;
-        justify-content: flex-start !important;
-
-        /* MODIFICA QUESTO NUMERO PER INGRANDIRE LE SCRITTE MANUALMENTE */
-        font-size: 22px !important; 
-        
-        font-weight: 500 !important;
-        margin-bottom: 10px !important;
-    }
-
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
-    button[key^="f_"]:hover {
-        color: rgb(41, 168, 71) !important;
-        background: transparent !important;
-        text-decoration: underline !important; /* Aggiunge una sottolineatura per far capire che è un link */
-    }
-
-
-    /* 3. Sistema il riquadro della password sviluppatore */
-    .stTextInput div[data-baseweb="input"] {
-        border-color: rgba(255, 255, 255, 0.1) !important;
-    }
-    .stTextInput div[data-baseweb="input"]:focus-within {
-        border-color: rgb(41, 168, 71) !important;
-    }
-
-    /* TRASFORMA I BOTTONI IN TESTO PURO (STILE MYPLAYR) */
-    button[key^="f_"] {
-        background: none !important;           /* Rimuove il riquadro nero */
-        background-color: transparent !important;
-        border: none !important;                /* Rimuove i bordi */
-        box-shadow: none !important;            /* Rimuove l'ombra del tasto */
-        color: #94a3b8 !important;              /* Grigio azzurrino originale */
-        padding: 0 !important;                  /* Attacca la zona cliccabile al testo */
-        margin: 0 !important;
-        height: auto !important;
         min-height: 0px !important;
-        font-size: 20px !important;             /* Puoi cambiarlo manualmente qui */
-        font-weight: 500 !important;
-        text-align: left !important;
-        justify-content: flex-start !important;
+        height: auto !important;
     }
 
-    /* Effetto quando passi il mouse: la scritta si illumina senza far apparire riquadri */
-    button[key^="f_"]:hover {
+    /* 2. Regoliamo la scritta (falla grande quanto vuoi qui) */
+    button[key^="f_"] p {
+        font-size: 22px !important; /* <--- MODIFICA QUI LA GRANDEZZA */
+        color: #94a3b8 !important;
+        text-align: left !important;
+        margin: 0 !important;
+    }
+
+    /* 3. Effetto Hover: solo il testo cambia, nessun riquadro deve apparire */
+    button[key^="f_"]:hover p {
         color: white !important;
-        background: none !important;
-        background-color: transparent !important;
     }
 
 
