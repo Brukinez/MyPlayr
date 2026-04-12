@@ -335,19 +335,21 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* DISTRUGGI OGNI RIQUADRO NEI BOTTONI DEL FOOTER */
-    [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] button,
+    /* SCRITTE DEL FOOTER: Editabili e grandi */
     button[key^="f_"] {
         background: none !important;
         background-color: transparent !important;
         border: none !important;
-        box-shadow: none !important;
         color: #94a3b8 !important;
         padding: 0 !important;
-        height: auto !important;
-        min-height: 10px !important;
         text-align: left !important;
         justify-content: flex-start !important;
+
+        /* MODIFICA QUESTO NUMERO PER INGRANDIRE LE SCRITTE MANUALMENTE */
+        font-size: 22px !important; 
+        
+        font-weight: 500 !important;
+        margin-bottom: 10px !important;
     }
 
     /* EFFETTO AL PASSAGGIO DEL MOUSE */
