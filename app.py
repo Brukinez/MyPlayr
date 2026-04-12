@@ -337,6 +337,15 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
+    /* 2. Blocca i bottoni grigi (Secondary) e i link del footer */
+    div.stButton > button[kind="secondary"]:active,
+    div.stButton > button[kind="secondary"]:focus {
+        border-color: rgb(41, 168, 71) !important;
+        color: rgb(41, 168, 71) !important;
+        background-color: transparent !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
 
     /* 3. Sistema il riquadro della password sviluppatore */
     .stTextInput div[data-baseweb="input"] {
@@ -344,6 +353,27 @@ EMERGENT_CSS = """
     }
     .stTextInput div[data-baseweb="input"]:focus-within {
         border-color: rgb(41, 168, 71) !important;
+    }
+
+        /* RENDE I BOTTONI DEL FOOTER SEMPLICI SCRITTE (SENZA RIQUADRO) */
+    div[data-testid="column"] button[kind="secondary"] {
+        background-color: transparent !important; /* Toglie il riquadro scuro */
+        border: none !important;                    /* Toglie il bordo */
+        box-shadow: none !important;                /* Toglie l'ombra */
+        color: #94a3b8 !important;                  /* Grigio chiaro di base */
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        text-align: left !important;
+        height: auto !important;
+        padding: 0 !important;                      /* Stringe tutto attorno al testo */
+        margin-bottom: 8px !important;
+        transition: 0.3s !important;
+    }
+
+    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    div[data-testid="column"] button[kind="secondary"]:hover {
+        color: rgb(41, 168, 71) !important;         /* La scritta diventa verde */
+        background-color: transparent !important;   /* Resta senza sfondo */
     }
 
 </style>
