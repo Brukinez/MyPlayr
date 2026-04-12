@@ -144,32 +144,27 @@ EMERGENT_CSS = """
     }
 
       
-        /* STATISTICHE SU SMARTPHONE (PIÙ SPAZIO E RESPIRO) */
+        /* STATISTICHE SU SMARTPHONE - VERSIONE PROPORZIONATA E SOTTILE */
         .stats-container {
             flex-direction: column !important; 
-            /* Aumentiamo il primo numero (80px) per dare aria sopra e sotto */
-            padding: 80px 20px !important; 
-            /* Aumentiamo lo spazio tra un numero e l'altro */
-            gap: 60px !important; 
+            /* Riduciamo l'altezza totale (da 80px a 40px) */
+            padding: 40px 10px !important; 
+            /* Riduciamo lo spazio tra i numeri per non farla diventare chilometrica */
+            gap: 25px !important; 
+            margin: 20px 0 !important;
             height: auto !important;
-            width: 100% !important;
-            margin: 40px 0 !important;
-        }
-
-        .stat-item {
-            display: block !important;
-            width: 100% !important;
-            margin-bottom: 0 !important;
         }
 
         .stat-number {
-            font-size: 48px !important; /* Numeri belli grandi e leggibili */
-            margin-bottom: 5px !important;
+            /* Portiamo i numeri a una misura proporzionata al pollice (32px) */
+            font-size: 32px !important; 
+            margin-bottom: 2px !important;
         }
 
         .stat-label {
-            font-size: 16px !important; /* Scritta sotto più chiara */
-            letter-spacing: 2px !important;
+            /* Testo piccolo e discreto per non appesantire */
+            font-size: 12px !important; 
+            letter-spacing: 1px !important;
         }
 
 
