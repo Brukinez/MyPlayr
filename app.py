@@ -305,14 +305,15 @@ EMERGENT_CSS = """
         width: 100% !important;
     }
 
-    /* EFFETTO AL PASSAGGIO DEL MOUSE (PULITO E PROFESSIONALE) */
+       /* EFFETTO AL PASSAGGIO DEL MOUSE (COLORE SOBRIO) */
     .stApp div.stButton > button[kind="primary"]:hover {
-        background-color: #24e170 !important; /* Diventa solo un po' più chiaro */
+        background-color: rgb(35, 145, 61) !important; /* Un verde leggermente più scuro, non fluorescente */
         color: white !important;
         border: none !important;
-        box-shadow: none !important; /* <--- QUESTO TOGLIE L'EFFETTO NEON */
-        transform: translateY(-2px) !important; /* Resta solo il leggero movimento verso l'alto */
+        box-shadow: none !important; 
+        transform: scale(0.98) !important; /* Leggero effetto pressione (si rimpicciolisce un millimetro) */
     }
+
 
 
   
