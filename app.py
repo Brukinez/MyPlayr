@@ -279,20 +279,6 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- CONTENITORE REGISTRAZIONE --- */
-    .auth-card {
-        background-color: #2d343c !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 16px !important;
-        padding: 30px !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-        width: 400px !important; /* Larghezza fissa come MyPlayr */
-        margin: 0 auto !important; /* Centra orizzontalmente */
-        display: flex;
-        flex-direction: column;
-    }
-
-
    
 </style>
 """
@@ -857,40 +843,36 @@ elif st.session_state.pagina == 'login':
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
-            # 1. Creiamo lo spazio centrale
-            _, centro, _ = st.columns()
-
-            with centro:
-                # 2. Iniziamo la card con l'HTML
-                st.markdown('<div class="auth-card">', unsafe_allow_html=True)
-                
-                # Titolo centrato
-                st.markdown("<h2 style='text-align: center; color: white; margin-bottom: 20px;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
-                
-                # Campi di input (Streamlit li metterà uno sotto l'altro)
-                r_n = st.text_input("Nome", placeholder="es. Mario")
-                r_c = st.text_input("Cognome", placeholder="es. Rossi")
-                r_e = st.text_input("Email", placeholder="mario.rossi@mail.com")
-                r_p = st.text_input("Scegli una Password", type="password")
-                
-                st.write("") # Spazio
-                
-                if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
-                    # Qui la tua logica Supabase
-                    pass
-
-                # 3. Chiudiamo la card HTML
-                st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Tasto torna indietro fuori dalla card per pulizia
-                st.write("")
-                if st.button("🔙 TORNA AL LOGIN", use_container_width=True): 
-                    st.session_state.sub = 'login'
-                    st.rerun()
-
-
-
-
+            st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
+            
+            r_n = st.text_input("Nome", placeholder="es. Mario")
+            r_c = st.text_input("Cognome", placeholder="es. Rossi")
+            r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
+            r_p = st.text_input("Scegli una Password", type="password")
+            
+            if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                if r_n and r_c and r_e and r_p:
+                    try:
+                        # Controlliamo prima se l'email esiste già (Uso della funzione creata nel Blocco 5)
+                        nuovo_utente = {
+                            "nome": r_n, 
+                            "cognome": r_c, 
+                            "email": r_e, 
+                            "password": r_p, 
+                            "ruolo": "Player"
+                        }
+                        supabase.table("utenti").insert(nuovo_utente).execute()
+                        st.success("✅ Account creato con successo! Ora puoi accedere.")
+                        st.session_state.sub = 'login'
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Errore: Email già registrata o problema tecnico.")
+                else: 
+                    st.error("⚠️ Inserisci tutti i dati richiesti!")
+            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+                st.session_state.sub = 'login'
+                st.rerun()
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
         elif st.session_state.sub == 'recupero':
