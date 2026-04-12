@@ -217,7 +217,7 @@ EMERGENT_CSS = """
         border: none !important;
     }
 
-    
+
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
         background-color: #212b27; /* Verde scurissimo quasi nero */
