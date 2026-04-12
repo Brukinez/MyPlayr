@@ -983,8 +983,13 @@ if st.session_state.pagina == 'home':
         
         with f_col3:
             st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
-            st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv", type="secondary")
-            st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term", type="secondary")   
+    
+    # Invece di st.button, usiamo un link HTML stilizzato
+    if st.markdown("<span style='color: #94a3b8; cursor: pointer; font-size: 22px;' id='link-priv'>Privacy Policy</span>", unsafe_allow_html=True):
+        # Usiamo un piccolo trucco: un bottone invisibile sotto per la logica
+        if st.button("Apri Privacy", key="f_priv_hidden", help="Clicca sopra"):
+            vai_a('privacy')
+
 
 
 
