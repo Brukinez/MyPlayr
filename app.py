@@ -304,8 +304,8 @@ EMERGENT_CSS = """
         font-weight: 800 !important;
         
         /* 2. ALTEZZA RIQUADRO: Riduciamo il padding (sopra e sotto) */
-        padding-top: 12px !important;
-        padding-bottom: 12px !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
         min-height: 10px !important; /* Toglie l'altezza minima di Streamlit */
         height: auto !important;     /* Si adatta al testo */
         
