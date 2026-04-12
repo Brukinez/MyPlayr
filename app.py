@@ -1670,17 +1670,5 @@ if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", 
     st.session_state.pagina = 'diritti'
     st.rerun()
 
-# CSS per far sembrare il bottone una semplice scritta bianca
-st.markdown("""
-    <style>
-    button.st-key-f_copy_btn {
-        border: none !important;
-        background: transparent !important;
-        color: white !important;
-        font-size: 13px !important;
-        margin-top: 5px !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 
