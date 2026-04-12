@@ -323,28 +323,36 @@ EMERGENT_CSS = """
         outline: none !important;
     }
 
-        /* ELIMINA IL COLORE ROSSO DI STREAMLIT DA TUTTO IL SITO */
-    /* 1. Toglie il bordo rosso quando clicchi o selezioni qualcosa */
-    *:focus {
+    /* --- BLINDATURA TOTALE ANTI-ROSSO --- */
+    /* 1. Blocca i bottoni verdi (Primary) in ogni istante del click */
+    div.stButton > button[kind="primary"], 
+    div.stButton > button[kind="primary"]:hover, 
+    div.stButton > button[kind="primary"]:focus, 
+    div.stButton > button[kind="primary"]:active {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: none !important;
         outline: none !important;
-        border-color: rgba(41, 168, 71, 0.5) !important; /* Usa un verde leggero invece del rosso */
+        transition: none !important; /* Toglie il flash del tema originale */
+    }
+
+    /* 2. Blocca i bottoni grigi (Secondary) e i link del footer */
+    div.stButton > button[kind="secondary"]:active,
+    div.stButton > button[kind="secondary"]:focus {
+        border-color: rgb(41, 168, 71) !important;
+        color: rgb(41, 168, 71) !important;
+        background-color: transparent !important;
+        outline: none !important;
         box-shadow: none !important;
     }
 
-    /* 2. Blocca il colore dei bottoni durante il caricamento (niente più flash rosso) */
-    div.stButton > button:active, 
-    div.stButton > button:focus {
-        background-color: inherit !important; /* Mantiene il verde che abbiamo messo noi */
-        border-color: transparent !important;
-        color: white !important;
-    }
-
-    /* 3. Sistema anche il riquadro della password che vedi nello screenshot */
+    /* 3. Sistema il riquadro della password sviluppatore */
     .stTextInput div[data-baseweb="input"] {
         border-color: rgba(255, 255, 255, 0.1) !important;
     }
     .stTextInput div[data-baseweb="input"]:focus-within {
-        border-color: rgb(41, 168, 71) !important; /* Diventa verde quando scrivi la password */
+        border-color: rgb(41, 168, 71) !important;
     }
 
 </style>
