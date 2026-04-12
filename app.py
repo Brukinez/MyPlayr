@@ -294,27 +294,34 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-        /* RIDUCIAMO IL RIQUADRO E INGRANDIAMO IL TESTO */
-    .stApp div.stButton > button[kind="primary"] {
-        background-color: rgb(41, 168, 71) !important;
-        color: white !important;
+    /* --- 1. STOP AL FLASH ROSSO SU TUTTI I BOTTONI DEL SITO --- */
+    /* Questo comando blocca il colore di Streamlit su ogni tasto, anche al click */
+    div.stButton > button:focus,
+    div.stButton > button:active,
+    div.stButton > button:hover {
+        outline: none !important;
+        box-shadow: none !important;
+        color: inherit !important; /* Mantiene il colore che aveva prima */
         border: none !important;
-        border-radius: 8px !important;
-        
-        /* 1. GRANDEZZA SCRITTA: Cambia 22px per ingrandire/rimpicciolire */
-        font-size: 22px !important; 
-        font-weight: 800 !important;
-        
-        /* 2. ALTEZZA RIQUADRO: Riduciamo il padding (sopra e sotto) */
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-        min-height: 10px !important; /* Toglie l'altezza minima di Streamlit */
-        height: auto !important;     /* Si adatta al testo */
-        
-        width: auto !important;      /* Lo rende largo quanto serve al testo */
-        display: block !important;
-        margin: 0 auto !important;   /* Lo centra */
     }
+
+    /* --- 2. REGOLAZIONE RIQUADRI (ADERENTI ALLE SCRITTE) --- */
+    div.stButton > button {
+        min-height: 0px !important; /* Toglie l'altezza obbligatoria di Streamlit */
+        height: auto !important;    /* Il riquadro si stringe attorno al testo */
+        padding-top: 5px !important;    /* Spazio minimo sopra */
+        padding-bottom: 5px !important; /* Spazio minimo sotto */
+        line-height: 1 !important;
+    }
+
+    /* --- 3. GRANDEZZA TESTO (MANUALE) --- */
+    /* Cambia questo numero per ingrandire tutte le scritte dei bottoni */
+    div.stButton > button p {
+        font-size: 20px !important; 
+        font-weight: 700 !important;
+        margin: 0 !important; /* Toglie spazi extra attorno al testo */
+    }
+
  
 </style>
 """
