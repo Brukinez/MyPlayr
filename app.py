@@ -88,6 +88,24 @@ EMERGENT_CSS = """
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* L'ombra aumenta al passaggio del mouse */
     }
 
+        /* --- CARD SPECIFICA PER IL LOGIN/REGISTRAZIONE --- */
+    .mcp-login-card {
+        background-color: #2d343c !important; 
+        border-radius: 12px !important;
+        padding: 40px !important; /* Più spazio interno per far respirare i campi */
+        max-width: 450px !important; /* La rendiamo stretta e alta come nella foto */
+        margin: 0 auto !important; /* Questo la mette al centro */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
+    }
+
+    /* Stile per i titoli dentro la pagina login */
+    .mcp-login-card h2 {
+        font-weight: 900 !important;
+        letter-spacing: -1px !important;
+        margin-bottom: 5px !important;
+    }
+
     /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
         font-size: 24px !important;
@@ -279,7 +297,13 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+       /* Rende i campi di testo più simili allo stile MyPlayr */
+    div[data-baseweb="input"] {
+        background-color: #1e242a !important; /* Grigio ancora più scuro per l'interno */
+        border-radius: 8px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
 </style>
 """
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
@@ -843,36 +867,43 @@ elif st.session_state.pagina == 'login':
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
-            st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
+            # 1. Apriamo il contenitore della Card
+            st.markdown('<div class="mcp-login-card">', unsafe_allow_html=True)
             
+            # Titolo e sottotitolo (come nella foto)
+            st.markdown("""
+                <h2 style='color: white; margin-bottom: 5px;'>CREA IL TUO ACCOUNT</h2>
+                <p style='color: #94a3b8; margin-bottom: 25px;'>Unisciti alla community MyClipzo</p>
+            """, unsafe_allow_html=True)
+            
+            # Campi di input
             r_n = st.text_input("Nome", placeholder="es. Mario")
             r_c = st.text_input("Cognome", placeholder="es. Rossi")
             r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
             r_p = st.text_input("Scegli una Password", type="password")
             
+            st.write("") # Un piccolo spazio vuoto
+            
             if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                # ... (qui tieni il tuo codice logico per supabase che è perfetto) ...
                 if r_n and r_c and r_e and r_p:
                     try:
-                        # Controlliamo prima se l'email esiste già (Uso della funzione creata nel Blocco 5)
-                        nuovo_utente = {
-                            "nome": r_n, 
-                            "cognome": r_c, 
-                            "email": r_e, 
-                            "password": r_p, 
-                            "ruolo": "Player"
-                        }
+                        nuovo_utente = {"nome": r_n, "cognome": r_c, "email": r_e, "password": r_p, "ruolo": "Player"}
                         supabase.table("utenti").insert(nuovo_utente).execute()
-                        st.success("✅ Account creato con successo! Ora puoi accedere.")
-                        st.session_state.sub = 'login'
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Errore: Email già registrata o problema tecnico.")
-                else: 
-                    st.error("⚠️ Inserisci tutti i dati richiesti!")
+                        st.success("✅ Account creato!")
+                        st.session_state.sub = 'login'; st.rerun()
+                    except: st.error("Errore tecnico o email già esistente.")
+                else: st.error("Inserisci tutti i dati!")
+
+            # 2. Chiudiamo il contenitore della Card
+            st.markdown('</div>', unsafe_allow_html=True)
             
-            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+            # Pulsante per tornare indietro (fuori dalla card per stile)
+            st.write("")
+            if st.button("🔙 TORNA ALLA HOME", type="secondary"): 
                 st.session_state.sub = 'login'
                 st.rerun()
+
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
         elif st.session_state.sub == 'recupero':
