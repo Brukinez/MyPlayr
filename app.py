@@ -294,27 +294,23 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* NUOVO TENTATIVO: PUNTA DIRETTAMENTE IL BOTTONE DENTRO IL SUO CONTENITORE */
-    .stApp div.stButton > button[key="home_login_btn"], 
-    .stApp div.stButton > button[key="home_reg_btn"] {
+    /* SOVRASCRIVE IL ROSSO E FORZA IL VERDE SUI BOTTONI PRIMARY */
+    .stApp div.stButton > button[kind="primary"] {
         background-color: rgb(41, 168, 71) !important;
-        background: rgb(41, 168, 71) !important; /* Forza lo sfondo */
         color: white !important;
         border: none !important;
         border-radius: 8px !important;
         font-weight: 800 !important;
         height: 54px !important;
         width: 100% !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
     }
 
-    /* FORZA IL TESTO BIANCO ANCHE DENTRO IL BOTTONE */
-    .stApp div.stButton > button[key="home_login_btn"] p, 
-    .stApp div.stButton > button[key="home_reg_btn"] p {
+    /* EFFETTO AL PASSAGGIO DEL MOUSE (Glow Verde) */
+    .stApp div.stButton > button[kind="primary"]:hover {
+        background-color: #24e170 !important;
+        box-shadow: 0 0 20px rgba(41, 168, 71, 0.6) !important;
+        border: none !important;
         color: white !important;
-        font-weight: 800 !important;
     }
 
   
