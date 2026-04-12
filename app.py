@@ -11,8 +11,6 @@ import re
 from urllib.parse import urlparse, parse_qs
 from supabase import create_client, Client
 
-import streamlit as st
-
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
