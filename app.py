@@ -279,6 +279,15 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
+    /* --- NUOVO CONTENITORE LOGIN/REGISTRAZIONE --- */
+    .mcp-auth-container {
+        background-color: #2d343c !important; 
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        padding: 40px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+    }
    
 </style>
 """
@@ -843,36 +852,34 @@ elif st.session_state.pagina == 'login':
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
-            st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
+            # Creiamo 3 colonne: le due laterali vuote servono a spingere il contenuto al centro
+            vuoto_sx, centro, vuoto_dx = st.columns([1, 2, 1])
             
-            r_n = st.text_input("Nome", placeholder="es. Mario")
-            r_c = st.text_input("Cognome", placeholder="es. Rossi")
-            r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
-            r_p = st.text_input("Scegli una Password", type="password")
-            
-            if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
-                if r_n and r_c and r_e and r_p:
-                    try:
-                        # Controlliamo prima se l'email esiste già (Uso della funzione creata nel Blocco 5)
-                        nuovo_utente = {
-                            "nome": r_n, 
-                            "cognome": r_c, 
-                            "email": r_e, 
-                            "password": r_p, 
-                            "ruolo": "Player"
-                        }
-                        supabase.table("utenti").insert(nuovo_utente).execute()
-                        st.success("✅ Account creato con successo! Ora puoi accedere.")
-                        st.session_state.sub = 'login'
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Errore: Email già registrata o problema tecnico.")
-                else: 
-                    st.error("⚠️ Inserisci tutti i dati richiesti!")
-            
-            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
-                st.session_state.sub = 'login'
-                st.rerun()
+            with centro:
+                # Apriamo la scatola scura
+                st.markdown('<div class="mcp-auth-container">', unsafe_allow_html=True)
+                
+                st.markdown("<h2 style='text-align: center; color: white;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
+                
+                r_n = st.text_input("Nome", placeholder="es. Mario")
+                r_c = st.text_input("Cognome", placeholder="es. Rossi")
+                r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
+                r_p = st.text_input("Scegli una Password", type="password")
+                
+                st.write(" ") # Spazio vuoto tattico
+                
+                if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                    # Qui incolla la tua logica Supabase che avevi prima (quella con l'if r_n and r_c...)
+                    pass 
+
+                # Chiudiamo la scatola scura
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+                # Il tasto per tornare indietro lo mettiamo SOTTO la card, centrato
+                if st.button("🔙 TORNA AL LOGIN", use_container_width=True): 
+                    st.session_state.sub = 'login'
+                    st.rerun()
+
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
         elif st.session_state.sub == 'recupero':
