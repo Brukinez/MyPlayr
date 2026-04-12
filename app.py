@@ -348,19 +348,21 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* --- CANCELLAZIONE TOTALE SFONDI (FOOTER) --- */
-    
-    /* 1. Colpiamo il bottone e qualsiasi scatola ci sia dentro */
-    button[key^="f_"], 
-    button[key^="f_"] *, 
-    button[key^="f_"] div, 
-    button[key^="f_"] span {
+    /* ATTACCO FINALE AI RIQUADRI NERI */
+    .stButton > button[kind="secondary"] {
         background: transparent !important;
-        background-color: transparent !important;
+    }
+    
+    /* Questo elimina il rettangolo nero che appare quando il mouse è sopra o quando clicchi */
+    .stButton > button[kind="secondary"]:hover, 
+    .stButton > button[kind="secondary"]:active, 
+    .stButton > button[kind="secondary"]:focus {
+        background: transparent !important;
+        color: white !important;
         border: none !important;
         box-shadow: none !important;
-        outline: none !important;
     }
+
 
     /* 2. Regoliamo la scritta (Aumenta i 22px se la vuoi più grande) */
     button[key^="f_"] p {
