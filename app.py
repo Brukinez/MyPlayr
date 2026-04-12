@@ -279,7 +279,36 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+     /* VESTIAMO IL TASTO 'ACCEDI AL PORTALE' */
+    div.stButton > button[key="nav_accedi_centrale"] {
+        background-color: #1e252b !important; /* Grigio scuro card */
+        color: white !important;
+        border: 1px solid rgba(41, 168, 71, 0.4) !important; /* BORDINO VERDE */
+        border-radius: 12px !important;
+        padding: 15px !important;
+        font-weight: 700 !important;
+        margin-top: -20px !important; /* Lo avvicina alla newsletter */
+    }
+
+    /* VESTIAMO IL TASTO 'CREA IL TUO ACCOUNT GRATIS' (VERDE PIENO) */
+    div.stButton > button[key="btn_cta_finale"] {
+        background-color: rgb(41, 168, 71) !important; /* VERDE PIENO */
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        font-weight: 900 !important;
+        font-size: 18px !important;
+        box-shadow: 0 10px 25px rgba(41, 168, 71, 0.3) !important;
+    }
+
+    /* EFFETTO HOVER PER ENTRAMBI */
+    div.stButton > button[key="nav_accedi_centrale"]:hover,
+    div.stButton > button[key="btn_cta_finale"]:hover {
+        transform: translateY(-3px) !important;
+        filter: brightness(1.1) !important;
+    }
+  
 </style>
 """
 
@@ -738,11 +767,10 @@ if st.session_state.pagina == 'home':
 
 
 
-        # --- TASTO ACCEDI AL PORTALE (CENTRATO SOTTO) ---
-        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
-        st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'))
-        st.markdown("</div>", unsafe_allow_html=True)
-
+        # --- TASTO ACCEDI AL PORTALE (ORIGINALE) ---
+        _, col_center_login, _ = st.columns([1, 2, 1])
+        with col_center_login:
+            st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), key="home_login_btn", use_container_width=True)
 
         # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
         st.markdown("""
@@ -752,15 +780,11 @@ if st.session_state.pagina == 'home':
             </div>
         """, unsafe_allow_html=True)
 
-        # Usiamo il tuo bottone Streamlit con la chiave unica per non avere errori
+        # Bottone Finale
         _, col_cta_btn, _ = st.columns([1, 1.5, 1])
         with col_cta_btn:
-            st.markdown("<div class='btn-create-account'>", unsafe_allow_html=True)
-            st.button("CREA IL TUO ACCOUNT GRATIS", 
-                      on_click=lambda: vai_a('login'), 
-                      key="btn_cta_finale", 
-                      use_container_width=True)
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="home_reg_btn", use_container_width=True)
+
 
 
            # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
