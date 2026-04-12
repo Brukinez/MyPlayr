@@ -144,14 +144,16 @@ EMERGENT_CSS = """
     }
 
       
-     /* STATISTICHE SU PC (In riga) */
+    /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
-        display: flex !important;
-        flex-direction: row !important; /* Forza la riga su PC */
-        justify-content: space-around !important;
-        align-items: center !important;
-        padding: 40px 5% !important;
-        background-color: #2d343c !important;
+        background-color: #38404a; /* Lo stesso grigio delle tue card */
+        padding: 40px 5%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin: 50px 0;
     }
 
     .stat-item {
@@ -175,39 +177,18 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
-    /* --- 1. RIPRISTINO NEWSLETTER SU PC --- */
-    div[data-testid="stForm"] .stHorizontalBlock {
-        display: flex !important;
-        flex-direction: row !important; /* Forza la riga su PC */
-        align-items: flex-end !important;
-        gap: 15px !important;
+    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
+    div[data-testid="stForm"] {
+        background-color: #38404a !important; /* Il grigio delle tue card */
+        max-width: 800px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+            /* Bordino verde sottile attorno alla card */
+    border: 1px solid rgba(41, 168, 71, 0.8) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
     }
-
-    /* Rende il tasto Iscriviti della stessa altezza dell'input */
-    div[data-testid="stForm"] button {
-        height: 42px !important; 
-        width: auto !important;
-        padding: 0 30px !important;
-    }
-
-    /* --- 2. GRANDEZZA SCRITTE FOOTER (MODIFICA MANUALE) --- */
-    /* Clicca e cambia il valore '22px' per ingrandire o rimpicciolire a tuo piacimento */
-    button[key^="f_"] {
-        font-size: 22px !important; 
-        font-weight: 500 !important;
-        color: #94a3b8 !important;
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        text-align: left !important;
-    }
-
-    /* Effetto quando passi il mouse sopra le scritte del footer */
-    button[key^="f_"]:hover {
-        color: rgb(41, 168, 71) !important;
-        background: transparent !important;
-    }
-
 
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
@@ -415,108 +396,6 @@ EMERGENT_CSS = """
         background-color: transparent !important;
     }
 
-    /* --- OTTIMIZZAZIONE PER SMARTPHONE E TABLET --- */
-    @media (max-width: 768px) {
-        
-        /* 1. IL TITOLO GIGANTE (Hero) */
-        /* Lo portiamo da 100px a 45px, altrimenti esce dallo schermo */
-        .stApp h1 {
-            font-size: 45px !important;
-            line-height: 1.1 !important;
-        }
-
-        /* 2. LE DESCRIZIONI (Sotto il titolo e nelle card) */
-        .stApp p {
-            font-size: 16px !important;
-            line-height: 1.4 !important;
-        }
-
-        /* 3. LE CARD (Più compatte) */
-        .mcp-card {
-            padding: 15px !important;
-            margin-bottom: 15px !important;
-        }
-        
-        .mcp-card p {
-            font-size: 16px !important; /* Riduciamo i 24px del PC a 16px */
-        }
-
-        /* 4. I BOTTONI VERDI (Meno ingombranti) */
-        button[key="home_login_btn"], 
-        button[key="home_reg_btn"] {
-            font-size: 18px !important;
-            padding: 10px 20px !important;
-            width: 100% !important; /* Su mobile è meglio averli a tutta larghezza */
-        }
-
-        /* 5. IL FOOTER (Scritte leggibili ma non giganti) */
-        button[key^="f_"] {
-            font-size: 16px !important;
-        }
-        
-        .footer-title {
-            font-size: 14px !important;
-            margin-top: 20px !important;
-        }
-
-        /* 6. NEWSLETTER (La card si adatta) */
-        div[data-testid="stForm"] {
-            padding: 20px !important;
-            margin: 10px !important;
-        }
-    }
-
-    /* STATISTICHE SU SMARTPHONE (In colonna) */
-    @media (max-width: 768px) {
-        .stats-container {
-            flex-direction: column !important; /* Solo qui diventano verticali */
-            gap: 40px !important;
-            padding: 50px 10px !important;
-            text-align: center !important;
-        }
-
-        .stat-item {
-            width: 100% !important;
-        }
-
-        .stat-number {
-            font-size: 42px !important; /* Numeri leggibili su mobile */
-        }
-    }
-
-
-        /* 8. NEWSLETTER (Testo "Resta Aggiornato") */
-        div[data-testid="stForm"] h2, 
-        div[data-testid="stForm"] h3 {
-            font-size: 22px !important; /* Rimpicciolisce il titolo della newsletter */
-            line-height: 1.2 !important;
-        }
-
-        /* Sistemiamo anche l'input e il bottone che spesso si rompono su mobile */
-        div[data-testid="stForm"] .stHorizontalBlock {
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-
-                /* 9. NAVBAR MOBILE (PIÙ SOTTILE) */
-        .sticky-navbar {
-            height: 65px !important; /* Ridotta da 84px a 65px */
-            padding: 0 15px !important;
-        }
-
-        .mc-box {
-            font-size: 20px !important; /* Logo MC più piccolo */
-            padding: 6px 10px !important;
-        }
-
-        .brand-name {
-            font-size: 20px !important; /* Nome MyClipzo più piccolo */
-        }
-
-        /* Spazio in alto per il contenuto (per non finire sotto la navbar ridotta) */
-        .main .block-container {
-            padding-top: 85px !important; 
-        }
 
 </style>
 """
