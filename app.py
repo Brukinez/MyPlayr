@@ -1663,6 +1663,12 @@ if st.session_state.pagina == 'recupero_password':
     st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
 
+# --- COPYRIGHT CLICCABILE NEL FOOTER ---
+st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
+
+if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True):
+    st.session_state.pagina = 'diritti'
+    st.rerun()
 
 
 
