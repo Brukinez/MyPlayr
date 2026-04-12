@@ -335,28 +335,34 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* SCRITTE DEL FOOTER: Editabili e grandi */
-    button[key^="f_"] {
-        background: none !important;
+    /* --- LINK DEL FOOTER (SOLO TESTO, SENZA RIQUADRI) --- */
+    button[key^="f_"], 
+    button[key^="f_"]:hover, 
+    button[key^="f_"]:active, 
+    button[key^="f_"]:focus {
+        /* 1. ELIMINA OGNI TIPO DI RIQUADRO */
+        background: transparent !important;
         background-color: transparent !important;
         border: none !important;
-        color: #94a3b8 !important;
-        padding: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        
+        /* 2. GRANDEZZA TESTO (Modifica i 22px come vuoi) */
+        font-size: 22px !important; 
+        color: #94a3b8 !important; /* Grigio MyPlayr */
+        
+        /* 3. ALLINEAMENTO */
         text-align: left !important;
         justify-content: flex-start !important;
-
-        /* MODIFICA QUESTO NUMERO PER INGRANDIRE LE SCRITTE MANUALMENTE */
-        font-size: 22px !important; 
-        
-        font-weight: 500 !important;
-        margin-bottom: 10px !important;
+        padding: 0 !important;
+        height: auto !important;
+        display: block !important;
     }
 
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    /* EFFETTO AL PASSAGGIO DEL MOUSE (SOLO LA SCRITTA CAMBIA) */
     button[key^="f_"]:hover {
-        color: rgb(41, 168, 71) !important;
-        background: transparent !important;
-        text-decoration: underline !important; /* Aggiunge una sottolineatura per far capire che è un link */
+        color: white !important; /* Diventa bianco o verde al passaggio */
+        text-decoration: underline !important; /* Facoltativo: aggiunge sottolineatura */
     }
 
 
