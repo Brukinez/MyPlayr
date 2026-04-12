@@ -84,12 +84,7 @@ EMERGENT_CSS = """
         color: white !important;
         box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
     }
-    
- /* CREIAMO LO STACCO E SISTEMIAMO IL TASTO ACCEDI SOTTO LA NEWSLETTER */
-    div[data-testid="stVerticalBlock"] > div:has(button[key="home_login_btn"]) {
-        margin-top: 60px !important; /* Questo crea lo spazio vuoto tra card e tasto */
-        text-align: center !important;
-    }
+
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
@@ -245,6 +240,29 @@ EMERGENT_CSS = """
         color: rgb(41, 168, 71) !important;
     }
    
+        /* CREIAMO LO STACCO E SISTEMIAMO IL TASTO ACCEDI SOTTO LA NEWSLETTER */
+    div[data-testid="stVerticalBlock"] > div:has(button[key="home_login_btn"]) {
+        margin-top: 60px !important; /* Questo crea lo spazio vuoto tra card e tasto */
+        text-align: center !important;
+    }
+
+    /* Stile del tasto (Riquadro scuro con bordo verde come avevi chiesto) */
+    button[key="home_login_btn"] {
+        background-color: #1e252b !important; 
+        color: white !important;
+        border: 1px solid rgba(41, 168, 71, 0.6) !important; /* Bordino verde */
+        border-radius: 8px !important;
+        padding: 10px 25px !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+    }
+
+    button[key="home_login_btn"]:hover {
+        border-color: rgb(41, 168, 71) !important;
+        color: rgb(41, 168, 71) !important;
+    }
+
  /* Nasconde la barra grigia originale di Streamlit */
     header[data-testid="stHeader"] {
         display: none !important;
