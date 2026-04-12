@@ -1643,10 +1643,12 @@ if st.session_state.pagina == 'hall_of_fame':
         print(f"Errore JOIN: {e}")
 
 
-# --- TASTO DI RITORNO SICURO (DA METTERE PRIMA DEL FOOTER) ---
-# Usiamo una chiave diversa per non andare in conflitto con i tasti precedenti
+# --- TASTO DI RITORNO SICURO ---
 if st.session_state.pagina not in ['home', 'home_auth']:
     if st.button("🔙 Torna alla Home", key="btn_ritorno_universale"):
+        # RESETTA IL SOTTOMENU: Questa è la riga fondamentale!
+        st.session_state.sub = 'login' 
+        
         if st.session_state.get('autenticato', False):
             st.session_state.pagina = 'home_auth'
         else:
@@ -1654,13 +1656,7 @@ if st.session_state.pagina not in ['home', 'home_auth']:
         st.rerun()
 
 
-# --- BLOCCO FINALE: ALTRE PAGINE & FOOTER ---
 
-# 1. GESTIONE PAGINE MINORI (Recupero Password)
-if st.session_state.pagina == 'recupero_password': 
-    st.markdown("<h2 style='text-align: center;'>Recupero Password</h2>", unsafe_allow_html=True)
-    st.info("Abbiamo inviato le istruzioni alla tua email.")
-    st.button("🔙 Torna al Login", on_click=lambda: vai_a('login'), use_container_width=True)
 
 
 # --- COPYRIGHT CLICCABILE NEL FOOTER ---
