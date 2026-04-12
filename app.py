@@ -381,33 +381,30 @@ EMERGENT_CSS = """
         border-color: rgb(41, 168, 71) !important;
     }
 
-        /* PUNTA DIRETTAMENTE AI TASTI DEL FOOTER TRAMITE LE LORO CHIAVI */
-    button[key="f_priv"], 
-    button[key="f_term"], 
-    button[key="f_home"], 
-    button[key="f_part"],
-    button[key="f_copy_btn"] {
-        background-color: transparent !important; /* Toglie il rettangolo scuro */
-        border: none !important;                  /* Toglie il bordo */
-        box-shadow: none !important;              /* Toglie l'ombra */
-        color: #94a3b8 !important;                /* Grigio azzurrino */
-        padding: 0 !important;                    /* Rimuove lo spazio attorno */
+    /* TRASFORMA I BOTTONI IN TESTO PURO (STILE MYPLAYR) */
+    button[key^="f_"] {
+        background: none !important;           /* Rimuove il riquadro nero */
+        background-color: transparent !important;
+        border: none !important;                /* Rimuove i bordi */
+        box-shadow: none !important;            /* Rimuove l'ombra del tasto */
+        color: #94a3b8 !important;              /* Grigio azzurrino originale */
+        padding: 0 !important;                  /* Attacca la zona cliccabile al testo */
+        margin: 0 !important;
         height: auto !important;
         min-height: 0px !important;
-        font-size: 16px !important;               /* Dimensione pulita */
+        font-size: 20px !important;             /* Puoi cambiarlo manualmente qui */
+        font-weight: 500 !important;
         text-align: left !important;
         justify-content: flex-start !important;
     }
 
-    /* EFFETTO HOVER: Solo la scritta diventa verde */
-    button[key="f_priv"]:hover, 
-    button[key="f_term"]:hover, 
-    button[key="f_home"]:hover, 
-    button[key="f_part"]:hover,
-    button[key="f_copy_btn"]:hover {
-        color: rgb(41, 168, 71) !important;
+    /* Effetto quando passi il mouse: la scritta si illumina senza far apparire riquadri */
+    button[key^="f_"]:hover {
+        color: white !important;
+        background: none !important;
         background-color: transparent !important;
     }
+
 
     /* --- OTTIMIZZAZIONE PER SMARTPHONE E TABLET --- */
     @media (max-width: 768px) {
