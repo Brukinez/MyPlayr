@@ -106,7 +106,27 @@ EMERGENT_CSS = """
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* L'ombra aumenta al passaggio del mouse */
     }
 
- 
+        /* RENDE I TITOLI DELLE CARD IN GRASSETTO */
+    .mcp-card h3, 
+    .mcp-card b,
+    .mcp-card strong {
+        font-weight: 800 !important;      /* Grassetto molto marcato */
+        font-size: 32px !important;       /* Dimensione equilibrata */
+        color: white !important;
+        text-transform: uppercase !important; /* Forza il maiuscolo */
+        letter-spacing: 1px !important;   /* Un po' di spazio tra le lettere per eleganza */
+        display: block !important;
+        margin-bottom: 15px !important;   /* Spazio tra titolo e descrizione */
+    }
+
+    /* ISTRUZIONE PER IL TESTO (18PX) */
+    .mcp-card p {
+        font-size: 24px !important;
+        color: #94a3b8;                    /* Grigio chiaro leggibile */
+        line-height: 1.6;
+        margin-top: 10px;
+    }
+
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
         width: 56px;
