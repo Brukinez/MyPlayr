@@ -62,7 +62,7 @@ EMERGENT_CSS = """
  
     /* SFONDO GENERALE DELLA PAGINA */
     .stApp {
-        background-color: #1e252b !important; 
+        background-color: #2d343c !important; 
     }
 
     }
