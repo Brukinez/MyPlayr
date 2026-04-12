@@ -891,7 +891,10 @@ with f_col2:
 
 with f_col3:
     st.markdown("<div class='footer-title'>LEGALE</div>", unsafe_allow_html=True)
-    if st.button("Privacy Policy", key="f_priv"): pass
+    # Cerca questa riga nel Footer e modificala così:
+if st.button("Privacy Policy", key="f_priv"): 
+    vai_a('privacy')
+
     if st.button("Termini e Condizioni", key="f_term"): pass
     if st.button("Cookie Policy", key="f_cook"): pass
 
