@@ -348,25 +348,34 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* --- RIMOZIONE TOTALE E DEFINITIVA DEI RIQUADRI GRIGI --- */
-    button[key^="f_"] {
-        /* Questo elimina il riquadro grigio chiaro che vedi ora */
-        background-color: transparent !important; 
+    /* --- CANCELLAZIONE TOTALE SFONDI (FOOTER) --- */
+    
+    /* 1. Colpiamo il bottone e qualsiasi scatola ci sia dentro */
+    button[key^="f_"], 
+    button[key^="f_"] *, 
+    button[key^="f_"] div, 
+    button[key^="f_"] span {
         background: transparent !important;
-        
+        background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
-        
-        color: #94a3b8 !important; /* Colore della scritta */
-        font-size: 22px !important; /* Puoi regolarla a mano qui */
-        
-        padding: 0 !important;
-        height: auto !important;
-        min-height: 0px !important;
-        text-align: left !important;
-        justify-content: flex-start !important;
     }
+
+    /* 2. Regoliamo la scritta (Aumenta i 22px se la vuoi più grande) */
+    button[key^="f_"] p {
+        font-size: 22px !important; 
+        color: #94a3b8 !important; /* Grigio MyPlayr */
+        text-align: left !important;
+        margin: 0 !important;
+        background: transparent !important;
+    }
+
+    /* 3. Effetto Hover: la scritta si illumina senza far apparire grigio */
+    button[key^="f_"]:hover p {
+        color: white !important;
+    }
+
 
     /* Assicuriamoci che rimanga trasparente anche quando ci clicchi o lo selezioni */
     button[key^="f_"]:hover, 
