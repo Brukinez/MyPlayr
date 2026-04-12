@@ -1678,7 +1678,7 @@ st.markdown("""
         background: transparent !important;
         color: white !important;
         font-size: 13px !important;
-        margin-top: 15px !important;
+        margin-top: 5px !important;
     }
     </style>
 """, unsafe_allow_html=True)
