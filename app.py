@@ -885,7 +885,7 @@ if st.session_state.pagina == 'home':
     # Reinseriamo il logo MC stile Navbar
             st.markdown("""
         <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 15px;'>
-            <div class='mc-box' style='font-size: 16px; padding: 6px 10px;'>MC</div>
+            <div class='mc-box' style='font-size: 20px; padding: 6px 10px;'>MC</div>
             <b style='color: white; font-size: 24px;'>MyClipzo</b>
         </div>
         <p style='color: #94a3b8; font-size: 20px; line-height: 1.6;'>
