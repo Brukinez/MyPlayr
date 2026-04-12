@@ -85,7 +85,6 @@ EMERGENT_CSS = """
         box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
     }
 
-   
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
@@ -218,8 +217,7 @@ EMERGENT_CSS = """
         border: none !important;
     }
 
-
-
+    
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
         background-color: #212b27; /* Verde scurissimo quasi nero */
@@ -306,8 +304,8 @@ EMERGENT_CSS = """
         font-weight: 800 !important;
         
         /* 2. ALTEZZA RIQUADRO: Riduciamo il padding (sopra e sotto) */
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
         min-height: 10px !important; /* Toglie l'altezza minima di Streamlit */
         height: auto !important;     /* Si adatta al testo */
         
