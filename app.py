@@ -268,7 +268,7 @@ EMERGENT_CSS = """
 
     .mc-box {
         background-color: rgb(41, 168, 71); 
-        color: black;
+        color: white;
         font-weight: 900;
         padding: 12px 12px;
         border-radius: 4px;
