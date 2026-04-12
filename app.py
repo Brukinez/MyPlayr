@@ -355,6 +355,24 @@ EMERGENT_CSS = """
         border-color: rgb(41, 168, 71) !important;
     }
 
+        /* RENDE I BOTTONI DEL FOOTER SOTTILI E PROFESSIONALI */
+    div[data-testid="column"] button[kind="secondary"], 
+    button[key="f_copy_btn"] {
+        background-color: transparent !important;
+        border: none !important;
+        color: #94a3b8 !important; /* Grigio MyPlayr */
+        font-size: 14px !important;
+        text-align: left !important;
+        padding: 0px !important;
+        height: auto !important;
+    }
+
+    div[data-testid="column"] button[kind="secondary"]:hover,
+    button[key="f_copy_btn"]:hover {
+        color: rgb(41, 168, 71) !important; /* Diventa verde al passaggio */
+        background-color: transparent !important;
+    }
+
 </style>
 """
 
@@ -834,22 +852,40 @@ if st.session_state.pagina == 'home':
 
 
 
-           # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
-        st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
-        
-        f_col1, f_col2, f_col3 = st.columns(3)
-        with f_col1:
-            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 20px;'>La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.</p>", unsafe_allow_html=True)
-        
-        with f_col2:
-            st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-            st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home")
-            st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part")
-        
-        with f_col3:
-            st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
-            st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-            st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
+# --- FOOTER UNIFICATO (STILE PROFESSIONALE) ---
+st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
+
+f_col1, f_col2, f_col3 = st.columns(3)
+
+with f_col1:
+    # Logo MC + Bio piccola
+    st.markdown("""
+        <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 10px;'>
+            <div class='mc-box' style='font-size: 14px; padding: 4px 8px;'>MC</div>
+            <b style='color: white; font-size: 18px;'>MyClipzo</b>
+        </div>
+        <p style='color: #94a3b8; font-size: 14px; line-height: 1.5;'>
+            La piattaforma definitiva per registrare e condividere le tue azioni in campo. 
+            Lo sport amatoriale, come quello vero.
+        </p>
+    """, unsafe_allow_html=True)
+
+with f_col2:
+    st.markdown("<b style='color: white; font-size: 16px;'>NAVIGAZIONE</b>", unsafe_allow_html=True)
+    if st.button("🏠 Home", on_click=lambda: vai_a('home'), key="f_home", type="secondary"): pass
+    if st.button("🏟️ Partite", on_click=lambda: vai_a('partite'), key="f_part", type="secondary"): pass
+
+with f_col3:
+    st.markdown("<b style='color: white; font-size: 16px;'>LEGALE</b>", unsafe_allow_html=True)
+    if st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv", type="secondary"): pass
+    if st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term", type="secondary"): pass
+
+# Riga finale per il Copyright (ora è integrata e ordinata)
+st.markdown("<br>", unsafe_allow_html=True)
+if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True, type="secondary"):
+    st.session_state.pagina = 'diritti'
+    st.rerun()
+   
 
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
@@ -1731,12 +1767,6 @@ if st.session_state.pagina not in ['home', 'home_auth']:
 
 
 
-# --- COPYRIGHT CLICCABILE NEL FOOTER ---
-st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
-
-if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True):
-    st.session_state.pagina = 'diritti'
-    st.rerun()
 
 
 
