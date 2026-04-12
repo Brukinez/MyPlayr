@@ -337,26 +337,28 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-     /* RENDE I BOTTONI DEL FOOTER SEMPLICI SCRITTE (SENZA RIQUADRO) */
-    div[data-testid="column"] button[kind="secondary"] {
-        background-color: transparent !important; /* Toglie il riquadro scuro */
-        border: none !important;                    /* Toglie il bordo */
-        box-shadow: none !important;                /* Toglie l'ombra */
-        color: #94a3b8 !important;                  /* Grigio chiaro di base */
-        font-size: 14px !important;
-        font-weight: 500 !important;
-        text-align: left !important;
+    /* DISTRUGGI OGNI RIQUADRO NEI BOTTONI DEL FOOTER */
+    [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] button,
+    button[key^="f_"] {
+        background: none !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #94a3b8 !important;
+        padding: 0 !important;
         height: auto !important;
-        padding: 0 !important;                      /* Stringe tutto attorno al testo */
-        margin-bottom: 8px !important;
-        transition: 0.3s !important;
+        min-height: 10px !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
     }
 
     /* EFFETTO AL PASSAGGIO DEL MOUSE */
-    div[data-testid="column"] button[kind="secondary"]:hover {
-        color: rgb(41, 168, 71) !important;         /* La scritta diventa verde */
-        background-color: transparent !important;   /* Resta senza sfondo */
+    button[key^="f_"]:hover {
+        color: rgb(41, 168, 71) !important;
+        background: transparent !important;
+        text-decoration: underline !important; /* Aggiunge una sottolineatura per far capire che è un link */
     }
+
 
     /* 3. Sistema il riquadro della password sviluppatore */
     .stTextInput div[data-baseweb="input"] {
