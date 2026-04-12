@@ -134,7 +134,7 @@ EMERGENT_CSS = """
       
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
-        background-color: #2d343c; /* Lo stesso grigio delle tue card */
+        background-color: #38404a; /* Lo stesso grigio delle tue card */
         padding: 40px 5%;
         display: flex;
         justify-content: space-around;
@@ -167,7 +167,7 @@ EMERGENT_CSS = """
     
     /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
-        background-color: #2d343c !important; /* Il grigio delle tue card */
+        background-color: #38404a !important; /* Il grigio delle tue card */
         max-width: 800px !important;         /* Larghezza massima della scatola */
         margin: 50px auto !important;        /* LA CENTRA NEL SITO */
         padding: 50px !important;            /* Spazio interno per far respirare i testi */
