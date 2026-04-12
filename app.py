@@ -764,7 +764,7 @@ if st.session_state.pagina == 'home':
         # --- TASTO ACCEDI AL PORTALE (ORIGINALE) ---
         _, col_center_login, _ = st.columns([1, 2, 1])
         with col_center_login:
-            st.button("🚀 ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), key="home_login_btn", use_container_width=True)
+            st.button("PROVA", on_click=lambda: vai_a('login'), key="home_login_btn", use_container_width=True)
 
         # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
         st.markdown("""
