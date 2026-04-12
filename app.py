@@ -144,29 +144,17 @@ EMERGENT_CSS = """
     }
 
       
-        /* STATISTICHE SU SMARTPHONE - VERSIONE PROPORZIONATA E SOTTILE */
-        .stats-container {
-            flex-direction: column !important; 
-            /* Riduciamo l'altezza totale (da 80px a 40px) */
-            padding: 40px 10px !important; 
-            /* Riduciamo lo spazio tra i numeri per non farla diventare chilometrica */
-            gap: 25px !important; 
-            margin: 20px 0 !important;
-            height: auto !important;
-        }
-
-        .stat-number {
-            /* Portiamo i numeri a una misura proporzionata al pollice (32px) */
-            font-size: 32px !important; 
-            margin-bottom: 2px !important;
-        }
-
-        .stat-label {
-            /* Testo piccolo e discreto per non appesantire */
-            font-size: 12px !important; 
-            letter-spacing: 1px !important;
-        }
-
+    /* --- SEZIONE STATISTICHE (STRISCIA) --- */
+    .stats-container {
+        background-color: #38404a; /* Lo stesso grigio delle tue card */
+        padding: 40px 5%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin: 50px 0;
+    }
 
     .stat-item {
         text-align: center;
@@ -459,58 +447,7 @@ EMERGENT_CSS = """
         }
     }
 
-    /* STATISTICHE SU PC (In riga) */
-    .stats-container {
-        display: flex !important;
-        flex-direction: row !important; /* Forza la riga su PC */
-        justify-content: space-around !important;
-        align-items: center !important;
-        padding: 40px 5% !important;
-        background-color: #2d343c !important;
-    }
-
-        
-        .stat-number {
-            font-size: 38px !important; /* Rimpicciolisce i numeri giganti */
-        }
-
-        .stat-label {
-            font-size: 14px !important;
-        }
-
-        /* 8. NEWSLETTER (Testo "Resta Aggiornato") */
-        div[data-testid="stForm"] h2, 
-        div[data-testid="stForm"] h3 {
-            font-size: 22px !important; /* Rimpicciolisce il titolo della newsletter */
-            line-height: 1.2 !important;
-        }
-
-        /* Sistemiamo anche l'input e il bottone che spesso si rompono su mobile */
-        div[data-testid="stForm"] .stHorizontalBlock {
-            flex-direction: column !important;
-            gap: 10px !important;
-        }
-
-                /* 9. NAVBAR MOBILE (PIÙ SOTTILE) */
-        .sticky-navbar {
-            height: 65px !important; /* Ridotta da 84px a 65px */
-            padding: 0 15px !important;
-        }
-
-        .mc-box {
-            font-size: 20px !important; /* Logo MC più piccolo */
-            padding: 6px 10px !important;
-        }
-
-        .brand-name {
-            font-size: 20px !important; /* Nome MyClipzo più piccolo */
-        }
-
-        /* Spazio in alto per il contenuto (per non finire sotto la navbar ridotta) */
-        .main .block-container {
-            padding-top: 85px !important; 
-        }
-
+    
 </style>
 """
 
