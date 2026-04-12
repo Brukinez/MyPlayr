@@ -65,7 +65,7 @@ EMERGENT_CSS = """
         background-color: #2d343c !important; 
     }
 
-    }
+    
 
     div[data-testid="stButton"] > button[kind="secondary"]:hover {
         color: var(--neon) !important;
