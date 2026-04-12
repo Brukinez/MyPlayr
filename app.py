@@ -445,29 +445,23 @@ EMERGENT_CSS = """
         }
     }
 
-        /* STATISTICHE SU SMARTPHONE - VERSIONE PROPORZIONATA E SOTTILE */
+    /* STATISTICHE SU SMARTPHONE (In colonna) */
+    @media (max-width: 768px) {
         .stats-container {
-            flex-direction: column !important; 
-            /* Riduciamo l'altezza totale (da 80px a 40px) */
-            padding: 40px 10px !important; 
-            /* Riduciamo lo spazio tra i numeri per non farla diventare chilometrica */
-            gap: 25px !important; 
-            margin: 20px 0 !important;
-            height: auto !important;
+            flex-direction: column !important; /* Solo qui diventano verticali */
+            gap: 40px !important;
+            padding: 50px 10px !important;
+            text-align: center !important;
+        }
+
+        .stat-item {
+            width: 100% !important;
         }
 
         .stat-number {
-            /* Portiamo i numeri a una misura proporzionata al pollice (32px) */
-            font-size: 32px !important; 
-            margin-bottom: 2px !important;
+            font-size: 42px !important; /* Numeri leggibili su mobile */
         }
-
-        .stat-label {
-            /* Testo piccolo e discreto per non appesantire */
-            font-size: 12px !important; 
-            letter-spacing: 1px !important;
-        }
-
+    }
 
 
         /* 8. NEWSLETTER (Testo "Resta Aggiornato") */
