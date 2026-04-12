@@ -854,7 +854,7 @@ elif st.session_state.pagina == 'login':
             
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
-         elif st.session_state.sub == 'reg':
+        elif st.session_state.sub == 'reg':
             # Questo [1, 2, 1] costringe la colonna centrale a essere più stretta
             vuoto_sx, centro, vuoto_dx = st.columns([1, 2, 1])
             
