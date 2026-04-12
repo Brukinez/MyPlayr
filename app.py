@@ -851,12 +851,7 @@ if st.session_state.pagina == 'home':
             st.button("📄 Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
             st.button("📜 Termini", on_click=lambda: vai_a('termini'), key="f_term")    
 
-# --- COPYRIGHT CLICCABILE NEL FOOTER ---
-st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
 
-if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True):
-    st.session_state.pagina = 'diritti'
-    st.rerun()
 
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
@@ -1734,7 +1729,12 @@ if st.session_state.pagina not in ['home', 'home_auth']:
             st.session_state.pagina = 'home'
         st.rerun()
 
+# --- COPYRIGHT CLICCABILE NEL FOOTER ---
+st.markdown("<br>", unsafe_allow_html=True) # Un po' di spazio
 
+if st.button(f"© 2026 MyClipzo - Tutti i diritti riservati", key="f_copy_btn", use_container_width=True):
+    st.session_state.pagina = 'diritti'
+    st.rerun()
 
 
 
