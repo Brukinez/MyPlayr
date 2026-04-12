@@ -229,7 +229,9 @@ EMERGENT_CSS = """
         text-transform: uppercase;
     }
 
- 
+    .cta-final-section .highlight-green {
+        color: rgb(41, 168, 71) !important;
+    }
    
  /* Nasconde la barra grigia originale di Streamlit */
     header[data-testid="stHeader"] {
