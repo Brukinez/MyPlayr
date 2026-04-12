@@ -194,7 +194,7 @@ EMERGENT_CSS = """
     div[data-testid="stForm"] button {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
-        height: 50px !important;
+        height: 25px !important;
         width: 100% !important;
         font-weight: 800 !important;
         border-radius: 8px !important;
