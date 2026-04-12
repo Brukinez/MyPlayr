@@ -294,25 +294,28 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* SOVRASCRIVE IL ROSSO E FORZA IL VERDE SUI BOTTONI PRIMARY */
+        /* RIDUCIAMO IL RIQUADRO E INGRANDIAMO IL TESTO */
     .stApp div.stButton > button[kind="primary"] {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
         border: none !important;
         border-radius: 8px !important;
+        
+        /* 1. GRANDEZZA SCRITTA: Cambia 22px per ingrandire/rimpicciolire */
+        font-size: 22px !important; 
         font-weight: 800 !important;
-        height: 74px !important;
-        width: 100% !important;
+        
+        /* 2. ALTEZZA RIQUADRO: Riduciamo il padding (sopra e sotto) */
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+        min-height: 10px !important; /* Toglie l'altezza minima di Streamlit */
+        height: auto !important;     /* Si adatta al testo */
+        
+        width: auto !important;      /* Lo rende largo quanto serve al testo */
+        display: block !important;
+        margin: 0 auto !important;   /* Lo centra */
     }
 
-       /* EFFETTO AL PASSAGGIO DEL MOUSE (COLORE SOBRIO) */
-    .stApp div.stButton > button[kind="primary"]:hover {
-        background-color: rgb(35, 145, 61) !important; /* Un verde leggermente più scuro, non fluorescente */
-        color: white !important;
-        border: none !important;
-        box-shadow: none !important; 
-        transform: scale(0.98) !important; /* Leggero effetto pressione (si rimpicciolisce un millimetro) */
-    }
 
 
 
