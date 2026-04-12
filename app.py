@@ -445,20 +445,24 @@ EMERGENT_CSS = """
         }
     }
 
-            /* 7. STRISCIA STATISTICHE (Da orizzontale a verticale) */
+    /* STATISTICHE SU SMARTPHONE (In colonna) */
+    @media (max-width: 768px) {
         .stats-container {
-            flex-direction: column !important; /* Mette i numeri uno sotto l'altro */
-            gap: 30px !important;
-            padding: 30px 10px !important;
-        }
-        
-        .stat-number {
-            font-size: 38px !important; /* Rimpicciolisce i numeri giganti */
+            flex-direction: column !important; /* Solo qui diventano verticali */
+            gap: 40px !important;
+            padding: 50px 10px !important;
+            text-align: center !important;
         }
 
-        .stat-label {
-            font-size: 14px !important;
+        .stat-item {
+            width: 100% !important;
         }
+
+        .stat-number {
+            font-size: 42px !important; /* Numeri leggibili su mobile */
+        }
+    }
+
 
         /* 8. NEWSLETTER (Testo "Resta Aggiornato") */
         div[data-testid="stForm"] h2, 
