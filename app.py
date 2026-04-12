@@ -849,7 +849,7 @@ if st.session_state.pagina == 'home':
         with f_col3:
             st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
             st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv")
-            st.button("Termini", on_click=lambda: vai_a('termini'), key="f_term")    
+            st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term")    
 
 
 
