@@ -889,7 +889,7 @@ if st.session_state.pagina == 'home':
             <b style='color: white; font-size: 22px;'>MyClipzo</b>
         </div>
         <p style='color: #94a3b8; font-size: 20px; line-height: 1.6;'>
-            La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo.
+            La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.
         </p>
         """, unsafe_allow_html=True)
 
