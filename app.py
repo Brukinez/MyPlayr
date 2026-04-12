@@ -447,7 +447,26 @@ EMERGENT_CSS = """
         }
     }
 
-    
+            /* 7. NAVBAR MOBILE (PIÙ SOTTILE) */
+        .sticky-navbar {
+            height: 65px !important; /* Ridotta da 84px a 65px */
+            padding: 0 15px !important;
+        }
+
+        .mc-box {
+            font-size: 20px !important; /* Logo MC più piccolo */
+            padding: 6px 10px !important;
+        }
+
+        .brand-name {
+            font-size: 20px !important; /* Nome MyClipzo più piccolo */
+        }
+
+        /* Spazio in alto per il contenuto (per non finire sotto la navbar ridotta) */
+        .main .block-container {
+            padding-top: 85px !important; 
+        }
+
 </style>
 """
 
