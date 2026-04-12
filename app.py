@@ -494,6 +494,22 @@ EMERGENT_CSS = """
             font-size: 42px !important; /* Numeri leggibili su mobile */
         }
     }
+
+    /* ATTACCO FINALE AI RIQUADRI NERI */
+    .stButton > button[kind="secondary"] {
+        background: transparent !important;
+    }
+    
+    /* Questo elimina il rettangolo nero che appare quando il mouse è sopra o quando clicchi */
+    .stButton > button[kind="secondary"]:hover, 
+    .stButton > button[kind="secondary"]:active, 
+    .stButton > button[kind="secondary"]:focus {
+        background: transparent !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
 </style>
 """
 
