@@ -348,29 +348,35 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* SCRITTE DEL FOOTER: Editabili e grandi */
+    /* --- RIMOZIONE TOTALE E DEFINITIVA DEI RIQUADRI GRIGI --- */
     button[key^="f_"] {
-        background: none !important;
-        background-color: transparent !important;
+        /* Questo elimina il riquadro grigio chiaro che vedi ora */
+        background-color: transparent !important; 
+        background: transparent !important;
+        
         border: none !important;
-        color: #94a3b8 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        
+        color: #94a3b8 !important; /* Colore della scritta */
+        font-size: 22px !important; /* Puoi regolarla a mano qui */
+        
         padding: 0 !important;
+        height: auto !important;
+        min-height: 0px !important;
         text-align: left !important;
         justify-content: flex-start !important;
-
-        /* MODIFICA QUESTO NUMERO PER INGRANDIRE LE SCRITTE MANUALMENTE */
-        font-size: 22px !important; 
-        
-        font-weight: 500 !important;
-        margin-bottom: 10px !important;
     }
 
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
-    button[key^="f_"]:hover {
-        color: rgb(41, 168, 71) !important;
+    /* Assicuriamoci che rimanga trasparente anche quando ci clicchi o lo selezioni */
+    button[key^="f_"]:hover, 
+    button[key^="f_"]:active, 
+    button[key^="f_"]:focus {
+        background-color: transparent !important;
         background: transparent !important;
-        text-decoration: underline !important; /* Aggiunge una sottolineatura per far capire che è un link */
+        color: white !important; /* La scritta diventa bianca */
     }
+
 
 
     /* 3. Sistema il riquadro della password sviluppatore */
