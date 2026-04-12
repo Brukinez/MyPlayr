@@ -866,10 +866,6 @@ if st.session_state.pagina == 'home':
 
 
 # --- FOOTER PROFESSIONALE (VERSIONE PULITA) ---
-# Cerca questa riga nel Footer e modificala così:
-if st.button("Privacy Policy", key="f_priv"): 
-    vai_a('privacy')
-
 st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
 
 f_col1, f_col2, f_col3 = st.columns([1.5, 1, 1]) # La prima colonna è più larga per la bio
@@ -895,7 +891,10 @@ with f_col2:
 
 with f_col3:
     st.markdown("<div class='footer-title'>LEGALE</div>", unsafe_allow_html=True)
-    if st.button("Privacy Policy", key="f_priv"): pass
+    # Cerca questa riga nel Footer e modificala così:
+if st.button("Privacy Policy", key="f_priv"): 
+    vai_a('privacy')
+
     if st.button("Termini e Condizioni", key="f_term"): pass
     if st.button("Cookie Policy", key="f_cook"): pass
 
