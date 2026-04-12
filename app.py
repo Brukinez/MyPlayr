@@ -175,18 +175,39 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
-    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
-    div[data-testid="stForm"] {
-        background-color: #38404a !important; /* Il grigio delle tue card */
-        max-width: 800px !important;         /* Larghezza massima della scatola */
-        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
-        padding: 50px !important;            /* Spazio interno per far respirare i testi */
-        border-radius: 20px !important;
-            /* Bordino verde sottile attorno alla card */
-    border: 1px solid rgba(41, 168, 71, 0.8) !important;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
-        text-align: center !important;
+    /* --- 1. RIPRISTINO NEWSLETTER SU PC --- */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        display: flex !important;
+        flex-direction: row !important; /* Forza la riga su PC */
+        align-items: flex-end !important;
+        gap: 15px !important;
     }
+
+    /* Rende il tasto Iscriviti della stessa altezza dell'input */
+    div[data-testid="stForm"] button {
+        height: 42px !important; 
+        width: auto !important;
+        padding: 0 30px !important;
+    }
+
+    /* --- 2. GRANDEZZA SCRITTE FOOTER (MODIFICA MANUALE) --- */
+    /* Clicca e cambia il valore '22px' per ingrandire o rimpicciolire a tuo piacimento */
+    button[key^="f_"] {
+        font-size: 22px !important; 
+        font-weight: 500 !important;
+        color: #94a3b8 !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        text-align: left !important;
+    }
+
+    /* Effetto quando passi il mouse sopra le scritte del footer */
+    button[key^="f_"]:hover {
+        color: rgb(41, 168, 71) !important;
+        background: transparent !important;
+    }
+
 
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
