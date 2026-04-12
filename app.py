@@ -279,35 +279,28 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-     /* VESTIAMO IL TASTO 'ACCEDI AL PORTALE' */
-    div.stButton > button[key="nav_accedi_centrale"] {
-        background-color: #1e252b !important; /* Grigio scuro card */
-        color: white !important;
-        border: 1px solid rgba(41, 168, 71, 0.4) !important; /* BORDINO VERDE */
-        border-radius: 12px !important;
-        padding: 15px !important;
-        font-weight: 700 !important;
-        margin-top: -20px !important; /* Lo avvicina alla newsletter */
+    /* VESTIAMO ENTRAMBI I TASTI (ACCEDI E CREA ACCOUNT) IN VERDE PIENO */
+    div.stButton > button[key="home_login_btn"], 
+    div.stButton > button[key="home_reg_btn"] {
+        background-color: rgb(41, 168, 71) !important; /* Verde come ISCRIVITI */
+        color: white !important;                        /* Scritta bianca */
+        border: none !important;                        /* Rimuove bordi grigi */
+        border-radius: 8px !important;                 /* Angoli arrotondati */
+        font-weight: 800 !important;                    /* Testo in grassetto */
+        text-transform: uppercase !important;           /* Tutto maiuscolo */
+        height: 54px !important;                        /* Altezza professionale */
+        transition: 0.3s ease !important;
+        margin-top: 10px !important;
     }
 
-    /* VESTIAMO IL TASTO 'CREA IL TUO ACCOUNT GRATIS' (VERDE PIENO) */
-    div.stButton > button[key="btn_cta_finale"] {
-        background-color: rgb(41, 168, 71) !important; /* VERDE PIENO */
-        color: white !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-        font-weight: 900 !important;
-        font-size: 18px !important;
-        box-shadow: 0 10px 25px rgba(41, 168, 71, 0.3) !important;
+    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    div.stButton > button[key="home_login_btn"]:hover, 
+    div.stButton > button[key="home_reg_btn"]:hover {
+        background-color: #24e170 !important;           /* Verde più chiaro al passaggio */
+        transform: translateY(-2px) !important;         /* Si alza leggermente */
+        box-shadow: 0 8px 20px rgba(41, 168, 71, 0.3) !important; /* Glow verde */
     }
 
-    /* EFFETTO HOVER PER ENTRAMBI */
-    div.stButton > button[key="nav_accedi_centrale"]:hover,
-    div.stButton > button[key="btn_cta_finale"]:hover {
-        transform: translateY(-3px) !important;
-        filter: brightness(1.1) !important;
-    }
   
 </style>
 """
