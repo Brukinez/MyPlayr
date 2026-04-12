@@ -283,9 +283,25 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+       /* EFFETTO SFONDO CON IMMAGINE LOCALE */
+    .hero-section-bg {
+        background: 
+            /* Il velo scuro che sfuma verso il grigio della pagina */
+            linear-gradient(rgba(30, 37, 43, 0.5), rgba(30, 37, 43, 1)),
+            /sfondo.jpg/
+            url("app/static/sfondo.jpg") !important; 
+            
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important; /* Effetto "cinema" mentre scorri */
+        padding-top: 120px !important;
+        padding-bottom: 50px !important;
+        margin-top: -104px !important; 
+    }
+
 </style>
 """
+
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
     <div class='sticky-navbar'>
@@ -600,35 +616,31 @@ if st.session_state.autenticato:
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
 
-# --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
-
+# --- BLOCCO: PAGINA HOME (CON SFONDO IMMAGINE) ---
 if st.session_state.pagina == 'home':
-    # Centriamo tutto con delle colonne, mettendo il contenuto in quella centrale
+    # Inizio della sezione con sfondo
+    st.markdown("<div class='hero-section-bg'>", unsafe_allow_html=True)
+    
+    # Usiamo le tue colonne originali
     _, col_centro, _ = st.columns([1, 4, 1])
     
     with col_centro:
-        # Questo è il piccolo badge che abbiamo appena creato
         st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
         
-        # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
-        st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-                # --- DESCRIZIONE CENTRATA ---
+        st.markdown("<h1 style='text-align: center; font-size: 100px; font-weight: 900; line-height: 1; color: white;'>GIOCA. RIVEDITI.<br><span style='color: rgb(41, 168, 71);'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
+        
         st.markdown("""
             <div style='text-align: center; width: 100%;'>
-                <p style='
-                    color: #94a3b8; 
-                    font-family: "Inter", sans-serif; 
-                    font-size: 24px; 
-                    line-height: 1.6; 
-                    max-width: 600px; 
-                    margin: 24px auto 40px auto;
-                '>
+                <p style='color: #94a3b8; font-family: "Inter", sans-serif; font-size: 24px; line-height: 1.6; max-width: 600px; margin: 24px auto 40px auto;'>
                     Ogni partita merita di essere ricordata! MyClipzo <br>
                     registra automaticamente le tue azioni e ti <br>
                     permette di creare highlight professionali.
                 </p>
             </div>
         """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True) # Fine sezione sfondo
+
 
 
 
