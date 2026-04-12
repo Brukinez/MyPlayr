@@ -447,7 +447,34 @@ EMERGENT_CSS = """
         }
     }
 
-    
+            /* 7. STRISCIA STATISTICHE (Da orizzontale a verticale) */
+        .stats-container {
+            flex-direction: column !important; /* Mette i numeri uno sotto l'altro */
+            gap: 30px !important;
+            padding: 30px 10px !important;
+        }
+        
+        .stat-number {
+            font-size: 38px !important; /* Rimpicciolisce i numeri giganti */
+        }
+
+        .stat-label {
+            font-size: 14px !important;
+        }
+
+        /* 8. NEWSLETTER (Testo "Resta Aggiornato") */
+        div[data-testid="stForm"] h2, 
+        div[data-testid="stForm"] h3 {
+            font-size: 22px !important; /* Rimpicciolisce il titolo della newsletter */
+            line-height: 1.2 !important;
+        }
+
+        /* Sistemiamo anche l'input e il bottone che spesso si rompono su mobile */
+        div[data-testid="stForm"] .stHorizontalBlock {
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+
 </style>
 """
 
