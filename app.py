@@ -301,7 +301,7 @@ EMERGENT_CSS = """
         border: none !important;
         border-radius: 8px !important;
         font-weight: 800 !important;
-        height: 54px !important;
+        height: 74px !important;
         width: 100% !important;
     }
 
