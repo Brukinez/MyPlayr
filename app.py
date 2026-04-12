@@ -76,7 +76,7 @@ EMERGENT_CSS = """
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
     .mcp-card {
-        background-color: #2d343c !important; /* Il grigio esatto della tua foto */
+        background-color: #38404a !important; /* Il grigio esatto della tua foto */
         border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
         border-radius: 12px;               /* Angoli arrotondati perfetti */
         padding: 24px;                     /* Spazio interno */
