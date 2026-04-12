@@ -1111,24 +1111,40 @@ elif st.session_state.pagina == 'login':
                     st.rerun()
             
             
-        # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
+          # --- 2. SOTTO-PAGINA: REGISTRAZIONE (STILE MYPLAYR + LOGICA SUPABASE) ---
         elif st.session_state.sub == 'reg':
-            st.markdown("<h2 style='text-align: center;'>Crea il tuo Account</h2>", unsafe_allow_html=True)
+            # Logo e Titolo come nello screenshot
+            st.markdown("""
+                <div style='text-align: center; margin-bottom: 20px;'>
+                    <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
+                    <h1 style='font-weight: 900; margin-bottom: 0; color: white;'>CREA IL TUO ACCOUNT</h1>
+                    <p style='color: #94a3b8;'>Unisciti alla community MyClipzo</p>
+                </div>
+            """, unsafe_allow_html=True)
             
-            r_n = st.text_input("Nome", placeholder="es. Mario")
-            r_c = st.text_input("Cognome", placeholder="es. Rossi")
-            r_e = st.text_input("Email", placeholder="mario.rossi@mail.com").strip().lower()
-            r_p = st.text_input("Scegli una Password", type="password")
+            # Apertura Card Scura
+            st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
             
-            if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+            # Riga 1: Nome e Cognome affiancati (come nello screen)
+            c1, c2 = st.columns(2)
+            with c1:
+                r_n = st.text_input("👤 Nome", placeholder="es. Mario", key="r_nome")
+            with c2:
+                r_c = st.text_input("Cognome", placeholder="es. Rossi", key="r_cognome")
+            
+            # Email e Password
+            r_e = st.text_input("📧 Email", placeholder="mario.rossi@mail.com", key="r_email").strip().lower()
+            r_p = st.text_input("🔒 Password", type="password", placeholder="Scegli una password", key="r_pass")
+            
+            st.markdown("<br>", unsafe_allow_html=True)
+            
+            # BOTTONE PRINCIPALE (La tua logica Supabase integrata)
+            if st.button("CREA ACCOUNT", use_container_width=True, type="primary", key="btn_confirm_reg"):
                 if r_n and r_c and r_e and r_p:
                     try:
-                        # Controlliamo prima se l'email esiste già (Uso della funzione creata nel Blocco 5)
                         nuovo_utente = {
-                            "nome": r_n, 
-                            "cognome": r_c, 
-                            "email": r_e, 
-                            "password": r_p, 
+                            "nome": r_n, "cognome": r_c, 
+                            "email": r_e, "password": r_p, 
                             "ruolo": "Player"
                         }
                         supabase.table("utenti").insert(nuovo_utente).execute()
@@ -1136,13 +1152,27 @@ elif st.session_state.pagina == 'login':
                         st.session_state.sub = 'login'
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Errore: Email già registrata o problema tecnico.")
+                        st.error("Errore: Email già registrata o problema tecnico.")
                 else: 
                     st.error("⚠️ Inserisci tutti i dati richiesti!")
             
-            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+            # Navigazione interna alla card
+            st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'><p style='text-align: center; color: #94a3b8; font-size: 14px;'>Hai già un account?</p>", unsafe_allow_html=True)
+            
+            if st.button("ACCEDI", use_container_width=True, key="btn_back_to_log"): 
                 st.session_state.sub = 'login'
                 st.rerun()
+            
+            st.markdown("</div>", unsafe_allow_html=True) # Chiusura Card
+
+            # --- TASTO TORNA ALLA HOME (Fuori dalla card) ---
+            st.markdown("<br>", unsafe_allow_html=True)
+            _, col_home, _ = st.columns([1, 1.5, 1])
+            with col_home:
+                if st.button("← Torna alla Home", key="btn_final_home"):
+                    st.session_state.pagina = 'home'
+                    st.rerun()
+
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
         elif st.session_state.sub == 'recupero':
