@@ -337,8 +337,9 @@ EMERGENT_CSS = """
         transition: none !important; /* Toglie il flash del tema originale */
     }
 
-    /* DISTRUGGI OGNI RIQUADRO NEI BOTTONI DEL FOOTER */
-    [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] button,
+    /* --- FOOTER: SCRITTE E COPYRIGHT --- */
+    
+    /* 1. TUTTI I LINK DEL FOOTER (NAVIGAZIONE E LEGALE) */
     button[key^="f_"] {
         background: none !important;
         background-color: transparent !important;
@@ -347,17 +348,28 @@ EMERGENT_CSS = """
         color: #94a3b8 !important;
         padding: 0 !important;
         height: auto !important;
-        min-height: 10px !important;
+        min-height: 0px !important;
+        
+        /* MODIFICA QUI LA GRANDEZZA DELLE SCRITTE (es. 20px o 24px) */
+        font-size: 20px !important; 
+        
+        font-weight: 500 !important;
         text-align: left !important;
         justify-content: flex-start !important;
     }
 
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    /* 2. RIMUOVI IL RIQUADRO NERO DAL COPYRIGHT IN FONDO */
+    button[key="f_copy_btn"] {
+        width: 100% !important;
+        justify-content: center !important; /* Centra la scritta del copyright */
+        margin-top: 20px !important;
+    }
+
     button[key^="f_"]:hover {
         color: rgb(41, 168, 71) !important;
         background: transparent !important;
-        text-decoration: underline !important; /* Aggiunge una sottolineatura per far capire che è un link */
     }
+
 
 
     /* 3. Sistema il riquadro della password sviluppatore */
