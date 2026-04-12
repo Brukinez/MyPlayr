@@ -11,6 +11,20 @@ import re
 from urllib.parse import urlparse, parse_qs
 from supabase import create_client, Client
 
+import base64
+
+def get_base64(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# Carichiamo la tua immagine "sfondo.jpg"
+# Assicurati che il file si chiami esattamente così nella tua cartella!
+try:
+    img_base64 = get_base64("sfondo.jpg")
+except:
+    img_base64 = "" # Evita errori se il file manca
+
 
 # --- CONNESSIONE MANCANTE RIPRISTINATA ---
 URL_SUPABASE = "https://zxgsbcswuchrwmdcmntg.supabase.co"
@@ -284,20 +298,18 @@ EMERGENT_CSS = """
     }
                
        /* EFFETTO SFONDO CON IMMAGINE LOCALE */
-    .hero-section-bg {
+        .hero-section-bg {
         background: 
-            /* Il velo scuro che sfuma verso il grigio della pagina */
-            linear-gradient(rgba(30, 37, 43, 0.5), rgba(30, 37, 43, 1)),
-            url("sfondo.jpg") !important;
-            url("app/static/sfondo.jpg") !important; 
+            linear-gradient(rgba(37, 43, 50, 0.4), rgba(37, 43, 50, 1)),
+            url("data:image/jpg;base64,""" + img_base64 + """) !important;
             
         background-size: cover !important;
         background-position: center !important;
-        background-attachment: fixed !important; /* Effetto "cinema" mentre scorri */
-        padding-top: 120px !important;
+        padding-top: 150px !important;
         padding-bottom: 50px !important;
-        margin-top: -104px !important; 
+        margin-top: -104px !important;
     }
+
 
 </style>
 """
