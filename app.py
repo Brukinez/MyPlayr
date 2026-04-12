@@ -288,7 +288,7 @@ EMERGENT_CSS = """
         background: 
             /* Il velo scuro che sfuma verso il grigio della pagina */
             linear-gradient(rgba(30, 37, 43, 0.5), rgba(30, 37, 43, 1)),
-            /sfondo.jpg/
+            url("sfondo.jpg") !important;
             url("app/static/sfondo.jpg") !important; 
             
         background-size: cover !important;
