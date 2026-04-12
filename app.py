@@ -279,15 +279,17 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-    /* --- CONTENITORE LOGIN --- */
-    .mcp-auth-container {
-        background-color: #2d343c !important; 
+    /* --- CONTENITORE REGISTRAZIONE --- */
+    .auth-card {
+        background-color: #2d343c !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 16px !important;
-        padding: 40px !important;
-        margin-top: 20px !important;
+        padding: 30px !important;
         box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-        display: block !important;
+        width: 400px !important; /* Larghezza fissa come MyPlayr */
+        margin: 0 auto !important; /* Centra orizzontalmente */
+        display: flex;
+        flex-direction: column;
     }
 
 
@@ -855,34 +857,37 @@ elif st.session_state.pagina == 'login':
             
         # --- 2. SOTTO-PAGINA: REGISTRAZIONE ---
         elif st.session_state.sub == 'reg':
-            # Questo [1, 2, 1] costringe la colonna centrale a essere più stretta
-            vuoto_sx, centro, vuoto_dx = st.columns([1, 2, 1])
-            
+            # 1. Creiamo lo spazio centrale
+            _, centro, _ = st.columns()
+
             with centro:
-                # CREIAMO UN CONTENITORE FISICO
-                con = st.container()
+                # 2. Iniziamo la card con l'HTML
+                st.markdown('<div class="auth-card">', unsafe_allow_html=True)
                 
-                # METTIAMO IL CSS DENTRO IL CONTENITORE
-                con.markdown('<div class="mcp-auth-container">', unsafe_allow_html=True)
+                # Titolo centrato
+                st.markdown("<h2 style='text-align: center; color: white; margin-bottom: 20px;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
                 
-                # TUTTI GLI INPUT DEVONO ESSERE DENTRO 'con'
-                con.markdown("<h2 style='text-align: center; color: white;'>CREA ACCOUNT</h2>", unsafe_allow_html=True)
-                r_n = con.text_input("Nome", placeholder="es. Mario")
-                r_c = con.text_input("Cognome", placeholder="es. Rossi")
-                r_e = con.text_input("Email", placeholder="mario.rossi@mail.com")
-                r_p = con.text_input("Scegli una Password", type="password")
+                # Campi di input (Streamlit li metterà uno sotto l'altro)
+                r_n = st.text_input("Nome", placeholder="es. Mario")
+                r_c = st.text_input("Cognome", placeholder="es. Rossi")
+                r_e = st.text_input("Email", placeholder="mario.rossi@mail.com")
+                r_p = st.text_input("Scegli una Password", type="password")
                 
-                if con.button("CONFERMA REGISTRAZIONE", use_container_width=True):
+                st.write("") # Spazio
+                
+                if st.button("CONFERMA REGISTRAZIONE", use_container_width=True):
                     # Qui la tua logica Supabase
                     pass
 
-                # CHIUDIAMO IL DIV DENTRO IL CONTENITORE
-                con.markdown('</div>', unsafe_allow_html=True)
+                # 3. Chiudiamo la card HTML
+                st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Tasto torna indietro (fuori dal contenitore grigio)
+                # Tasto torna indietro fuori dalla card per pulizia
+                st.write("")
                 if st.button("🔙 TORNA AL LOGIN", use_container_width=True): 
                     st.session_state.sub = 'login'
                     st.rerun()
+
 
 
 
