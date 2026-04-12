@@ -111,7 +111,7 @@ EMERGENT_CSS = """
     .mcp-card b,
     .mcp-card strong {
         font-weight: 800 !important;      /* Grassetto molto marcato */
-        font-size: 22px !important;       /* Dimensione equilibrata */
+        font-size: 28px !important;       /* Dimensione equilibrata */
         color: white !important;
         text-transform: uppercase !important; /* Forza il maiuscolo */
         letter-spacing: 1px !important;   /* Un po' di spazio tra le lettere per eleganza */
