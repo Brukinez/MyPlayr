@@ -852,7 +852,7 @@ if st.session_state.pagina == 'home':
         # --- SEZIONE: COME FUNZIONA (LAYOUT A 3 COLONNE) ---
         # --- TITOLO E DESCRIZIONE SEZIONE CARD ---
         st.markdown("""
-    <div style='text-align: center; margin-bottom: 50px;'>
+    <div style='text-align: center; margin-bottom: 70px;'>
         <h2 style='color: white; font-weight: 900; text-transform: uppercase; margin-bottom: 10px;'>
             COME FUNZIONA
         </h2>
