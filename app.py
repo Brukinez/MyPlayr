@@ -60,6 +60,10 @@ def make_direct_link(url):
 EMERGENT_CSS = """
 <style>
  
+    .mcp-card {
+        background-color: #2d343c !important; /* Questo deve essere più chiaro di .stApp */
+        /* ... resto del codice ... */
+    }
 
     div[data-testid="stButton"] > button[kind="secondary"]:hover {
         color: var(--neon) !important;
