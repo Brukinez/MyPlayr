@@ -60,9 +60,7 @@ def make_direct_link(url):
 EMERGENT_CSS = """
 <style>
  
-    .mcp-card {
-        background-color: #2d343c !important; /* Questo deve essere più chiaro di .stApp */
-        /* ... resto del codice ... */
+
     }
 
     div[data-testid="stButton"] > button[kind="secondary"]:hover {
@@ -283,7 +281,10 @@ EMERGENT_CSS = """
         font-family: 'Inter', sans-serif;
     }
                
-   
+       .mcp-card {
+        background-color: #2d343c !important; /* Questo deve essere più chiaro di .stApp */
+        /* ... resto del codice ... */
+        
 </style>
 """
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
