@@ -67,27 +67,15 @@ EMERGENT_CSS = """
         transition: 0.3s ease !important;
     }
 
-    /* SISTEMA BOTTONI VERDI: Più spazio e scritte grandi */
+    /* COLPIAMO I TUOI DUE BOTTONI SPECIFICI */
     button[key="home_login_btn"], 
     button[key="home_reg_btn"] {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
-        border-radius: 8px !important;
         border: none !important;
-        
-        /* 1. GRANDEZZA SCRITTA (Cambia questo numero per ingrandire) */
-        font-size: 24px !important; 
         font-weight: 800 !important;
-
-        /* 2. SPAZIO INTERNO (Padding): il primo numero è sopra/sotto, il secondo è ai lati */
-        padding: 12px 30px !important; 
-        
-        height: auto !important;
-        width: auto !important;
-        display: block !important;
-        margin: 0 auto !important;
+        height: 54px !important;
     }
-
 
     /* EFFETTO AL PASSAGGIO DEL MOUSE */
     button[key="home_login_btn"]:hover, 
@@ -349,27 +337,17 @@ EMERGENT_CSS = """
 
     /* DISTRUGGI OGNI RIQUADRO NEI BOTTONI DEL FOOTER */
     [data-testid="stVerticalBlock"] [data-testid="stHorizontalBlock"] button,
-        /* SISTEMA BOTTONI VERDI: Più spazio e scritte grandi */
-    button[key="home_login_btn"], 
-    button[key="home_reg_btn"] {
-        background-color: rgb(41, 168, 71) !important;
-        color: white !important;
-        border-radius: 8px !important;
+    button[key^="f_"] {
+        background: none !important;
+        background-color: transparent !important;
         border: none !important;
-        
-        /* 1. GRANDEZZA SCRITTA (Cambia questo numero per ingrandire) */
-        font-size: 24px !important; 
-        font-weight: 800 !important;
-
-        /* 2. SPAZIO INTERNO (Padding): il primo numero è sopra/sotto, il secondo è ai lati */
-        padding: 12px 30px !important; 
-        
+        box-shadow: none !important;
+        color: #94a3b8 !important;
+        padding: 0 !important;
         height: auto !important;
-        width: auto !important;
-        display: block !important;
-        margin: 0 auto !important;
-    }
-
+        min-height: 10px !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
     }
 
     /* EFFETTO AL PASSAGGIO DEL MOUSE */
