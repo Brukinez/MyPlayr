@@ -880,7 +880,17 @@ if st.session_state.pagina == 'home':
         
         f_col1, f_col2, f_col3 = st.columns(3)
         with f_col1:
-            st.markdown("<b style='color: white;'>MyClipzo</b><p style='color: #94a3b8; font-size: 20px;'>La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.</p>", unsafe_allow_html=True)
+    # Reinseriamo il logo MC stile Navbar
+            st.markdown("""
+        <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 15px;'>
+            <div class='mc-box' style='font-size: 16px; padding: 6px 10px;'>MC</div>
+            <b style='color: white; font-size: 22px;'>MyClipzo</b>
+        </div>
+        <p style='color: #94a3b8; font-size: 16px; line-height: 1.6;'>
+            La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo.
+        </p>
+        """, unsafe_allow_html=True)
+
         
         with f_col2:
             st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
