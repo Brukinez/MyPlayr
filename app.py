@@ -250,7 +250,7 @@ EMERGENT_CSS = """
         left: 0;
         width: 100%;
         height: 84px;
-        background-color: rgba(45, 52, 60, 0.98) !important; /* Molto più chiara (come le card) */
+       background-color: #1e252b !important; /* Lo stesso scuro delle card */
         backdrop-filter: blur(10px);
         display: flex !important;           /* Mette logo e spazio in riga */
         align-items: center !important;     /* Centra tutto verticalmente */
