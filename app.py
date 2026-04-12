@@ -202,12 +202,7 @@ EMERGENT_CSS = """
         border: none !important;
     }
 
-    /* IL TASTO ACCEDI (Sotto la scatola) */
-    .login-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-    }
+
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
