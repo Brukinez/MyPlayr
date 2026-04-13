@@ -1839,8 +1839,10 @@ elif st.session_state.pagina == 'diritti':
     testo_diritti = """
     Proprietà dei Contenuti e Diritti Riservati:
     Tutti i contenuti presenti su questo sito, inclusi testi, grafica, loghi, icone, immagini e il software di gestione, sono di proprietà esclusiva di MyClipzo o dei suoi licenzianti e sono protetti dalle leggi internazionali sul diritto d'autore.
-Riprese Video e Clip:
+
+    Riprese Video e Clip:
 Le riprese effettuate durante gli eventi sportivi hanno finalità di analisi tecnica e documentazione amatoriale. I diritti relativi alle immagini appartengono a MyClipzo, fermo restando il diritto all'immagine dei partecipanti.
+
 Limitazioni d'uso:
 È severamente vietata la riproduzione, la modifica, la distribuzione, la trasmissione o la pubblicazione dei video e delle clip presenti nel sito per scopi commerciali senza l'espressa autorizzazione scritta di MyClipzo. L'utente ha il diritto di visualizzare e scaricare le proprie clip esclusivamente per uso personale e privato (social network inclusi, previo tag della pagina ufficiale).
 © 2026 MyClipzo - Tutti i diritti riservati.
