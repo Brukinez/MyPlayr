@@ -1830,7 +1830,7 @@ Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flu
 
     """
     
-    st.markdown(f"<div style='text-align: justify;  font-size: 20px; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: justify;  font-size: 24px; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
 
 # --- PAGINA DIRITTI RISERVATI ---
 elif st.session_state.pagina == 'diritti':
