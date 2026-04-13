@@ -1165,7 +1165,13 @@ elif st.session_state.pagina == 'login':
             
             st.markdown("</div>", unsafe_allow_html=True) # Chiusura Card
 
-            
+            # --- TASTO TORNA ALLA HOME (Fuori dalla card) ---
+            st.markdown("<br>", unsafe_allow_html=True)
+            _, col_home, _ = st.columns([1, 1.5, 1])
+            with col_home:
+                if st.button("← Torna alla Home", key="btn_final_home"):
+                    st.session_state.pagina = 'home'
+                    st.rerun()
 
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
@@ -1179,7 +1185,9 @@ elif st.session_state.pagina == 'login':
                 else:
                     st.warning("Inserisci un'email!")
             
-            
+            if st.button("🔙 TORNA AL LOGIN", type="secondary", use_container_width=True): 
+                st.session_state.sub = 'login'
+                st.rerun()
         
 # --- BLOCCO: PAGINA ADMIN (DASHBOARD SUPABASE) ---
 
