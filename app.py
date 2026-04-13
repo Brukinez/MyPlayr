@@ -530,16 +530,36 @@ EMERGENT_CSS = """
 </style>
 """
 
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
-st.markdown("""
-    <div class='sticky-navbar'>
-        <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+# --- NAVBAR FISSA CON TASTO ACCEDI ---
+st.markdown(f"""
+    <div class="sticky-navbar">
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; margin: 0 auto;">
+            <!-- Logo e Nome (Sinistra) -->
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="mc-box">MC</div>
+                <span class="brand-name">MyClipzo</span>
+            </div>
+            
+            <!-- Tasto Accedi (Destra) -->
+            <a href="/?pagina=login" target="_self" style="text-decoration: none;">
+                <div style="
+                    background-color: rgb(41, 168, 71); 
+                    color: white; 
+                    padding: 8px 20px; 
+                    border-radius: 8px; 
+                    font-weight: 800; 
+                    font-size: 14px;
+                    cursor: pointer;
+                    transition: 0.3s;
+                    text-transform: uppercase;
+                ">
+                    ACCEDI
+                </div>
+            </a>
         </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
+
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
