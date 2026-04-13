@@ -1807,7 +1807,7 @@ if st.session_state.pagina == 'partite':
 
 # --- PAGINA PRIVACY POLICY ---
 elif st.session_state.pagina == 'privacy':
-    st.markdown("<h1 style='text-align: center; font-size: 40px; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; font-size: 20px; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
     
     # Incolla il tuo testo tra le triple virgolette
     testo_privacy = """ 1. Titolare del Trattamento
