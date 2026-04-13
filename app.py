@@ -832,7 +832,7 @@ if st.session_state.autenticato:
     
     # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
     with col_nav[-1]: 
-        if st.button("🚪 Esci", type="secondary", use_container_width=True):
+        if st.button("Esci", type="secondary", use_container_width=True):
             # Azioni di pulizia totale quando l'utente se ne va
             st.session_state.autenticato = False
             st.session_state.user_email = ""
