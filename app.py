@@ -539,24 +539,6 @@ st.markdown("""
         </div>
         <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
-<!-- Tasto Accedi (Destra) -->
-            <a href="/?pagina=login" target="_self" style="text-decoration: none;">
-                <div style="
-                    background-color: rgb(41, 168, 71); 
-                    color: white; 
-                    padding: 8px 20px; 
-                    border-radius: 8px; 
-                    font-weight: 800; 
-                    font-size: 14px;
-                    cursor: pointer;
-                    transition: 0.3s;
-                    text-transform: uppercase;
-                ">
-                    ACCEDI
-                </div>
-            </a>
-        </div>
-    </div>
 """, unsafe_allow_html=True)
 
 # --- 1. CONFIGURAZIONE PAGINA ---
