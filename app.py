@@ -1830,7 +1830,7 @@ Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flu
 
     """
     
-    st.markdown(f"<div style='text-align: justify;  font-size: 24px; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: justify; font-size: 24px; color: white;'>{testo_privacy}</div>", unsafe_allow_html=True)
 
 # --- PAGINA DIRITTI RISERVATI ---
 elif st.session_state.pagina == 'diritti':
@@ -1846,7 +1846,7 @@ Limitazioni d'uso:
 © 2026 MyClipzo - Tutti i diritti riservati.
     """
     
-    st.markdown(f"<div style='color: white; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='color: white; font-size: 24px; text-align: justify;'>{testo_diritti}</div>", unsafe_allow_html=True)
     
     
 
@@ -1881,7 +1881,7 @@ elif st.session_state.pagina == 'termini':
 
     """
     
-    st.markdown(f"<div style='text-align: justify; color: white;'>{testo_termini}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='text-align: justify; font-size: 24px; color: white;'>{testo_termini}</div>", unsafe_allow_html=True)
     
 
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
