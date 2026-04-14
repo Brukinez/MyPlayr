@@ -1508,69 +1508,7 @@ elif st.session_state.pagina == 'admin':
 
         st.divider()
 
-        # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
-        st.markdown("### 🎞️ Archivio Match Registrati")
         
-        try:
-            # Recuperiamo le partite concluse (stato 'FATTO')
-            res_matches = supabase.table("calendario")\
-                .select("*")\
-                .eq("stato", "FATTO")\
-                .order("id", desc=True)\
-                .execute()
-            
-            partite_fatte = res_matches.data
-
-            if not partite_fatte:
-                st.info("ℹ️ Nessuna partita registrata disponibile per il taglio.")
-            else:
-                for partita in partite_fatte:
-                    st.subheader(f"🏟️ {partita['evento']} ({partita['data']})")
-                    
-                    video_url = make_direct_link(partita.get("link_video"))  # URL caricato dal Mini PC (GDrive/S3/Cloud)
-
-                    if video_url:
-                        # Anteprima video per trovare il momento del goal
-                        st.video(video_url, format="video/mp4")
-                        
-                        # BOX TAGLIO CLIP
-                        with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
-                            st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
-                            
-                            c1, c2, c3 = st.columns(3)
-                            with c1:
-                                m_in = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_{partita['id']}")
-                            with c2:
-                                s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_{partita['id']}")
-                            with c3:
-                                durata_clip = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
-
-                            if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
-                                # Calcolo del tempo totale in secondi per FFmpeg
-                                inizio_totale_secondi = (m_in * 60) + s_in
-                                
-                                # Inviamo l'ordine di lavoro alla tabella 'comandi_clip'
-                                # Il Mini PC in campo leggerà questa riga e taglierà il file originale 4K
-                                try:
-                                    supabase.table("comandi_clip").insert({
-                                        "id_partita": partita['id'],
-                                        "inizio_secondi": inizio_totale_secondi,
-                                        "durata_secondi": durata_clip,
-                                        "email_utente": st.session_state.user_email,
-                                        "stato": "RICHIESTO"
-                                    }).execute()
-                                    
-                                    st.success("✅ Richiesta inviata! Il Mini PC sta lavorando il video. La troverai tra poco in 'Le Mie Clip'.")
-                                except Exception as e:
-                                    st.error(f"Errore invio comando: {e}")
-                    else:
-                        st.warning("⚠️ Video Master in fase di caricamento sul Cloud...")
-                    
-                    st.divider()
-
-        except Exception as e:
-            st.error(f"Errore caricamento archivio: {e}")
-
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyClipzo</h2>", unsafe_allow_html=True)
@@ -1746,6 +1684,68 @@ if st.session_state.pagina == 'partite':
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
 
+# 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
+        st.markdown("### 🎞️ Archivio Match Registrati")
+        
+        try:
+            # Recuperiamo le partite concluse (stato 'FATTO')
+            res_matches = supabase.table("calendario")\
+                .select("*")\
+                .eq("stato", "FATTO")\
+                .order("id", desc=True)\
+                .execute()
+            
+            partite_fatte = res_matches.data
+
+            if not partite_fatte:
+                st.info("ℹ️ Nessuna partita registrata disponibile per il taglio.")
+            else:
+                for partita in partite_fatte:
+                    st.subheader(f"🏟️ {partita['evento']} ({partita['data']})")
+                    
+                    video_url = make_direct_link(partita.get("link_video"))  # URL caricato dal Mini PC (GDrive/S3/Cloud)
+
+                    if video_url:
+                        # Anteprima video per trovare il momento del goal
+                        st.video(video_url, format="video/mp4")
+                        
+                        # BOX TAGLIO CLIP
+                        with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
+                            st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
+                            
+                            c1, c2, c3 = st.columns(3)
+                            with c1:
+                                m_in = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_{partita['id']}")
+                            with c2:
+                                s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_{partita['id']}")
+                            with c3:
+                                durata_clip = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
+
+                            if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
+                                # Calcolo del tempo totale in secondi per FFmpeg
+                                inizio_totale_secondi = (m_in * 60) + s_in
+                                
+                                # Inviamo l'ordine di lavoro alla tabella 'comandi_clip'
+                                # Il Mini PC in campo leggerà questa riga e taglierà il file originale 4K
+                                try:
+                                    supabase.table("comandi_clip").insert({
+                                        "id_partita": partita['id'],
+                                        "inizio_secondi": inizio_totale_secondi,
+                                        "durata_secondi": durata_clip,
+                                        "email_utente": st.session_state.user_email,
+                                        "stato": "RICHIESTO"
+                                    }).execute()
+                                    
+                                    st.success("✅ Richiesta inviata! Il Mini PC sta lavorando il video. La troverai tra poco in 'Le Mie Clip'.")
+                                except Exception as e:
+                                    st.error(f"Errore invio comando: {e}")
+                    else:
+                        st.warning("⚠️ Video Master in fase di caricamento sul Cloud...")
+                    
+                    st.divider()
+
+        except Exception as e:
+            st.error(f"Errore caricamento archivio: {e}")
 
 # --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
 if st.session_state.pagina == 'partite':
