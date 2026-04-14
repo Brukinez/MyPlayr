@@ -1542,7 +1542,7 @@ elif st.session_state.pagina == 'profilo':
                 if f_p: 
                     st.image(f"{f_p}?t={int(time.time())}", width=150)
                 else: 
-                    st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
+                    st.markdown('<div style="font-size:200px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
                 st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
