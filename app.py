@@ -1646,7 +1646,7 @@ if st.session_state.pagina == 'partite':
                 else:
                     st.warning("⏳ Video in fase di caricamento o non trovato.")
                 
-                st.divider()
+                #st.divider()
 
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
