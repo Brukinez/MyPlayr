@@ -804,10 +804,10 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-# --- LOGICA DINAMICA DELLA NAVBAR ---
+# --- NAVBAR UNICA, FISSA E INTELLIGENTE (VERSIONE CORRETTA) ---
 if not st.session_state.get('autenticato', False):
-    # UTENTE NON LOGGATO (PUBBLICO)
-    nav_content = f"""
+    # UTENTE PUBBLICO
+    nav_content = """
         <div style="display: flex; align-items: center; gap: 20px;">
             <a href="/?pagina=home" target="_self" class="nav-link-item">Home</a>
             <a href="/?pagina=premium" target="_self" class="nav-link-item">Premium</a>
@@ -815,35 +815,34 @@ if not st.session_state.get('autenticato', False):
         </div>
     """
 else:
-    # UTENTE LOGGATO (PRIVATO)
+    # UTENTE LOGGATO
     is_admin = st.session_state.get('user_role') == "admin"
     admin_link = '<a href="/?pagina=admin" target="_self" class="nav-link-item">Admin</a>' if is_admin else ""
-    
     nav_content = f"""
         <div style="display: flex; align-items: center; gap: 15px;">
             <a href="/?pagina=home_auth" target="_self" class="nav-link-item">Home</a>
             <a href="/?pagina=profilo" target="_self" class="nav-link-item">Profilo</a>
-            <a href="/?pagina=partite" target="_self" class="nav-link-item">Partite</a>
-            <a href="/?pagina=hall_of_fame" target="_self" class="nav-link-item">Hall of Fame</a>
             <a href="/?pagina=mie_clip" target="_self" class="nav-link-item">Clip</a>
             {admin_link}
             <a href="/?pagina=logout" target="_self" class="nav-link-logout">Logout</a>
         </div>
     """
 
-# --- DISEGNO DELLA NAVBAR ---
+# DISEGNO DELLA NAVBAR
 st.markdown(f"""
     <div class="sticky-navbar">
         <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="window.location.href='/?pagina=home'">
+            <!-- LOGO A SINISTRA -->
+            <div class="logo-container" onclick="window.location.href='/?pagina=home'" style="cursor: pointer;">
                 <div class="mc-box">MC</div>
                 <span class="brand-name">MyClipzo</span>
             </div>
+            <!-- LINK A DESTRA -->
             {nav_content}
         </div>
     </div>
 """, unsafe_allow_html=True)
- 
+
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
