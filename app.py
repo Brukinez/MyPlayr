@@ -815,9 +815,9 @@ if st.session_state.autenticato:
     # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
+    # 2. CREAZIONE COLONNE: 8 spazi se è Admin (ha il tasto segreto), 7 per gli altri
     # Usiamo col_nav per indicare le colonne della barra
-    col_nav = st.columns(7 if is_admin else 6)
+    col_nav = st.columns(8 if is_admin else 7)
     
     # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
     with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
