@@ -263,22 +263,29 @@ EMERGENT_CSS = """
         padding-top: 100px !important;
     }
 
-    /* LINK DELLA NAVBAR - Stile Sottile */
-    .nav-link-item {
-        color: #94a3b8 !important;
-        text-decoration: none !important;
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        transition: 0.3s;
+            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
+    .sticky-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 84px;
+       background-color: #38404a !important; /* Lo stesso scuro delle card */
+        backdrop-filter: blur(10px);
+        display: flex !important;           /* Mette logo e spazio in riga */
+        align-items: center !important;     /* Centra tutto verticalmente */
+        justify-content: space-between !important;
+        padding: 0 5%;
+        z-index: 999999;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .nav-link-item:hover { color: white !important; }
 
-    /* LINK LOGOUT - Rosso discreto */
-    .nav-link-logout {
-        color: #ff4b4b !important;
-        text-decoration: none !important;
-        font-size: 14px !important;
-        font-weight: 700 !important;
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
+    .logo-container {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
     }
 
     .mc-box {
@@ -297,7 +304,24 @@ EMERGENT_CSS = """
         font-weight: 700;
         font-family: 'Inter', sans-serif;
     }
-               
+        /* LINK DELLA NAVBAR - Stile Sottile */
+    .nav-link-item {
+        color: #94a3b8 !important;
+        text-decoration: none !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        transition: 0.3s;
+    }
+    .nav-link-item:hover { color: white !important; }
+
+    /* LINK LOGOUT - Rosso discreto */
+    .nav-link-logout {
+        color: #ff4b4b !important;
+        text-decoration: none !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+    }
+           
         /* RIDUCIAMO IL RIQUADRO E INGRANDIAMO IL TESTO */
     .stApp div.stButton > button[kind="primary"] {
         background-color: rgb(41, 168, 71) !important;
