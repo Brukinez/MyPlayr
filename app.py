@@ -1499,7 +1499,7 @@ elif st.session_state.pagina == 'profilo':
                     # Visualizzazione foto attuale
                     f_path = user.get('foto_path')
                     if foto_file: 
-                        st.image(foto_file, width=100)
+                        st.image(foto_file, width=200)
                     elif f_path: 
                         st.image(f"{f_path}?t={int(time.time())}", width=80)
                 
