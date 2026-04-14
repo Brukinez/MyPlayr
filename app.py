@@ -1547,7 +1547,7 @@ elif st.session_state.pagina == 'profilo':
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with cr:
-                st.markdown(f'<div style="background:#262730; padding:20px; border-radius:0px; margin-bottom:5px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; font-size:20px; padding:20px; border-radius:0px; margin-bottom:5px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:20px; border-radius:10px; margin-bottom:5px;"><b>Instagram:</b> {user.get("ig_tag") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:20px; border-radius:10px; margin-bottom:5px;"><b>Ruolo:</b> {user.get("ruolo") or "Player"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:20px; border-radius:10px; margin-bottom:5px;"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
@@ -1576,7 +1576,7 @@ elif st.session_state.pagina == 'profilo':
             stats = [("🎞️","Clip", len(res_c.data)), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
             for i, (ico, tit, val) in enumerate(stats):
                 with s_cols[i]: 
-                    st.markdown(f'<div style="text-align:center; background:#1E1E1E; font-size:30px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="text-align:center; background:#1E1E1E; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
 
             st.divider()
             st.subheader("🏆 I tuoi badge")
