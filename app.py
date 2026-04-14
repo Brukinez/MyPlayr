@@ -1048,8 +1048,6 @@ if st.session_state.pagina == 'home':
             st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term", type="secondary")   
 
 
-
-
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
 elif st.session_state.pagina == 'login':
@@ -1128,7 +1126,7 @@ elif st.session_state.pagina == 'login':
             # Riga 1: Nome e Cognome affiancati (come nello screen)
             c1, c2 = st.columns(2)
             with c1:
-                r_n = st.text_input("👤 Nome", placeholder="es. Mario", key="r_nome")
+                r_n = st.text_input("Nome", placeholder="es. Mario", key="r_nome")
             with c2:
                 r_c = st.text_input("Cognome", placeholder="es. Rossi", key="r_cognome")
             
