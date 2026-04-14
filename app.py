@@ -1576,7 +1576,7 @@ elif st.session_state.pagina == 'profilo':
             stats = [("🎞️","Clip", len(res_c.data)), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
             for i, (ico, tit, val) in enumerate(stats):
                 with s_cols[i]: 
-                    st.markdown(f'<div style="text-align:center; background:#1E1E1E; font-size:20px; padding:40px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="text-align:center; background:#1E1E1E; font-size:30px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
 
             st.divider()
             st.subheader("🏆 I tuoi badge")
