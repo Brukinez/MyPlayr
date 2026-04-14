@@ -815,9 +815,9 @@ if st.session_state.autenticato:
     # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
     is_admin = st.session_state.get('user_role') == "admin"
     
-    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
+    # 2. CREAZIONE COLONNE: 8 spazi se è Admin (ha il tasto segreto), 7 per gli altri
     # Usiamo col_nav per indicare le colonne della barra
-    col_nav = st.columns(7 if is_admin else 6)
+    col_nav = st.columns(8 if is_admin else 7)
     
     # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
     with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
@@ -1651,45 +1651,7 @@ if st.session_state.pagina == 'partite':
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
 
-elif st.session_state.pagina == "partite":
-    st.title("🏟️ Partite Disponibili")
-    st.write("Scegli un match, guarda il video e taglia la tua clip!")
-    
-# 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
-    st.markdown("#### ✂️ Clip Generate dagli Utenti")
 
-    try:
-        # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
-        res_clips = supabase.table("calendario")\
-            .select("id, data, campo, evento")\
-            .eq("stato", "CLIP_UTENTE")\
-            .order("id", desc=True)\
-            .execute()
-
-        if res_clips.data:
-            df_clips_admin = pd.DataFrame(res_clips.data)
-            
-            # Rinominia per rendere la tabella comprensibile al gestore
-            # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
-            df_visualizza = df_clips_admin.rename(columns={
-                'id': 'ID Clip',
-                'data': 'Data Taglio',
-                'campo': 'Email Utente', 
-                'evento': 'Nome File Clip'
-            })
-            
-            st.dataframe(
-                df_visualizza, 
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
-
-    except Exception as e:
-        st.error(f"Errore caricamento tabella clip: {e}")
-
-    st.divider()
 
 # --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
 if st.session_state.pagina == 'partite':
@@ -1742,6 +1704,8 @@ if st.session_state.pagina == 'partite':
 
     except Exception as e:
         st.error(f"⚠️ Errore: {e}")
+
+
 
 # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
         st.markdown("### 🎞️ Archivio Match Registrati")
