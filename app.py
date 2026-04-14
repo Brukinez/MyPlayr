@@ -1478,7 +1478,7 @@ elif st.session_state.pagina == 'admin':
         
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
-    st.markdown("<h2 style='text-align: center;'>👤 Area Personale MyClipzo</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>Area Personale MyClipzo</h2>", unsafe_allow_html=True)
     
     try:
         import time
@@ -1547,7 +1547,7 @@ elif st.session_state.pagina == 'profilo':
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with cr:
-                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:15px; border-radius:15px; margin-bottom:10px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Instagram:</b> {user.get("ig_tag") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Ruolo:</b> {user.get("ruolo") or "Player"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
