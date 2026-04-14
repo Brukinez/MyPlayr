@@ -1490,10 +1490,10 @@ elif st.session_state.pagina == 'profilo':
         
         if user:
             # --- SEZIONE A: MODIFICA DATI ---
-            with st.expander("⚙️ Modifica Dati e Carica Foto"):
+            with st.expander("Modifica Dati e Carica Foto"):
                 col_f, col_i = st.columns(2)
                 with col_f:
-                    st.write("📷 **La tua Foto**")
+                    st.write(" **La tua Foto**")
                     foto_file = st.file_uploader("Scegli file", type=['png', 'jpg', 'jpeg'], key="up_p")
                     
                     # Visualizzazione foto attuale
@@ -1547,7 +1547,7 @@ elif st.session_state.pagina == 'profilo':
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with cr:
-                st.markdown(f'<div style="background:#262730; padding:15px; border-radius:15px; margin-bottom:10px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Instagram:</b> {user.get("ig_tag") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Ruolo:</b> {user.get("ruolo") or "Player"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
