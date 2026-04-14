@@ -1473,45 +1473,7 @@ elif st.session_state.pagina == 'admin':
 
         st.divider()
 
-elif st.session_state.pagina == "partite":
-    st.title("🏟️ Partite Disponibili")
-    st.write("Scegli un match, guarda il video e taglia la tua clip!")
-    
-# 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
-    st.markdown("#### ✂️ Clip Generate dagli Utenti")
 
-    try:
-        # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
-        res_clips = supabase.table("calendario")\
-            .select("id, data, campo, evento")\
-            .eq("stato", "CLIP_UTENTE")\
-            .order("id", desc=True)\
-            .execute()
-
-        if res_clips.data:
-            df_clips_admin = pd.DataFrame(res_clips.data)
-            
-            # Rinominia per rendere la tabella comprensibile al gestore
-            # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
-            df_visualizza = df_clips_admin.rename(columns={
-                'id': 'ID Clip',
-                'data': 'Data Taglio',
-                'campo': 'Email Utente', 
-                'evento': 'Nome File Clip'
-            })
-            
-            st.dataframe(
-                df_visualizza, 
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
-
-    except Exception as e:
-        st.error(f"Errore caricamento tabella clip: {e}")
-
-    st.divider()
 
         
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
@@ -1689,6 +1651,45 @@ if st.session_state.pagina == 'partite':
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
 
+elif st.session_state.pagina == "partite":
+    st.title("🏟️ Partite Disponibili")
+    st.write("Scegli un match, guarda il video e taglia la tua clip!")
+    
+# 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
+    st.markdown("#### ✂️ Clip Generate dagli Utenti")
+
+    try:
+        # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
+        res_clips = supabase.table("calendario")\
+            .select("id, data, campo, evento")\
+            .eq("stato", "CLIP_UTENTE")\
+            .order("id", desc=True)\
+            .execute()
+
+        if res_clips.data:
+            df_clips_admin = pd.DataFrame(res_clips.data)
+            
+            # Rinominia per rendere la tabella comprensibile al gestore
+            # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
+            df_visualizza = df_clips_admin.rename(columns={
+                'id': 'ID Clip',
+                'data': 'Data Taglio',
+                'campo': 'Email Utente', 
+                'evento': 'Nome File Clip'
+            })
+            
+            st.dataframe(
+                df_visualizza, 
+                use_container_width=True,
+                hide_index=True
+            )
+        else:
+            st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
+
+    except Exception as e:
+        st.error(f"Errore caricamento tabella clip: {e}")
+
+    st.divider()
 
 # --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
 if st.session_state.pagina == 'partite':
