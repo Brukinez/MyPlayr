@@ -1875,12 +1875,6 @@ elif st.session_state.pagina == 'termini':
 # --- PAGINA COOCKIE POLICY ---
 elif st.session_state.pagina == 'cookie policy':
     st.markdown("<h2 style='text-align: center; color: white;'>COOKIE POLICY</h2>", unsafe_allow_html=True)
-# Incolla il tuo testo tra le triple virgolette
-    testo_termini = """
-    Ciao
-
-    """
-st.markdown(f"<div style='text-align: justify; font-size: 24px;color: white;'>{testo_cookie}</div>", unsafe_allow_html=True)
 
 
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
