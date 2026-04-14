@@ -1043,7 +1043,7 @@ if st.session_state.pagina == 'home':
             st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
             st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv", type="secondary")
             st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term", type="secondary")   
-            st.button("Cookie Policy", on_click=lambda: vai_a('cookie'), key="f_term", type="secondary")
+
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
@@ -1872,11 +1872,10 @@ elif st.session_state.pagina == 'termini':
     
     st.markdown(f"<div style='text-align: justify; font-size: 24px;color: white;'>{testo_termini}</div>", unsafe_allow_html=True)
     
-# --- PAGINA COOCKIE POLICY ---
-elif st.session_state.pagina == 'cookie':
-    st.markdown("<h2 style='text-align: center; color: white;'>COOKIE POLICY</h2>", unsafe_allow_html=True)
-
-
+# --- PAGINA DIRITTI RISERVATI ---
+elif st.session_state.pagina == 'diritti':
+    st.markdown("<h2 style='text-align: center; color: white;'>DIRITTI RISERVATI</h2>", unsafe_allow_html=True)
+    
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
 
 if st.session_state.pagina == 'hall_of_fame':
