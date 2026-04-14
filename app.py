@@ -1640,13 +1640,13 @@ if st.session_state.pagina == 'partite':
                     st.write(f"Video: {video['nome_file']}")
                     
                     # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
-                    components.iframe(url_embed, height=480, scrolling=False)
+                    components.iframe(url_embed, height=240, scrolling=False)
                     
                     #st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
                 else:
                     st.warning("⏳ Video in fase di caricamento o non trovato.")
                 
-                #st.divider()
+                st.divider()
 
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
