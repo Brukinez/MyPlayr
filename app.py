@@ -1474,7 +1474,7 @@ elif st.session_state.pagina == 'admin':
         st.divider()
 
 elif st.session_state.pagina == "partite":
-    st.title("🏟️ Archivio Partite")
+    st.title("🏟️ Partite Disponibili")
     st.write("Scegli un match, guarda il video e taglia la tua clip!")
     
 # 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
