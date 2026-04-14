@@ -994,7 +994,6 @@ if st.session_state.pagina == 'home':
                     st.error("❌ Email non valida.")
 
 
-
         # --- TASTO ACCEDI AL PORTALE (ORIGINALE) ---
         _, col_center_login, _ = st.columns([1, 2, 1])
         with col_center_login:
@@ -1018,11 +1017,10 @@ if st.session_state.pagina == 'home':
             st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="home_reg_btn", use_container_width=True, type="primary")
 
 
-
            # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
         st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
         
-        f_col1, f_col2, f_col3 = st.columns(3)
+        f_col1, f_col2, f_col3, = st.columns(3)
         with f_col1:
     # Reinseriamo il logo MC stile Navbar
             st.markdown("""
@@ -1040,12 +1038,12 @@ if st.session_state.pagina == 'home':
             st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
             st.button("Home", on_click=lambda: vai_a('home'), key="f_home", type="secondary")
             st.button("Partite", on_click=lambda: vai_a('partite'), key="f_part", type="secondary")
-        
+            st.button("Premium", on_click=lambda: vai_a('premium'), key="f_part", type="secondary")
         with f_col3:
             st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
             st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv", type="secondary")
             st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term", type="secondary")   
-
+            st.button("Coockie Policy", on_click=lambda: vai_a('cocokie'), key="f_term", type="secondary")
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
