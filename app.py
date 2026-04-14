@@ -530,43 +530,16 @@ EMERGENT_CSS = """
 </style>
 """
 
-# --- NAVBAR UNICA E FISSA (VERSIONE CORRETTA) ---
-is_auth = st.session_state.get('autenticato', False)
-
-# Prepariamo i link di destra in una variabile pulita
-if not is_auth:
-    nav_links = """
-        <a href="/?pagina=home" target="_self" class="nav-link-item">HOME</a>
-        <a href="/?pagina=login" target="_self" class="nav-btn-accedi">ACCEDI</a>
-    """
-else:
-    is_admin = st.session_state.get('user_role') == "admin"
-    admin_tag = '<a href="/?pagina=admin" target="_self" class="nav-link-item">ADMIN</a>' if is_admin else ""
-    nav_links = f"""
-        <a href="/?pagina=home_auth" target="_self" class="nav-link-item">HOME</a>
-        <a href="/?pagina=mie_clip" target="_self" class="nav-link-item">CLIP</a>
-        {admin_tag}
-        <a href="/?pagina=logout" target="_self" class="nav-link-logout">ESCI</a>
-    """
-
-# Disegniamo la barra (Tutto il codice HTML deve stare tra le triple virgolette)
-st.markdown(f"""
-    <div class="sticky-navbar">
-        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <!-- Logo a sinistra -->
-            <div class="logo-container" style="display: flex; align-items: center; gap: 12px;">
-                <div class="mc-box">MC</div>
-                <div class="brand-name">MyClipzo</div>
-            </div>
-            <!-- Link a destra -->
-            <div style="display: flex; align-items: center; gap: 20px;">
-                {nav_links}
-            </div>
+# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
+st.markdown("""
+    <div class='sticky-navbar'>
+        <div class='logo-container'>
+            <div class='mc-box'>MC</div>
+            <div class='brand-name'>MyClipzo</div>
         </div>
+        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
 """, unsafe_allow_html=True)
-
-
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
@@ -835,7 +808,41 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
- 
+# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
+
+# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
+if st.session_state.autenticato:
+    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
+    is_admin = st.session_state.get('user_role') == "admin"
+    
+    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
+    # Usiamo col_nav per indicare le colonne della barra
+    col_nav = st.columns(7 if is_admin else 6)
+    
+    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
+    with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+    with col_nav[5]: st.button("Premium", on_click=lambda: vai_a('premiun'), use_container_width=True)
+    # Tasto speciale per il Gestore del Centro (Admin)
+    if is_admin:
+        with col_nav[5]: st.button("Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+    
+    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
+    with col_nav[-1]: 
+        if st.button("Esci", type="secondary", use_container_width=True):
+            # Azioni di pulizia totale quando l'utente se ne va
+            st.session_state.autenticato = False
+            st.session_state.user_email = ""
+            st.session_state.user_role = "user"
+            st.session_state.user_nick = ""
+            st.session_state.pagina = 'home' # Torna alla pagina pubblica
+            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
+            
+    # Linea verde di separazione definita nel tuo CSS (hr)
+    st.divider() 
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
