@@ -875,7 +875,6 @@ if st.session_state.pagina == 'home':
         """, unsafe_allow_html=True)
 
 
-
     # Visualizziamo i contenuti solo se l'utente non è loggato
     if not st.session_state.autenticato:
        
@@ -981,7 +980,7 @@ if st.session_state.pagina == 'home':
             col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
             
             with col_mail:
-                email_input = st.text_input("La tua migliore Email", placeholder="esempio@mail.com", label_visibility="collapsed").strip().lower()
+                email_input = st.text_input("La tua migliore Email", placeholder="la-tua@mail.com", label_visibility="collapsed").strip().lower()
             
             with col_btn:
                 submit_news = st.form_submit_button("ISCRIVITI")
@@ -1126,7 +1125,7 @@ elif st.session_state.pagina == 'login':
             # Riga 1: Nome e Cognome affiancati (come nello screen)
             c1, c2 = st.columns(2)
             with c1:
-                r_n = st.text_input("Nome", placeholder="es. Mario", key="r_nome")
+                r_n = st.text_input("👤 Nome", placeholder="es. Mario", key="r_nome")
             with c2:
                 r_c = st.text_input("Cognome", placeholder="es. Rossi", key="r_cognome")
             
