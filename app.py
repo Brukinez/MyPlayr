@@ -1478,7 +1478,7 @@ elif st.session_state.pagina == 'admin':
         
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
-    st.markdown("<h2 style='text-align: center;'>Area Personale<br><span style='color: #2ecc71;'>MyClipzo.<span></h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>Area Personale<br><span style='color: #2ecc71;'>MyClipzo.</span></h2>", unsafe_allow_html=True)
     
     try:
         import time
