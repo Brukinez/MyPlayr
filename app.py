@@ -1640,7 +1640,7 @@ if st.session_state.pagina == 'partite':
                     st.write(f"Video: {video['nome_file']}")
                     
                     # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
-                    components.iframe(url_embed, height=240, scrolling=False)
+                    components.iframe(url_embed, height=960, scrolling=False)
                     
                     #st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
                 else:
