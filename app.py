@@ -1642,7 +1642,7 @@ if st.session_state.pagina == 'partite':
                     # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
                     components.iframe(url_embed, height=480, scrolling=False)
                     
-                    st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
+                    #st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
                 else:
                     st.warning("⏳ Video in fase di caricamento o non trovato.")
                 
