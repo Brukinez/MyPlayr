@@ -1478,7 +1478,7 @@ elif st.session_state.pagina == 'admin':
         
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
-    st.markdown("<h1 style='text-align: 0;'>Area Personale<br><span style='color: #2ecc71;'>MyClipzo</span></h2>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>Area Personale<br><span style='color: #2ecc71;'>MyClipzo</span></h2>", unsafe_allow_html=True)
     
     try:
         import time
@@ -1594,7 +1594,7 @@ if st.session_state.pagina == 'partite':
     import re
     import streamlit.components.v1 as components
     
-    st.title("🏟️ PARTITE DISPONIBILI")
+    st.title("PARTITE DISPONIBILI")
 
     # Funzione interna per pulire i link (vecchi e nuovi)
     def pulisci_link_drive(link):
@@ -1622,7 +1622,7 @@ if st.session_state.pagina == 'partite':
             st.info("📌 Nessuna partita terminata trovata nel calendario.")
         else:
             for partita in match_list:
-                st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
+                st.subheader(f"Gara del {partita.get('data')} - Ore {partita.get('ora')}")
 
                 # 2. Cerchiamo il video corrispondente nella tabella video
                 nome_cercato = f"match_{partita['id']}_"
@@ -1637,7 +1637,7 @@ if st.session_state.pagina == 'partite':
                     # TRUCCO: Puliamo il link "al volo" per attivare il player di Google
                     url_embed = pulisci_link_drive(video["url_video"])
                     
-                    st.write(f"🎬 Video: {video['nome_file']}")
+                    st.write(f"Video: {video['nome_file']}")
                     
                     # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
                     components.iframe(url_embed, height=480, scrolling=False)
