@@ -530,16 +530,43 @@ EMERGENT_CSS = """
 </style>
 """
 
-# --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
-st.markdown("""
+# --- NAVBAR UNICA E INTELLIGENTE ---
+# Verifichiamo se l'utente è loggato per cambiare i tasti a destra
+is_auth = st.session_state.get('autenticato', False)
+is_admin = st.session_state.get('user_role') == "admin"
+
+if not is_auth:
+    # Contenuto per chi deve ancora entrare
+    nav_destra = """
+        <div style='display: flex; gap: 20px; align-items: center;'>
+            <a href='/?pagina=home' target='_self' class='nav-link-item'>HOME</a>
+            <a href='/?pagina=login' target='_self' class='nav-btn-accedi'>ACCEDI</a>
+        </div>
+    """
+else:
+    # Contenuto per chi è già loggato (Profilo, Clip, Admin, ecc.)
+    admin_tag = f"<a href='/?pagina=admin' target='_self' class='nav-link-item'>ADMIN</a>" if is_admin else ""
+    nav_destra = f"""
+        <div style='display: flex; gap: 15px; align-items: center;'>
+            <a href='/?pagina=home_auth' target='_self' class='nav-link-item'>HOME</a>
+            <a href='/?pagina=profilo' target='_self' class='nav-link-item'>PROFILO</a>
+            <a href='/?pagina=mie_clip' target='_self' class='nav-link-item'>CLIP</a>
+            {admin_tag}
+            <a href='/?pagina=logout' target='_self' class='nav-link-logout'>ESCI</a>
+        </div>
+    """
+
+# DISEGNO FINALE DELLA NAVBAR
+st.markdown(f"""
     <div class='sticky-navbar'>
-        <div class='logo-container'>
+        <div class='logo-container' onclick="window.location.href='/?pagina=home'" style="cursor: pointer;">
             <div class='mc-box'>MC</div>
             <div class='brand-name'>MyClipzo</div>
         </div>
-        <div></div> <!-- Spazio vuoto per bilanciare il flex -->
+        {nav_destra}
     </div>
 """, unsafe_allow_html=True)
+
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
