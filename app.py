@@ -530,42 +530,42 @@ EMERGENT_CSS = """
 </style>
 """
 
-# --- NAVBAR UNICA E INTELLIGENTE ---
-# Verifichiamo se l'utente è loggato per cambiare i tasti a destra
+# --- NAVBAR UNICA E FISSA (VERSIONE CORRETTA) ---
 is_auth = st.session_state.get('autenticato', False)
-is_admin = st.session_state.get('user_role') == "admin"
 
+# Prepariamo i link di destra in una variabile pulita
 if not is_auth:
-    # Contenuto per chi deve ancora entrare
-    nav_destra = """
-        <div style='display: flex; gap: 20px; align-items: center;'>
-            <a href='/?pagina=home' target='_self' class='nav-link-item'>HOME</a>
-            <a href='/?pagina=login' target='_self' class='nav-btn-accedi'>ACCEDI</a>
-        </div>
+    nav_links = """
+        <a href="/?pagina=home" target="_self" class="nav-link-item">HOME</a>
+        <a href="/?pagina=login" target="_self" class="nav-btn-accedi">ACCEDI</a>
     """
 else:
-    # Contenuto per chi è già loggato (Profilo, Clip, Admin, ecc.)
-    admin_tag = f"<a href='/?pagina=admin' target='_self' class='nav-link-item'>ADMIN</a>" if is_admin else ""
-    nav_destra = f"""
-        <div style='display: flex; gap: 15px; align-items: center;'>
-            <a href='/?pagina=home_auth' target='_self' class='nav-link-item'>HOME</a>
-            <a href='/?pagina=profilo' target='_self' class='nav-link-item'>PROFILO</a>
-            <a href='/?pagina=mie_clip' target='_self' class='nav-link-item'>CLIP</a>
-            {admin_tag}
-            <a href='/?pagina=logout' target='_self' class='nav-link-logout'>ESCI</a>
-        </div>
+    is_admin = st.session_state.get('user_role') == "admin"
+    admin_tag = '<a href="/?pagina=admin" target="_self" class="nav-link-item">ADMIN</a>' if is_admin else ""
+    nav_links = f"""
+        <a href="/?pagina=home_auth" target="_self" class="nav-link-item">HOME</a>
+        <a href="/?pagina=mie_clip" target="_self" class="nav-link-item">CLIP</a>
+        {admin_tag}
+        <a href="/?pagina=logout" target="_self" class="nav-link-logout">ESCI</a>
     """
 
-# DISEGNO FINALE DELLA NAVBAR
+# Disegniamo la barra (Tutto il codice HTML deve stare tra le triple virgolette)
 st.markdown(f"""
-    <div class='sticky-navbar'>
-        <div class='logo-container' onclick="window.location.href='/?pagina=home'" style="cursor: pointer;">
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+    <div class="sticky-navbar">
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <!-- Logo a sinistra -->
+            <div class="logo-container" style="display: flex; align-items: center; gap: 12px;">
+                <div class="mc-box">MC</div>
+                <div class="brand-name">MyClipzo</div>
+            </div>
+            <!-- Link a destra -->
+            <div style="display: flex; align-items: center; gap: 20px;">
+                {nav_links}
+            </div>
         </div>
-        {nav_destra}
     </div>
 """, unsafe_allow_html=True)
+
 
 
 # --- 1. CONFIGURAZIONE PAGINA ---
