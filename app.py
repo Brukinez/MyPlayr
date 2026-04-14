@@ -1501,7 +1501,7 @@ elif st.session_state.pagina == 'profilo':
                     if foto_file: 
                         st.image(foto_file, width=100)
                     elif f_path: 
-                        st.image(f"{f_path}?t={int(time.time())}", width=100)
+                        st.image(f"{f_path}?t={int(time.time())}", width=80)
                 
                 with col_i:
                     v_nick = st.text_input("Nickname", value=user.get('nickname') or "")
@@ -1510,7 +1510,7 @@ elif st.session_state.pagina == 'profilo':
                     v_ruolo = st.selectbox("Ruolo", ruoli, index=ruoli.index(user.get('ruolo')) if user.get('ruolo') in ruoli else 0)
                     v_bio = st.text_area("La tua Bio", value=user.get('bio') or "")
 
-                if st.button("💾 SALVA TUTTE LE MODIFICHE", use_container_width=True, type="primary"):
+                if st.button("SALVA", use_container_width=True, type="primary"):
                     dati_agg = {"nickname": v_nick, "ig_tag": v_ig, "ruolo": v_ruolo, "bio": v_bio}
                     
                     if foto_file:
