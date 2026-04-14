@@ -1542,7 +1542,7 @@ elif st.session_state.pagina == 'profilo':
                 if f_p: 
                     st.image(f"{f_p}?t={int(time.time())}", width=150)
                 else: 
-                    st.markdown('<div style="font-size:150px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
+                    st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
                 st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
@@ -1576,7 +1576,7 @@ elif st.session_state.pagina == 'profilo':
             stats = [("🎞️","Clip", len(res_c.data)), ("⚽","Goal", "0"), ("👟","Assist", "0"), ("🏆","Rank", "-"), ("🏅","Badge", "0"), ("🔥","Azioni", "0")]
             for i, (ico, tit, val) in enumerate(stats):
                 with s_cols[i]: 
-                    st.markdown(f'<div style="text-align:center; background:#1E1E1E; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div style="text-align:center; background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)
 
             st.divider()
             st.subheader("I tuoi badge")
