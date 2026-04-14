@@ -1547,7 +1547,7 @@ elif st.session_state.pagina == 'profilo':
                 st.markdown('</div>', unsafe_allow_html=True)
             
             with cr:
-                st.markdown(f'<div style="background:#262730; padding:20px; border-radius:20px; margin-bottom:5px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#262730; padding:20px; border-radius:20px; margin-bottom:20px;"><b>Nickname:</b> {user.get("nickname") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Instagram:</b> {user.get("ig_tag") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Ruolo:</b> {user.get("ruolo") or "Player"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#262730; padding:10px; border-radius:10px; margin-bottom:5px;"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
