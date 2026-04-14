@@ -1499,9 +1499,9 @@ elif st.session_state.pagina == 'profilo':
                     # Visualizzazione foto attuale
                     f_path = user.get('foto_path')
                     if foto_file: 
-                        st.image(foto_file, width=200)
+                        st.image(foto_file, width=100)
                     elif f_path: 
-                        st.image(f"{f_path}?t={int(time.time())}", width=80)
+                        st.image(f"{f_path}?t={int(time.time())}", width=100)
                 
                 with col_i:
                     v_nick = st.text_input("Nickname", value=user.get('nickname') or "")
