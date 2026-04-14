@@ -1551,7 +1551,7 @@ elif st.session_state.pagina == 'profilo':
                 st.markdown(f'<div style="background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745; margin-bottom:10px;"><b>Instagram:</b> {user.get("ig_tag") or "N/A"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745; margin-bottom:10px;"><b>Ruolo:</b> {user.get("ruolo") or "Player"}</div>', unsafe_allow_html=True)
                 st.markdown(f'<div style="background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745; margin-bottom:10px;"><b>Email:</b> {email_sessione}</div>', unsafe_allow_html=True)
-                st.markdown(f'<div style="background:#3E444A; font-size:25px; padding:20px; border-radius:10px;"><b>Bio:</b> {user.get("bio") or "Nessuna bio"}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745;"><b>Bio:</b> {user.get("bio") or "Nessuna bio"}</div>', unsafe_allow_html=True)
 
             # --- SEZIONE C: LE MIE CLIP (FIX: recupero video) ---
             st.divider()
