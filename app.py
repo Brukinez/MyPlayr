@@ -1510,7 +1510,7 @@ elif st.session_state.pagina == 'profilo':
                     v_ruolo = st.selectbox("Ruolo", ruoli, index=ruoli.index(user.get('ruolo')) if user.get('ruolo') in ruoli else 0)
                     v_bio = st.text_area("La tua Bio", value=user.get('bio') or "")
 
-                if st.button("SALVA", use_container_width=True, type="primary"):
+                if st.button("SALVA TUTTE LE MODIFICHE", use_container_width=True, type="primary"):
                     dati_agg = {"nickname": v_nick, "ig_tag": v_ig, "ruolo": v_ruolo, "bio": v_bio}
                     
                     if foto_file:
@@ -1542,7 +1542,7 @@ elif st.session_state.pagina == 'profilo':
                 if f_p: 
                     st.image(f"{f_p}?t={int(time.time())}", width=150)
                 else: 
-                    st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:20px; display:inline-block;">👤</div>', unsafe_allow_html=True)
+                    st.markdown('<div style="font-size:80px; background:#3E444A; border-radius:50%; padding:40px; display:inline-block;">👤</div>', unsafe_allow_html=True)
                 st.markdown(f"<h4>{user.get('nome', 'Atleta')}</h4>", unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
