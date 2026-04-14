@@ -1589,222 +1589,74 @@ elif st.session_state.pagina == 'profilo':
         st.error(f"Errore tecnico nel profilo: {e}")
 
 
-# --- NUOVO BLOCCO: PAGINA PARTITE (VERSIONE AUTOMATICA CON AUTO-FIX LINK) ---
-if st.session_state.pagina == 'partite':
+elif st.session_state.pagina == 'partite':
     import re
-    import streamlit.components.v1 as components
+    import streamlit.components.v1 as components # FIX: aggiunto 'as'
     
-    st.title("PARTITE DISPONIBILI")
+    st.title("🏟️ Partite Disponibili")
+    st.write("Scegli un match, guarda il video e taglia la tua clip!")
 
-    # Funzione interna per pulire i link (vecchi e nuovi)
+    # Funzione di pulizia link (Indispensabile per Drive)
     def pulisci_link_drive(link):
         if not link: return None
-        # Se il link è già nel formato /preview, lo lasciamo così
         if "/preview" in link: return link
-        # Se è un link standard, estraiamo l'ID e creiamo il formato /preview
         match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link)
         if match:
-            video_id = match.group(1) or match.group(2)
-            return f"https://drive.google.com/file/d/{video_id}/preview"
+            v_id = match.group(1) or match.group(2)
+            return f"https://drive.google.com/file/d/{v_id}/preview"
         return link
 
     try:
-        # 1. Prendiamo i match 'FATTO' dal calendario
-        match_resp = supabase.table("calendario")\
-            .select("*")\
-            .eq("stato", "FATTO")\
-            .order("id", desc=True)\
-            .execute()
+        # 1. Recupero match conclusi
+        res_p = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        partite = res_p.data or []
 
-        match_list = match_resp.data or []
-
-        if not match_list:
-            st.info("📌 Nessuna partita terminata trovata nel calendario.")
-        else:
-            for partita in match_list:
-                st.subheader(f"Gara del {partita.get('data')} - Ore {partita.get('ora')}")
-
-                # 2. Cerchiamo il video corrispondente nella tabella video
-                nome_cercato = f"match_{partita['id']}_"
-                video_resp = supabase.table("video")\
-                    .select("*")\
-                    .like("nome_file", f"%{nome_cercato}%")\
-                    .limit(1).execute()
-
-                video = video_resp.data[0] if video_resp.data else None
-
-                if video and video.get("url_video"):
-                    # TRUCCO: Puliamo il link "al volo" per attivare il player di Google
-                    url_embed = pulisci_link_drive(video["url_video"])
-                    
-                    st.write(f"Video: {video['nome_file']}")
-                    
-                    # Carichiamo il player ufficiale con tutti i tasti (Play, Vol, Zoom)
-                    components.iframe(url_embed, height=960, scrolling=False)
-                    
-                    #st.caption("💡 Se il video è nero, assicurati che la cartella su Drive sia 'Pubblica' (Chiunque abbia il link).")
-                else:
-                    st.warning("⏳ Video in fase di caricamento o non trovato.")
-                
-                st.divider()
-
-    except Exception as e:
-        st.error(f"⚠️ Errore nel caricamento: {e}")
-
-elif st.session_state.pagina == "partite":
-    st.title("🏟️ Partite Disponibili")
-    st.write("Scegli un match, guarda il video e taglia la tua clip!")
-    
-# 2. ARCHIVIO CLIP TAGLIATE (Le azioni scelte dai ragazzi)
-    st.markdown("#### ✂️ Clip Generate dagli Utenti")
-
-    try:
-        # Recuperiamo le clip estratte dagli utenti (stato 'CLIP_UTENTE')
-        res_clips = supabase.table("calendario")\
-            .select("id, data, campo, evento")\
-            .eq("stato", "CLIP_UTENTE")\
-            .order("id", desc=True)\
-            .execute()
-
-        if res_clips.data:
-            df_clips_admin = pd.DataFrame(res_clips.data)
-            
-            # Rinominia per rendere la tabella comprensibile al gestore
-            # (Nel tuo database 'campo' salva l'email e 'evento' il nome del file clip)
-            df_visualizza = df_clips_admin.rename(columns={
-                'id': 'ID Clip',
-                'data': 'Data Taglio',
-                'campo': 'Email Utente', 
-                'evento': 'Nome File Clip'
-            })
-            
-            st.dataframe(
-                df_visualizza, 
-                use_container_width=True,
-                hide_index=True
-            )
-        else:
-            st.info("ℹ️ Nessun utente ha ancora generato delle clip personali.")
-
-    except Exception as e:
-        st.error(f"Errore caricamento tabella clip: {e}")
-
-    st.divider()
-
-# --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
-if st.session_state.pagina == 'partite':
-    import re
-    import streamlit.components.v1 as components
-    
-    #st.title("🏟️ Archivio Partite MyPlayr")
-
-    def prepara_link_video(link_grezzo):
-        if not link_grezzo: return None, None
-        # Estraiamo l'ID del video
-        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link_grezzo)
-        if match:
-            video_id = match.group(1) or match.group(2)
-            # Link per il riquadro interno (spesso bloccato dai cookie)
-            url_embed = f"https://google.com{video_id}/preview?authuser=0"
-            # Link per l'apertura esterna (FUNZIONA SEMPRE)
-            url_esterno = f"https://google.com{video_id}/view"
-            return url_embed, url_esterno
-        return link_grezzo, link_grezzo
-
-    try:
-        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
-        partite_concluse = res_cal.data if res_cal.data else []
-
-        if not partite_concluse:
+        if not partite:
             st.info("📌 Nessuna partita terminata trovata.")
         else:
-            for partita in partite_concluse:
-                #st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
+            for partita in partite:
+                st.subheader(f"{partita.get('evento', 'Partita')} - {partita.get('data')}")
 
-                id_cercato = f"match_{partita['id']}_"
-                res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
-                video_data = res_vid.data[0] if res_vid.data else None
+                # Cerca video collegato (Logica indispensabile per regista.py)
+                n_pattern = f"match_{partita['id']}_"
+                res_v = supabase.table("video").select("*").like("nome_file", f"%{n_pattern}%").limit(1).execute()
+                video = res_v.data[0] if res_v.data else None
 
-                if video_data and video_data.get("url_video"):
-                    url_embed, url_esterno = prepara_link_video(video_data["url_video"])
-                   
-                    # 1. Tentativo di visualizzazione interna
-                    #components.iframe(url_embed, height=480)
-                    
-                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
-                    #st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
-                    #st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
-                    
-                else:
-                    st.warning("⏳ Video non ancora disponibile per questo match.")
-                
-                #st.divider()
+                if video and video.get("url_video"):
+                    u_embed = pulisci_link_drive(video['url_video'])
+                    components.iframe(u_embed, height=480, scrolling=False)
 
-    except Exception as e:
-        st.error(f"⚠️ Errore: {e}")
-
-# 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
-        st.markdown("### 🎞️ Archivio Match Registrati")
-        
-        try:
-            # Recuperiamo le partite concluse (stato 'FATTO')
-            res_matches = supabase.table("calendario")\
-                .select("*")\
-                .eq("stato", "FATTO")\
-                .order("id", desc=True)\
-                .execute()
-            
-            partite_fatte = res_matches.data
-
-            if not partite_fatte:
-                st.info("ℹ️ Nessuna partita registrata disponibile per il taglio.")
-            else:
-                for partita in partite_fatte:
-                    st.subheader(f"🏟️ {partita['evento']} ({partita['data']})")
-                    
-                    video_url = make_direct_link(partita.get("link_video"))  # URL caricato dal Mini PC (GDrive/S3/Cloud)
-
-                    if video_url:
-                        # Anteprima video per trovare il momento del goal
-                        st.video(video_url, format="video/mp4")
+                    # Modulo Taglio Clip
+                    with st.expander("✂️ Richiedi taglio clip"):
+                        st.write("Inserisci il momento esatto dell’azione da salvare:")
+                        c1, c2, c3 = st.columns(3)
+                        with c1: m_in = st.number_input("Minuto", min_value=0, max_value=90, key=f"m_{partita['id']}")
+                        with c2: s_in = st.number_input("Secondo", min_value=0, max_value=59, key=f"s_{partita['id']}")
+                        with c3: dur = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
                         
-                        # BOX TAGLIO CLIP
-                        with st.expander("✂️ RICHIEDI TAGLIO CLIP DI UN'AZIONE"):
-                            st.write("Inserisci il momento esatto dell'azione che vuoi salvare:")
-                            
-                            c1, c2, c3 = st.columns(3)
-                            with c1:
-                                m_in = st.number_input("Minuto inizio", min_value=0, max_value=90, step=1, key=f"m_{partita['id']}")
-                            with c2:
-                                s_in = st.number_input("Secondo inizio", min_value=0, max_value=59, step=1, key=f"s_{partita['id']}")
-                            with c3:
-                                durata_clip = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
+                        if st.button("🎬 Genera Clip", key=f"btn_{partita['id']}", use_container_width=True):
+                            start_sec = m_in * 60 + s_in
+                            supabase.table("comandi_clip").insert({
+                                "id_partita": partita['id'],
+                                "inizio_secondi": start_sec,
+                                "durata_secondi": dur,
+                                "email_utente": st.session_state.user_email,
+                                "stato": "RICHIESTO"
+                            }).execute()
+                            st.success("Richiesta inviata al Mini PC!")
+                else:
+                    st.warning("⏳ Video in caricamento...")
+                st.divider()
 
-                            if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
-                                # Calcolo del tempo totale in secondi per FFmpeg
-                                inizio_totale_secondi = (m_in * 60) + s_in
-                                
-                                # Inviamo l'ordine di lavoro alla tabella 'comandi_clip'
-                                # Il Mini PC in campo leggerà questa riga e taglierà il file originale 4K
-                                try:
-                                    supabase.table("comandi_clip").insert({
-                                        "id_partita": partita['id'],
-                                        "inizio_secondi": inizio_totale_secondi,
-                                        "durata_secondi": durata_clip,
-                                        "email_utente": st.session_state.user_email,
-                                        "stato": "RICHIESTO"
-                                    }).execute()
-                                    
-                                    st.success("✅ Richiesta inviata! Il Mini PC sta lavorando il video. La troverai tra poco in 'Le Mie Clip'.")
-                                except Exception as e:
-                                    st.error(f"Errore invio comando: {e}")
-                    else:
-                        st.warning("⚠️ Video Master in fase di caricamento sul Cloud...")
-                    
-                    st.divider()
+        # 2. Archivio Clip Generate
+        st.markdown("#### ✂️ Clip Generate dagli Utenti")
+        res_c = supabase.table("calendario").select("id, data, campo, evento").eq("stato", "CLIP_UTENTE").order("id", desc=True).execute()
+        if res_c.data:
+            df_v = pd.DataFrame(res_c.data).rename(columns={'id':'ID','data':'Data','campo':'Utente','evento':'File'})
+            st.dataframe(df_v, use_container_width=True, hide_index=True)
 
-        except Exception as e:
-            st.error(f"Errore caricamento archivio: {e}")
+    except Exception as ex:
+        st.error(f"Errore: {ex}")
 
 
 # --- PAGINA PRIVACY POLICY ---
