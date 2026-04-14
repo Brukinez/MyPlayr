@@ -1805,23 +1805,15 @@ elif st.session_state.pagina == 'privacy':
     st.markdown("<h1 style='text-align: center; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
     
     # Incolla il tuo testo tra le triple virgolette
-    testo_privacy = """ 1. Titolare del Trattamento
-Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
-
-2. Tipologia di dati raccolti:
-Nome, cognome, email, username, dati tecnici di navigazione e contenuti video/immagini generati durante l'attività sportiva.
-3. Finalità del trattamento:
-Registrazione, accesso all'area personale, generazione/download delle clip e condivisione volontaria sui social. I video sono trattati esclusivamente per scopi sportivi e ricreativi.
-4. Base giuridica:
-Il trattamento avviene sulla base dell'esecuzione del contratto (erogazione servizio) e del consenso esplicito dell'utente.
-5. Conservazione dei dati:
-I dati dell'account restano attivi fino a richiesta di cancellazione. I file video originali vengono conservati per un massimo di 60 giorni, dopodiché vengono eliminati definitivamente per ragioni di storage.
-6. Condivisione dei dati:
-I dati non sono venduti a terzi. Sono accessibili solo ai partner tecnologici necessari (es. Cloud Storage, Database) vincolati al segreto professionale.
-7. Diritti dell’utente:
-Accesso, rettifica, cancellazione (oblio) e revoca del consenso inviando una mail a: privacy@myclipzo.com.
-8. Sicurezza:
-Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flussi video.
+    testo_privacy = """ 
+1. Titolare del Trattamento: Il titolare è MyClipzo (email: privacy@myclipzo.com). Per i servizi presso i centri sportivi, MyClipzo agisce come Responsabile Esterno o Contitolare insieme alla Struttura Ospitante.
+2. Tipologia di dati raccolti: Nome, cognome, email, username, dati tecnici di navigazione e contenuti video/immagini generati durante l'attività sportiva.
+3. Finalità del trattamento: Registrazione, accesso all'area personale, generazione/download delle clip e condivisione volontaria sui social. I video sono trattati esclusivamente per scopi sportivi e ricreativi.
+4. Base giuridica: Il trattamento avviene sulla base dell'esecuzione del contratto (erogazione servizio) e del consenso esplicito dell'utente.
+5. Conservazione dei dati: I dati dell'account restano attivi fino a richiesta di cancellazione. I file video originali vengono conservati per un massimo di 60 giorni, dopodiché vengono eliminati definitivamente per ragioni di storage.
+6. Condivisione dei dati: I dati non sono venduti a terzi. Sono accessibili solo ai partner tecnologici necessari (es. Cloud Storage, Database) vincolati al segreto professionale.
+7. Diritti dell’utente: Accesso, rettifica, cancellazione (oblio) e revoca del consenso inviando una mail a: privacy@myclipzo.com.
+8. Sicurezza: Adottiamo protocolli di crittografia e accesso sicuro (2FA) per proteggere i flussi video.
 
     """
     
