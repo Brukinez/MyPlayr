@@ -1684,6 +1684,59 @@ if st.session_state.pagina == 'partite':
     except Exception as e:
         st.error(f"⚠️ Errore nel caricamento: {e}")
 
+
+# --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
+if st.session_state.pagina == 'partite':
+    import re
+    import streamlit.components.v1 as components
+    
+    #st.title("🏟️ Archivio Partite MyPlayr")
+
+    def prepara_link_video(link_grezzo):
+        if not link_grezzo: return None, None
+        # Estraiamo l'ID del video
+        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link_grezzo)
+        if match:
+            video_id = match.group(1) or match.group(2)
+            # Link per il riquadro interno (spesso bloccato dai cookie)
+            url_embed = f"https://google.com{video_id}/preview?authuser=0"
+            # Link per l'apertura esterna (FUNZIONA SEMPRE)
+            url_esterno = f"https://google.com{video_id}/view"
+            return url_embed, url_esterno
+        return link_grezzo, link_grezzo
+
+    try:
+        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
+        partite_concluse = res_cal.data if res_cal.data else []
+
+        if not partite_concluse:
+            st.info("📌 Nessuna partita terminata trovata.")
+        else:
+            for partita in partite_concluse:
+                #st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
+
+                id_cercato = f"match_{partita['id']}_"
+                res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
+                video_data = res_vid.data[0] if res_vid.data else None
+
+                if video_data and video_data.get("url_video"):
+                    url_embed, url_esterno = prepara_link_video(video_data["url_video"])
+                   
+                    # 1. Tentativo di visualizzazione interna
+                    #components.iframe(url_embed, height=480)
+                    
+                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
+                    #st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
+                    #st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
+                    
+                else:
+                    st.warning("⏳ Video non ancora disponibile per questo match.")
+                
+                #st.divider()
+
+    except Exception as e:
+        st.error(f"⚠️ Errore: {e}")
+
 # 2. ARCHIVIO VIDEO E RICHIESTA CLIP (LOGICA ASINCRONA)
         st.markdown("### 🎞️ Archivio Match Registrati")
         
@@ -1746,60 +1799,7 @@ if st.session_state.pagina == 'partite':
 
         except Exception as e:
             st.error(f"Errore caricamento archivio: {e}")
-
-# --- NUOVO BLOCCO: PAGINA PARTITE (SOLUZIONE DEFINITIVA "OPEN EXTERNAL") ---
-if st.session_state.pagina == 'partite':
-    import re
-    import streamlit.components.v1 as components
-    
-    #st.title("🏟️ Archivio Partite MyPlayr")
-
-    def prepara_link_video(link_grezzo):
-        if not link_grezzo: return None, None
-        # Estraiamo l'ID del video
-        match = re.search(r"id=([a-zA-Z0-9_-]+)|/d/([a-zA-Z0-9_-]+)", link_grezzo)
-        if match:
-            video_id = match.group(1) or match.group(2)
-            # Link per il riquadro interno (spesso bloccato dai cookie)
-            url_embed = f"https://google.com{video_id}/preview?authuser=0"
-            # Link per l'apertura esterna (FUNZIONA SEMPRE)
-            url_esterno = f"https://google.com{video_id}/view"
-            return url_embed, url_esterno
-        return link_grezzo, link_grezzo
-
-    try:
-        res_cal = supabase.table("calendario").select("*").eq("stato", "FATTO").order("id", desc=True).execute()
-        partite_concluse = res_cal.data if res_cal.data else []
-
-        if not partite_concluse:
-            st.info("📌 Nessuna partita terminata trovata.")
-        else:
-            for partita in partite_concluse:
-                #st.subheader(f"📅 Gara del {partita.get('data')} - Ore {partita.get('ora')}")
-
-                id_cercato = f"match_{partita['id']}_"
-                res_vid = supabase.table("video").select("*").like("nome_file", f"%{id_cercato}%").limit(1).execute()
-                video_data = res_vid.data[0] if res_vid.data else None
-
-                if video_data and video_data.get("url_video"):
-                    url_embed, url_esterno = prepara_link_video(video_data["url_video"])
-                   
-                    # 1. Tentativo di visualizzazione interna
-                    #components.iframe(url_embed, height=480)
-                    
-                    # 2. TASTO DI EMERGENZA (Sostituisce il click manuale sull'iconcina in alto a destra)
-                    #st.link_button("▶️ GUARDA VIDEO A TUTTO SCHERMO", url_esterno, use_container_width=True, type="primary")
-                    #st.caption("ℹ️ Se il riquadro sopra è nero (blocco cookie), clicca il tasto azzurro per avviare il video.")
-                    
-                else:
-                    st.warning("⏳ Video non ancora disponibile per questo match.")
-                
-                #st.divider()
-
-    except Exception as e:
-        st.error(f"⚠️ Errore: {e}")
-
-
+            
 # --- PAGINA PRIVACY POLICY ---
 elif st.session_state.pagina == 'privacy':
     st.markdown("<h1 style='text-align: center; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
