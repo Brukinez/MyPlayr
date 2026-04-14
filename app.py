@@ -807,42 +807,45 @@ def vai_a(nome_pagina):
     # Aggiungiamo st.rerun() per essere sicuri che il cambio pagina sia ISTANTANEO
     st.rerun()
 
-
-# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
-
-# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
-if st.session_state.autenticato:
-    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
+# --- LOGICA DINAMICA DELLA NAVBAR ---
+if not st.session_state.get('autenticato', False):
+    # UTENTE NON LOGGATO (PUBBLICO)
+    nav_content = f"""
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a href="/?pagina=home" target="_self" class="nav-link-item">Home</a>
+            <a href="/?pagina=premium" target="_self" class="nav-link-item">Premium</a>
+            <a href="/?pagina=login" target="_self" class="nav-btn-accedi">ACCEDI</a>
+        </div>
+    """
+else:
+    # UTENTE LOGGATO (PRIVATO)
     is_admin = st.session_state.get('user_role') == "admin"
+    admin_link = '<a href="/?pagina=admin" target="_self" class="nav-link-item">Admin</a>' if is_admin else ""
     
-    # 2. CREAZIONE COLONNE: 7 spazi se è Admin (ha il tasto segreto), 6 per gli altri
-    # Usiamo col_nav per indicare le colonne della barra
-    col_nav = st.columns(7 if is_admin else 6)
-    
-    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
-    with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
-    with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
-    
-    # Tasto speciale per il Gestore del Centro (Admin)
-    if is_admin:
-        with col_nav[5]: st.button("Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
-    
-    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
-    with col_nav[-1]: 
-        if st.button("Esci", type="secondary", use_container_width=True):
-            # Azioni di pulizia totale quando l'utente se ne va
-            st.session_state.autenticato = False
-            st.session_state.user_email = ""
-            st.session_state.user_role = "user"
-            st.session_state.user_nick = ""
-            st.session_state.pagina = 'home' # Torna alla pagina pubblica
-            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
-            
-    # Linea verde di separazione definita nel tuo CSS (hr)
-    st.divider() 
+    nav_content = f"""
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="/?pagina=home_auth" target="_self" class="nav-link-item">Home</a>
+            <a href="/?pagina=profilo" target="_self" class="nav-link-item">Profilo</a>
+            <a href="/?pagina=partite" target="_self" class="nav-link-item">Partite</a>
+            <a href="/?pagina=hall_of_fame" target="_self" class="nav-link-item">Hall of Fame</a>
+            <a href="/?pagina=mie_clip" target="_self" class="nav-link-item">Clip</a>
+            {admin_link}
+            <a href="/?pagina=logout" target="_self" class="nav-link-logout">Logout</a>
+        </div>
+    """
+
+# --- DISEGNO DELLA NAVBAR ---
+st.markdown(f"""
+    <div class="sticky-navbar">
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="window.location.href='/?pagina=home'">
+                <div class="mc-box">MC</div>
+                <span class="brand-name">MyClipzo</span>
+            </div>
+            {nav_content}
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
