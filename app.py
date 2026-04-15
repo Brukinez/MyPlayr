@@ -67,7 +67,23 @@ EMERGENT_CSS = """
         transition: 0.3s ease !important;
     }
 
-  
+    /* COLPIAMO I TUOI DUE BOTTONI SPECIFICI */
+    button[key="home_login_btn"], 
+    button[key="home_reg_btn"] {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        border: none !important;
+        font-weight: 800 !important;
+        height: 54px !important;
+    }
+
+    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    button[key="home_login_btn"]:hover, 
+    button[key="home_reg_btn"]:hover {
+        background-color: #24e170 !important;
+        color: white !important;
+        box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
+    }
 
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
@@ -247,73 +263,47 @@ EMERGENT_CSS = """
         padding-top: 100px !important;
     }
 
-    <style>
-    /* NAVBAR FISSA INDISTRUTTIBILE */
+            /* BARRA FISSA (STICKY) - COLORE CHIARO E POSIZIONE ORIZZONTALE */
     .sticky-navbar {
         position: fixed;
-        top: 0; left: 0; width: 100%;
-        height: 70px;
-        background-color: #1e252b !important; /* Grigio scuro coerente con le card */
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        display: flex !important;
-        align-items: center !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 84px;
+       background-color: #38404a !important; /* Lo stesso scuro delle card */
+        backdrop-filter: blur(10px);
+        display: flex !important;           /* Mette logo e spazio in riga */
+        align-items: center !important;     /* Centra tutto verticalmente */
         justify-content: space-between !important;
         padding: 0 5%;
         z-index: 999999;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
+        /* QUESTO SERVE A METTERE MC E MYCLIPZO UNO DI FIANCO ALL'ALTRO */
     .logo-container {
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
         gap: 12px !important;
-        cursor: pointer;
-        text-decoration: none !important;
     }
 
     .mc-box {
         background-color: rgb(41, 168, 71); 
         color: white;
         font-weight: 900;
-        padding: 8px 10px;
+        padding: 12px 12px;
         border-radius: 4px;
-        font-size: 22px;
+        font-size: 30px;
+        line-height: 1;
     }
 
     .brand-name {
-        color: white !important; 
-        font-size: 22px;
+        color: white; 
+        font-size: 30px;
         font-weight: 700;
-        text-decoration: none !important;
+        font-family: 'Inter', sans-serif;
     }
-
-    /* LINK NAVIGAZIONE (Stile MyPlayr) */
-    .nav-link-item {
-        color: #94a3b8 !important;
-        text-decoration: none !important;
-        font-size: 14px;
-        font-weight: 600;
-        text-transform: uppercase;
-        transition: 0.3s;
-        margin-left: 20px;
-    }
-    .nav-link-item:hover { color: white !important; }
-
-    /* TASTO ACCEDI/ESCI (L'unico verde o rosso) */
-    .nav-btn-highlight {
-        background-color: rgb(41, 168, 71);
-        color: white !important;
-        padding: 8px 18px;
-        border-radius: 6px;
-        font-weight: 800;
-        font-size: 13px;
-        text-transform: uppercase;
-        text-decoration: none !important;
-        margin-left: 20px;
-    }
-</style>
-
                
         /* RIDUCIAMO IL RIQUADRO E INGRANDIAMO IL TESTO */
     .stApp div.stButton > button[kind="primary"] {
@@ -455,7 +445,13 @@ EMERGENT_CSS = """
             font-size: 16px !important; /* Riduciamo i 24px del PC a 16px */
         }
 
-       
+        /* 4. I BOTTONI VERDI (Meno ingombranti) */
+        button[key="home_login_btn"], 
+        button[key="home_reg_btn"] {
+            font-size: 18px !important;
+            padding: 10px 20px !important;
+            width: 100% !important; /* Su mobile è meglio averli a tutta larghezza */
+        }
 
         /* 5. IL FOOTER (Scritte leggibili ma non giganti) */
         button[key^="f_"] {
@@ -819,52 +815,41 @@ def vai_a(nome_pagina):
     st.rerun()
 
 
-def navbar_unificata():
-    # 1. LOGICA DEI LINK
-    if not st.session_state.get('autenticato', False):
-        # LINKS PUBBLICI
-        destra_html = f"""
-            <a href="/?pagina=home" target="_self" class="nav-link-item">Home</a>
-            <a href="/?pagina=login" target="_self" class="nav-btn-highlight">Accedi</a>
-        """
-    else:
-        # LINKS PRIVATI
-        is_admin = st.session_state.get('user_role') == "admin"
-        admin_tag = '<a href="/?pagina=admin" target="_self" class="nav-link-item">Admin</a>' if is_admin else ""
-        
-        destra_html = f"""
-            <a href="/?pagina=home_auth" target="_self" class="nav-link-item">Home</a>
-            <a href="/?pagina=mie_clip" target="_self" class="nav-link-item">Clip</a>
-            {admin_tag}
-            <a href="/?pagina=logout" target="_self" class="nav-btn-highlight" style="background-color: #ff4b4b;">Esci</a>
-        """
+# --- BLOCCO: NAVBAR DINAMICA (SINCRO SUPABASE) ---
 
-    # 2. COSTRUZIONE HTML
-    st.markdown(f"""
-        <div class="sticky-navbar">
-            <a href="/?pagina=home" target="_self" class="logo-container">
-                <div class="mc-box">MC</div>
-                <span class="brand-name">MyClipzo</span>
-            </a>
-            <div style="display: flex; align-items: center;">
-                {destra_html}
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # 3. MOTORE DI NAVIGAZIONE (Intercetta i clic della navbar)
-    params = st.query_params
-    if "pagina" in params:
-        p = params["pagina"]
-        if p == "logout":
+# Mostriamo la barra di navigazione solo se l'utente ha fatto il Login
+if st.session_state.autenticato:
+    # 1. CONTROLLO PERMESSI: Verifichiamo se l'utente è un Admin o un Giocatore
+    is_admin = st.session_state.get('user_role') == "admin"
+    
+    # 2. CREAZIONE COLONNE: 8 spazi se è Admin (ha il tasto segreto), 7 per gli altri
+    # Usiamo col_nav per indicare le colonne della barra
+    col_nav = st.columns(8 if is_admin else 7)
+    
+    # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
+    with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
+    with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
+    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
+    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
+    with col_nav[5]: st.button("Premium", on_click=lambda: vai_a('premiun'), use_container_width=True)
+    # Tasto speciale per il Gestore del Centro (Admin)
+    if is_admin:
+        with col_nav[5]: st.button("Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+    
+    # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
+    with col_nav[-1]: 
+        if st.button("Esci", type="secondary", use_container_width=True):
+            # Azioni di pulizia totale quando l'utente se ne va
             st.session_state.autenticato = False
-            st.session_state.pagina = 'home'
-            st.query_params.clear()
-            st.rerun()
-        elif p != st.session_state.pagina:
-            st.session_state.pagina = p
-            st.rerun()
-
+            st.session_state.user_email = ""
+            st.session_state.user_role = "user"
+            st.session_state.user_nick = ""
+            st.session_state.pagina = 'home' # Torna alla pagina pubblica
+            st.rerun() # Forza il sito a "dimenticare" i dati privati subito
+            
+    # Linea verde di separazione definita nel tuo CSS (hr)
+    st.divider() 
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
@@ -1016,7 +1001,10 @@ if st.session_state.pagina == 'home':
                     st.error("❌ Email non valida.")
 
 
-       
+        # --- TASTO ACCEDI AL PORTALE (ORIGINALE) ---
+        _, col_center_login, _ = st.columns([1, 2, 1])
+        with col_center_login:
+            st.button("ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), key="home_login_btn", use_container_width=True, type="primary")
 
 
         # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
@@ -1030,7 +1018,10 @@ if st.session_state.pagina == 'home':
             </div>
         """, unsafe_allow_html=True)
 
-        
+        # Bottone Finale
+        _, col_cta_btn, _ = st.columns([1, 1.5, 1])
+        with col_cta_btn:
+            st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="home_reg_btn", use_container_width=True, type="primary")
 
 
            # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
@@ -1170,7 +1161,9 @@ elif st.session_state.pagina == 'login':
             # Navigazione interna alla card
             st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'><p style='text-align: center; color: #94a3b8; font-size: 14px;'>Hai già un account?</p>", unsafe_allow_html=True)
             
-           
+            if st.button("ACCEDI", use_container_width=True, key="btn_back_to_log"): 
+                st.session_state.sub = 'login'
+                st.rerun()
             
             st.markdown("</div>", unsafe_allow_html=True) # Chiusura Card
 
