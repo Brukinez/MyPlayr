@@ -223,7 +223,7 @@ EMERGENT_CSS = """
         color: white !important;
         height: 25px !important;
         width: 100% !important;
-        font-weight: 800 !important;
+        font-weight: 500 !important;
         border-radius: 8px !important;
         text-transform: uppercase !important;
         border: none !important;
