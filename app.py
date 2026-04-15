@@ -893,7 +893,7 @@ if st.session_state.pagina == 'home':
         # --- TITOLO E DESCRIZIONE SEZIONE CARD ---
         st.markdown("""
     <div style='text-align: center; margin-bottom: 70px;'>
-        <h2 style='color: white; font-weight: 900; font-size: 35px; text-transform: uppercase; margin-bottom: 10px;'>
+        <h2 style='color: white; font-weight: 900; font-size: 40px; text-transform: uppercase; margin-bottom: 10px;'>
             COME FUNZIONA
         </h2>
         <p style='color: #94a3b8; font-size: 22px; max-width: 600px; margin: 0 auto;'>
