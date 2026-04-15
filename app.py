@@ -864,7 +864,7 @@ def navbar_unificata():
         elif p != st.session_state.pagina:
             st.session_state.pagina = p
             st.rerun()
- 
+
 
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
