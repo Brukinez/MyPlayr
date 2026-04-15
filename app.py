@@ -199,7 +199,7 @@ EMERGENT_CSS = """
 
     /* 2. SISTEMA IL TASTO ISCRIVITI (Stessa altezza del box email) */
     div[data-testid="stForm"] button {
-        height: 40px !important;        /* Altezza standard degli input Streamlit */
+        height: 55px !important;        /* Altezza standard degli input Streamlit */
         padding: 0 25px !important;     /* Spazio interno ai lati del testo */
         font-size: 16px !important;
         font-weight: 700 !important;
