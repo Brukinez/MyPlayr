@@ -205,17 +205,7 @@ EMERGENT_CSS = """
         gap: 10px !important;           /* Avvicina il tasto all'input */
     }
 
-    /* IL TASTO ISCRIVITI */
-    div[data-testid="stForm"] button {
-        background-color: rgb(41, 168, 71) !important;
-        color: white !important;
-        height: 25px !important;
-        width: 100% !important;
-        font-weight: 800 !important;
-        border-radius: 8px !important;
-        text-transform: uppercase !important;
-        border: none !important;
-    }
+  
 
     /* 1. FORZA L'ALLINEAMENTO ORIZZONTALE */
     div[data-testid="stForm"] .stHorizontalBlock {
