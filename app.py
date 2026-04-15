@@ -190,19 +190,7 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
-    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
-    div[data-testid="stForm"] {
-        background-color: #38404a !important; /* Il grigio delle tue card */
-        max-width: 500px !important;         /* Larghezza massima della scatola */
-        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
-        padding: 30px !important;            /* Spazio interno per far respirare i testi */
-        border-radius: 20px !important;
-            /* Bordino verde sottile attorno alla card */
-    border: 1px solid rgba(41, 168, 71, 0.8) !important;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
-        text-align: center !important;
-    }
-
+ 
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
         align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
