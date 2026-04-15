@@ -121,7 +121,7 @@ EMERGENT_CSS = """
 
     /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
-        font-size: 20px !important;
+        font-size: 18px !important;
         color: #94a3b8;                    /* Grigio chiaro leggibile */
         line-height: 1.6;
         margin-top: 10px;
@@ -129,8 +129,8 @@ EMERGENT_CSS = """
 
         /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
     .icon-box {
-        width: 50px;
-        height: 50px;
+        width: 56px;
+        height: 56px;
         background-color: rgba(41, 168, 71, 0.2);
         border-radius: 12px;
         display: flex;
