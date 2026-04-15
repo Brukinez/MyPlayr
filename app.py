@@ -205,15 +205,18 @@ EMERGENT_CSS = """
         gap: 10px !important;           /* Avvicina il tasto all'input */
     }
 
-    /* 3. SISTEMA IL TASTO ISCRIVITI (Più piccolo e allineato) */
+    /* IL TASTO ISCRIVITI */
     div[data-testid="stForm"] button {
-        height: 42px !important;        /* Altezza identica alla casella email */
-        padding: 0 25px !important;
-        font-size: 14px !important;
-        font-weight: 700 !important;
-        width: auto !important;
-        margin: 0 !important;           /* Toglie i margini che lo spostano */
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+        height: 25px !important;
+        width: 100% !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        text-transform: uppercase !important;
+        border: none !important;
     }
+
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
