@@ -962,15 +962,19 @@ if st.session_state.pagina == 'home':
 
         
         # --- SEZIONE NEWSLETTER UNIFICATA ---
-        with st.form("newsletter_form", clear_on_submit=True):
-            st.markdown("<h2 style='text-align:center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align:center; color:#94a3b8;'>Iscriviti alla newsletter...</p>", unsafe_allow_html=True)
-    
-       
-        with col_in:
-            email_input = st.text_input("Email", placeholder="la-tua@mail.com", label_visibility="collapsed")
-        with col_btn:
-            submit_btn = st.form_submit_button("ISCRIVITI")
+        with st.form("news_form", clear_on_submit=True):
+            # Titolo e Descrizione (Ora sono dentro la scatola!)
+            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 30px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #94a3b8; font-size: 20px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+
+            # RIGA CON EMAIL E BOTTONE
+            col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
+            
+            with col_mail:
+                email_input = st.text_input("La tua migliore Email", placeholder="la-tua@mail.com", label_visibility="collapsed").strip().lower()
+            
+            with col_btn:
+                submit_news = st.form_submit_button("ISCRIVITI")
 
             # Logica Supabase
             if submit_news:
