@@ -557,7 +557,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 VIDEO_DIR = os.path.join(BASE_DIR, "ARCHIVIO_PARTITE")
 IMG_DIR = os.path.join(BASE_DIR, "PROFILI_FOTO")
 CLIP_DIR = os.path.join(BASE_DIR, "CLIP_TAGLIATE")
-
+RCLONE_EXE = r"C:\MyPlayr\Rclone\rclone.exe"
 # Creazione automatica cartelle mancanti
 for cartella in [VIDEO_DIR, IMG_DIR, CLIP_DIR]:
     if not os.path.exists(cartella):
