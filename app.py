@@ -195,7 +195,7 @@ EMERGENT_CSS = """
         background-color: #38404a !important; /* Il grigio delle tue card */
         max-width: 500px !important;         /* Larghezza massima della scatola */
         margin: 50px auto !important;        /* LA CENTRA NEL SITO */
-        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        padding: 30px !important;            /* Spazio interno per far respirare i testi */
         border-radius: 20px !important;
             /* Bordino verde sottile attorno alla card */
     border: 1px solid rgba(41, 168, 71, 0.8) !important;
