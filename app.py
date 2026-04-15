@@ -190,34 +190,30 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
+    /* 1. RENDE LA NEWSLETTER PIÙ STRETTA E SENZA BORDI */
+    div[data-testid="stForm"] {
+        border: none !important;        /* Toglie il riquadro grigio esterno */
+        background: transparent !important;
+        padding: 0 !important;
+        max-width: 800px !important;    /* La stringe al centro */
+        margin: 0 auto !important;
+    }
 
-    /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
+    /* 2. ALLINEA EMAIL E TASTO SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
-        align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
-        gap: 15px !important;
+        align-items: center !important;
+        gap: 10px !important;           /* Avvicina il tasto all'input */
     }
 
-    /* L'INPUT EMAIL */
-    div[data-testid="stForm"] input {
-        background-color: rgba(0, 0, 0, 0.3) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        color: white !important;
-        height: 50px !important;
-        border-radius: 8px !important;
-    }
-
-    /* IL TASTO ISCRIVITI */
+    /* 3. SISTEMA IL TASTO ISCRIVITI (Più piccolo e allineato) */
     div[data-testid="stForm"] button {
-        background-color: rgb(41, 168, 71) !important;
-        color: white !important;
-        height: 25px !important;
-        width: 100% !important;
-        font-weight: 800 !important;
-        border-radius: 8px !important;
-        text-transform: uppercase !important;
-        border: none !important;
+        height: 42px !important;        /* Altezza identica alla casella email */
+        padding: 0 25px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        width: auto !important;
+        margin: 0 !important;           /* Toglie i margini che lo spostano */
     }
-
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
@@ -966,19 +962,15 @@ if st.session_state.pagina == 'home':
 
         
         # --- SEZIONE NEWSLETTER UNIFICATA ---
-        with st.form("news_form", clear_on_submit=True):
-            # Titolo e Descrizione (Ora sono dentro la scatola!)
-            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 30px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #94a3b8; font-size: 20px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
-
-            # RIGA CON EMAIL E BOTTONE
-            col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
-            
-            with col_mail:
-                email_input = st.text_input("La tua migliore Email", placeholder="la-tua@mail.com", label_visibility="collapsed").strip().lower()
-            
-            with col_btn:
-                submit_news = st.form_submit_button("ISCRIVITI")
+        with st.form("newsletter_form", clear_on_submit=True):
+            st.markdown("<h2 style='text-align:center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align:center; color:#94a3b8;'>Iscriviti alla newsletter...</p>", unsafe_allow_html=True)
+    
+       
+        with col_in:
+            email_input = st.text_input("Email", placeholder="la-tua@mail.com", label_visibility="collapsed")
+        with col_btn:
+            submit_btn = st.form_submit_button("ISCRIVITI")
 
             # Logica Supabase
             if submit_news:
