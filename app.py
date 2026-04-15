@@ -91,7 +91,7 @@ EMERGENT_CSS = """
         background-color: #38404a !important; /* Il grigio esatto della tua foto */
         border: 1px solid rgba(255, 255, 255, 0.05); /* Bordino sottile e discreto */
         border-radius: 12px;               /* Angoli arrotondati perfetti */
-        padding: 24px;                     /* Spazio interno */
+        padding: 20px;                     /* Spazio interno */
         color: white;
         font-family: 'Inter', sans-serif;
         margin-bottom: 30px;
@@ -111,7 +111,7 @@ EMERGENT_CSS = """
     .mcp-card b,
     .mcp-card strong {
         font-weight: 800 !important;      /* Grassetto molto marcato */
-        font-size: 22px !important;       /* Dimensione equilibrata */
+        font-size: 24px !important;       /* Dimensione equilibrata */
         color: white !important;
         text-transform: uppercase !important; /* Forza il maiuscolo */
         letter-spacing: 1px !important;   /* Un po' di spazio tra le lettere per eleganza */
