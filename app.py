@@ -190,32 +190,33 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
-    /* 1. FORZA L'ALLINEAMENTO ORIZZONTALE */
-    div[data-testid="stForm"] .stHorizontalBlock {
-        display: flex !important;
-        align-items: center !important; /* Centra verticalmente email e tasto */
-        gap: 10px !important;           /* Spazio preciso tra box e tasto */
-    }
-
-    /* 2. SISTEMA IL TASTO ISCRIVITI (Stessa altezza del box email) */
-    div[data-testid="stForm"] button {
-        height: 40px !important;        /* Altezza standard degli input Streamlit */
-        padding: 0 25px !important;     /* Spazio interno ai lati del testo */
-        font-size: 16px !important;
-        font-weight: 700 !important;
-        width: auto !important;         /* Si adatta al testo "ISCRIVITI" */
-        margin: 0 !important;           /* Elimina spostamenti indesiderati */
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-
-    /* 3. RIMUOVI IL BORDO DEL FORM (Per l'effetto pulito dello screen di riferimento) */
+    /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
     div[data-testid="stForm"] {
-        border: none !important;
-        padding: 0 !important;
+        background-color: #38404a !important; /* Il grigio delle tue card */
+        max-width: 500px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 30px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+            /* Bordino verde sottile attorno alla card */
+    border: 1px solid rgba(41, 168, 71, 0.8) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
     }
 
+    /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        align-items: flex-end !important; /* Allinea perfettamente il tasto all'input */
+        gap: 15px !important;
+    }
+
+    /* L'INPUT EMAIL */
+    div[data-testid="stForm"] input {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: white !important;
+        height: 50px !important;
+        border-radius: 8px !important;
+    }
 
     /* IL TASTO ISCRIVITI */
     div[data-testid="stForm"] button {
@@ -223,7 +224,7 @@ EMERGENT_CSS = """
         color: white !important;
         height: 25px !important;
         width: 100% !important;
-        font-weight: 500 !important;
+        font-weight: 800 !important;
         border-radius: 8px !important;
         text-transform: uppercase !important;
         border: none !important;
