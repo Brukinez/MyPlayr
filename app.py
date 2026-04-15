@@ -190,20 +190,32 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
-    /* 1. RENDE LA NEWSLETTER PIÙ STRETTA E SENZA BORDI */
-    div[data-testid="stForm"] {
-        border: none !important;        /* Toglie il riquadro grigio esterno */
-        background: transparent !important;
-        padding: 0 !important;
-        max-width: 800px !important;    /* La stringe al centro */
-        margin: 0 auto !important;
+    /* 1. FORZA L'ALLINEAMENTO ORIZZONTALE */
+    div[data-testid="stForm"] .stHorizontalBlock {
+        display: flex !important;
+        align-items: center !important; /* Centra verticalmente email e tasto */
+        gap: 10px !important;           /* Spazio preciso tra box e tasto */
     }
 
-    /* 2. ALLINEA EMAIL E TASTO SULLA STESSA RIGA */
-    div[data-testid="stForm"] .stHorizontalBlock {
+    /* 2. SISTEMA IL TASTO ISCRIVITI (Stessa altezza del box email) */
+    div[data-testid="stForm"] button {
+        height: 44px !important;        /* Altezza standard degli input Streamlit */
+        padding: 0 25px !important;     /* Spazio interno ai lati del testo */
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        width: auto !important;         /* Si adatta al testo "ISCRIVITI" */
+        margin: 0 !important;           /* Elimina spostamenti indesiderati */
+        display: flex !important;
         align-items: center !important;
-        gap: 10px !important;           /* Avvicina il tasto all'input */
+        justify-content: center !important;
     }
+
+    /* 3. RIMUOVI IL BORDO DEL FORM (Per l'effetto pulito dello screen di riferimento) */
+    div[data-testid="stForm"] {
+        border: none !important;
+        padding: 0 !important;
+    }
+
 
     /* IL TASTO ISCRIVITI */
     div[data-testid="stForm"] button {
