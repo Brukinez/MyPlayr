@@ -581,42 +581,53 @@ if not os.path.exists(CLIP_GDRIVE):
     # Se il disco G non esiste (es. sei sul Web), usa la cartella CLIP_TAGLIATE che abbiamo creato nel Blocco 2
     CLIP_GDRIVE = CLIP_DIR 
 
-# --- FUNZIONE TAGLIO VIDEO (FFMPEG) ---
+# --- FUNZIONE TAGLIO VIDEO (VERSIONE CON UPLOAD E LINK) ---
 def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
-    """Taglia una clip dal video 4K senza perdere qualità"""
+    input_p = os.path.join(VIDEO_DIR, video_nome) 
     
-    input_p = os.path.join(VIDEO_DIR, video_nome) # Video originale (70 min)
-    
-    # Nome unico per la clip: MyClipzo_ORA_EMAIL.mp4
     timestamp_clip = datetime.now().strftime('%H%M%S')
     nome_output = f"MyClipzo_{timestamp_clip}.mp4"
-    output_p = os.path.join(CLIP_GDRIVE, nome_output)
+    output_p = os.path.join(VIDEO_DIR, nome_output) # Cartella locale temporanea
 
-    # Comando FFmpeg ultra-veloce (-c copy)
     comando = [
-        'ffmpeg', '-y',
-        '-i', input_p,          # Prima carichiamo il video
-        '-ss', str(inizio_sec), # Poi diciamo da dove iniziare
-        '-t', str(durata_sec),  # Per quanto tempo
-        '-c', 'copy',           # Copia senza sforzo
-        output_p
+        'ffmpeg', '-y', '-ss', str(inizio_sec), '-i', input_p, 
+        '-t', str(durata_sec), '-c', 'copy', '-movflags', '+faststart', output_p
     ]
 
     try:
-        # Eseguiamo il taglio nel "sottobosco" del PC
+        # 1. Esecuzione Taglio
         subprocess.run(comando, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
-        # Salviamo l'evento del taglio su Supabase per lo storico dell'utente
+        # 2. Upload su Google Drive con Rclone (Cartella specifica per le clip)
+        print(f"Caricamento clip {nome_output} su Drive...")
+        subprocess.run([RCLONE_EXE, "copy", output_p, "remote:CLIP_MYPLAYR/CLIP_UTENTI"], check=True)
+
+        # 3. Otteniamo il link pubblico
+        res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/CLIP_UTENTI/{nome_output}"],
+                             capture_output=True, text=True, check=True)
+        link_grezzo = res.stdout.strip()
+        
+        # 4. Pulizia Link (Formato /preview per lo streaming)
+        video_id = estrai_id_video(link_grezzo) # Usiamo la funzione che hai già nel regista
+        link_embed = f"https://google.com{video_id}/preview"
+
+        # 5. SALVATAGGIO SU SUPABASE (Adesso con l'URL!)
         supabase.table("clip_generate").insert({
             "email_utente": utente_email,
             "nome_file": nome_output,
+            "url_video": link_embed, # <--- QUESTA È LA CHIAVE MANCANTE!
             "data_creazione": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }).execute()
         
-        return output_p
+        # Rimuoviamo il file locale per non occupare spazio
+        if os.path.exists(output_p): os.remove(output_p)
+        
+        print("✅ Clip caricata e sincronizzata!")
+        return link_embed
     except Exception as e:
-        st.error(f"Errore durante il taglio video: {e}")
+        print(f"Errore durante il taglio/upload clip: {e}")
         return None
+
 
 # --- FUNZIONE NEWSLETTER E CONFERMA EMAIL ---
 def invia_conferma_e_salva(email_utente):
@@ -1473,8 +1484,6 @@ elif st.session_state.pagina == 'admin':
 
         st.divider()
 
-
-
         
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
@@ -1594,7 +1603,7 @@ elif st.session_state.pagina == 'partite':
     import streamlit.components.v1 as components
     import pandas as pd
     
-    st.title("🏟️ Archivio Partite")
+    st.title("Archivio Partite")
     st.write("Guarda i match registrati e richiedi il taglio delle tue azioni migliori.")
 
     try:
@@ -1625,7 +1634,7 @@ elif st.session_state.pagina == 'partite':
                     st.link_button("▶️ GUARDA A TUTTO SCHERMO", url_esterno, use_container_width=True)
 
                     # 2. MODULO TAGLIO CLIP (Invia comandi a 'comandi_clip' per il Mini PC)
-                    with st.expander("✂️ RICHIEDI TAGLIO CLIP"):
+                    with st.expander("TAGLIA LA TUA CLIP"):
                         st.write("Indica il minuto esatto dell'azione nel video:")
                         c1, c2, c3 = st.columns(3)
                         with c1:
@@ -1635,7 +1644,7 @@ elif st.session_state.pagina == 'partite':
                         with c3:
                             dur = st.number_input("Durata (sec)", min_value=5, max_value=60, value=15, key=f"d_{partita['id']}")
 
-                        if st.button("🎬 GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
+                        if st.button("GENERA CLIP", key=f"btn_{partita['id']}", use_container_width=True):
                             start_sec = (m_in * 60) + s_in
                             try:
                                 supabase.table("comandi_clip").insert({
@@ -1656,6 +1665,45 @@ elif st.session_state.pagina == 'partite':
     except Exception as e:
         st.error(f"⚠️ Errore caricamento: {e}")
 
+# --- 3. PAGINA: LE MIE CLIP (DOVE L'UTENTE GUARDA I VIDEO TAGLIATI) ---
+elif st.session_state.pagina == 'mie_clip':
+    st.title("🎬 Le Mie Clip Personalizzate")
+    st.write("Qui trovi i momenti migliori delle tue partite, tagliati e pronti da condividere!")
+
+    try:
+        # Recuperiamo solo le clip dell'utente loggato che sono state COMPLETATE dal PC
+        res_clip = supabase.table("comandi_clip")\
+            .select("*")\
+            .eq("email_utente", st.session_state.user_email)\
+            .eq("stato", "COMPLETATO")\
+            .order("id", desc=True)\
+            .execute()
+
+        mie_clip = res_clip.data if res_clip.data else []
+
+        if not mie_clip:
+            st.info("📌 Non hai ancora clip pronte. Richiedine una dalla sezione 'Partite' e attendi che il Mini PC la elabori (circa 2-3 minuti).")
+        else:
+            # Mostriamo i video uno sotto l'altro
+            for clip in mie_clip:
+                with st.container():
+                    st.subheader(f"Richiesta del {clip.get('created_at')[:10]}")
+                    
+                    # Prendiamo l'URL che il Mini PC ha caricato su Drive
+                    url_video = clip.get("url_video")
+                    
+                    if url_video:
+                        # Player Video (Iframe di Google Drive)
+                        st.components.v1.iframe(url_video, height=450, scrolling=False)
+                        
+                        # Tasto per download o visione esterna
+                        st.link_button("🔗 Scarica o Condividi Clip", url_video.replace("/preview", "/view"), use_container_width=True)
+                    else:
+                        st.warning("⏳ Elaborazione in corso...")
+                    st.divider()
+
+    except Exception as e:
+        st.error(f"Errore nel caricamento delle clip: {e}")
 
 
 # --- PAGINA PRIVACY POLICY ---
@@ -1734,6 +1782,7 @@ elif st.session_state.pagina == 'termini':
 elif st.session_state.pagina == 'diritti':
     st.markdown("<h2 style='text-align: center; color: white;'>DIRITTI RISERVATI</h2>", unsafe_allow_html=True)
     
+
 # --- BLOCCO: PAGINA HALL OF FAME PRO (FIXED) ---
 
 if st.session_state.pagina == 'hall_of_fame':
