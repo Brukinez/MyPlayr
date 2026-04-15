@@ -952,7 +952,7 @@ if st.session_state.pagina == 'home':
                 </svg>
             </div>
             <h3 style="color: white; margin-top: 0;">CONDIVISIONE SOCIAL</h3>
-            <p style="color: #94a3b8; font-size: 18px;">
+            <p style="color: #94a3b8; font-size: 20px;">
                Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.
             </p>
         </div>      
