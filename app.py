@@ -1667,7 +1667,7 @@ elif st.session_state.pagina == 'partite':
 
 # --- 3. PAGINA: LE MIE CLIP (DOVE L'UTENTE GUARDA I VIDEO TAGLIATI) ---
 elif st.session_state.pagina == 'mie_clip':
-    st.title("🎬 Le Mie Clip Personalizzate")
+    st.title("Le Mie Clip Personalizzate")
     st.write("Qui trovi i momenti migliori delle tue partite, tagliati e pronti da condividere!")
 
     try:
