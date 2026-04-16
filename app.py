@@ -1136,7 +1136,7 @@ elif st.session_state.pagina == 'login':
                 r_c = st.text_input("Cognome", placeholder="Rossi", key="r_cognome")
             
             # Email e Password
-            r_e = st.text_input("Email", placeholder="mario.rossi@mail.com", key="r_email").strip().lower()
+            r_e = st.text_input("Email", placeholder="la-tua@mail.com", key="r_email").strip().lower()
             r_p = st.text_input("Password", type="password", placeholder="Scegli una password", key="r_pass")
             
             st.markdown("<br>", unsafe_allow_html=True)
