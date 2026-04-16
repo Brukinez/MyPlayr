@@ -119,18 +119,6 @@ EMERGENT_CSS = """
         margin-bottom: 15px !important;   /* Spazio tra titolo e descrizione */
     }
 
-            /* --- SCATOLA DELL'ICONA NELLE SCHEDE (CARD) --- */
-    .icon-box {
-        width: 56px;
-        height: 56px;
-        background-color: rgba(41, 168, 71, 0.2);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 16px;
-        transition: background-color 0.3s;
-    }
     
     /* ISTRUZIONE PER IL TESTO (18PX) */
     .mcp-card p {
@@ -203,6 +191,18 @@ EMERGENT_CSS = """
         letter-spacing: 1px;
     }
     
+        /* --- L'UNICA GRANDE SCATOLA DELLA NEWSLETTER --- */
+    div[data-testid="stForm"] {
+        background-color: #38404a !important; /* Il grigio delle tue card */
+        max-width: 800px !important;         /* Larghezza massima della scatola */
+        margin: 50px auto !important;        /* LA CENTRA NEL SITO */
+        padding: 50px !important;            /* Spazio interno per far respirare i testi */
+        border-radius: 20px !important;
+            /* Bordino verde sottile attorno alla card */
+    border: 1px solid rgba(41, 168, 71, 0.8) !important;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+        text-align: center !important;
+    }
  
     /* SISTEMIAMO L'INPUT E IL BOTTONE SULLA STESSA RIGA */
     div[data-testid="stForm"] .stHorizontalBlock {
