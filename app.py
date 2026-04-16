@@ -1063,12 +1063,7 @@ elif st.session_state.pagina == 'login':
         # Inizializzazione dello stato interno per navigare tra Login e Registrazione
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
-# --- LOGO ---
-        st.markdown("""
-        <div style='text-align:center; margin-bottom:30px;'>
-            <div class='mc-box'>MC</div>
-                  </div>
-        """, unsafe_allow_html=True)
+
         # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo.</h2>", unsafe_allow_html=True)
