@@ -210,7 +210,14 @@ EMERGENT_CSS = """
     div[data-testid="stForm"] button {
         background-color: rgb(41, 168, 71) !important;
         color: white !important;
-   
+        height: 25px !important;
+        width: 100% !important;
+        font-weight: 800 !important;
+        border-radius: 8px !important;
+        text-transform: uppercase !important;
+        border: none !important;
+    }
+
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
