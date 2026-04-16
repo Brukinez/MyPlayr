@@ -1065,7 +1065,7 @@ elif st.session_state.pagina == 'login':
             st.session_state.sub = 'login'
 # --- LOGO ---
         st.markdown("""
-        <div style='text-align:center; margin-bottom:30px;'>
+        <div style='text-align:center; margin-bottom:10px;'>
             <div class='mc-box'>MC</div>
             <h1 style='margin-bottom:0;'>MyClipzo</h1>
             <p style='color:#94a3b8;'>Accedi alla tua area</p>
