@@ -1063,7 +1063,14 @@ elif st.session_state.pagina == 'login':
         # Inizializzazione dello stato interno per navigare tra Login e Registrazione
         if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
-
+# --- LOGO ---
+        st.markdown("""
+        <div style='text-align:center; margin-bottom:30px;'>
+            <div class='mc-box'>MC</div>
+            <h1 style='margin-bottom:0;'>MyClipzo</h1>
+            <p style='color:#94a3b8;'>Accedi alla tua area</p>
+        </div>
+        """, unsafe_allow_html=True)
         # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
             st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo.</h2>", unsafe_allow_html=True)
@@ -1136,7 +1143,7 @@ elif st.session_state.pagina == 'login':
                 r_c = st.text_input("Cognome", placeholder="", key="r_cognome")
             
             # Email e Password
-            r_e = st.text_input("Email", placeholder="la tua mail", key="r_email").strip().lower()
+            r_e = st.text_input("Email", placeholder="la-tua@mail", key="r_email").strip().lower()
             r_p = st.text_input("Password", type="password", placeholder="Scegli una password", key="r_pass")
             
             st.markdown("<br>", unsafe_allow_html=True)
