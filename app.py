@@ -1120,7 +1120,7 @@ elif st.session_state.pagina == 'login':
             st.markdown("""
                 <div style='text-align: center; margin-bottom: 20px;'>
                     <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
-                    <h1 style='font-weight: 900; margin-bottom: 50; color: white;'>CREA IL TUO ACCOUNT</h1>
+                    <h1 style='font-weight: 900; margin-bottom: 0; color: white;'>CREA IL TUO ACCOUNT</h1>
                     <p style='color: #94a3b8;'>Unisciti alla community MyClipzo</p>
                 </div>
             """, unsafe_allow_html=True)
