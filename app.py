@@ -1131,7 +1131,7 @@ elif st.session_state.pagina == 'login':
             # Riga 1: Nome e Cognome affiancati (come nello screen)
             c1, c2 = st.columns(2)
             with c1:
-                r_n = st.text_input("👤 Nome", placeholder="es. Mario", key="r_nome")
+                r_n = st.text_input("Nome", placeholder="es. Mario", key="r_nome")
             with c2:
                 r_c = st.text_input("Cognome", placeholder="es. Rossi", key="r_cognome")
             
