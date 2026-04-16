@@ -1066,7 +1066,14 @@ elif st.session_state.pagina == 'login':
 
         # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
-            st.markdown("<h2 style='text-align: center;'>Accedi a MyClipzo.</h2>", unsafe_allow_html=True)
+            # Logo e Titolo come nello screenshot
+            st.markdown("""
+                <div style='text-align: center; margin-bottom: 20px;'>
+                    <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
+                    <h1 style='font-weight: 900; margin-bottom: 0; color: white;'>ACCEDI A MYCLIPZO</h1>
+                    <p style='color: #94a3b8;'>Unisciti alla community MyClipzo</p>
+                </div>
+            """, unsafe_allow_html=True)
             
             # Input utente
             u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
