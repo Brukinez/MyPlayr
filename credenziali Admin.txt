@@ -1,4 +1,0 @@
-credenziali Admin:
-
-Email: admin@myplayr.com
-Password: admin123
