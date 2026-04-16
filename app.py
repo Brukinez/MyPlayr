@@ -206,7 +206,11 @@ EMERGENT_CSS = """
         border-radius: 8px !important;
     }
 
-  
+    /* IL TASTO ISCRIVITI */
+    div[data-testid="stForm"] button {
+        background-color: rgb(41, 168, 71) !important;
+        color: white !important;
+   
 
     /* --- SEZIONE FINALE PRONTO A DIVENTARE UN CAMPIONE --- */
     .cta-final-section {
