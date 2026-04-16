@@ -160,7 +160,7 @@ EMERGENT_CSS = """
     /* --- SEZIONE STATISTICHE (STRISCIA) --- */
     .stats-container {
         background-color: #38404a; /* Lo stesso grigio delle tue card */
-        padding: 80px 5%;
+        padding: 25px 5%;
         display: flex;
         justify-content: space-around;
         align-items: center;
