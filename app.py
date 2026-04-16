@@ -852,205 +852,123 @@ if st.session_state.autenticato:
     # Linea verde di separazione definita nel tuo CSS (hr)
     st.divider() 
 
-# --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
-
 if st.session_state.pagina == 'home':
-    # Centriamo tutto con delle colonne, mettendo il contenuto in quella centrale
-    _, col_centro, _ = st.columns([1, 4, 1])
-    
-    with col_centro:
-        # Questo è il piccolo badge che abbiamo appena creato
-        st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
-        
-        # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
-        st.markdown("<h1 style='text-align: center; font-size: 80px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-                # --- DESCRIZIONE CENTRATA ---
+
+    _, col, _ = st.columns([1, 4, 1])
+
+    with col:
+
         st.markdown("""
-            <div style='text-align: center; width: 100%;'>
-                <p style='
-                    color: #94a3b8; 
-                    font-family: "Inter", sans-serif; 
-                    font-size: 22px; 
-                    line-height: 1.6; 
-                    max-width: 600px; 
-                    margin: 24px auto 40px auto;
-                '>
-                    Ogni partita merita di essere ricordata! MyClipzo <br>
-                    registra automaticamente le tue azioni e ti <br>
-                    permette di creare highlight professionali.
-                </p>
-            </div>
+        <div style='text-align:center; margin-top:40px;'>
+
+            <span class='hero-badge'>🚀 Il VAR dello sport amatoriale</span>
+
+            <h1 style='font-size:72px; font-weight:900; line-height:1.1; margin-top:20px;'>
+                GIOCA.<br>
+                RIVEDI.<br>
+                <span style='color:#2ecc71;'>DIVENTA PRO.</span>
+            </h1>
+
+            <p style='color:#94a3b8; font-size:22px; max-width:650px; margin:25px auto;'>
+                MyClipzo registra automaticamente le tue partite, 
+                taglia le azioni migliori e le trasforma in highlight pronti per essere condivisi.
+            </p>
+
+        </div>
         """, unsafe_allow_html=True)
 
+        c1, c2 = st.columns(2)
 
-    # Visualizziamo i contenuti solo se l'utente non è loggato
-    if not st.session_state.autenticato:
-       
-        # --- SEZIONE: COME FUNZIONA (LAYOUT A 3 COLONNE) ---
-        # --- TITOLO E DESCRIZIONE SEZIONE CARD ---
-        st.markdown("""
-    <div style='text-align: center; margin-bottom: 70px;'>
-        <h2 style='color: white; font-weight: 900; font-size: 40px; text-transform: uppercase; margin-bottom: 10px;'>
-            COME FUNZIONA
-        </h2>
-        <p style='color: #94a3b8; font-size: 22px; max-width: 600px; margin: 0 auto;'>
-            Un ecosistema completo per trasformare ogni partita in contenuti da professionisti.
-        </p>
+        with c1:
+            st.button("🚀 INIZIA GRATIS", use_container_width=True, type="primary")
+
+        with c2:
+            st.button("🎥 GUARDA DEMO", use_container_width=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style='text-align:center; margin:40px 0; color:#94a3b8;'>
+        Già utilizzato da giocatori e centri sportivi
     </div>
-""", unsafe_allow_html=True)
-
-                # Creiamo tre colonne per mettere le schede una di fianco all'altra
-        col1, col2, col3 = st.columns(3)
-
-                # Esempio per la Colonna 1 (fai lo stesso per le altre)
-        with col1:
-            st.markdown("""
-                <div class="mcp-card">
-                    <!-- Ecco la nuova scatola dell'icona -->
-                    <div class="icon-box">
-                        <svg xmlns="http://w3.org" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
-                    </div>
-                    <h3 style="color: white; margin-top: 0;">REGISTRAZIONE AUTOMATICA</h3>
-                    <p style="color: #94a3b8; font-size: 18px;">Il nostro sistema registra ogni partita in alta definizione 4k senza intervento manuale.</p>
-                </div>
-            """, unsafe_allow_html=True)
-
-        with col2:
-            st.markdown("""
-        <div class="mcp-card">
-            <div class="icon-box">
-                <!-- Disegno delle Forbici (Lucide Scissors) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(41, 168, 71)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="6" cy="6" r="3"></circle>
-                    <circle cx="6" cy="18" r="3"></circle>
-                    <line x1="20" x2="8.12" y1="4" y2="15.88"></line>
-                    <line x1="14.47" x2="20" y1="14.48" y2="20"></line>
-                    <line x1="8.12" x2="12" y1="8.12" y2="12"></line>
-                </svg>
-            </div>
-            <h3 style="color: white; margin-top: 0;">TAGLIO CLIP ISTANTANEO</h3>
-            <p style="color: #94a3b8; font-size: 18px;">
-                Seleziona il momento esatto e genera la tua clip personalizzata in pochi secondi.
-            </p>
-        </div>
     """, unsafe_allow_html=True)
 
-        with col3:
-            st.markdown("""
-        <div class="mcp-card">
-            <div class="icon-box">
-                <!-- Icona Share (Lucide Share-2) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(41, 168, 71)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="18" cy="5" r="3"></circle>
-                    <circle cx="6" cy="12" r="3"></circle>
-                    <circle cx="18" cy="19" r="3"></circle>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                </svg>
-            </div>
-            <h3 style="color: white; margin-top: 0;">CONDIVISIONE SOCIAL</h3>
-            <p style="color: #94a3b8; font-size: 18px;">
-               Pubblica le tue azioni migliori nella Hall of Fame e tagga i tuoi amici sui social.
-            </p>
-        </div>      
-    """, unsafe_allow_html=True)
-            
-    # --- STRISCIA DELLE STATISTICHE ---
-        st.markdown("""
-        <div class='stats-container'>
-            <div class='stat-item'>
-                <div class='stat-number'>500+</div>
-                <div class='stat-label'>Partite Registrate</div>
-            </div>
-            <div class='stat-item'>
-                <div class='stat-number'>2K+</div>
-                <div class='stat-label'>Clip Generate</div>
-            </div>
-            <div class='stat-item'>
-                <div class='stat-number'>150+</div>
-                <div class='stat-label'>Giocatori Attivi</div>
-            </div>
-            <div class='stat-item'>
-                <div class='stat-number'>4K</div>
-                <div class='stat-label'>Qualità Video</div>
-            </div>
-        </div>
+    st.markdown("""
+    <h2 style='text-align:center; font-size:38px; font-weight:900;'>COME FUNZIONA</h2>
+    <p style='text-align:center; color:#94a3b8; font-size:20px; margin-bottom:50px;'>
+        3 step. Zero sforzo.
+    </p>
     """, unsafe_allow_html=True)
 
-        
-        # --- SEZIONE NEWSLETTER UNIFICATA ---
-        with st.form("news_form", clear_on_submit=True):
-            # Titolo e Descrizione (Ora sono dentro la scatola!)
-            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 30px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
 
-            # RIGA CON EMAIL E BOTTONE
-            col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
-            
-            with col_mail:
-                email_input = st.text_input("La tua migliore Email", placeholder="la-tua@mail.com", label_visibility="collapsed").strip().lower()
-            
-            with col_btn:
-                submit_news = st.form_submit_button("ISCRIVITI")
+    with col1:
+        st.markdown("<div class='mcp-card'><h3>📹 REGISTRA</h3><p>Partite registrate automaticamente in 4K.</p></div>", unsafe_allow_html=True)
 
-            # Logica Supabase
-            if submit_news:
-                if "@" in email_input and "." in email_input:
-                    invio_ok = invia_conferma_e_salva(email_input)
-                    if invio_ok: st.success("✅ Benvenuto!")
-                else:
-                    st.error("❌ Email non valida.")
+    with col2:
+        st.markdown("<div class='mcp-card'><h3>✂️ TAGLIA</h3><p>Crea clip in pochi secondi.</p></div>", unsafe_allow_html=True)
 
+    with col3:
+        st.markdown("<div class='mcp-card'><h3>📲 CONDIVIDI</h3><p>Pubblica le tue azioni migliori.</p></div>", unsafe_allow_html=True)
 
-        # --- TASTO ACCEDI AL PORTALE (ORIGINALE) ---
-        _, col_center_login, _ = st.columns([1, 2, 1])
-        with col_center_login:
-            st.button("ACCEDI AL PORTALE", on_click=lambda: vai_a('login'), key="home_login_btn", use_container_width=True, type="primary")
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
+    st.markdown("<h2 style='text-align:center;'>GUARDA COME FUNZIONA</h2>", unsafe_allow_html=True)
 
-        # --- SEZIONE FINALE: CTA REGISTRAZIONE ---
-        st.markdown("""
-            <div class='cta-final-section'>
-                <h2>PRONTO A DIVENTARE <br><span class='highlight-green'>UN CAMPIONE?</span></h2>
-                <p style='font-size: 18px; !important; color: #94a3b8;'>
-                    Unisciti a centinaia di giocatori che già usano MyClipzo per migliorare le proprie 
-                    performance e condividere le loro migliori azioni.</p>
-                
-            </div>
-        """, unsafe_allow_html=True)
+    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
-        # Bottone Finale
-        _, col_cta_btn, _ = st.columns([1, 1.5, 1])
-        with col_cta_btn:
-            st.button("CREA IL TUO ACCOUNT GRATIS", on_click=lambda: vai_a('login'), key="home_reg_btn", use_container_width=True, type="primary")
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
+    st.markdown("<h2 style='text-align:center;'>PERCHÉ MYCLIPZO</h2>", unsafe_allow_html=True)
 
-           # --- FOOTER A TRE COLONNE (LINK GRIGI) ---
-        st.markdown("<br><hr style='border: 0.5px solid rgba(255,255,255,0.05);'><br>", unsafe_allow_html=True)
-        
-        f_col1, f_col2, f_col3, = st.columns(3)
-        with f_col1:
-    # Reinseriamo il logo MC stile Navbar
-            st.markdown("""
-        <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 15px;'>
-            <div class='mc-box' style='font-size: 20px; padding: 6px 10px;'>MC</div>
-            <b style='color: white; font-size: 24px;'>MyClipzo</b>
-        </div>
-        <p style='color: #94a3b8; font-size: 20px; line-height: 1.6;'>
-            La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.
-        </p>
-        """, unsafe_allow_html=True)
+    b1, b2, b3 = st.columns(3)
 
-        
-        with f_col2:
-            st.markdown("<h4 style='color: white; font-size: 24px;'>NAVIGAZIONE</h4>", unsafe_allow_html=True)
-            st.button("Home", on_click=lambda: vai_a('home'), key="f_home", type="secondary")
-            st.button("Partite", on_click=lambda: vai_a('partite'), key="f_part", type="secondary")
-        
-        with f_col3:
-            st.markdown("<h4 style='color: white; font-size: 24px;'>LEGALE</h4>", unsafe_allow_html=True)
-            st.button("Privacy Policy", on_click=lambda: vai_a('privacy'), key="f_priv", type="secondary")
-            st.button("Termini e Condizioni", on_click=lambda: vai_a('termini'), key="f_term", type="secondary")   
+    with b1:
+        st.markdown("⚡ **Zero sbatti**<br>Tutto automatico", unsafe_allow_html=True)
+
+    with b2:
+        st.markdown("🎯 **Precisione totale**<br>Clip perfette", unsafe_allow_html=True)
+
+    with b3:
+        st.markdown("🔥 **Effetto WOW**<br>Contenuti da pro", unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class='stats-container'>
+        <div class='stat-item'><div class='stat-number'>500+</div><div>Partite</div></div>
+        <div class='stat-item'><div class='stat-number'>2000+</div><div>Clip</div></div>
+        <div class='stat-item'><div class='stat-number'>150+</div><div>Giocatori</div></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    st.markdown("<h2 style='text-align:center;'>COSA DICONO GLI UTENTI</h2>", unsafe_allow_html=True)
+
+    t1, t2 = st.columns(2)
+
+    with t1:
+        st.markdown("<div class='mcp-card'>\"Finalmente posso rivedere i miei goal!\"<br><b>– Marco</b></div>", unsafe_allow_html=True)
+
+    with t2:
+        st.markdown("<div class='mcp-card'>\"Sembra di giocare in Serie A.\"<br><b>– Luca</b></div>", unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style='text-align:center;'>
+        <h2>PRONTO A FARE IL SALTO?</h2>
+        <p style='color:#94a3b8;'>Inizia ora gratuitamente.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    _, c_final, _ = st.columns([1,2,1])
+    with c_final:
+        st.button("🚀 CREA ACCOUNT GRATIS", use_container_width=True, type="primary")
+
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; color:#94a3b8;'>© 2026 MyClipzo</div>", unsafe_allow_html=True)
 
 
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
