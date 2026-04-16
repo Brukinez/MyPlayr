@@ -257,7 +257,7 @@ EMERGENT_CSS = """
         top: 0;
         left: 0;
         width: 100%;
-        height: 84px;
+        height: 42px;
        background-color: #38404a !important; /* Lo stesso scuro delle card */
         backdrop-filter: blur(10px);
         display: flex !important;           /* Mette logo e spazio in riga */
