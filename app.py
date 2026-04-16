@@ -166,7 +166,7 @@ EMERGENT_CSS = """
         align-items: center;
         border-top: 1px solid rgba(255, 255, 255, 0.05);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        margin: 50px 0;
+        margin: 80px 0;
     }
 
     .stat-item {
