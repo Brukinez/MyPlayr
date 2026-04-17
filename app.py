@@ -1,4 +1,6 @@
 import streamlit as st
+import config  
+from config import supabase
 import os
 import pandas as pd
 import numpy as np
