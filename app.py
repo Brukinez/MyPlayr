@@ -21,11 +21,11 @@ from supabase import create_client, Client
 
 # --- 1. CONFIGURAZIONE PAGINA ---
 # Questo deve essere SEMPRE il primo comando Streamlit del file
-st.set_page_config(
-    page_title="MyClipzo - Video Analysis Pro", 
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="MyClipzo", layout="wide") # Questa deve essere la prima
+
+import config
+config.apply_style() # Questa attiva la grafica
+
 
 
 
