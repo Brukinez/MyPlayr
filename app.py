@@ -28,7 +28,8 @@ st.set_page_config(
 
 
 # --- BLOCCO 2: STILE E CSS ---
-st.markdown(EMERGENT_CSS, unsafe_allow_html=True)
+config.apply_style()
+
 
 
  
