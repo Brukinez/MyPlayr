@@ -593,6 +593,8 @@ EMERGENT_CSS = """
     color: #94a3b8;
     margin: 0;
 }
+
+body { background-color: red !important; }
 </style>
 """
 
