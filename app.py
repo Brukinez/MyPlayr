@@ -524,6 +524,23 @@ EMERGENT_CSS = """
         box-shadow: none !important;
     }
 
+    .stat-card {
+    background: rgba(255,255,255,0.03);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-card h1 {
+    color: white;
+    margin: 5px 0;
+}
+
+.stat-card p {
+    color: #94a3b8;
+    margin: 0;
+}
 </style>
 """
 
@@ -1487,7 +1504,83 @@ elif st.session_state.pagina == 'admin':
 
         st.divider()
 
-        
+
+# --- BLOCCO DASHBOARD UTENTE ---
+elif st.session_state.pagina == 'home_auth':
+
+    st.markdown(f"""
+        <h1 style='font-size: 50px; font-weight: 900;'>
+            👋 Benvenuto, <span style='color:#2ecc71;'>{st.session_state.user_nick}</span>
+        </h1>
+        <p style='color:#94a3b8; font-size:18px;'>
+            Ecco cosa sta succedendo nel tuo mondo MyClipzo oggi.
+        </p>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.markdown("""
+            <div class='stat-card'>
+                <h2>🎞️</h2>
+                <h1>12</h1>
+                <p>Le tue Clip</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        st.markdown("""
+            <div class='stat-card'>
+                <h2>⚽</h2>
+                <h1>8</h1>
+                <p>Partite giocate</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col3:
+        st.markdown("""
+            <div class='stat-card'>
+                <h2>🔥</h2>
+                <h1>24</h1>
+                <p>Azioni salvate</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+    with col4:
+        st.markdown("""
+            <div class='stat-card'>
+                <h2>🏆</h2>
+                <h1>#15</h1>
+                <p>Rank</p>
+            </div>
+        """, unsafe_allow_html=True)   
+    st.markdown("<br><h2>🏟️ Ultime Partite</h2>", unsafe_allow_html=True)
+
+    col_v1, col_v2 = st.columns(2)
+
+    with col_v1:
+        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+    with col_v2:
+        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.button("🎥 Guarda Partite", use_container_width=True,
+                  on_click=lambda: vai_a('partite'))
+
+    with c2:
+        st.button("✂️ Le Mie Clip", use_container_width=True,
+                  on_click=lambda: vai_a('mie_clip'))
+
+    with c3:
+        st.button("👤 Profilo", use_container_width=True,
+                  on_click=lambda: vai_a('profilo'))
+
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h1 style='text-align: center;'>Area Personale<br><span style='color: #2ecc71;'>MyClipzo</span></h2>", unsafe_allow_html=True)
