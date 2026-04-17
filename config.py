@@ -100,7 +100,9 @@ EMERGENT_CSS = """
 """
 
 def apply_style():
-    st.markdown(EMERGENT_CSS, unsafe_allow_html=True) # <--- DEVE ESSERE RIENTRATA COSI!
+    st.write("### 🟢 IL COLLEGAMENTO CON CONFIG.PY FUNZIONA!")
+    st.markdown("<style>body { background-color: red !important; }</style>", unsafe_allow_html=True)
+
 
 
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
