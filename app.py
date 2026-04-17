@@ -23,8 +23,7 @@ from supabase import create_client, Client
 # Questo deve essere SEMPRE il primo comando Streamlit del file
 st.set_page_config(page_title="MyClipzo", layout="wide") # Questa deve essere la prima
 
-import config
-config.apply_style() # Questa attiva la grafica
+
 
 
 
