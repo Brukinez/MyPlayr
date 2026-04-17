@@ -1579,7 +1579,7 @@ elif st.session_state.pagina == 'home_auth':
     col_v1, col_v2 = st.columns(2)
 
     with col_v1:
-        st.video("https://drive.google.com/file/d/1j_SUAkIMUK-7Fq2NeaJRKRUJHkhgKw5O/preview")
+        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
     with col_v2:
         st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
