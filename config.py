@@ -89,8 +89,7 @@ if not os.path.exists(CLIP_GDRIVE):
 
 # BLOCCO 7 --- STILE GLOBALE (EMERGENT STYLE) ---
 # Definiamo il CSS in cima al file, poi lo applichiamo subito dopo set_page_config.
-EMERGENT_CSS = """
-<style>
+EMERGENT_CSS = """<style>
     /* 1. LO SFONDO */
     .stApp {
         background-color: #252b32 !important; 
@@ -595,8 +594,7 @@ EMERGENT_CSS = """
 }
 
 body { background-color: red !important; }
-</style>
-"""
+</style>"""
 
 # --- 2. HTML DELLA NAVBAR (LOGO E NOME) ---
 st.markdown("""
