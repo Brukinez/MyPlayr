@@ -541,6 +541,24 @@ EMERGENT_CSS = """
     color: #94a3b8;
     margin: 0;
 }
+
+.stat-card {
+    background: rgba(255,255,255,0.03);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-card h1 {
+    color: white;
+    margin: 5px 0;
+}
+
+.stat-card p {
+    color: #94a3b8;
+    margin: 0;
+}
 </style>
 """
 
@@ -1568,7 +1586,13 @@ elif st.session_state.pagina == 'home_auth':
     st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
+    st.markdown("<br><h2>🔥 Le Tue Migliori Clip</h2>", unsafe_allow_html=True)
 
+    col_c1, col_c2, col_c3 = st.columns(3)
+
+    for col in [col_c1, col_c2, col_c3]:
+        with col:
+            st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     with c1:
         st.button("🎥 Guarda Partite", use_container_width=True,
                   on_click=lambda: vai_a('partite'))
@@ -1581,6 +1605,22 @@ elif st.session_state.pagina == 'home_auth':
         st.button("👤 Profilo", use_container_width=True,
                   on_click=lambda: vai_a('profilo'))
 
+    st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.button("🎥 Guarda Partite", use_container_width=True,
+                  on_click=lambda: vai_a('partite'))
+
+    with c2:
+        st.button("✂️ Le Mie Clip", use_container_width=True,
+                  on_click=lambda: vai_a('mie_clip'))
+
+    with c3:
+        st.button("👤 Profilo", use_container_width=True,
+                  on_click=lambda: vai_a('profilo'))
+        
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
     st.markdown("<h1 style='text-align: center;'>Area Personale<br><span style='color: #2ecc71;'>MyClipzo</span></h2>", unsafe_allow_html=True)
