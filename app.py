@@ -1581,9 +1581,7 @@ elif st.session_state.pagina == 'home_auth':
     with col_v1:
         st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
-    with col_v2:
-        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
+    
 
     c1, c2, c3 = st.columns(3)
     st.markdown("<br><h2>🔥 Le Tue Migliori Clip</h2>", unsafe_allow_html=True)
