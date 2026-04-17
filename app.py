@@ -1,19 +1,28 @@
 import streamlit as st
-import config
-import importlib
-importlib.reload(config) # <--- Questa riga forza Streamlit a leggere le modifiche di config.py
-from config import supabase
 import os
+import sys
 import pandas as pd
 import numpy as np
 import smtplib
-import subprocess # Fondamentale per far lavorare FFmpeg e tagliare i video
+import subprocess
 from datetime import datetime
 from PIL import Image
 from email.mime.text import MIMEText
 import re
 from urllib.parse import urlparse, parse_qs
-from supabase import create_client, Client
+from supabase import create_client, Client # <--- RIPRISTINATO
+
+# --- AGGIUNTA CHIRURGICA PER IL TRASLOCO ---
+sys.path.append(os.path.dirname(__file__))
+
+try:
+    import config
+    import importlib
+    importlib.reload(config)
+    from config import supabase
+except Exception as e:
+    st.error(f"❌ Errore nel caricamento di config.py: {e}")
+# -------------------------------------------
 
 
 
