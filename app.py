@@ -1581,7 +1581,9 @@ elif st.session_state.pagina == 'home_auth':
     with col_v1:
         st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
 
-    
+    with col_v2:
+        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns(3)
     st.markdown("<br><h2>🔥 Le Tue Migliori Clip</h2>", unsafe_allow_html=True)
@@ -1603,21 +1605,7 @@ elif st.session_state.pagina == 'home_auth':
         st.button("👤 Profilo", use_container_width=True,
                   on_click=lambda: vai_a('profilo'))
 
-    st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
-
-    c1, c2, c3 = st.columns(3)
-
-    with c1:
-        st.button("🎥 Guarda Partite", use_container_width=True,
-                  on_click=lambda: vai_a('partite'))
-
-    with c2:
-        st.button("✂️ Le Mie Clip", use_container_width=True,
-                  on_click=lambda: vai_a('mie_clip'))
-
-    with c3:
-        st.button("👤 Profilo", use_container_width=True,
-                  on_click=lambda: vai_a('profilo'))
+  
         
 # --- BLOCCO PROFILO: VERSIONE INTEGRALE E CORRETTA ---
 elif st.session_state.pagina == 'profilo':
