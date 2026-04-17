@@ -1,5 +1,7 @@
 import streamlit as st
-import config  
+import config
+import importlib
+importlib.reload(config) # <--- Questa riga forza Streamlit a leggere le modifiche di config.py
 from config import supabase
 import os
 import pandas as pd
