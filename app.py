@@ -1593,10 +1593,8 @@ elif st.session_state.pagina == 'home_auth':
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        s_cols = st.columns(6)
-    st.markdown(f'<div style="text-align:center; background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)     
         
-    st.metric("🎞️ Clip", num_clip)
+        st.metric("🎞️ Clip", num_clip)
 
     with col2:
         st.metric("⚽ Partite", num_partite)
@@ -1886,6 +1884,7 @@ elif st.session_state.pagina == 'mie_clip':
 # --- PAGINA PRIVACY POLICY ---
 elif st.session_state.pagina == 'privacy':
     st.markdown("<h1 style='text-align: center; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
+
     # Incolla il tuo testo tra le triple virgolette
     testo_privacy = """ 
         
