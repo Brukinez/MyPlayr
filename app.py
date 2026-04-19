@@ -1041,11 +1041,12 @@ if st.session_state.pagina == 'home':
     """, unsafe_allow_html=True)
 
         
-        # --- SEZIONE NEWSLETTER UNIFICATA ---
-        with st.form("news_form", clear_on_submit=True):
-            # Titolo e Descrizione (Ora sono dentro la scatola!)
-            st.markdown("<h2 style='color: white; font-weight: 900; font-size: 30px; margin-bottom: 5px; text-align: center;'>RESTA AGGIORNATO</h2>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #94a3b8; font-size: 18px; margin-bottom: 35px; text-align: center;'>Iscriviti alla newsletter per ricevere novità, offerte e aggiornamenti sul mondo MyClipzo</p>", unsafe_allow_html=True)
+          # --- NEWSLETTER (LIGHT) ---
+    st.markdown("<br>", unsafe_allow_html=True)
+    with st.form("newsletter"):
+        email = st.text_input("Email", placeholder="la-tua@mail.com")
+        if st.form_submit_button("ISCRIVITI"):
+            st.success("Iscritto!")
 
             # RIGA CON EMAIL E BOTTONE
             col_mail, col_btn = st.columns([3, 1]) # 3 parti all'email, 1 al bottone
