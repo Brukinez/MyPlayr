@@ -876,14 +876,14 @@ if st.session_state.autenticato:
     
     # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
     with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True, type="primary")
-    with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
-    with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
-    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
-    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True)
-    with col_nav[5]: st.button("Premium", on_click=lambda: vai_a('premiun'), use_container_width=True)
+    with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True, type="primary")
+    with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True, type="primary")
+    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True, type="primary")
+    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True, type="primary")
+    with col_nav[5]: st.button("Premium", on_click=lambda: vai_a('premiun'), use_container_width=True, type="primary")
     # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
-        with col_nav[5]: st.button("Admin", on_click=lambda: vai_a('admin'), use_container_width=True)
+        with col_nav[5]: st.button("Admin", on_click=lambda: vai_a('admin'), use_container_width=True, type="primary")
     
     # 4. TASTO LOGOUT (Sempre nell'ultima colonna a destra)
     with col_nav[-1]: 
