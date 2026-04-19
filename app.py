@@ -627,10 +627,10 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
     ]
 
     try:
-        # 1. Esecuzione Taglio
+        # 1. Esecuzione Taglio (FFmpeg)
         subprocess.run(comando, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
-        # 2. Upload su Google Drive con Rclone (Cartella specifica per le clip)
+        # 2. Upload su Google Drive con Rclone
         print(f"Caricamento clip {nome_output} su Drive...")
         subprocess.run([RCLONE_EXE, "copy", output_p, "remote:CLIP_MYPLAYR/CLIP_UTENTI"], check=True)
 
@@ -639,26 +639,37 @@ def taglia_e_registra_clip(video_nome, inizio_sec, durata_sec, utente_email):
                              capture_output=True, text=True, check=True)
         link_grezzo = res.stdout.strip()
         
-        # 4. Pulizia Link (Formato /preview per lo streaming)
-        video_id = estrai_id_video(link_grezzo) # Usiamo la funzione che hai già nel regista
-        link_embed = f"https://google.com{video_id}/preview"
+        # 4. Pulizia Link (FORMATO CORRETTO PER IL PLAYER)
+        video_id = estrai_id_video(link_grezzo) 
+        # FIX: Corretto l'URL aggiungendo '://google.com'
+        link_embed = f"https://://google.com{video_id}/preview"
 
-        # 5. SALVATAGGIO SU SUPABASE (Adesso con l'URL!)
+        # 5. SINCRONIZZAZIONE TABELLE SUPABASE
+        # A. Aggiorniamo la tabella 'comandi_clip' (Quella che vedi nello screenshot)
+        # Cambiamo lo stato in COMPLETATO così l'app mostra il video
+        supabase.table("comandi_clip").update({
+            "url_video": link_embed,
+            "stato": "COMPLETATO"
+        }).eq("email_utente", utente_email).eq("stato", "RICHIESTO").execute()
+        
+        # B. Salviamo anche nello storico 'clip_generate' (Come facevi prima)
         supabase.table("clip_generate").insert({
             "email_utente": utente_email,
             "nome_file": nome_output,
-            "url_video": link_embed, # <--- QUESTA È LA CHIAVE MANCANTE!
+            "url_video": link_embed,
             "data_creazione": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }).execute()
         
-        # Rimuoviamo il file locale per non occupare spazio
+        # Rimuoviamo il file locale temporaneo
         if os.path.exists(output_p): os.remove(output_p)
         
-        print("✅ Clip caricata e sincronizzata!")
+        print(f"✅ Clip {nome_output} caricata, linkata e sincronizzata su Supabase!")
         return link_embed
+
     except Exception as e:
-        print(f"Errore durante il taglio/upload clip: {e}")
+        print(f"❌ Errore durante il taglio/upload clip: {e}")
         return None
+
 
 
 # --- FUNZIONE NEWSLETTER E CONFERMA EMAIL ---
