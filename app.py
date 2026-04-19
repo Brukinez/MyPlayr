@@ -77,13 +77,7 @@ EMERGENT_CSS = """
         height: 54px !important;
     }
 
-    /* EFFETTO AL PASSAGGIO DEL MOUSE */
-    button[key="home_login_btn"]:hover, 
-    button[key="home_reg_btn"]:hover {
-        background-color: #24e170 !important;
-        color: white !important;
-        box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
-    }
+
 
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
@@ -1174,7 +1168,7 @@ elif st.session_state.pagina == 'login':
             # Opzioni secondarie
             col_l1, col_l2 = st.columns(2)
             with col_l1:
-                if st.button("Password dimenticata?", type="primary", use_container_width=True): 
+                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
                     st.session_state.sub = 'recupero'
                     st.rerun()
             with col_l2:
