@@ -1141,7 +1141,7 @@ elif st.session_state.pagina == 'login':
             u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
             p_login = st.text_input("Password", type="password", placeholder="******")
             
-            if st.button("ENTRA", use_container_width=True):
+            if st.button("ENTRA", use_container_width=True, type="primary"):
                 if u_login and p_login:
                     try:
                         # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
