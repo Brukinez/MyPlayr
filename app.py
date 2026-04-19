@@ -2,17 +2,13 @@ import streamlit as st
 import os
 import pandas as pd
 def make_direct_link(link):
-    if not link:
-        return None
-
-    if "drive.google.com" in link:
-        if "/view" in link:
-            return link.replace("/view", "/preview")
-        if "open?id=" in link:
-            file_id = link.split("id=")[-1]
+    try:
+        if "drive.google.com" in link:
+            file_id = link.split("/d/")[1].split("/")[0]
             return f"https://drive.google.com/file/d/{file_id}/preview"
-
-    return link
+        return link
+    except:
+        return None
 import numpy as np
 import smtplib
 import subprocess # Fondamentale per far lavorare FFmpeg e tagliare i video
@@ -1615,7 +1611,7 @@ elif st.session_state.pagina == 'home_auth':
     try:
         res_matches = supabase.table("calendario")\
             .select("*")\
-            .eq("stato", "FATTO")\
+            .eq("stato", "COMPLETATO")\
             .order("id", desc=True)\
             .limit(2)\
             .execute()
