@@ -2,8 +2,16 @@ import streamlit as st
 import os
 import pandas as pd
 def make_direct_link(link):
-    if link and "drive.google.com" in link:
-        return link.replace("/view", "/preview")
+    if not link:
+        return None
+
+    if "drive.google.com" in link:
+        if "/view" in link:
+            return link.replace("/view", "/preview")
+        if "open?id=" in link:
+            file_id = link.split("id=")[-1]
+            return f"https://drive.google.com/file/d/{file_id}/preview"
+
     return link
 import numpy as np
 import smtplib
