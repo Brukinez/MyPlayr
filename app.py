@@ -1565,7 +1565,7 @@ elif st.session_state.pagina == 'home_auth':
         st.markdown("""
              <div class="mcp-card">
                     <!-- Ecco la nuova scatola dell'icona -->
-                    <div class="icon-box">
+                    
             <div class='stat-card'>
                 <h2>🎞️</h2>
                 <h1>12</h1>
