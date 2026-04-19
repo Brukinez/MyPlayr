@@ -1588,8 +1588,7 @@ elif st.session_state.pagina == 'home_auth':
         st.markdown("""
              <div class="mcp-card">
                     <!-- Ecco la nuova scatola dell'icona -->
-                  <div class='stat-card'>
-                 st.metric("🎞️ Clip", num_clip)
+                   st.metric("🎞️ Clip", num_clip)
             </div>
         """, unsafe_allow_html=True)
 
