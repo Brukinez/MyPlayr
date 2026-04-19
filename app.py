@@ -1119,154 +1119,69 @@ if st.session_state.pagina == 'home':
 # --- BLOCCO: PAGINA LOGIN / REGISTRAZIONE / RECUPERO ---
 
 elif st.session_state.pagina == 'login':
-
-    _, col, _ = st.columns([1, 2, 1])
-
-    with col:
-
-        if 'sub' not in st.session_state:
+    # Centriamo il modulo di accesso con le colonne
+    _, col_log, _ = st.columns([1, 2, 1])
+    
+    with col_log:
+        # Inizializzazione dello stato interno per navigare tra Login e Registrazione
+        if 'sub' not in st.session_state: 
             st.session_state.sub = 'login'
 
-        # --- LOGO ---
-        st.markdown("""
-        <div style='text-align:center; margin-bottom:30px;'>
-            <div class='mc-box'>MC</div>
-            <h1 style='margin-bottom:0;'>MyClipzo</h1>
-            <p style='color:#94a3b8;'>Accedi alla tua area</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # =========================
-        # LOGIN
-        # =========================
+        # --- 1. SOTTO-PAGINA: ACCEDI ---
         if st.session_state.sub == 'login':
-
-            st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
-
-            email = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
-            password = st.text_input("Password", type="password", placeholder="******")
-
-            if st.button("ACCEDI", use_container_width=True, type="primary"):
-                if email and password:
+            # Logo e Titolo come nello screenshot
+            st.markdown("""
+                <div style='text-align: center; margin-bottom: 20px;'>
+                    <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
+                    <h1 style='font-weight: 900; margin-bottom: 0; color: white;'>ACCEDI A MYCLIPZO</h1>             
+                </div>
+            """, unsafe_allow_html=True)
+            
+            # Input utente
+            u_login = st.text_input("Email", placeholder="la-tua@email.com").strip().lower()
+            p_login = st.text_input("Password", type="password", placeholder="******")
+            
+            if st.button("ENTRA", use_container_width=True):
+                if u_login and p_login:
                     try:
-                        res = supabase.table("utenti")\
-                            .select("*")\
-                            .eq("email", email)\
-                            .eq("password", password)\
-                            .execute()
-
-                        if res.data:
-                            utente = res.data[0]
-
+                        # Cerchiamo l'utente su Supabase che corrisponde a Email E Password
+                        res_log = supabase.table("utenti").select("*").eq("email", u_login).eq("password", p_login).execute()
+                        
+                        if res_log.data:
+                            # UTENTE TROVATO: Salviamo i dati nella sessione
+                            utente = res_log.data[0]
                             st.session_state.autenticato = True
                             st.session_state.user_email = utente['email']
                             st.session_state.user_role = utente.get('ruolo', 'Player')
                             st.session_state.user_nick = utente.get('nome', 'Campione')
-
-                            st.success(f"Benvenuto {st.session_state.user_nick}")
-
+                            
+                            st.success(f"Bentornato {st.session_state.user_nick}!")
+                            
+                            # Controllo automatico: se sei admin vai in dashboard, altrimenti in home_auth
                             if st.session_state.user_role == "admin":
                                 vai_a('admin')
                             else:
                                 vai_a('home_auth')
-
+                                
                             st.rerun()
                         else:
-                            st.error("Email o password errati")
-
+                            st.error("❌ Credenziali errate o account inesistente.")
                     except Exception as e:
-                        st.error(f"Errore: {e}")
+                        st.error(f"⚠️ Errore di connessione: {e}")
                 else:
-                    st.warning("Inserisci email e password")
+                    st.warning("Compila tutti i campi!")
 
-            st.markdown("</div>", unsafe_allow_html=True)
-
-            # --- LINK SOTTO ---
-            c1, c2 = st.columns(2)
-
-            with c1:
-                if st.button("Password dimenticata?", use_container_width=True):
+            # Opzioni secondarie
+            col_l1, col_l2 = st.columns(2)
+            with col_l1:
+                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
                     st.session_state.sub = 'recupero'
                     st.rerun()
-
-            with c2:
-                if st.button("Registrati", use_container_width=True):
+            with col_l2:
+                if st.button("Registrati ora", type="secondary", use_container_width=True):
                     st.session_state.sub = 'reg'
                     st.rerun()
-
-
-        # =========================
-        # REGISTRAZIONE PRO
-        # =========================
-        elif st.session_state.sub == 'reg':
-
-            st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
-
-            st.markdown("<h2 style='text-align:center;'>Crea il tuo account</h2>", unsafe_allow_html=True)
-
-            c1, c2 = st.columns(2)
-
-            with c1:
-                nome = st.text_input("Nome")
-            with c2:
-                cognome = st.text_input("Cognome")
-
-            email = st.text_input("Email").strip().lower()
-            password = st.text_input("Password", type="password")
-
-            if st.button("CREA ACCOUNT", use_container_width=True, type="primary"):
-
-                if nome and cognome and email and password:
-                    try:
-                        supabase.table("utenti").insert({
-                            "nome": nome,
-                            "cognome": cognome,
-                            "email": email,
-                            "password": password,
-                            "ruolo": "Player"
-                        }).execute()
-
-                        st.success("Account creato! Ora accedi.")
-                        st.session_state.sub = 'login'
-                        st.rerun()
-
-                    except:
-                        st.error("Email già registrata")
-
-                else:
-                    st.warning("Compila tutti i campi")
-
-            st.markdown("<hr>", unsafe_allow_html=True)
-
-            if st.button("Hai già un account? ACCEDI", use_container_width=True):
-                st.session_state.sub = 'login'
-                st.rerun()
-
-            st.markdown("</div>", unsafe_allow_html=True)
-
-
-        # =========================
-        # RECUPERO PASSWORD
-        # =========================
-        elif st.session_state.sub == 'recupero':
-
-            st.markdown("<div class='mcp-card'>", unsafe_allow_html=True)
-
-            st.markdown("<h2 style='text-align:center;'>Recupera password</h2>", unsafe_allow_html=True)
-
-            email = st.text_input("Email")
-
-            if st.button("INVIA", use_container_width=True):
-                if email:
-                    st.info("Ti invieremo istruzioni via email (in sviluppo)")
-                else:
-                    st.warning("Inserisci email")
-
-            if st.button("TORNA AL LOGIN", use_container_width=True):
-                st.session_state.sub = 'login'
-                st.rerun()
-
-            st.markdown("</div>", unsafe_allow_html=True)
+            
             
           # --- 2. SOTTO-PAGINA: REGISTRAZIONE (STILE MYPLAYR + LOGICA SUPABASE) ---
         elif st.session_state.sub == 'reg':
