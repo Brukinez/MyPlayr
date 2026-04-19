@@ -1241,10 +1241,10 @@ elif st.session_state.pagina == 'login':
 
         # --- 3. SOTTO-PAGINA: RECUPERO PASSWORD ---
         elif st.session_state.sub == 'recupero':
-            st.markdown("<h2 style='text-align: center;'>Recupero Credenziali</h2>", unsafe_allow_html=True,type="primary")
+            st.markdown("<h2 style='text-align: center;'>Recupero Credenziali</h2>", unsafe_allow_html=True)
             m_rec = st.text_input("La tua Email di registrazione").strip().lower()
             
-            if st.button("INVIA ISTRUZIONI", use_container_width=True):
+            if st.button("INVIA ISTRUZIONI", use_container_width=True,type="primary"):
                 if m_rec:
                     st.info(f"Se l'account esiste, riceverai una mail a {m_rec} (Funzione in test)")
                 else:
