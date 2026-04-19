@@ -1585,40 +1585,18 @@ elif st.session_state.pagina == 'home_auth':
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
+        
         st.metric("🎞️ Clip", num_clip)
 
     with col2:
-        st.markdown("""
-                 <div class="mcp-card">
-                    <!-- Ecco la nuova scatola dell'icona -->
-                    <div class='stat-card'>
-                <h2>⚽</h2>
-                <h1>8</h1>
-                <p>Partite giocate</p>
-            </div>
-        """, unsafe_allow_html=True)
+        st.metric("⚽ Partite", num_partite)
 
     with col3:
-        st.markdown("""
-                 <div class="mcp-card">
-                    <!-- Ecco la nuova scatola dell'icona -->
-                    <div class='stat-card'>
-                <h2>🔥</h2>
-                <h1>24</h1>
-                <p>Azioni salvate</p>
-            </div>
-        """, unsafe_allow_html=True)
+        st.metric("🔥 Azioni", num_clip * 2)
 
     with col4:
-        st.markdown("""
-                 <div class="mcp-card">
-                    <!-- Ecco la nuova scatola dell'icona -->
-                    <div class='stat-card'>
-                <h2>🏆</h2>
-                <h1>#15</h1>
-                <p>Rank</p>
-            </div>
-        """, unsafe_allow_html=True)   
+        st.metric("🏆 Rank", "#--")
+      
         
     st.markdown("<br><h2>🏟️ Ultime Partite</h2>", unsafe_allow_html=True)
 
