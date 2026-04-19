@@ -1639,7 +1639,7 @@ elif st.session_state.pagina == 'home_auth':
         st.error(f"Errore caricamento partite: {e}")
 
     c1, c2, c3 = st.columns(3)
-    st.markdown("<br><h2>🔥 Le Tue Migliori Clip</h2>", unsafe_allow_html=True)
+    st.markdown("<br><h2>Le Tue Migliori Clip</h2>", unsafe_allow_html=True)
 
     col_c1, col_c2, col_c3 = st.columns(3)
 
@@ -1647,11 +1647,11 @@ elif st.session_state.pagina == 'home_auth':
         with col:
             st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
     with c1:
-        st.button("🎥 Guarda Partite", use_container_width=True,
+        st.button("Guarda Partite", use_container_width=True,
                   on_click=lambda: vai_a('partite'))
 
     with c2:
-        st.button("✂️ Le Mie Clip", use_container_width=True,
+        st.button("Le Mie Clip", use_container_width=True,
                   on_click=lambda: vai_a('mie_clip'))
 
     with c3:
