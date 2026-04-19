@@ -901,32 +901,41 @@ if st.session_state.autenticato:
 # --- BLOCCO: PAGINA HOME (PUBBLICA - SUPABASE READY) ---
 
 if st.session_state.pagina == 'home':
-    # Centriamo tutto con delle colonne, mettendo il contenuto in quella centrale
-    _, col_centro, _ = st.columns([1, 4, 1])
-    
-    with col_centro:
-        # Questo è il piccolo badge che abbiamo appena creato
-        st.markdown("<div style='text-align: center;'><span class='hero-badge'>✦ La rivoluzione dello sport amatoriale</span></div>", unsafe_allow_html=True)
-        
-        # Sotto il badge mettiamo il titolo grande (lo sistemeremo meglio dopo)
-        st.markdown("<h1 style='text-align: center; font-size: 80px; font-weight: 900; line-height: 1;'>GIOCA. RIVEDITI.<br><span style='color: #2ecc71;'>CONDIVIDI.</span></h1>", unsafe_allow_html=True)
-                # --- DESCRIZIONE CENTRATA ---
+
+    _, col, _ = st.columns([1, 4, 1])
+
+    with col:
+
+        # --- HERO ---
         st.markdown("""
-            <div style='text-align: center; width: 100%;'>
-                <p style='
-                    color: #94a3b8; 
-                    font-family: "Inter", sans-serif; 
-                    font-size: 22px; 
-                    line-height: 1.6; 
-                    max-width: 600px; 
-                    margin: 24px auto 40px auto;
-                '>
-                    Ogni partita merita di essere ricordata! MyClipzo <br>
-                    registra automaticamente le tue azioni e ti <br>
-                    permette di creare highlight professionali.
-                </p>
-            </div>
+        <div style='text-align:center; margin-top:40px;'>
+
+            <span class='hero-badge'>🚀 Il VAR dello sport amatoriale</span>
+
+            <h1 style='font-size:72px; font-weight:900; line-height:1.1; margin-top:20px;'>
+                GIOCA.<br>
+                RIVEDI.<br>
+                <span style='color:#2ecc71;'>DIVENTA PRO.</span>
+            </h1>
+
+            <p style='color:#94a3b8; font-size:22px; max-width:650px; margin:25px auto;'>
+                MyClipzo registra automaticamente le tue partite, 
+                taglia le azioni migliori e le trasforma in highlight pronti per essere condivisi.
+            </p>
+
+        </div>
         """, unsafe_allow_html=True)
+
+        # --- CTA HERO ---
+        c1, c2 = st.columns(2)
+
+        with c1:
+            st.button("🚀 INIZIA GRATIS", use_container_width=True, type="primary")
+
+        with c2:
+            st.button("🎥 GUARDA DEMO", use_container_width=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
 
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
