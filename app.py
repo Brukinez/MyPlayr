@@ -1567,7 +1567,7 @@ elif st.session_state.pagina == 'home_auth':
             <div class='stat-card'>
                 <h2>🎞️</h2>
                 <h1>12</h1>
-                 st.metric("🎞️ Clip", num_clip)
+                <p> st.metric("🎞️ Clip", num_clip)</p>
             </div>
         """, unsafe_allow_html=True)
 
