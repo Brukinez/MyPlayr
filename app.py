@@ -1994,7 +1994,7 @@ if st.session_state.pagina == 'hall_of_fame':
 
 # --- TASTO DI RITORNO SICURO ---
 if st.session_state.pagina not in ['home', 'home_auth']:
-    if st.button("🔙 Torna alla Home", key="btn_ritorno_universale"):
+    if st.button("← Torna alla Home", key="btn_ritorno_universale"):
         # RESETTA IL SOTTOMENU: Questa è la riga fondamentale!
         st.session_state.sub = 'login' 
         
