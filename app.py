@@ -1565,7 +1565,11 @@ elif st.session_state.pagina == 'home_auth':
             st.markdown("""
                 <div class="mcp-card">
                     <!-- Ecco la nuova scatola dell'icona -->
-                   
+                      <div class='stat-card'>
+                <h2>⚽</h2>
+                <h1>8</h1>
+                <p>Partite giocate</p>
+            </div>
                     <h3 style="color: white; margin-top: 0;">le tue clip</h3>
               
             """, unsafe_allow_html=True)
