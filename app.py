@@ -1001,6 +1001,18 @@ if st.session_state.pagina == 'home':
         </div>      
     """, unsafe_allow_html=True)
             
+        # --- CTA HERO ---
+        c1, c2 = st.columns(2)
+
+        with c1:
+            st.button("🚀 INIZIA GRATIS", use_container_width=True, type="primary")
+
+        with c2:
+            st.button("🎥 GUARDA DEMO", use_container_width=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+           
+            
     # --- STRISCIA DELLE STATISTICHE ---
         st.markdown("""
         <div class='stats-container'>
