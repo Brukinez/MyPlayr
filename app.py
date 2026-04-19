@@ -1585,7 +1585,13 @@ elif st.session_state.pagina == 'home_auth':
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-         st.metric("🎞️ Clip", num_clip)
+        st.markdown("""
+             <div class="mcp-card">
+                    <!-- Ecco la nuova scatola dell'icona -->
+                  <div class='stat-card'>
+                 st.metric("🎞️ Clip", num_clip)
+            </div>
+        """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
