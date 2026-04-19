@@ -929,7 +929,6 @@ if st.session_state.pagina == 'home':
         """, unsafe_allow_html=True)
 
 
-
     # Visualizziamo i contenuti solo se l'utente non è loggato
     if not st.session_state.autenticato:
        
@@ -946,7 +945,8 @@ if st.session_state.pagina == 'home':
     </div>
 """, unsafe_allow_html=True)
 
-
+                # Creiamo tre colonne per mettere le schede una di fianco all'altra
+        col1, col2, col3 = st.columns(3)
 
                 # Esempio per la Colonna 1 (fai lo stesso per le altre)
         with col1:
@@ -1000,8 +1000,7 @@ if st.session_state.pagina == 'home':
             </p>
         </div>      
     """, unsafe_allow_html=True)
-            
-           
+    
             
     # --- STRISCIA DELLE STATISTICHE ---
         st.markdown("""
