@@ -1565,7 +1565,9 @@ elif st.session_state.pagina == 'home_auth':
         st.markdown("""
              <div class="mcp-card">
                     <!-- Ecco la nuova scatola dell'icona -->
-                    
+        <svg xmlns="http://w3.org" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"></path><rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect></svg>
+                    </div>
+                    <h3 style="color: white; margin-top: 0;">REGISTRAZIONE AUTOMATICA</h3>            
             <div class='stat-card'>
                 <h2>🎞️</h2>
                 <h1>12</h1>
