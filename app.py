@@ -412,7 +412,30 @@ EMERGENT_CSS = """
         justify-content: flex-start !important;
     }
 
+    /* Effetto quando passi il mouse: la scritta si illumina senza far apparire riquadri */
+    button[key^="f_"]:hover {
+        color: white !important;
+        background: none !important;
+        background-color: transparent !important;
+    }
 
+    .stat-card {
+    background: rgba(255,255,255,0.03);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.stat-card h1 {
+    color: white;
+    margin: 5px 0;
+}
+
+.stat-card p {
+    color: #94a3b8;
+    margin: 0;
+}
 
     /* --- OTTIMIZZAZIONE PER SMARTPHONE E TABLET --- */
     @media (max-width: 768px) {
