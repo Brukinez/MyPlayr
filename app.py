@@ -1594,7 +1594,9 @@ elif st.session_state.pagina == 'home_auth':
 
     with col1:
         s_cols = st.columns(6)
-        st.metric("🎞️ Clip", num_clip)
+    st.markdown(f'<div style="text-align:center; background:#3E444A; font-size:25px; padding:20px; border-radius:10px; border:1px solid #28a745;">{ico}<br><small>{tit}</small><br><b>{val}</b></div>', unsafe_allow_html=True)     
+        
+    st.metric("🎞️ Clip", num_clip)
 
     with col2:
         st.metric("⚽ Partite", num_partite)
