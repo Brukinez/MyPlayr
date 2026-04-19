@@ -1231,7 +1231,7 @@ elif st.session_state.pagina == 'login':
             # Navigazione interna alla card
             st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'><p style='text-align: center; color: #94a3b8; font-size: 14px;'>Hai già un account?</p>", unsafe_allow_html=True)
             
-            if st.button("ACCEDI", use_container_width=True, key="btn_back_to_log"): 
+            if st.button("ACCEDI", use_container_width=True,type="primary", key="btn_back_to_log"): 
                 st.session_state.sub = 'login'
                 st.rerun()
             
