@@ -939,13 +939,7 @@ if st.session_state.pagina == 'home':
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-  # --- DEMO / VIDEO ---
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    st.markdown("""
-    <h2 style='text-align:center;'>GUARDA COME FUNZIONA</h2>
-    """, unsafe_allow_html=True)
 
-    st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")  # metti il tuo
 
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
