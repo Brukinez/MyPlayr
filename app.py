@@ -1563,7 +1563,12 @@ elif st.session_state.pagina == 'home_auth':
 
     with col1:
         st.markdown("""
-       st.metric("🎞️ Clip", num_clip)
+            <div class="mcp-card">
+            <div class='stat-card'>
+                <h2>🎞️</h2>
+                <h1>12</h1>
+                 st.metric("🎞️ Clip", num_clip)
+            </div>
         """, unsafe_allow_html=True)
 
     with col2:
