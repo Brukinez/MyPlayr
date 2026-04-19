@@ -1600,14 +1600,35 @@ elif st.session_state.pagina == 'home_auth':
         
     st.markdown("<br><h2>🏟️ Ultime Partite</h2>", unsafe_allow_html=True)
 
-    col_v1, col_v2 = st.columns(2)
+    try:
+        res_matches = supabase.table("calendario")\
+            .select("*")\
+            .eq("stato", "FATTO")\
+            .order("id", desc=True)\
+            .limit(2)\
+            .execute()
 
-    with col_v1:
-        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        matches = res_matches.data
 
-    with col_v2:
-        st.video("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-    st.markdown("<br><h2>🚀 Azioni Veloci</h2>", unsafe_allow_html=True)
+        if matches:
+            cols = st.columns(len(matches))
+
+            for i, partita in enumerate(matches):
+                with cols[i]:
+                    st.markdown(f"**{partita.get('evento')}**")
+
+                    video = partita.get("link_video")
+
+                    if video:
+                        st.video(make_direct_link(video))
+                    else:
+                        st.info("⏳ Video non disponibile")
+
+        else:
+            st.info("📌 Nessuna partita disponibile")
+
+    except Exception as e:
+        st.error(f"Errore caricamento partite: {e}")
 
     c1, c2, c3 = st.columns(3)
     st.markdown("<br><h2>🔥 Le Tue Migliori Clip</h2>", unsafe_allow_html=True)
