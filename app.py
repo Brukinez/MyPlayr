@@ -878,8 +878,8 @@ if st.session_state.autenticato:
     with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True, type="primary")
     with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True, type="primary")
     with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True, type="primary")
-    with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True, type="primary")
-    with col_nav[4]: st.button("Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True, type="primary")
+    with col_nav[3]: st.button("Hall of Fame", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True, type="primary")
+    with col_nav[4]: st.button("Le Tue Clip", on_click=lambda: vai_a('mie_clip'), use_container_width=True, type="primary")
     with col_nav[5]: st.button("Premium", on_click=lambda: vai_a('premiun'), use_container_width=True, type="primary")
     # Tasto speciale per il Gestore del Centro (Admin)
     if is_admin:
