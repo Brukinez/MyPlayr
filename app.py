@@ -1563,19 +1563,19 @@ elif st.session_state.pagina == 'home_auth':
 
     with col1:
         st.markdown("""
-        <div class="mcp-card">
-        <div class='stat-card'>
-            <h2>🎞️</h2>
-          
-            <p>Le tue Clip</p>
-        </div>
-    """, unsafe_allow_html=True)
+        
+            <div class='stat-card'>
+                <h2>🎞️</h2>
+                <h1>12</h1>
+                <p>Le tue Clip</p>
+            </div>
+        """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
             <div class='stat-card'>
                 <h2>⚽</h2>
-      
+                <h1>8</h1>
                 <p>Partite giocate</p>
             </div>
         """, unsafe_allow_html=True)
@@ -1584,7 +1584,7 @@ elif st.session_state.pagina == 'home_auth':
         st.markdown("""
             <div class='stat-card'>
                 <h2>🔥</h2>
-              
+                <h1>24</h1>
                 <p>Azioni salvate</p>
             </div>
         """, unsafe_allow_html=True)
@@ -1593,7 +1593,7 @@ elif st.session_state.pagina == 'home_auth':
         st.markdown("""
             <div class='stat-card'>
                 <h2>🏆</h2>
-          
+                <h1>#15</h1>
                 <p>Rank</p>
             </div>
         """, unsafe_allow_html=True)   
