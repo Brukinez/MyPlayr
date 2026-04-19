@@ -1576,7 +1576,8 @@ elif st.session_state.pagina == 'home_auth':
 
     with col2:
         st.markdown("""
-            <div class='stat-card'>
+             <div class="mcp-card">
+                    <!-- Ecco la nuova scatola dell'icona -->
                 <h2>⚽</h2>
                 <h1>8</h1>
                 <p>Partite giocate</p>
