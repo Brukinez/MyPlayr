@@ -419,23 +419,7 @@ EMERGENT_CSS = """
         background-color: transparent !important;
     }
 
-    .stat-card {
-    background: rgba(255,255,255,0.03);
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.stat-card h1 {
-    color: white;
-    margin: 5px 0;
-}
-
-.stat-card p {
-    color: #94a3b8;
-    margin: 0;
-}
+    
 
     /* --- OTTIMIZZAZIONE PER SMARTPHONE E TABLET --- */
     @media (max-width: 768px) {
@@ -891,7 +875,7 @@ if st.session_state.autenticato:
     col_nav = st.columns(8 if is_admin else 7)
     
     # 3. PULSANTI DI NAVIGAZIONE (Usano la funzione vai_a del blocco precedente)
-    with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True)
+    with col_nav[0]: st.button("Home", on_click=lambda: vai_a('home_auth'), use_container_width=True, type="primary")
     with col_nav[1]: st.button("Profilo", on_click=lambda: vai_a('profilo'), use_container_width=True)
     with col_nav[2]: st.button("Partite", on_click=lambda: vai_a('partite'), use_container_width=True)
     with col_nav[3]: st.button("Hall", on_click=lambda: vai_a('hall_of_fame'), use_container_width=True)
