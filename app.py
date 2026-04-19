@@ -940,7 +940,27 @@ if st.session_state.pagina == 'home':
         st.markdown("<br>", unsafe_allow_html=True)
 
 
+  # --- TESTIMONIANZE ---
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center;'>COSA DICONO GLI UTENTI</h2>", unsafe_allow_html=True)
 
+    t1, t2 = st.columns(2)
+
+    with t1:
+        st.markdown("""
+        <div class='mcp-card'>
+            "Finalmente posso rivedere i miei goal!"
+            <br><b>– Marco</b>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with t2:
+        st.markdown("""
+        <div class='mcp-card'>
+            "Sembra di giocare in Serie A."
+            <br><b>– Luca</b>
+        </div>
+        """, unsafe_allow_html=True)
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
     if not st.session_state.autenticato:
