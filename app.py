@@ -1884,7 +1884,7 @@ elif st.session_state.pagina == 'mie_clip':
 # --- PAGINA PRIVACY POLICY ---
 elif st.session_state.pagina == 'privacy':
     st.markdown("<h1 style='text-align: center; color: white;'>PRIVACY E POLICY</h1>", unsafe_allow_html=True)
-    
+    s_cols = st.columns(1)
     # Incolla il tuo testo tra le triple virgolette
     testo_privacy = """ 
         
