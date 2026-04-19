@@ -1570,7 +1570,7 @@ elif st.session_state.pagina == 'home_auth':
                 <h1>8</h1>
                 <p>Partite giocate</p>
             </div>
-                    <h3 style="color: white; margin-top: 0;">le tue clip</h3>
+             
               
             """, unsafe_allow_html=True)
 
