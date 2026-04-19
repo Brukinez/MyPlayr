@@ -1606,7 +1606,7 @@ elif st.session_state.pagina == 'home_auth':
         st.metric("🏆 Rank", "#--")
       
         
-    st.markdown("<br><h2>🏟️ Ultime Partite</h2>", unsafe_allow_html=True)
+    st.markdown("<br><h2>Ultime Partite</h2>", unsafe_allow_html=True)
 
     try:
         res_matches = supabase.table("calendario")\
