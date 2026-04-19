@@ -927,18 +927,7 @@ if st.session_state.pagina == 'home':
                 </p>
             </div>
         """, unsafe_allow_html=True)
-        # --- CTA HERO ---
-        c1, c2 = st.columns(2)
 
-        with c1:
-            st.button("🚀 INIZIA GRATIS", use_container_width=True, type="primary")
-
-        with c2:
-            st.button("🎥 GUARDA DEMO", use_container_width=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-                # Creiamo tre colonne per mettere le schede una di fianco all'altra
-        col1, col2, col3 = st.columns(3)
 
 
     # Visualizziamo i contenuti solo se l'utente non è loggato
