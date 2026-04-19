@@ -1564,7 +1564,7 @@ elif st.session_state.pagina == 'home_auth':
     with col1:
         st.markdown("""
             <div class="mcp-card">
-            
+            <div class='stat-card'>
                 <h2>🎞️</h2>
                 <h1>12</h1>
                 <p>Le tue Clip</p>
