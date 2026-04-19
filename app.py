@@ -1,6 +1,10 @@
 import streamlit as st
 import os
 import pandas as pd
+def make_direct_link(link):
+    if link and "drive.google.com" in link:
+        return link.replace("/view", "/preview")
+    return link
 import numpy as np
 import smtplib
 import subprocess # Fondamentale per far lavorare FFmpeg e tagliare i video
