@@ -1603,7 +1603,7 @@ elif st.session_state.pagina == 'home_auth':
     try:
         res_matches = supabase.table("calendario")\
             .select("*")\
-            .eq("stato", "COMPLETATO")\
+            .eq("stato", "FATTO")\
             .order("id", desc=True)\
             .limit(2)\
             .execute()
