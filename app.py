@@ -1561,7 +1561,7 @@ elif st.session_state.pagina == 'home_auth':
 
     col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
+    with col1:
             st.markdown("""
                 <div class="mcp-card">
                     <!-- Ecco la nuova scatola dell'icona -->
