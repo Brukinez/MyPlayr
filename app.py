@@ -77,7 +77,13 @@ EMERGENT_CSS = """
         height: 54px !important;
     }
 
-
+    /* EFFETTO AL PASSAGGIO DEL MOUSE */
+    button[key="home_login_btn"]:hover, 
+    button[key="home_reg_btn"]:hover {
+        background-color: #24e170 !important;
+        color: white !important;
+        box-shadow: 0 5px 15px rgba(41, 168, 71, 0.4) !important;
+    }
 
 
           /* --- STILE DELLE SCHEDE (CARD) - AGGIORNATO DALLO SCREENSHOT --- */
@@ -406,12 +412,6 @@ EMERGENT_CSS = """
         justify-content: flex-start !important;
     }
 
-    /* Effetto quando passi il mouse: la scritta si illumina senza far apparire riquadri */
-    button[key^="f_"]:hover {
-        color: white !important;
-        background: none !important;
-        background-color: transparent !important;
-    }
 
 
     /* --- OTTIMIZZAZIONE PER SMARTPHONE E TABLET --- */
