@@ -1593,7 +1593,7 @@ elif st.session_state.pagina == 'home_auth':
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        
+        s_cols = st.columns(6)
         st.metric("🎞️ Clip", num_clip)
 
     with col2:
@@ -1850,7 +1850,7 @@ elif st.session_state.pagina == 'mie_clip':
         res_clip = supabase.table("comandi_clip")\
             .select("*")\
             .eq("email_utente", st.session_state.user_email)\
-            .eq("stato", "FATTO")\
+            .eq("stato", "COMPLETATO")\
             .order("id", desc=True)\
             .execute()
 
