@@ -1562,21 +1562,17 @@ elif st.session_state.pagina == 'home_auth':
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-            st.markdown("""
-                <div class="mcp-card">
-                    <!-- Ecco la nuova scatola dell'icona -->
-                <h2>⚽</h2>
-                <h1>8</h1>
-                <p>Partite giocate</p>
+        st.markdown("""
+            <div class='stat-card'>
+                <h2>🎞️</h2>
+                <h1>12</h1>
+                <p>Le tue Clip</p>
             </div>
-             
-              
-            """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
     with col2:
         st.markdown("""
-             <div class="mcp-card">
-                    <!-- Ecco la nuova scatola dell'icona -->
+            <div class='stat-card'>
                 <h2>⚽</h2>
                 <h1>8</h1>
                 <p>Partite giocate</p>
