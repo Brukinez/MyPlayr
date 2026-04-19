@@ -1573,7 +1573,7 @@ elif st.session_state.pagina == 'home_auth':
 
     with col2:
         st.markdown("""
-            <div class='stat-card'>
+        
                 <h2>⚽</h2>
       
                  st.metric("🎞️ Clip", num_clip)
