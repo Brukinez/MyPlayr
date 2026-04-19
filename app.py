@@ -1174,7 +1174,7 @@ elif st.session_state.pagina == 'login':
             # Opzioni secondarie
             col_l1, col_l2 = st.columns(2)
             with col_l1:
-                if st.button("Password dimenticata?", type="secondary", use_container_width=True): 
+                if st.button("Password dimenticata?", use_container_width=True): 
                     st.session_state.sub = 'recupero'
                     st.rerun()
             with col_l2:
@@ -1250,7 +1250,7 @@ elif st.session_state.pagina == 'login':
                 else:
                     st.warning("Inserisci un'email!")
             
-            if st.button("← TORNA AL LOGIN", use_container_width=True): 
+            if st.button("← TORNA AL LOGIN", type="secondary", use_container_width=True): 
                 st.session_state.sub = 'login'
                 st.rerun()
         
