@@ -1556,7 +1556,7 @@ elif st.session_state.pagina == 'home_auth':
 
     st.markdown(f"""
         <h1 style='font-size: 50px; font-weight: 900;'>
-            👋 Benvenuto, <span style='color:#2ecc71;'>{st.session_state.user_nick}</span>
+            Benvenuto, <span style='color:#2ecc71;'>{st.session_state.user_nick}</span>
         </h1>
         <p style='color:#94a3b8; font-size:18px;'>
             Ecco cosa sta succedendo nel tuo mondo MyClipzo oggi.
