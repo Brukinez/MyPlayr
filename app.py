@@ -1139,7 +1139,7 @@ elif st.session_state.pagina == 'login':
             # Logo e Titolo come nello screenshot
             st.markdown("""
                 <div style='text-align: center; margin-bottom: 0px;'>
-                    <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
+                    <div class='mc-box' style='display: inline-block; margin-bottom: 0px;'>MC</div>
                     <h1 style='font-weight: 900; margin-bottom: 0; color: white;;'>CREA IL TUO ACCOUNT<h1>             
                 </div>
             """, unsafe_allow_html=True)
