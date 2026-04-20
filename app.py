@@ -1140,7 +1140,7 @@ elif st.session_state.pagina == 'login':
             st.markdown("""
                 <div style='text-align: center; margin-bottom: 20px;'>
                     <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
-                    <h1 style='font-weight: 900; margin-bottom: 0; color: white;;'>ACCEDI A<br><span style='color: #2ecc71;'>  MYCLIPZO</span></h1>             
+                    <h1 style='font-weight: 900; margin-bottom: 0; color: white;;'>ACCEDI A<br><span style='color: #2ecc71;'> MYCLIPZO</span></h1>             
                 </div>
             """, unsafe_allow_html=True)
             
@@ -1282,7 +1282,7 @@ elif st.session_state.pagina == 'admin':
         st.error(f"Errore caricamento dati statistici: {e}")
         num_utenti = num_partite = num_newsletter = 0
 
-    st.title("📊 Dashboard Amministratore")
+    st.title("Dashboard Amministratore")
 
     # 2. RIGA DEI CONTATORI (Metriche veloci)
     c1, c2, c3, c4, c5 = st.columns(5)
@@ -1298,7 +1298,7 @@ elif st.session_state.pagina == 'admin':
     col_graf, col_act = st.columns([1.5, 1]) # Grafico più largo per leggibilità
     
     with col_graf:
-        st.subheader("📈 Attività Settimanale")
+        st.subheader("Attività Settimanale")
         # Dati simulati per il grafico (in futuro potrai renderli reali)
         dati_grafico = pd.DataFrame({
             "Giorno": ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"], 
@@ -1318,9 +1318,9 @@ elif st.session_state.pagina == 'admin':
             except:
                 st.error("Errore durante l'export.")
         
-        st.button("📧 Invia Newsletter Massiva", use_container_width=True)
-        st.button("📊 Genera Report Mensile", use_container_width=True)
-        if st.button("🧹 Svuota Cache Sistema", use_container_width=True):
+        st.button("Invia Newsletter Massiva", use_container_width=True)
+        st.button("Genera Report Mensile", use_container_width=True)
+        if st.button("Svuota Cache Sistema", use_container_width=True):
             st.cache_data.clear()
             st.success("Cache pulita!")
 
