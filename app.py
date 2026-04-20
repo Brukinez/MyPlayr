@@ -1141,7 +1141,6 @@ elif st.session_state.pagina == 'login':
                 <div style='text-align: center; margin-bottom: 20px;'>
                     <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
                     <h1 style='font-weight: 900; font-size: 18px;margin-bottom: 0; color: white;;'>ACCEDI A<br><span style='color: #2ecc71;'> MYCLIPZO</span></h1>             
-                    <b style='color: white; font-size: 24px;'>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -1239,7 +1238,7 @@ elif st.session_state.pagina == 'login':
             # Navigazione interna alla card
             st.markdown("<hr style='opacity: 0.1; margin: 20px 0;'><p style='text-align: center; color: #94a3b8; font-size: 14px;'>Hai già un account?</p>", unsafe_allow_html=True)
             
-            if st.button("ACCEDI", use_container_width=True,type="primary", key="btn_back_to_log"): 
+            if st.button("ACCEDI", use_container_width=True,type="secondary", key="btn_back_to_log"): 
                 st.session_state.sub = 'login'
                 st.rerun()
             
