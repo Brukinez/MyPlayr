@@ -1197,7 +1197,7 @@ elif st.session_state.pagina == 'login':
                 <div style='text-align: center; margin-bottom: 0px;'>
                     <div class='mc-box' style='display: inline-block; margin-bottom: 0px;'>MC</div>
                     <h1 style='font-weight: 700; margin-bottom: 0; color: white;'>CREA IL TUO ACCOUNT<h1>
-                    <p style='color: #94a3b8;'>Unisciti alla community MyClipzo</p>
+                    <p style='color: #94a3b8, font-size: 18px;'>MyClipzo</b>'>Unisciti alla community MyClipzo</p>
                 </div>
             """, unsafe_allow_html=True)
             
