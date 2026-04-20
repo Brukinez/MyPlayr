@@ -98,6 +98,45 @@ def registra_e_carica(id_partita):
             pass
         return False
 
+def elabora_taglio_clip():
+    """
+    Controlla se ci sono richieste di taglio pendenti e le esegue.
+    """
+    try:
+        # Cerca i comandi con stato 'RICHIESTO'
+        resp = supabase.table("comandi_clip").select("*").eq("stato", "RICHIESTO").execute()
+        richieste = resp.data
+
+        if richieste:
+            for req in richieste:
+                print(f"🎬 Nuova richiesta di taglio: ID Partita {req['id_partita']} per {req['email_utente']}")
+                
+                # 1. Recuperiamo il nome del file master dalla tabella calendario o video
+                res_v = supabase.table("calendario").select("evento, link_video").eq("id", req['id_partita']).execute()
+                if not res_v.data: continue
+                
+                # Usiamo i dati della richiesta per il taglio
+                inizio = req['inizio_secondi']
+                durata = req['durata_secondi']
+                email = req['email_utente']
+                id_req = req['id']
+
+                # --- LOGICA DI TAGLIO (Esempio semplificato, usa il tuo metodo FFmpeg) ---
+                # Qui chiameresti una funzione simile a registra_e_carica ma per il taglio
+                # Una volta finito l'upload su Drive e ottenuto il link_embed:
+                
+                link_embed_clip = "https://google.com" # Esempio
+
+                # 2. AGGIORNIAMO SUPABASE: Ora il sito 'vedrà' il video
+                supabase.table("comandi_clip").update({
+                    "url_video": link_embed_clip,
+                    "stato": "COMPLETATO"
+                }).eq("id", id_req).execute()
+                
+                print(f"✅ Clip completata per {email}")
+
+    except Exception as e:
+        print(f"Errore elaborazione clip: {e}")
 
 
 
