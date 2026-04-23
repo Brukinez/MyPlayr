@@ -363,7 +363,7 @@ EMERGENT_CSS = """
     }
     
     /* Questo elimina il rettangolo nero che appare quando il mouse è sopra o quando clicchi */
-    .stButton > button[kind="secondary"]:hover, 
+    .stButton > button[kind="primary]:hover, 
     .stButton > button[kind="secondary"]:active, 
     .stButton > button[kind="secondary"]:focus {
         background: transparent !important;
@@ -1104,7 +1104,7 @@ if st.session_state.pagina == 'home':
             st.markdown("""
         <div style='display: flex; align-items: center; gap: 10px; margin-bottom: 15px;'>
             <div class='mc-box' style='font-size: 20px; padding: 6px 10px;'>BK</div>
-            <b style='color: white; font-size: 24px;'>MyClipz</b>
+            <b style='color: white; font-size: 24px;'>BruKinez</b>
         </div>
         <p style='color: #94a3b8; font-size: 20px; line-height: 1.6;'>
             La piattaforma IoT per centri sportivi. Registra, rivedi e condividi le tue migliori azioni in campo. Lo sport amatoriale come quello vero.
