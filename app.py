@@ -363,7 +363,7 @@ EMERGENT_CSS = """
     }
     
     /* Questo elimina il rettangolo nero che appare quando il mouse è sopra o quando clicchi */
-    .stButton > button[kind="primary]:hover, 
+    .stButton > button[kind="secondary"]:hover, 
     .stButton > button[kind="secondary"]:active, 
     .stButton > button[kind="secondary"]:focus {
         background: transparent !important;
