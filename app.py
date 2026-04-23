@@ -575,8 +575,8 @@ EMERGENT_CSS = """
 st.markdown("""
     <div class='sticky-navbar'>
         <div class='logo-container'>
-            <div class='mc-box'>MC</div>
-            <div class='brand-name'>MyClipzo</div>
+            <div class='mc-box'>BK</div>
+            <div class='brand-name'>BruKinez</div>
         </div>
         <div></div> <!-- Spazio vuoto per bilanciare il flex -->
     </div>
