@@ -1139,7 +1139,7 @@ elif st.session_state.pagina == 'login':
             # Logo e Titolo come nello screenshot
             st.markdown("""
                 <div style='text-align: center; margin-bottom: 20px;'>
-                    <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>MC</div>
+                    <div class='mc-box' style='display: inline-block; margin-bottom: 15px;'>BK</div>
                     <h1 style='font-weight: 900; margin-bottom: 0; color: white;;'>ACCEDI A MYCLIPZO</h1>  
                      <p style='color: #94a3b8;'>Inserisci le tue credenziali per continuare</p>           
                 </div>
