@@ -17,6 +17,9 @@ cd C:\MyPlayr
 streamlit run app.py
 
 
+cd C:\MyPlayr_test
+python regista_nuovo.py
+
 IA
 cd C:\MyPlayr
 python test_ia.py
