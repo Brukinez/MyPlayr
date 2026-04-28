@@ -98,77 +98,91 @@ def registra_e_carica(id_partita):
             pass
         return False
 
-def elabora_taglio_clip():
-    """
-    Controlla se ci sono richieste di taglio pendenti e le esegue.
-    """
+def esegui_taglio_reale(id_partita, inizio, durata, id_richiesta):
+    """Esegue il taglio FFmpeg e carica su Drive"""
     try:
-        # Cerca i comandi con stato 'RICHIESTO'
-        resp = supabase.table("comandi_clip").select("*").eq("stato", "RICHIESTO").execute()
-        richieste = resp.data
+        # 1. Trova il file master nella cartella
+        file_master = None
+        for f in os.listdir(VIDEO_DIR):
+            if f.startswith(f"match_{id_partita}_") and f.endswith(".mp4"):
+                file_master = f
+                break
+        
+        if not file_master:
+            print(f"❌ Master non trovato per partita {id_partita}")
+            return None
 
-        if richieste:
-            for req in richieste:
-                print(f"🎬 Nuova richiesta di taglio: ID Partita {req['id_partita']} per {req['email_utente']}")
-                
-                # 1. Recuperiamo il nome del file master dalla tabella calendario o video
-                res_v = supabase.table("calendario").select("evento, link_video").eq("id", req['id_partita']).execute()
-                if not res_v.data: continue
-                
-                # Usiamo i dati della richiesta per il taglio
-                inizio = req['inizio_secondi']
-                durata = req['durata_secondi']
-                email = req['email_utente']
-                id_req = req['id']
+        input_path = os.path.join(VIDEO_DIR, file_master)
+        output_name = f"clip_{id_richiesta}.mp4"
+        output_path = os.path.join(VIDEO_DIR, output_name)
 
-                # --- LOGICA DI TAGLIO (Esempio semplificato, usa il tuo metodo FFmpeg) ---
-                # Qui chiameresti una funzione simile a registra_e_carica ma per il taglio
-                # Una volta finito l'upload su Drive e ottenuto il link_embed:
-                
-                link_embed_clip = "https://google.com" # Esempio
+        # 2. Comando FFmpeg reale (veloce con -c copy)
+        print(f"✂️ Taglio in corso: {output_name}...")
+        cmd = [
+            'ffmpeg', '-y', '-ss', str(inizio), '-t', str(durata),
+            '-i', input_path, '-c', 'copy', '-movflags', '+faststart', output_path
+        ]
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-                # 2. AGGIORNIAMO SUPABASE: Ora il sito 'vedrà' il video
-                supabase.table("comandi_clip").update({
-                    "url_video": link_embed_clip,
-                    "stato": "COMPLETATO"
-                }).eq("id", id_req).execute()
-                
-                print(f"✅ Clip completata per {email}")
+        # 3. Upload su Drive
+        subprocess.run([RCLONE_EXE, "copy", output_path, "remote:CLIP_MYPLAYR"], check=True)
+        
+        # 4. Ottieni link e pulisci
+        res = subprocess.run([RCLONE_EXE, "link", f"remote:CLIP_MYPLAYR/{output_name}"], 
+                             capture_output=True, text=True, check=True)
+        
+        v_id = estrai_id_video(res.stdout.strip())
+        link_final = costruisci_link_preview(v_id)
+
+        if os.path.exists(output_path): os.remove(output_path)
+        return link_final
 
     except Exception as e:
-        print(f"Errore elaborazione clip: {e}")
+        print(f"Errore taglio fisico: {e}")
+        return None
 
+def elabora_taglio_clip():
+    """Controlla se ci sono richieste di taglio pendenti"""
+    try:
+        resp = supabase.table("comandi_clip").select("*").eq("stato", "RICHIESTO").execute()
+        for req in (resp.data or []):
+            print(f"🎬 Elaborazione richiesta {req['id']}...")
+            
+            link = esegui_taglio_reale(req['id_partita'], req['inizio_secondi'], req['durata_secondi'], req['id'])
+            
+            if link:
+                supabase.table("comandi_clip").update({
+                    "url_video": link,
+                    "stato": "COMPLETATO"
+                }).eq("id", req['id']).execute()
+                print(f"✅ Clip completata: {link}")
 
+    except Exception as e:
+        print(f"Errore monitor clip: {e}")
 
 def monitor():
-    print("Monitor in esecuzione...")
+    print("🚀 MyClipzo Regista in esecuzione (Registrazione + Taglio)...")
     while True:
         try:
+            # --- PARTE 1: REGISTRAZIONE ---
             now = datetime.now()
             data_oggi = now.strftime("%d-%m-%Y")
             ora_attuale = now.strftime("%H:%M")
+            resp = supabase.table("calendario").select("*").eq("data", data_oggi).eq("ora", ora_attuale).eq("stato", "PROGRAMMATO").execute()
 
-            resp = supabase.table("calendario").select("*")\
-                .eq("data", data_oggi)\
-                .eq("ora", ora_attuale)\
-                .eq("stato", "PROGRAMMATO")\
-                .execute()
-
-            match_list = resp.data
-
-            if match_list:
-                partita = match_list[0]
-                id_p = partita['id']
-                print(f"Trovato match da registrare: ID {id_p}")
-                supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", id_p).execute()
-                registra_e_carica(id_p)
-            else:
-                print(f"Nessun match da registrare alle {ora_attuale}")
+            if resp.data:
+                partita = resp.data[0]
+                print(f"⚽ Inizio registrazione match: {partita['id']}")
+                supabase.table("calendario").update({"stato": "REGISTRAZIONE"}).eq("id", partita['id']).execute()
+                registra_e_carica(partita['id'])
+            
+            # --- PARTE 2: TAGLIO CLIP (L'AGGIUNTA FONDAMENTALE) ---
+            elabora_taglio_clip()
 
         except Exception as err:
-            print(f"Errore monitor: {err}")
+            print(f"Errore generale: {err}")
 
-        time.sleep(30)
+        time.sleep(20) # Controllo ogni 20 secondi
 
 if __name__ == "__main__":
     monitor()
